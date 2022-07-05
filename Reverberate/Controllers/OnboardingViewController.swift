@@ -7,11 +7,13 @@
 
 import UIKit
 
-class OnboardingViewController: UIViewController {
+class OnboardingViewController: UIViewController
+{
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        //view.backgroundColor = UIColor(named: "techinessColor")
     }
     
     override func viewDidAppear(_ animated: Bool)

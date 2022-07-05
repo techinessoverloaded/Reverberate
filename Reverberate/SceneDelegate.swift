@@ -29,10 +29,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         {
             userDefaults.set(true, forKey: GlobalConstants.isFirstTime)
         }
-        
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
-            window?.rootViewController = OnboardingViewController()
+            window?.rootViewController = SignupViewController()
+            //window?.rootViewController = OnboardingViewController()
         }
         else
         {
@@ -49,13 +49,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         switch userDefaults.integer(forKey: GlobalConstants.themePreference)
         {
         case 0:
-            window?.overrideUserInterfaceStyle = .light
+            //window?.overrideUserInterfaceStyle = .light
             print("Light Theme")
         case 1:
-            window?.overrideUserInterfaceStyle = .dark
+            //window?.overrideUserInterfaceStyle = .dark
             print("Dark Theme")
         default:
-            window?.overrideUserInterfaceStyle = .unspecified
+            //window?.overrideUserInterfaceStyle = .unspecified
             print("System Theme")
         }
     }

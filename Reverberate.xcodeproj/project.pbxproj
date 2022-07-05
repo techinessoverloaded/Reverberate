@@ -10,6 +10,8 @@
 		DA28A349287414E900E36382 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A348287414E900E36382 /* SignupViewController.swift */; };
 		DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A34A287414F700E36382 /* LoginViewController.swift */; };
 		DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A34C2874157C00E36382 /* OnboardingViewController.swift */; };
+		DA28A364287431AC00E36382 /* BebasFixNeue.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA28A363287431AC00E36382 /* BebasFixNeue.ttf */; };
+		DA28A366287431BF00E36382 /* BubblegumSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA28A365287431BF00E36382 /* BubblegumSans-Regular.ttf */; };
 		DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569D287402C400804CB8 /* AppDelegate.swift */; };
 		DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569F287402C400804CB8 /* SceneDelegate.swift */; };
 		DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA4556A6287402C400804CB8 /* Reverberate.xcdatamodeld */; };
@@ -18,12 +20,15 @@
 		DA4556C828740A7000804CB8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* ViewController.swift */; };
 		DA4556D028740B2000804CB8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556CF28740B2000804CB8 /* Extensions.swift */; };
 		DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556D128740CD200804CB8 /* GlobalConstants.swift */; };
+		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DA28A348287414E900E36382 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		DA28A34A287414F700E36382 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DA28A34C2874157C00E36382 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		DA28A363287431AC00E36382 /* BebasFixNeue.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BebasFixNeue.ttf; sourceTree = "<group>"; };
+		DA28A365287431BF00E36382 /* BubblegumSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BubblegumSans-Regular.ttf"; sourceTree = "<group>"; };
 		DA45569A287402C400804CB8 /* Reverberate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverberate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA45569D287402C400804CB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA45569F287402C400804CB8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -34,6 +39,7 @@
 		DA4556C728740A7000804CB8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DA4556CF28740B2000804CB8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		DA4556D128740CD200804CB8 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
+		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,9 +53,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DA28A3502874201B00E36382 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DA28A365287431BF00E36382 /* BubblegumSans-Regular.ttf */,
+				DA28A363287431AC00E36382 /* BebasFixNeue.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		DA455691287402C400804CB8 = {
 			isa = PBXGroup;
 			children = (
+				DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */,
 				DA45569C287402C400804CB8 /* Reverberate */,
 				DA45569B287402C400804CB8 /* Products */,
 			);
@@ -66,6 +82,7 @@
 		DA45569C287402C400804CB8 /* Reverberate */ = {
 			isa = PBXGroup;
 			children = (
+				DA28A3502874201B00E36382 /* Fonts */,
 				DA4556CE28740B0600804CB8 /* Managers */,
 				DA4556CD28740AFD00804CB8 /* Extensions */,
 				DA4556CB28740AEB00804CB8 /* Utitlities */,
@@ -188,8 +205,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
 				DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */,
 				DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */,
+				DA28A366287431BF00E36382 /* BubblegumSans-Regular.ttf in Resources */,
+				DA28A364287431AC00E36382 /* BebasFixNeue.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
