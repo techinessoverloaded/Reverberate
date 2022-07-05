@@ -9,9 +9,7 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate
 {
-
     var window: UIWindow?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -19,10 +17,49 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
-        window?.rootViewController = ViewController()
+        setupRootViewController()
         window?.makeKeyAndVisible()
     }
 
+    func setupRootViewController()
+    {
+        let userDefaults = UserDefaults.standard
+        
+        if userDefaults.value(forKey: GlobalConstants.isFirstTime) == nil
+        {
+            userDefaults.set(true, forKey: GlobalConstants.isFirstTime)
+        }
+        
+        if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
+        {
+            window?.rootViewController = OnboardingViewController()
+        }
+        else
+        {
+            if userDefaults.bool(forKey: GlobalConstants.isUserLoggedIn)
+            {
+                window?.rootViewController = ViewController()
+            }
+            else
+            {
+                window?.rootViewController = LoginViewController()
+            }
+        }
+        
+        switch userDefaults.integer(forKey: GlobalConstants.themePreference)
+        {
+        case 0:
+            window?.overrideUserInterfaceStyle = .light
+            print("Light Theme")
+        case 1:
+            window?.overrideUserInterfaceStyle = .dark
+            print("Dark Theme")
+        default:
+            window?.overrideUserInterfaceStyle = .unspecified
+            print("System Theme")
+        }
+    }
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
