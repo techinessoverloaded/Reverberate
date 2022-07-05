@@ -9,23 +9,23 @@
 /* Begin PBXBuildFile section */
 		DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569D287402C400804CB8 /* AppDelegate.swift */; };
 		DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569F287402C400804CB8 /* SceneDelegate.swift */; };
-		DA4556A2287402C400804CB8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556A1287402C400804CB8 /* ViewController.swift */; };
-		DA4556A5287402C400804CB8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA4556A3287402C400804CB8 /* Main.storyboard */; };
 		DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA4556A6287402C400804CB8 /* Reverberate.xcdatamodeld */; };
 		DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA4556A9287402C600804CB8 /* Assets.xcassets */; };
 		DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA4556AB287402C600804CB8 /* LaunchScreen.storyboard */; };
+		DA4556C828740A7000804CB8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* ViewController.swift */; };
+		DA4556D028740B2000804CB8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556CF28740B2000804CB8 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DA45569A287402C400804CB8 /* Reverberate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverberate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA45569D287402C400804CB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA45569F287402C400804CB8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		DA4556A1287402C400804CB8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		DA4556A4287402C400804CB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DA4556A7287402C400804CB8 /* Reverberate.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Reverberate.xcdatamodel; sourceTree = "<group>"; };
 		DA4556A9287402C600804CB8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DA4556AC287402C600804CB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DA4556AE287402C600804CB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA4556C728740A7000804CB8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DA4556CF28740B2000804CB8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,16 +58,64 @@
 		DA45569C287402C400804CB8 /* Reverberate */ = {
 			isa = PBXGroup;
 			children = (
+				DA4556CE28740B0600804CB8 /* Managers */,
+				DA4556CD28740AFD00804CB8 /* Extensions */,
+				DA4556CB28740AEB00804CB8 /* Utitlities */,
+				DA4556CA28740AE300804CB8 /* Models */,
+				DA4556C928740AD900804CB8 /* Views */,
+				DA4556C628740A5C00804CB8 /* Controllers */,
 				DA45569D287402C400804CB8 /* AppDelegate.swift */,
 				DA45569F287402C400804CB8 /* SceneDelegate.swift */,
-				DA4556A1287402C400804CB8 /* ViewController.swift */,
-				DA4556A3287402C400804CB8 /* Main.storyboard */,
 				DA4556A9287402C600804CB8 /* Assets.xcassets */,
 				DA4556AB287402C600804CB8 /* LaunchScreen.storyboard */,
 				DA4556AE287402C600804CB8 /* Info.plist */,
 				DA4556A6287402C400804CB8 /* Reverberate.xcdatamodeld */,
 			);
 			path = Reverberate;
+			sourceTree = "<group>";
+		};
+		DA4556C628740A5C00804CB8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DA4556C728740A7000804CB8 /* ViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		DA4556C928740AD900804CB8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		DA4556CA28740AE300804CB8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		DA4556CB28740AEB00804CB8 /* Utitlities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utitlities;
+			sourceTree = "<group>";
+		};
+		DA4556CD28740AFD00804CB8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DA4556CF28740B2000804CB8 /* Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		DA4556CE28740B0600804CB8 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -130,7 +178,6 @@
 			files = (
 				DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */,
 				DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */,
-				DA4556A5287402C400804CB8 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,9 +188,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA4556A2287402C400804CB8 /* ViewController.swift in Sources */,
+				DA4556D028740B2000804CB8 /* Extensions.swift in Sources */,
 				DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */,
 				DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */,
+				DA4556C828740A7000804CB8 /* ViewController.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -151,14 +199,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		DA4556A3287402C400804CB8 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DA4556A4287402C400804CB8 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		DA4556AB287402C600804CB8 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -295,7 +335,6 @@
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -322,7 +361,6 @@
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
