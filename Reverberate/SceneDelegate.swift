@@ -48,7 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             }
             else
             {
-                window?.rootViewController = LoginViewController()
+                window?.rootViewController = LoginViewController(style: .insetGrouped)
             }
         }
         

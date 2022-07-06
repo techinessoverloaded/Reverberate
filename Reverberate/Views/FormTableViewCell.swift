@@ -7,9 +7,9 @@
 
 import UIKit
 
-class SignupTableViewCell: UITableViewCell
+class FormTableViewCell: UITableViewCell
 {
-    static let identifier = "SignupTableViewCell"
+    static let identifier = "FormTableViewCell"
     
     private var subView : UIView!
     

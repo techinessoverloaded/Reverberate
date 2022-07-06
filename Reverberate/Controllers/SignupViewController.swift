@@ -9,8 +9,6 @@ import UIKit
 
 class SignupViewController: UITableViewController
 {
-    private var safeArea: UILayoutGuide!
-    
     private let titleView: UILabel = {
         let tView = UILabel(useAutoLayout: true)
         tView.text = "Create a New Account"
@@ -114,8 +112,7 @@ class SignupViewController: UITableViewController
     override func loadView()
     {
         super.loadView()
-        safeArea = view.safeAreaLayoutGuide
-        tableView.register(SignupTableViewCell.self, forCellReuseIdentifier: SignupTableViewCell.identifier)
+        tableView.register(FormTableViewCell.self, forCellReuseIdentifier: FormTableViewCell.identifier)
         tableView.allowsSelection = false
         tableView.keyboardDismissMode = .onDrag
         tableView.cellLayoutMarginsFollowReadableWidth = true
@@ -130,6 +127,7 @@ class SignupViewController: UITableViewController
         emailField.delegate = self
         passwordField.delegate = self
         confirmPasswordField.delegate = self
+        nameField.becomeFirstResponder()
         signupButton.addTarget(self, action: #selector(onSignupButtonTap(_:)), for: .touchUpInside)
         accountExistsButton.addTarget(self, action: #selector(onExistingAccountButtonTap(_:)), for: .touchUpInside)
     }
@@ -199,7 +197,7 @@ extension SignupViewController
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SignupTableViewCell.identifier, for: indexPath) as! SignupTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: FormTableViewCell.identifier, for: indexPath) as! FormTableViewCell
         switch indexPath.section
         {
         case 0:
@@ -242,6 +240,6 @@ extension SignupViewController
     @objc func onExistingAccountButtonTap(_ sender: UIButton)
     {
         print("Moving on to Login Screen...")
-        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController())
+        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped))
     }
 }
