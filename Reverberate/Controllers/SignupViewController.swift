@@ -109,6 +109,51 @@ class SignupViewController: UITableViewController
         return aButton
     }()
     
+    private let nameErrorLabel: UILabel = {
+        let nErrorLabel = UILabel(useAutoLayout: true)
+        nErrorLabel.textColor = .systemRed
+        nErrorLabel.font = .preferredFont(forTextStyle: .footnote)
+        nErrorLabel.text = "Required"
+        nErrorLabel.textAlignment = .right
+        return nErrorLabel
+    }()
+    
+    private let phoneErrorLabel: UILabel = {
+        let pErrorLabel = UILabel(useAutoLayout: true)
+        pErrorLabel.textColor = .systemRed
+        pErrorLabel.font = .preferredFont(forTextStyle: .footnote)
+        pErrorLabel.text = "Required"
+        pErrorLabel.textAlignment = .right
+        return pErrorLabel
+    }()
+    
+    private let emailErrorLabel: UILabel = {
+        let eErrorLabel = UILabel(useAutoLayout: true)
+        eErrorLabel.textColor = .systemRed
+        eErrorLabel.font = .preferredFont(forTextStyle: .footnote)
+        eErrorLabel.text = "Required"
+        eErrorLabel.textAlignment = .right
+        return eErrorLabel
+    }()
+    
+    private let passwordErrorLabel: UILabel = {
+        let passErrorLabel = UILabel(useAutoLayout: true)
+        passErrorLabel.textColor = .systemRed
+        passErrorLabel.font = .preferredFont(forTextStyle: .footnote)
+        passErrorLabel.text = "Required"
+        passErrorLabel.textAlignment = .right
+        return passErrorLabel
+    }()
+    
+    private let confirmPasswordErrorLabel: UILabel = {
+        let cpErrorLabel = UILabel(useAutoLayout: true)
+        cpErrorLabel.textColor = .systemRed
+        cpErrorLabel.font = .preferredFont(forTextStyle: .footnote)
+        cpErrorLabel.text = "Required"
+        cpErrorLabel.textAlignment = .right
+        return cpErrorLabel
+    }()
+    
     override func loadView()
     {
         super.loadView()
@@ -130,6 +175,15 @@ class SignupViewController: UITableViewController
         nameField.becomeFirstResponder()
         signupButton.addTarget(self, action: #selector(onSignupButtonTap(_:)), for: .touchUpInside)
         accountExistsButton.addTarget(self, action: #selector(onExistingAccountButtonTap(_:)), for: .touchUpInside)
+        if UIDevice.current.userInterfaceIdiom == .phone
+        {
+            phoneField.addReturnButtonToKeyboard(target: self, action: #selector(onCustomReturnButtonTap(_:)))
+        }
+        nameErrorLabel.isHidden = true
+        phoneErrorLabel.isHidden = true
+        emailErrorLabel.isHidden = true
+        passwordErrorLabel.isHidden = true
+        confirmPasswordErrorLabel.isHidden = true
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -195,6 +249,25 @@ extension SignupViewController
         1
     }
     
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
+    {
+        switch section
+        {
+        case 1:
+            return nameErrorLabel
+        case 2:
+            return phoneErrorLabel
+        case 3:
+            return emailErrorLabel
+        case 4:
+            return passwordErrorLabel
+        case 5:
+            return confirmPasswordErrorLabel
+        default:
+            return nil
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: FormTableViewCell.identifier, for: indexPath) as! FormTableViewCell
@@ -241,5 +314,14 @@ extension SignupViewController
     {
         print("Moving on to Login Screen...")
         (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped))
+    }
+    
+    @objc func onCustomReturnButtonTap(_ sender: UIBarButtonItem)
+    {
+        if phoneField.isFirstResponder
+        {
+            emailField.becomeFirstResponder()
+        }
+        print("Custom Return Button Tapped")
     }
 }

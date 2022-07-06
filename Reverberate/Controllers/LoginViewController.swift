@@ -185,6 +185,10 @@ extension LoginViewController
             {
                 emailCumPhoneField.placeholder = "Email Address"
                 emailCumPhoneField.keyboardType = .emailAddress
+                if UIDevice.current.userInterfaceIdiom == .phone
+                {
+                    emailCumPhoneField.removeReturnButtonFromKeyboard()
+                }
             }
         }
         else
@@ -193,6 +197,10 @@ extension LoginViewController
             {
                 emailCumPhoneField.placeholder = "Phone Number"
                 emailCumPhoneField.keyboardType = .phonePad
+                if UIDevice.current.userInterfaceIdiom == .phone
+                {
+                    emailCumPhoneField.addReturnButtonToKeyboard(target: self, action: #selector(onCustomReturnButtonTap(_:)))
+                }
             }
         }
         emailCumPhoneField.becomeFirstResponder()
@@ -207,5 +215,14 @@ extension LoginViewController
     {
         (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped))
         print("Moving on to Signup Screen...")
+    }
+    
+    @objc func onCustomReturnButtonTap(_ sender: UIBarButtonItem)
+    {
+        if emailCumPhoneField.isFirstResponder
+        {
+            passwordField.becomeFirstResponder()
+        }
+        print("Custom Return Button Tapped")
     }
 }
