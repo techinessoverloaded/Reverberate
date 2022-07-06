@@ -19,7 +19,6 @@ class SignupViewController: UIViewController
         sView.distribution = .equalCentering
         sView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         sView.isLayoutMarginsRelativeArrangement = true
-        //sView.spacing = 20
         return sView
     }()
     
@@ -27,6 +26,7 @@ class SignupViewController: UIViewController
         let tView = UILabel(useAutoLayout: true)
         tView.text = "Create a New Account"
         tView.textColor = .label
+        tView.textAlignment = .center
         tView.font = .systemFont(ofSize: 34, weight: .bold)
         return tView
     }()
@@ -34,11 +34,14 @@ class SignupViewController: UIViewController
     private let nameField: UITextField = {
         let nField = UITextField()
         nField.enableAutoLayout()
-        nField.backgroundColor = .white.withAlphaComponent(0.2)
+        nField.backgroundColor = .systemFill.withAlphaComponent(0.15)
+        nField.layer.cornerRadius = 5
+        nField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         nField.placeholder = "Name"
         nField.clearButtonMode = .whileEditing
         nField.keyboardType = .namePhonePad
         nField.autocapitalizationType = .words
+        nField.autocorrectionType = .no
         nField.borderStyle = .roundedRect
         return nField
     }()
@@ -46,7 +49,9 @@ class SignupViewController: UIViewController
     private let phoneField: UITextField = {
         let pField = UITextField()
         pField.enableAutoLayout()
-        pField.backgroundColor = .white.withAlphaComponent(0.2)
+        pField.backgroundColor = .systemFill.withAlphaComponent(0.15)
+        pField.layer.cornerRadius = 5
+        pField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         pField.placeholder = "Phone Number"
         pField.clearButtonMode = .whileEditing
         pField.keyboardType = .phonePad
@@ -58,7 +63,9 @@ class SignupViewController: UIViewController
     private let emailField: UITextField = {
         let eField = UITextField()
         eField.enableAutoLayout()
-        eField.backgroundColor = .white.withAlphaComponent(0.2)
+        eField.backgroundColor = .systemFill.withAlphaComponent(0.15)
+        eField.layer.cornerRadius = 5
+        eField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         eField.placeholder = "Email Address"
         eField.clearButtonMode = .whileEditing
         eField.keyboardType = .emailAddress
@@ -79,6 +86,7 @@ class SignupViewController: UIViewController
         let gLabel = UILabel(useAutoLayout: true)
         gLabel.text = "Pick your Gender"
         gLabel.textColor = .label
+        gLabel.font = .preferredFont(forTextStyle: .body)
         return gLabel
     }()
 
@@ -91,7 +99,9 @@ class SignupViewController: UIViewController
     private let ageField: UITextField = {
         let aField = UITextField()
         aField.enableAutoLayout()
-        aField.backgroundColor = .white.withAlphaComponent(0.2)
+        aField.backgroundColor = .systemFill.withAlphaComponent(0.15)
+        aField.layer.cornerRadius = 5
+        aField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         aField.placeholder = "Age"
         aField.clearButtonMode = .whileEditing
         aField.keyboardType = .numberPad
@@ -103,7 +113,9 @@ class SignupViewController: UIViewController
     private let passwordField: UITextField = {
         let passField = UITextField()
         passField.enableAutoLayout()
-        passField.backgroundColor = .white.withAlphaComponent(0.2)
+        passField.backgroundColor = .systemFill.withAlphaComponent(0.15)
+        passField.layer.cornerRadius = 5
+        passField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         passField.placeholder = "Password"
         passField.isSecureTextEntry = true
         passField.clearButtonMode = .whileEditing
@@ -151,7 +163,7 @@ class SignupViewController: UIViewController
             //titleView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: -25),
             //titleView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             stackView.heightAnchor.constraint(equalTo: safeArea.heightAnchor, multiplier: 0.9),
-            stackView.widthAnchor.constraint(equalTo: safeArea.widthAnchor, constant: -50),
+            stackView.widthAnchor.constraint(equalTo: safeArea.widthAnchor, constant: -view.bounds.width / 8),
             stackView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
         ])
@@ -163,6 +175,11 @@ class SignupViewController: UIViewController
         view.backgroundColor = .systemBackground
         genderSegmenter.selectedSegmentIndex = 0
         genderSegmenter.addTarget(self, action: #selector(onGenderSelection(_:)), for: .valueChanged)
+        nameField.delegate = self
+        phoneField.delegate = self
+        ageField.delegate = self
+        emailField.delegate = self
+        passwordField.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -180,7 +197,15 @@ class SignupViewController: UIViewController
 
 extension SignupViewController: UITextFieldDelegate
 {
+    func textFieldDidBeginEditing(_ textField: UITextField)
+    {
+        textField.layer.borderWidth = 1
+    }
     
+    func textFieldDidEndEditing(_ textField: UITextField)
+    {
+        textField.layer.borderWidth = 0
+    }
 }
 
 extension SignupViewController
@@ -188,5 +213,10 @@ extension SignupViewController
     @objc func onGenderSelection(_ sender: UISegmentedControl)
     {
         print(sender.selectedSegmentIndex)
+    }
+    
+    @objc func onTextFieldFocus(_ sender: UITextField)
+    {
+        
     }
 }
