@@ -7,7 +7,10 @@
 
 struct GlobalConstants
 {
-    static let isFirstTime = "IS_FIRST_TIME"
-    static let isUserLoggedIn = "IS_USER_LOGGED_IN"
-    static let themePreference = "THEME_PREFERENCE"
+    //Prevent Instantiation
+    private init() { }
+    
+    static let isFirstTime = "Is_FiRsT_tImE"
+    static let isUserLoggedIn = "Is_UsEr_LoGgEd_In"
+    static let themePreference = "ThEmE_PrEfErEnCe"
 }

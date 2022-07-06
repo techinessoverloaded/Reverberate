@@ -7,20 +7,9 @@
 
 import UIKit
 
-class SignupViewController: UIViewController
+class SignupViewController: UITableViewController
 {
     private var safeArea: UILayoutGuide!
-    
-    private let stackView: UIStackView = {
-        let sView = UIStackView(useAutoLayout: true)
-        sView.backgroundColor = .clear
-        sView.layer.cornerRadius = 20
-        sView.axis = .vertical
-        sView.distribution = .equalCentering
-        sView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        sView.isLayoutMarginsRelativeArrangement = true
-        return sView
-    }()
     
     private let titleView: UILabel = {
         let tView = UILabel(useAutoLayout: true)
@@ -35,7 +24,7 @@ class SignupViewController: UIViewController
         let nField = UITextField()
         nField.enableAutoLayout()
         nField.backgroundColor = .systemFill.withAlphaComponent(0.15)
-        nField.layer.cornerRadius = 5
+        nField.layer.cornerRadius = 10
         nField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         nField.placeholder = "Name"
         nField.clearButtonMode = .whileEditing
@@ -50,7 +39,7 @@ class SignupViewController: UIViewController
         let pField = UITextField()
         pField.enableAutoLayout()
         pField.backgroundColor = .systemFill.withAlphaComponent(0.15)
-        pField.layer.cornerRadius = 5
+        pField.layer.cornerRadius = 10
         pField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         pField.placeholder = "Phone Number"
         pField.clearButtonMode = .whileEditing
@@ -64,7 +53,7 @@ class SignupViewController: UIViewController
         let eField = UITextField()
         eField.enableAutoLayout()
         eField.backgroundColor = .systemFill.withAlphaComponent(0.15)
-        eField.layer.cornerRadius = 5
+        eField.layer.cornerRadius = 10
         eField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         eField.placeholder = "Email Address"
         eField.clearButtonMode = .whileEditing
@@ -73,48 +62,12 @@ class SignupViewController: UIViewController
         eField.borderStyle = .roundedRect
         return eField
     }()
-    
-    private let genderRegion: UIStackView = {
-        let gRegion = UIStackView(useAutoLayout: true)
-        gRegion.backgroundColor = .clear
-        gRegion.axis = .vertical
-        gRegion.spacing = 10
-        return gRegion
-    }()
-    
-    private let genderLabel: UILabel = {
-        let gLabel = UILabel(useAutoLayout: true)
-        gLabel.text = "Pick your Gender"
-        gLabel.textColor = .label
-        gLabel.font = .preferredFont(forTextStyle: .body)
-        return gLabel
-    }()
-
-    private let genderSegmenter: UISegmentedControl = {
-        let gSegmenter = UISegmentedControl(items: ["Male", "Female", "Others"])
-        gSegmenter.enableAutoLayout()
-        return gSegmenter
-    }()
-    
-    private let ageField: UITextField = {
-        let aField = UITextField()
-        aField.enableAutoLayout()
-        aField.backgroundColor = .systemFill.withAlphaComponent(0.15)
-        aField.layer.cornerRadius = 5
-        aField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
-        aField.placeholder = "Age"
-        aField.clearButtonMode = .whileEditing
-        aField.keyboardType = .numberPad
-        aField.autocapitalizationType = .none
-        aField.borderStyle = .roundedRect
-        return aField
-    }()
-    
+        
     private let passwordField: UITextField = {
         let passField = UITextField()
         passField.enableAutoLayout()
         passField.backgroundColor = .systemFill.withAlphaComponent(0.15)
-        passField.layer.cornerRadius = 5
+        passField.layer.cornerRadius = 10
         passField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
         passField.placeholder = "Password"
         passField.isSecureTextEntry = true
@@ -125,12 +78,28 @@ class SignupViewController: UIViewController
         return passField
     }()
     
+    private let confirmPasswordField: UITextField = {
+        let pass2Field = UITextField()
+        pass2Field.enableAutoLayout()
+        pass2Field.backgroundColor = .systemFill.withAlphaComponent(0.15)
+        pass2Field.layer.cornerRadius = 10
+        pass2Field.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        pass2Field.placeholder = "Confirm Password"
+        pass2Field.isSecureTextEntry = true
+        pass2Field.clearButtonMode = .whileEditing
+        pass2Field.keyboardType = .default
+        pass2Field.autocapitalizationType = .none
+        pass2Field.borderStyle = .roundedRect
+        return pass2Field
+    }()
+    
     private let signupButton: UIButton = {
         var sButtonConfig = UIButton.Configuration.filled()
-        sButtonConfig.cornerStyle = .capsule
-        sButtonConfig.title = "Signup"
+        sButtonConfig.cornerStyle = .dynamic
+        sButtonConfig.title = "Sign up"
         sButtonConfig.baseBackgroundColor = .init(named: "techinessColor")
         let sButton = UIButton(configuration: sButtonConfig)
+        sButton.layer.cornerRadius = 10
         return sButton
     }()
     
@@ -146,40 +115,23 @@ class SignupViewController: UIViewController
     {
         super.loadView()
         safeArea = view.safeAreaLayoutGuide
-        view.addSubview(stackView)
-        //view.addSubview(titleView)
-        stackView.addArrangedSubview(titleView)
-        stackView.addArrangedSubview(nameField)
-        stackView.addArrangedSubview(ageField)
-        genderRegion.addArrangedSubview(genderLabel)
-        genderRegion.addArrangedSubview(genderSegmenter)
-        stackView.addArrangedSubview(genderRegion)
-        stackView.addArrangedSubview(phoneField)
-        stackView.addArrangedSubview(emailField)
-        stackView.addArrangedSubview(passwordField)
-        stackView.addArrangedSubview(signupButton)
-        stackView.addArrangedSubview(accountExistsButton)
-        NSLayoutConstraint.activate([
-            //titleView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: -25),
-            //titleView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            stackView.heightAnchor.constraint(equalTo: safeArea.heightAnchor, multiplier: 0.9),
-            stackView.widthAnchor.constraint(equalTo: safeArea.widthAnchor, constant: -view.bounds.width / 8),
-            stackView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-        ])
+        tableView.register(SignupTableViewCell.self, forCellReuseIdentifier: SignupTableViewCell.identifier)
+        tableView.allowsSelection = false
+        tableView.keyboardDismissMode = .onDrag
+        tableView.cellLayoutMarginsFollowReadableWidth = true
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        genderSegmenter.selectedSegmentIndex = 0
-        genderSegmenter.addTarget(self, action: #selector(onGenderSelection(_:)), for: .valueChanged)
         nameField.delegate = self
         phoneField.delegate = self
-        ageField.delegate = self
         emailField.delegate = self
         passwordField.delegate = self
+        confirmPasswordField.delegate = self
+        signupButton.addTarget(self, action: #selector(onSignupButtonTap(_:)), for: .touchUpInside)
+        accountExistsButton.addTarget(self, action: #selector(onExistingAccountButtonTap(_:)), for: .touchUpInside)
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -191,7 +143,6 @@ class SignupViewController: UIViewController
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-        stackView.layer.shadowPath = UIBezierPath(rect: stackView.bounds).cgPath
     }
 }
 
@@ -199,24 +150,98 @@ extension SignupViewController: UITextFieldDelegate
 {
     func textFieldDidBeginEditing(_ textField: UITextField)
     {
-        textField.layer.borderWidth = 1
+        textField.layer.borderWidth = 2
     }
     
     func textFieldDidEndEditing(_ textField: UITextField)
     {
         textField.layer.borderWidth = 0
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        if textField === nameField
+        {
+            return phoneField.becomeFirstResponder()
+        }
+        else if textField === phoneField
+        {
+            return emailField.becomeFirstResponder()
+        }
+        else if textField === emailField
+        {
+            return passwordField.becomeFirstResponder()
+        }
+        else if textField === passwordField
+        {
+            return confirmPasswordField.becomeFirstResponder()
+        }
+        else
+        {
+            signupButton.sendActions(for: .touchUpInside)
+            return confirmPasswordField.resignFirstResponder()
+        }
+    }
+}
+
+// TableView Delegate and Datasource
+extension SignupViewController
+{
+    override func numberOfSections(in tableView: UITableView) -> Int
+    {
+        8
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        1
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = tableView.dequeueReusableCell(withIdentifier: SignupTableViewCell.identifier, for: indexPath) as! SignupTableViewCell
+        switch indexPath.section
+        {
+        case 0:
+            cell.addSubViewToContentView(titleView)
+            return cell
+        case 1:
+            cell.addSubViewToContentView(nameField)
+            return cell
+        case 2:
+            cell.addSubViewToContentView(phoneField)
+            return cell
+        case 3:
+            cell.addSubViewToContentView(emailField)
+            return cell
+        case 4:
+            cell.addSubViewToContentView(passwordField)
+            return cell
+        case 5:
+            cell.addSubViewToContentView(confirmPasswordField)
+            return cell
+        case 6:
+            cell.addSubViewToContentView(signupButton)
+            return cell
+        case 7:
+            cell.addSubViewToContentView(accountExistsButton)
+            return cell
+        default:
+            return UITableViewCell()
+        }
+    }
 }
 
 extension SignupViewController
 {
-    @objc func onGenderSelection(_ sender: UISegmentedControl)
+    @objc func onSignupButtonTap(_ sender: UIButton)
     {
-        print(sender.selectedSegmentIndex)
+        print("Signing up...")
     }
     
-    @objc func onTextFieldFocus(_ sender: UITextField)
+    @objc func onExistingAccountButtonTap(_ sender: UIButton)
     {
-        
+        print("Moving on to Login Screen...")
+        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController())
     }
 }

@@ -29,9 +29,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         {
             userDefaults.set(true, forKey: GlobalConstants.isFirstTime)
         }
+        
+        if userDefaults.value(forKey: GlobalConstants.themePreference) == nil
+        {
+            userDefaults.set(2, forKey: GlobalConstants.themePreference)
+        }
+        
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
-            window?.rootViewController = SignupViewController()
+            window?.rootViewController = SignupViewController(style: .insetGrouped)
             //window?.rootViewController = OnboardingViewController()
         }
         else
@@ -58,6 +64,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             //window?.overrideUserInterfaceStyle = .unspecified
             print("System Theme")
         }
+    }
+    
+    func changeRootViewController(_ newVC: UIViewController)
+    {
+        guard let unwrappedWindow = window else
+        {
+            print("Error in changing rootViewController")
+            return
+        }
+        unwrappedWindow.rootViewController = newVC
+        UIView.transition(with: unwrappedWindow,
+                          duration: 0.5,
+                          options: [.transitionFlipFromRight],
+                          animations: nil,
+                          completion: nil)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
