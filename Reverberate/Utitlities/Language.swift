@@ -4,26 +4,47 @@
 //
 //  Created by arun-13930 on 07/07/22.
 //
-enum Language: Int16, CaseIterable, CustomStringConvertible
+
+import UIKit
+enum Language: Int16, CaseIterable
 {
     case tamil = 0, malayalam, telugu, hindi, kannada, english
     
-    var description: String
+    var titleAndLetter: (String?, String)
     {
         switch self
         {
         case .tamil:
-            return "Tamil"
+            return ("Tamil", "தமிழ்")
         case .malayalam:
-            return "Malayalam"
+            return ("Malayalam", "മലയാളം")
         case .telugu:
-            return "Telugu"
+            return ("Telugu", "తెలుగు")
         case .hindi:
-            return "Hindi"
+            return ("Hindi", "हिंदी")
         case .kannada:
-            return "Kannada"
+            return ("Kannada", "ಕನ್ನಡ")
         case .english:
-            return "English"
+            return (nil, "English")
+        }
+    }
+    
+    var preferredBackgroundColor: UIColor
+    {
+        switch self
+        {
+        case .tamil:
+            return .systemPurple
+        case .malayalam:
+            return .systemBrown
+        case .hindi:
+            return .systemBlue
+        case .telugu:
+            return .systemPink
+        case .kannada:
+            return .systemOrange
+        case .english:
+            return .systemIndigo
         }
     }
 }

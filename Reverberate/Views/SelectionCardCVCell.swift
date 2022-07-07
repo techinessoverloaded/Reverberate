@@ -13,7 +13,7 @@ class SelectionCardCVCell: UICollectionViewCell
     
     private let titleLabel: UILabel = {
         let tLabel = UILabel(useAutoLayout: true)
-        tLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        tLabel.font = .systemFont(ofSize: 17, weight: .bold)
         tLabel.textAlignment = .left
         tLabel.textColor = .label
         return tLabel
@@ -50,11 +50,11 @@ class SelectionCardCVCell: UICollectionViewCell
         ])
     }
     
-    func configureCell(title: String, centerText: String, backgroundImage: UIImage) -> Self
+    func configureCell(title: String?, centerText: String?, backgroundColor: UIColor?) -> Self
     {
         titleLabel.text = title
         centerTextLabel.text = centerText
-        imageView.image = backgroundImage
+        self.backgroundColor = backgroundColor
         return self
     }
     
@@ -66,7 +66,6 @@ class SelectionCardCVCell: UICollectionViewCell
     override func layoutSubviews()
     {
         super.layoutSubviews()
-        backgroundColor = UIColor(named: GlobalConstants.techinessColor)
         layer.cornerRadius = 10
         layer.shadowPath = UIBezierPath(rect: contentView.frame).cgPath
         layer.borderColor = UIColor.green.cgColor

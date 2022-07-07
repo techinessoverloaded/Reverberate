@@ -17,7 +17,7 @@
 		DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA4556A6287402C400804CB8 /* Reverberate.xcdatamodeld */; };
 		DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA4556A9287402C600804CB8 /* Assets.xcassets */; };
 		DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA4556AB287402C600804CB8 /* LaunchScreen.storyboard */; };
-		DA4556C828740A7000804CB8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* ViewController.swift */; };
+		DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* MainViewController.swift */; };
 		DA4556D028740B2000804CB8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556CF28740B2000804CB8 /* Extensions.swift */; };
 		DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556D128740CD200804CB8 /* GlobalConstants.swift */; };
 		DA668C6E28769AC8001EE1C9 /* InputValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C6D28769AC8001EE1C9 /* InputValidator.swift */; };
@@ -28,6 +28,10 @@
 		DA668C8A2876DD68001EE1C9 /* LanguageGenreSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C892876DD68001EE1C9 /* LanguageGenreSelectionViewController.swift */; };
 		DA668C8D2876DE5E001EE1C9 /* LanguageGenreSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C8C2876DE5E001EE1C9 /* LanguageGenreSelectionDelegate.swift */; };
 		DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C8E2876E038001EE1C9 /* SelectionCardCVCell.swift */; };
+		DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C9028770745001EE1C9 /* HomeViewController.swift */; };
+		DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C922877076B001EE1C9 /* SearchViewController.swift */; };
+		DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C9428770794001EE1C9 /* LibraryViewController.swift */; };
+		DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C96287707C4001EE1C9 /* ProfileViewController.swift */; };
 		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
 		DAF64917287553020061C29B /* FormTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF64916287553020061C29B /* FormTableViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -45,7 +49,7 @@
 		DA4556A9287402C600804CB8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DA4556AC287402C600804CB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DA4556AE287402C600804CB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DA4556C728740A7000804CB8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DA4556C728740A7000804CB8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DA4556CF28740B2000804CB8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		DA4556D128740CD200804CB8 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		DA668C6D28769AC8001EE1C9 /* InputValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputValidator.swift; sourceTree = "<group>"; };
@@ -56,6 +60,10 @@
 		DA668C892876DD68001EE1C9 /* LanguageGenreSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageGenreSelectionViewController.swift; sourceTree = "<group>"; };
 		DA668C8C2876DE5E001EE1C9 /* LanguageGenreSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageGenreSelectionDelegate.swift; sourceTree = "<group>"; };
 		DA668C8E2876E038001EE1C9 /* SelectionCardCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionCardCVCell.swift; sourceTree = "<group>"; };
+		DA668C9028770745001EE1C9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		DA668C922877076B001EE1C9 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		DA668C9428770794001EE1C9 /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
+		DA668C96287707C4001EE1C9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
 		DAF64916287553020061C29B /* FormTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,11 +131,15 @@
 		DA4556C628740A5C00804CB8 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				DA4556C728740A7000804CB8 /* ViewController.swift */,
+				DA4556C728740A7000804CB8 /* MainViewController.swift */,
 				DA28A348287414E900E36382 /* SignupViewController.swift */,
 				DA28A34A287414F700E36382 /* LoginViewController.swift */,
 				DA28A34C2874157C00E36382 /* OnboardingViewController.swift */,
 				DA668C892876DD68001EE1C9 /* LanguageGenreSelectionViewController.swift */,
+				DA668C9028770745001EE1C9 /* HomeViewController.swift */,
+				DA668C922877076B001EE1C9 /* SearchViewController.swift */,
+				DA668C9428770794001EE1C9 /* LibraryViewController.swift */,
+				DA668C96287707C4001EE1C9 /* ProfileViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -257,17 +269,21 @@
 			files = (
 				DA4556D028740B2000804CB8 /* Extensions.swift in Sources */,
 				DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */,
+				DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */,
 				DA668C7C2876DB1B001EE1C9 /* MusicGenre.swift in Sources */,
+				DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */,
 				DA668C8D2876DE5E001EE1C9 /* LanguageGenreSelectionDelegate.swift in Sources */,
+				DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */,
 				DAF64917287553020061C29B /* FormTableViewCell.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
 				DA28A349287414E900E36382 /* SignupViewController.swift in Sources */,
 				DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */,
 				DA668C872876DD12001EE1C9 /* User+CoreDataClass.swift in Sources */,
+				DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */,
 				DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */,
 				DA668C882876DD12001EE1C9 /* User+CoreDataProperties.swift in Sources */,
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,
-				DA4556C828740A7000804CB8 /* ViewController.swift in Sources */,
+				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
 				DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */,
 				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,

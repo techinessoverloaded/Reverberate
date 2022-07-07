@@ -92,6 +92,7 @@ class LanguageGenreSelectionViewController: UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         languageCollectionView.dataSource = self
         languageCollectionView.delegate = self
         languageCollectionView.allowsMultipleSelection = true
@@ -195,13 +196,14 @@ extension LanguageGenreSelectionViewController: UICollectionViewDataSource
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectionCardCVCell.identifier, for: indexPath) as! SelectionCardCVCell
             let language = Language(rawValue: availableLanguages[indexPath.section][indexPath.item])
-            return cell.configureCell(title: language!.description, centerText: language!.description, backgroundImage: UIImage(named: "reverberate_logo_transparent")!)
+            let (title, subtitle) = language!.titleAndLetter
+            return cell.configureCell(title: title, centerText: subtitle, backgroundColor: language?.preferredBackgroundColor)
         }
         else
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectionCardCVCell.identifier, for: indexPath) as! SelectionCardCVCell
             let genre = MusicGenre(rawValue: availableLanguages[indexPath.section][indexPath.item])
-            return cell.configureCell(title: genre!.description, centerText: genre!.description, backgroundImage: UIImage(named: "reverberate_logo_transparent")!)
+            return cell.configureCell(title: nil, centerText: genre!.description, backgroundColor: genre?.preferredBackgroundColor)
         }
     }
 }

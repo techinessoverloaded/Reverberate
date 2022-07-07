@@ -333,7 +333,7 @@ extension LoginViewController
                 print("Logging in...")
                 UserDefaults.standard.set(user!.id, forKey: GlobalConstants.currentUserId)
                 loginButton.configuration?.showsActivityIndicator = false
-                (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(ViewController())
+                (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(MainViewController())
             }
             else
             {
