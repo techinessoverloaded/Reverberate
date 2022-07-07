@@ -23,13 +23,16 @@ class LoginViewController: UITableViewController
         epField.enableAutoLayout()
         epField.backgroundColor = .systemFill.withAlphaComponent(0.15)
         epField.layer.cornerRadius = 10
-        epField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        epField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         //Changeable Property
         epField.placeholder = "Email Address"
         epField.clearButtonMode = .whileEditing
         //Changeable Property
         epField.keyboardType = .emailAddress
+        epField.returnKeyType = .next
         epField.autocapitalizationType = .none
+        //Changeable Property
+        epField.textContentType = .emailAddress
         epField.borderStyle = .roundedRect
         return epField
     }()
@@ -39,11 +42,13 @@ class LoginViewController: UITableViewController
         passField.enableAutoLayout()
         passField.backgroundColor = .systemFill.withAlphaComponent(0.15)
         passField.layer.cornerRadius = 10
-        passField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        passField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         passField.placeholder = "Password"
         passField.isSecureTextEntry = true
         passField.clearButtonMode = .whileEditing
         passField.keyboardType = .default
+        passField.returnKeyType = .done
+        passField.textContentType = .oneTimeCode
         passField.autocapitalizationType = .none
         passField.borderStyle = .roundedRect
         return passField
@@ -58,7 +63,7 @@ class LoginViewController: UITableViewController
         var lButtonConfig = UIButton.Configuration.filled()
         lButtonConfig.cornerStyle = .dynamic
         lButtonConfig.title = "Login"
-        lButtonConfig.baseBackgroundColor = .init(named: "techinessColor")
+        lButtonConfig.baseBackgroundColor = .init(named: GlobalConstants.techinessColor)
         let lButton = UIButton(configuration: lButtonConfig)
         lButton.layer.cornerRadius = 10
         return lButton
@@ -67,10 +72,32 @@ class LoginViewController: UITableViewController
     private let noAccountButton: UIButton = {
         var nButtonConfig = UIButton.Configuration.borderless()
         nButtonConfig.title = "Nah, I don't have an Account!"
-        nButtonConfig.baseForegroundColor = .init(named: "techinessColor")
+        nButtonConfig.baseForegroundColor = .init(named: GlobalConstants.techinessColor)
         let aButton = UIButton(configuration: nButtonConfig)
         return aButton
     }()
+    
+    private let emailCumPhoneErrorLabel: UILabel = {
+        let epErrorLabel = UILabel(useAutoLayout: true)
+        epErrorLabel.textColor = .systemRed
+        epErrorLabel.font = .preferredFont(forTextStyle: .footnote)
+        epErrorLabel.text = "Required"
+        epErrorLabel.textAlignment = .right
+        return epErrorLabel
+    }()
+    
+    private let passwordErrorLabel: UILabel = {
+        let passErrorLabel = UILabel(useAutoLayout: true)
+        passErrorLabel.textColor = .systemRed
+        passErrorLabel.font = .preferredFont(forTextStyle: .footnote)
+        passErrorLabel.text = "Required"
+        passErrorLabel.textAlignment = .right
+        return passErrorLabel
+    }()
+    
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
     
     override func loadView()
     {
@@ -86,7 +113,7 @@ class LoginViewController: UITableViewController
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         emailOrPhoneSelector.selectedSegmentIndex = 0
-        emailOrPhoneSelector.selectedSegmentTintColor = UIColor(named: "techinessColor")
+        emailOrPhoneSelector.selectedSegmentTintColor = UIColor(named: GlobalConstants.techinessColor)
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         emailOrPhoneSelector.setTitleTextAttributes(titleTextAttributes, for: .selected)
         emailCumPhoneField.delegate = self
@@ -95,6 +122,8 @@ class LoginViewController: UITableViewController
         emailOrPhoneSelector.addTarget(self, action: #selector(onEmailPhoneSelectionChange(_:)), for: .valueChanged)
         loginButton.addTarget(self, action: #selector(onLoginButtonTap(_:)), for: .touchUpInside)
         noAccountButton.addTarget(self, action: #selector(onNoAccountButtonTap(_:)), for: .touchUpInside)
+        emailCumPhoneErrorLabel.isHidden = true
+        passwordErrorLabel.isHidden = true
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -113,7 +142,65 @@ extension LoginViewController: UITextFieldDelegate
     
     func textFieldDidEndEditing(_ textField: UITextField)
     {
-        textField.layer.borderWidth = 0
+        if textField === emailCumPhoneField
+        {
+            if emailOrPhoneSelector.selectedSegmentIndex == 0
+            {
+                let email = textField.text ?? ""
+                if email.isEmpty
+                {
+                    textField.isInvalid = true
+                    emailCumPhoneErrorLabel.text = "Required"
+                    emailCumPhoneErrorLabel.isHidden = false
+                }
+                else if !InputValidator.validateEmail(email)
+                {
+                    textField.isInvalid = true
+                    emailCumPhoneErrorLabel.text = "Entered Email Address is Invalid !"
+                    emailCumPhoneErrorLabel.isHidden = false
+                }
+                else
+                {
+                    textField.isInvalid = false
+                    emailCumPhoneErrorLabel.isHidden = true
+                }
+            }
+            else
+            {
+                let phone = textField.text ?? ""
+                if phone.isEmpty
+                {
+                    textField.isInvalid = true
+                    emailCumPhoneErrorLabel.text = "Required"
+                    emailCumPhoneErrorLabel.isHidden = false
+                }
+                else if !InputValidator.validatePhone(phone)
+                {
+                    textField.isInvalid = true
+                    emailCumPhoneErrorLabel.text = "Entered Phone Number is Invalid !"
+                    emailCumPhoneErrorLabel.isHidden = false
+                }
+                else
+                {
+                    textField.isInvalid = false
+                    emailCumPhoneErrorLabel.isHidden = true
+                }
+            }
+        }
+        else
+        {
+            let password = textField.text ?? ""
+            if password.isEmpty
+            {
+                textField.isInvalid = true
+                passwordErrorLabel.isHidden = false
+            }
+            else
+            {
+                textField.isInvalid = false
+                passwordErrorLabel.isHidden = true
+            }
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
@@ -141,6 +228,19 @@ extension LoginViewController
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         1
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
+    {
+        switch section
+        {
+        case 2:
+            return emailCumPhoneErrorLabel
+        case 3:
+            return passwordErrorLabel
+        default:
+            return nil
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
@@ -185,6 +285,7 @@ extension LoginViewController
             {
                 emailCumPhoneField.placeholder = "Email Address"
                 emailCumPhoneField.keyboardType = .emailAddress
+                emailCumPhoneField.textContentType = .emailAddress
                 if UIDevice.current.userInterfaceIdiom == .phone
                 {
                     emailCumPhoneField.removeReturnButtonFromKeyboard()
@@ -197,9 +298,10 @@ extension LoginViewController
             {
                 emailCumPhoneField.placeholder = "Phone Number"
                 emailCumPhoneField.keyboardType = .phonePad
+                emailCumPhoneField.textContentType = .telephoneNumber
                 if UIDevice.current.userInterfaceIdiom == .phone
                 {
-                    emailCumPhoneField.addReturnButtonToKeyboard(target: self, action: #selector(onCustomReturnButtonTap(_:)))
+                    emailCumPhoneField.addReturnButtonToKeyboard(target: self, action: #selector(onCustomReturnButtonTap(_:)), title: "next")
                 }
             }
         }
@@ -208,7 +310,44 @@ extension LoginViewController
     
     @objc func onLoginButtonTap(_ sender: UIButton)
     {
-        print("Logging in...")
+        textFieldDidEndEditing(emailCumPhoneField)
+        textFieldDidEndEditing(passwordField)
+        if !emailCumPhoneField.isInvalid && !passwordField.isInvalid
+        {
+            var user: User?
+            if emailOrPhoneSelector.selectedSegmentIndex == 0
+            {
+                let email = emailCumPhoneField.text!
+                let password = passwordField.text!
+                user = validateUser(email: email, password: password)
+            }
+            else
+            {
+                let phone = emailCumPhoneField.text!
+                let password = passwordField.text!
+                user = validateUser(phone: phone, password: password)
+            }
+            if user != nil
+            {
+                loginButton.configuration?.showsActivityIndicator = true
+                print("Logging in...")
+                UserDefaults.standard.set(user!.id, forKey: GlobalConstants.currentUserId)
+                loginButton.configuration?.showsActivityIndicator = false
+                (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(ViewController())
+            }
+            else
+            {
+                let alert = UIAlertController(title: "Invalid Credentials", message: "No User Accounts were found for the entered Credentials ! Check your credentials or try creating a new account maybe !", preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "Proceed to Signup", style: .default) { _ in
+                        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped))
+                })
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped), animationOption: 1)
+                })
+                alert.modalPresentationStyle = .popover
+                self.present(alert, animated: true)
+            }
+        }
     }
     
     @objc func onNoAccountButtonTap(_ sender: UIButton)
@@ -224,5 +363,55 @@ extension LoginViewController
             passwordField.becomeFirstResponder()
         }
         print("Custom Return Button Tapped")
+    }
+}
+
+// Core Data Functions
+extension LoginViewController
+{
+    func validateUser(email: String, password: String) -> User?
+    {
+        var allUsers: [User]!
+        do
+        {
+            allUsers = try context.fetch(User.fetchRequest())
+            print(allUsers ?? "No users")
+        }
+        catch
+        {
+            print("Error in retrieving saved Users !")
+            return nil
+        }
+        let filteredUsers = allUsers.filter {
+            $0.email == email && $0.password == password
+        }
+        if filteredUsers.isEmpty
+        {
+            return nil
+        }
+        return filteredUsers[0]
+    }
+    
+    func validateUser(phone: String, password: String) -> User?
+    {
+        var allUsers: [User]!
+        do
+        {
+            allUsers = try context.fetch(User.fetchRequest())
+            print(allUsers ?? "No users")
+        }
+        catch
+        {
+            print("Error in retrieving saved Users !")
+            return nil
+        }
+        let filteredUsers = allUsers.filter {
+            $0.phone == phone && $0.password == password
+        }
+        if filteredUsers.isEmpty
+        {
+            return nil
+        }
+        return filteredUsers[0]
     }
 }

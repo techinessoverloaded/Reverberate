@@ -42,9 +42,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         }
         else
         {
-            if userDefaults.bool(forKey: GlobalConstants.isUserLoggedIn)
+            if let _ = userDefaults.string(forKey: GlobalConstants.currentUserId)
             {
-                window?.rootViewController = ViewController()
+                window?.rootViewController = LanguageGenreSelectionViewController()
+                //window?.rootViewController = ViewController()
             }
             else
             {
@@ -66,7 +67,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         }
     }
     
-    func changeRootViewController(_ newVC: UIViewController)
+    func changeRootViewController(_ newVC: UIViewController, animationOption: Int = 0)
     {
         guard let unwrappedWindow = window else
         {
@@ -74,11 +75,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             return
         }
         unwrappedWindow.rootViewController = newVC
-        UIView.transition(with: unwrappedWindow,
-                          duration: 0.5,
-                          options: [.transitionFlipFromRight],
-                          animations: nil,
-                          completion: nil)
+        if animationOption == 0
+        {
+            UIView.transition(with: unwrappedWindow,
+                              duration: 0.5,
+                              options:[.transitionFlipFromRight],
+                              animations: nil,
+                              completion: nil)
+        }
+        else
+        {
+            UIView.transition(with: unwrappedWindow,
+                              duration: 0.01,
+                              options:[.transitionCrossDissolve],
+                              animations: nil,
+                              completion: nil)
+        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

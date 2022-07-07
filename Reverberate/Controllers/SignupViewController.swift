@@ -23,12 +23,14 @@ class SignupViewController: UITableViewController
         nField.enableAutoLayout()
         nField.backgroundColor = .systemFill.withAlphaComponent(0.15)
         nField.layer.cornerRadius = 10
-        nField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        nField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         nField.placeholder = "Name"
         nField.clearButtonMode = .whileEditing
         nField.keyboardType = .namePhonePad
+        nField.returnKeyType = .next
         nField.autocapitalizationType = .words
         nField.autocorrectionType = .no
+        nField.textContentType = .name
         nField.borderStyle = .roundedRect
         return nField
     }()
@@ -38,11 +40,13 @@ class SignupViewController: UITableViewController
         pField.enableAutoLayout()
         pField.backgroundColor = .systemFill.withAlphaComponent(0.15)
         pField.layer.cornerRadius = 10
-        pField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        pField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         pField.placeholder = "Phone Number"
         pField.clearButtonMode = .whileEditing
         pField.keyboardType = .phonePad
+        pField.returnKeyType = .next
         pField.autocapitalizationType = .none
+        pField.textContentType = .telephoneNumber
         pField.borderStyle = .roundedRect
         return pField
     }()
@@ -52,11 +56,13 @@ class SignupViewController: UITableViewController
         eField.enableAutoLayout()
         eField.backgroundColor = .systemFill.withAlphaComponent(0.15)
         eField.layer.cornerRadius = 10
-        eField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        eField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         eField.placeholder = "Email Address"
         eField.clearButtonMode = .whileEditing
         eField.keyboardType = .emailAddress
+        eField.returnKeyType = .next
         eField.autocapitalizationType = .none
+        eField.textContentType = .emailAddress
         eField.borderStyle = .roundedRect
         return eField
     }()
@@ -66,11 +72,13 @@ class SignupViewController: UITableViewController
         passField.enableAutoLayout()
         passField.backgroundColor = .systemFill.withAlphaComponent(0.15)
         passField.layer.cornerRadius = 10
-        passField.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        passField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         passField.placeholder = "Password"
         passField.isSecureTextEntry = true
         passField.clearButtonMode = .whileEditing
         passField.keyboardType = .default
+        passField.textContentType = .oneTimeCode
+        passField.returnKeyType = .next
         passField.autocapitalizationType = .none
         passField.borderStyle = .roundedRect
         return passField
@@ -81,11 +89,13 @@ class SignupViewController: UITableViewController
         pass2Field.enableAutoLayout()
         pass2Field.backgroundColor = .systemFill.withAlphaComponent(0.15)
         pass2Field.layer.cornerRadius = 10
-        pass2Field.layer.borderColor = UIColor(named: "techinessColor")!.withAlphaComponent(0.7).cgColor
+        pass2Field.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         pass2Field.placeholder = "Confirm Password"
         pass2Field.isSecureTextEntry = true
         pass2Field.clearButtonMode = .whileEditing
         pass2Field.keyboardType = .default
+        pass2Field.textContentType = .oneTimeCode
+        pass2Field.returnKeyType = .done
         pass2Field.autocapitalizationType = .none
         pass2Field.borderStyle = .roundedRect
         return pass2Field
@@ -95,7 +105,7 @@ class SignupViewController: UITableViewController
         var sButtonConfig = UIButton.Configuration.filled()
         sButtonConfig.cornerStyle = .dynamic
         sButtonConfig.title = "Sign up"
-        sButtonConfig.baseBackgroundColor = .init(named: "techinessColor")
+        sButtonConfig.baseBackgroundColor = .init(named: GlobalConstants.techinessColor)
         let sButton = UIButton(configuration: sButtonConfig)
         sButton.layer.cornerRadius = 10
         return sButton
@@ -104,7 +114,7 @@ class SignupViewController: UITableViewController
     private let accountExistsButton: UIButton = {
         var aButtonConfig = UIButton.Configuration.borderless()
         aButtonConfig.title = "I have an Account already!"
-        aButtonConfig.baseForegroundColor = .init(named: "techinessColor")
+        aButtonConfig.baseForegroundColor = .init(named: GlobalConstants.techinessColor)
         let aButton = UIButton(configuration: aButtonConfig)
         return aButton
     }()
@@ -142,6 +152,8 @@ class SignupViewController: UITableViewController
         passErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         passErrorLabel.text = "Required"
         passErrorLabel.textAlignment = .right
+        passErrorLabel.lineBreakMode = .byWordWrapping
+        passErrorLabel.numberOfLines = 2
         return passErrorLabel
     }()
     
@@ -153,6 +165,10 @@ class SignupViewController: UITableViewController
         cpErrorLabel.textAlignment = .right
         return cpErrorLabel
     }()
+    
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
     
     override func loadView()
     {
@@ -177,7 +193,7 @@ class SignupViewController: UITableViewController
         accountExistsButton.addTarget(self, action: #selector(onExistingAccountButtonTap(_:)), for: .touchUpInside)
         if UIDevice.current.userInterfaceIdiom == .phone
         {
-            phoneField.addReturnButtonToKeyboard(target: self, action: #selector(onCustomReturnButtonTap(_:)))
+            phoneField.addReturnButtonToKeyboard(target: self, action: #selector(onCustomReturnButtonTap(_:)), title: "next")
         }
         nameErrorLabel.isHidden = true
         phoneErrorLabel.isHidden = true
@@ -207,7 +223,111 @@ extension SignupViewController: UITextFieldDelegate
     
     func textFieldDidEndEditing(_ textField: UITextField)
     {
-        textField.layer.borderWidth = 0
+        if textField === nameField
+        {
+            let name = textField.text ?? ""
+            if name.isEmpty
+            {
+                textField.isInvalid = true
+                nameErrorLabel.text = "Required"
+                nameErrorLabel.isHidden = false
+            }
+            else if !InputValidator.validateName(name)
+            {
+                textField.isInvalid = true
+                nameErrorLabel.text = "Entered Name is Invalid !"
+                nameErrorLabel.isHidden = false
+            }
+            else
+            {
+                textField.isInvalid = false
+                nameErrorLabel.isHidden = true
+            }
+        }
+        else if textField === phoneField
+        {
+            let phone = textField.text ?? ""
+            if phone.isEmpty
+            {
+                textField.isInvalid = true
+                phoneErrorLabel.text = "Required"
+                phoneErrorLabel.isHidden = false
+            }
+            else if !InputValidator.validatePhone(phone)
+            {
+                textField.isInvalid = true
+                phoneErrorLabel.text = "Entered Phone Number is Invalid !"
+                phoneErrorLabel.isHidden = false
+            }
+            else
+            {
+                textField.isInvalid = false
+                phoneErrorLabel.isHidden = true
+            }
+        }
+        else if textField === emailField
+        {
+            let email = textField.text ?? ""
+            if email.isEmpty
+            {
+                textField.isInvalid = true
+                emailErrorLabel.text = "Required"
+                emailErrorLabel.isHidden = false
+            }
+            else if !InputValidator.validateEmail(email)
+            {
+                textField.isInvalid = true
+                emailErrorLabel.text = "Entered Email Address is Invalid !"
+                emailErrorLabel.isHidden = false
+            }
+            else
+            {
+                textField.isInvalid = false
+                emailErrorLabel.isHidden = true
+            }
+        }
+        else if textField === passwordField
+        {
+            let password = textField.text ?? ""
+            if password.isEmpty
+            {
+                textField.isInvalid = true
+                passwordErrorLabel.text = "Required"
+                passwordErrorLabel.isHidden = false
+            }
+            else if !InputValidator.validatePassword(password)
+            {
+                textField.isInvalid = true
+                passwordErrorLabel.text = "Password must contain at least one uppercase, number, and symbol characters and should have a minimum length of 8"
+                passwordErrorLabel.isHidden = false
+            }
+            else
+            {
+                textField.isInvalid = false
+                passwordErrorLabel.isHidden = true
+            }
+        }
+        else
+        {
+            let cnfmPassword = textField.text ?? ""
+            if cnfmPassword.isEmpty
+            {
+                textField.isInvalid = true
+                confirmPasswordErrorLabel.text = "Required"
+                confirmPasswordErrorLabel.isHidden = false
+            }
+            else if !InputValidator.validateConfirmPassword(passwordField.text!, cnfmPassword)
+            {
+                textField.isInvalid = true
+                confirmPasswordErrorLabel.text = "Passwords in both fields don't match !"
+                confirmPasswordErrorLabel.isHidden = false
+            }
+            else
+            {
+                textField.isInvalid = false
+                confirmPasswordErrorLabel.isHidden = true
+            }
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
@@ -247,6 +367,14 @@ extension SignupViewController
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         1
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == 4
+        {
+            return 34
+        }
+        return tableView.estimatedSectionFooterHeight
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
@@ -303,11 +431,72 @@ extension SignupViewController
     }
 }
 
+// Core Data Functions
+extension SignupViewController
+{
+    func doesUserAlreadyExist(phone: String, email: String) -> Bool
+    {
+        var allUsers: [User]!
+        do
+        {
+            allUsers = try context.fetch(User.fetchRequest())
+            print(allUsers)
+        }
+        catch
+        {
+            print("An error occurred while fetching users \(error)!")
+            return false
+        }
+        return !allUsers.allSatisfy {
+            $0.email != email && $0.phone != phone
+        }
+    }
+    
+}
+
+// Obj-C Runtime Functions
 extension SignupViewController
 {
     @objc func onSignupButtonTap(_ sender: UIButton)
     {
-        print("Signing up...")
+        textFieldDidEndEditing(nameField)
+        textFieldDidEndEditing(phoneField)
+        textFieldDidEndEditing(emailField)
+        textFieldDidEndEditing(passwordField)
+        textFieldDidEndEditing(confirmPasswordField)
+        if !nameField.isInvalid && !phoneField.isInvalid && !emailField.isInvalid && !passwordField.isInvalid && !confirmPasswordField.isInvalid
+        {
+            signupButton.configuration?.showsActivityIndicator = true
+            if doesUserAlreadyExist(phone: phoneField.text!.trimmingCharacters(in: .whitespaces), email: emailField.text!.trimmingCharacters(in: .whitespaces))
+            {
+                signupButton.configuration?.showsActivityIndicator = false
+                let alert = UIAlertController(title: "Existing Account", message: "A User Account with the given Phone Number and/or Email Address exists already ! You can proceed to Login !", preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "Proceed to Login", style: .default) { _ in
+                    (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped))
+                })
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel){ _ in
+                    (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped), animationOption: 1)
+                })
+                alert.modalPresentationStyle = .popover
+                self.present(alert, animated: true)
+            }
+            else
+            {
+                let newUser: User? = User(context: self.context)
+                // Generate Universally Unique ID using UUID
+                newUser!.id = UUID().uuidString
+                newUser!.name = nameField.text!.trimmingCharacters(in: .whitespaces)
+                newUser!.phone = phoneField.text!.trimmingCharacters(in: .whitespaces)
+                newUser!.email = emailField.text!.trimmingCharacters(in: .whitespaces)
+                newUser!.password = passwordField.text!.trimmingCharacters(in: .whitespaces)
+                print("Signing up...")
+                self.contextSaveAction()
+                UserDefaults.standard.set(newUser!.id, forKey: GlobalConstants.currentUserId)
+                UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
+                signupButton.configuration?.showsActivityIndicator = false
+                print("User Signed up successfully with id: \(String(describing: newUser!.id))")
+            }
+        }
     }
     
     @objc func onExistingAccountButtonTap(_ sender: UIButton)
