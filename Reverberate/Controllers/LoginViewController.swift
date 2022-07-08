@@ -95,6 +95,13 @@ class LoginViewController: UITableViewController
         return passErrorLabel
     }()
     
+    private let contentBlurView: CustomVisualEffectView =
+    {
+        let cbView = CustomVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial), intensity: 0.5)
+        cbView.enableAutoLayout()
+        return cbView
+    }()
+    
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
@@ -130,6 +137,15 @@ class LoginViewController: UITableViewController
     {
         super.viewDidAppear(animated)
         print("Login View Controller")
+    }
+    
+    func activateContentBlurViewConstraints()
+    {
+        self.view.insertSubview(contentBlurView, aboveSubview: tableView)
+        NSLayoutConstraint.activate([
+            contentBlurView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            contentBlurView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
     }
 }
 
@@ -344,9 +360,7 @@ extension LoginViewController
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
                         (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped), animationOption: 1)
                 })
-                let uiVisualEffectView = CustomVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial), intensity: 0.5)
-                uiVisualEffectView.frame = self.view.safeAreaLayoutGuide.layoutFrame
-                self.view.insertSubview(uiVisualEffectView, aboveSubview: self.tableView!)
+                activateContentBlurViewConstraints()
                 alert.modalPresentationStyle = .popover
                 self.present(alert, animated: true)
             }

@@ -169,7 +169,6 @@ class SignupViewController: UITableViewController
     private let contentBlurView: CustomVisualEffectView =
     {
         let cbView = CustomVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial), intensity: 0.5)
-        cbView.isHidden = true
         cbView.enableAutoLayout()
         return cbView
     }()
@@ -187,11 +186,6 @@ class SignupViewController: UITableViewController
         tableView.allowsSelection = false
         tableView.keyboardDismissMode = .onDrag
         tableView.cellLayoutMarginsFollowReadableWidth = true
-        view.insertSubview(contentBlurView, aboveSubview: tableView)
-        NSLayoutConstraint.activate([
-            contentBlurView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            contentBlurView.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
     }
     
     override func viewDidLoad()
@@ -226,6 +220,15 @@ class SignupViewController: UITableViewController
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
+    }
+    
+    func activateContentBlurViewConstraints()
+    {
+        self.view.insertSubview(contentBlurView, aboveSubview: tableView)
+        NSLayoutConstraint.activate([
+            contentBlurView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            contentBlurView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
     }
 }
 
@@ -492,7 +495,7 @@ extension SignupViewController
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel){ _ in
                     (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped), animationOption: 1)
                 })
-                contentBlurView.isHidden = false
+                activateContentBlurViewConstraints()
                 alert.modalPresentationStyle = .popover
                 self.present(alert, animated: true)
             }
@@ -515,7 +518,7 @@ extension SignupViewController
                 languageSelectionController.modalPresentationStyle = .pageSheet
                 languageSelectionController.isModalInPresentation = true
                 languageSelectionController.delegate = self
-                contentBlurView.isHidden = false
+                activateContentBlurViewConstraints()
                 self.present(languageSelectionController, animated: true)
             }
         }
@@ -543,12 +546,12 @@ extension SignupViewController: LanguageSelectionDelegate
     {
         newUser!.preferredLanguages = selectedLanguages
         contextSaveAction()
-        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        genreSelectionController.modalPresentationStyle = .pageSheet
-        genreSelectionController.modalTransitionStyle = .coverVertical
-        genreSelectionController.isModalInPresentation = true
-        genreSelectionController.delegate = self
-        self.present(genreSelectionController, animated: true)
+//        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+//        genreSelectionController.modalPresentationStyle = .pageSheet
+//        genreSelectionController.modalTransitionStyle = .coverVertical
+//        genreSelectionController.isModalInPresentation = true
+//        genreSelectionController.delegate = self
+//        self.present(genreSelectionController, animated: true)
     }
 }
 

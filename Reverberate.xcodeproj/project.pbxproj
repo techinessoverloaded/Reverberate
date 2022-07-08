@@ -25,11 +25,11 @@
 		DA58B5572877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */; };
 		DA58B5592877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5582877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift */; };
 		DA58B55B2878104900BDAE4B /* CustomVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B55A2878104900BDAE4B /* CustomVisualEffectView.swift */; };
+		DA58B55E28784E3600BDAE4B /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B55C28784E3600BDAE4B /* User+CoreDataClass.swift */; };
+		DA58B55F28784E3600BDAE4B /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B55D28784E3600BDAE4B /* User+CoreDataProperties.swift */; };
 		DA668C6E28769AC8001EE1C9 /* InputValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C6D28769AC8001EE1C9 /* InputValidator.swift */; };
 		DA668C7A2876D936001EE1C9 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C792876D936001EE1C9 /* Language.swift */; };
 		DA668C7C2876DB1B001EE1C9 /* MusicGenre.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C7B2876DB1B001EE1C9 /* MusicGenre.swift */; };
-		DA668C872876DD12001EE1C9 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C852876DD12001EE1C9 /* User+CoreDataClass.swift */; };
-		DA668C882876DD12001EE1C9 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C862876DD12001EE1C9 /* User+CoreDataProperties.swift */; };
 		DA668C8D2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C8C2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift */; };
 		DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C8E2876E038001EE1C9 /* SelectionCardCVCell.swift */; };
 		DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C9028770745001EE1C9 /* HomeViewController.swift */; };
@@ -61,11 +61,11 @@
 		DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionCollectionViewController.swift; sourceTree = "<group>"; };
 		DA58B5582877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleButtonBarCollectionViewCell.swift; sourceTree = "<group>"; };
 		DA58B55A2878104900BDAE4B /* CustomVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVisualEffectView.swift; sourceTree = "<group>"; };
+		DA58B55C28784E3600BDAE4B /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DA58B55D28784E3600BDAE4B /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA668C6D28769AC8001EE1C9 /* InputValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputValidator.swift; sourceTree = "<group>"; };
 		DA668C792876D936001EE1C9 /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
 		DA668C7B2876DB1B001EE1C9 /* MusicGenre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicGenre.swift; sourceTree = "<group>"; };
-		DA668C852876DD12001EE1C9 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "User+CoreDataClass.swift"; path = "Reverberate/Models/User+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DA668C862876DD12001EE1C9 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "User+CoreDataProperties.swift"; path = "Reverberate/Models/User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA668C8C2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionDelegate.swift; sourceTree = "<group>"; };
 		DA668C8E2876E038001EE1C9 /* SelectionCardCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionCardCVCell.swift; sourceTree = "<group>"; };
 		DA668C9028770745001EE1C9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -99,8 +99,6 @@
 		DA455691287402C400804CB8 = {
 			isa = PBXGroup;
 			children = (
-				DA668C852876DD12001EE1C9 /* User+CoreDataClass.swift */,
-				DA668C862876DD12001EE1C9 /* User+CoreDataProperties.swift */,
 				DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */,
 				DA45569C287402C400804CB8 /* Reverberate */,
 				DA45569B287402C400804CB8 /* Products */,
@@ -167,6 +165,8 @@
 		DA4556CA28740AE300804CB8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				DA58B55C28784E3600BDAE4B /* User+CoreDataClass.swift */,
+				DA58B55D28784E3600BDAE4B /* User+CoreDataProperties.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -289,17 +289,17 @@
 				DA668C7C2876DB1B001EE1C9 /* MusicGenre.swift in Sources */,
 				DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */,
 				DA668C8D2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift in Sources */,
+				DA58B55F28784E3600BDAE4B /* User+CoreDataProperties.swift in Sources */,
 				DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */,
 				DAF64917287553020061C29B /* FormTableViewCell.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
 				DA28A349287414E900E36382 /* SignupViewController.swift in Sources */,
 				DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */,
-				DA668C872876DD12001EE1C9 /* User+CoreDataClass.swift in Sources */,
 				DA58B5592877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift in Sources */,
 				DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */,
 				DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */,
-				DA668C882876DD12001EE1C9 /* User+CoreDataProperties.swift in Sources */,
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,
+				DA58B55E28784E3600BDAE4B /* User+CoreDataClass.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
 				DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */,
 				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,

@@ -115,9 +115,6 @@ extension GenreSelectionCollectionViewController
 {
     @objc func onDoneButtonTap(_ sender: UIButton)
     {
-        self.dismiss(animated: true)
-        { [unowned self] in
-            self.delegate?.onGenreSelection(selectedGenres: self.selectedGenres)
-        }
+        self.delegate?.onGenreSelection(selectedGenres: self.selectedGenres)
     }
 }

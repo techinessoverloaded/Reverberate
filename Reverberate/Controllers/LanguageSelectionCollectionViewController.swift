@@ -107,6 +107,10 @@ extension LanguageSelectionCollectionViewController: UICollectionViewDelegateFlo
         }
         else
         {
+            //let noOfItemsPerSection: CGFloat = 2
+            //let interItemSpacing: CGFloat = 5
+//            let cellWidth = (collectionView.frame.width -
+//                             (noOfItemsPerSection - 1) * interItemSpacing) / noOfItemsPerSection
             let cellWidth = (view.frame.width / 2.5) - 1
             return .init(width: cellWidth, height: cellWidth / 1.2)
         }
@@ -122,9 +126,13 @@ extension LanguageSelectionCollectionViewController
 {
     @objc func onNextButtonTap(_ sender: UIButton)
     {
-        self.dismiss(animated: true)
-        { [unowned self] in
-            self.delegate?.onLanguageSelection(selectedLanguages: self.selectedLanguages)
+        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        genreSelectionController.modalPresentationStyle = .pageSheet
+        genreSelectionController.isModalInPresentation = true
+        self.present(genreSelectionController, animated: true) {
+            [unowned self] in
+            self.delegate?.onLanguageSelection(selectedLanguages: selectedLanguages)
+            genreSelectionController.delegate = self.delegate as! SignupViewController
         }
     }
 }
