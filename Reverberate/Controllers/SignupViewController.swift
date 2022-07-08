@@ -166,9 +166,19 @@ class SignupViewController: UITableViewController
         return cpErrorLabel
     }()
     
+    private let contentBlurView: CustomVisualEffectView =
+    {
+        let cbView = CustomVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial), intensity: 0.5)
+        cbView.isHidden = true
+        cbView.enableAutoLayout()
+        return cbView
+    }()
+    
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    
+    private var newUser: User?
     
     override func loadView()
     {
@@ -177,6 +187,11 @@ class SignupViewController: UITableViewController
         tableView.allowsSelection = false
         tableView.keyboardDismissMode = .onDrag
         tableView.cellLayoutMarginsFollowReadableWidth = true
+        view.insertSubview(contentBlurView, aboveSubview: tableView)
+        NSLayoutConstraint.activate([
+            contentBlurView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            contentBlurView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
     }
     
     override func viewDidLoad()
@@ -440,7 +455,7 @@ extension SignupViewController
         do
         {
             allUsers = try context.fetch(User.fetchRequest())
-            print(allUsers)
+            print(allUsers ?? "nil")
         }
         catch
         {
@@ -470,19 +485,20 @@ extension SignupViewController
             if doesUserAlreadyExist(phone: phoneField.text!.trimmingCharacters(in: .whitespaces), email: emailField.text!.trimmingCharacters(in: .whitespaces))
             {
                 signupButton.configuration?.showsActivityIndicator = false
-                let alert = UIAlertController(title: "Existing Account", message: "A User Account with the given Phone Number and/or Email Address exists already ! You can proceed to Login !", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "Existing Account", message: "A User Account with the given Phone Number and/or Email Address exists already ! You can proceed to Login !", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Proceed to Login", style: .default) { _ in
                     (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped))
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel){ _ in
                     (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped), animationOption: 1)
                 })
+                contentBlurView.isHidden = false
                 alert.modalPresentationStyle = .popover
                 self.present(alert, animated: true)
             }
             else
             {
-                let newUser: User? = User(context: self.context)
+                newUser = User(context: self.context)
                 // Generate Universally Unique ID using UUID
                 newUser!.id = UUID().uuidString
                 newUser!.name = nameField.text!.trimmingCharacters(in: .whitespaces)
@@ -495,6 +511,12 @@ extension SignupViewController
                 UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
                 signupButton.configuration?.showsActivityIndicator = false
                 print("User Signed up successfully with id: \(String(describing: newUser!.id))")
+                let languageSelectionController = LanguageSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+                languageSelectionController.modalPresentationStyle = .pageSheet
+                languageSelectionController.isModalInPresentation = true
+                languageSelectionController.delegate = self
+                contentBlurView.isHidden = false
+                self.present(languageSelectionController, animated: true)
             }
         }
     }
@@ -512,5 +534,31 @@ extension SignupViewController
             emailField.becomeFirstResponder()
         }
         print("Custom Return Button Tapped")
+    }
+}
+
+extension SignupViewController: LanguageSelectionDelegate
+{
+    func onLanguageSelection(selectedLanguages: [Int16])
+    {
+        newUser!.preferredLanguages = selectedLanguages
+        contextSaveAction()
+        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        genreSelectionController.modalPresentationStyle = .pageSheet
+        genreSelectionController.modalTransitionStyle = .coverVertical
+        genreSelectionController.isModalInPresentation = true
+        genreSelectionController.delegate = self
+        self.present(genreSelectionController, animated: true)
+    }
+}
+
+extension SignupViewController: GenreSelectionDelegate
+{
+    func onGenreSelection(selectedGenres: [Int16])
+    {
+        newUser!.preferredGenres = selectedGenres
+        contextSaveAction()
+        print(newUser!)
+        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(MainViewController())
     }
 }

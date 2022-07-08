@@ -13,17 +13,17 @@ class SelectionCardCVCell: UICollectionViewCell
     
     private let titleLabel: UILabel = {
         let tLabel = UILabel(useAutoLayout: true)
-        tLabel.font = .systemFont(ofSize: 17, weight: .bold)
+        tLabel.font = .systemFont(ofSize: 20, weight: .bold)
         tLabel.textAlignment = .left
-        tLabel.textColor = .label
+        tLabel.textColor = .white
         return tLabel
     }()
     
     private let centerTextLabel: UILabel = {
         let ctLabel = UILabel(useAutoLayout: true)
-        ctLabel.font = .systemFont(ofSize: 25, weight: .bold)
+        ctLabel.font = .systemFont(ofSize: 26, weight: .bold)
         ctLabel.textAlignment = .center
-        ctLabel.textColor = .label
+        ctLabel.textColor = .white
         return ctLabel
     }()
     
@@ -32,12 +32,20 @@ class SelectionCardCVCell: UICollectionViewCell
         return iView
     }()
     
+    private let overlayView: UIView = {
+        let oView = UIView(useAutoLayout: true)
+        oView.backgroundColor = .systemGreen
+        oView.alpha = 0
+        return oView
+    }()
+    
     override init(frame: CGRect)
     {
         super.init(frame: frame)
         contentView.addSubview(imageView)
         contentView.insertSubview(titleLabel, aboveSubview: imageView)
         contentView.insertSubview(centerTextLabel, aboveSubview: imageView)
+        selectedBackgroundView = overlayView
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
@@ -46,7 +54,7 @@ class SelectionCardCVCell: UICollectionViewCell
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             centerTextLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            centerTextLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            centerTextLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ])
     }
     
@@ -58,6 +66,20 @@ class SelectionCardCVCell: UICollectionViewCell
         return self
     }
     
+    func setSelectionOverlayView(isCellSelected: Bool)
+    {
+        if isCellSelected
+        {
+            overlayView.alpha = 0.5
+            layer.borderWidth = 4
+        }
+        else
+        {
+            overlayView.alpha = 0
+            layer.borderWidth = 0
+        }
+    }
+    
     required init(coder: NSCoder)
     {
         fatalError("Not initialized")
@@ -67,7 +89,9 @@ class SelectionCardCVCell: UICollectionViewCell
     {
         super.layoutSubviews()
         layer.cornerRadius = 10
-        layer.shadowPath = UIBezierPath(rect: contentView.frame).cgPath
-        layer.borderColor = UIColor.green.cgColor
+        overlayView.layer.cornerRadius = 10
+        layer.shadowPath = UIBezierPath(rect: contentView.bounds).cgPath
+        layer.shadowColor = UIColor.label.cgColor
+        layer.borderColor = UIColor.systemGreen.cgColor
     }
 }

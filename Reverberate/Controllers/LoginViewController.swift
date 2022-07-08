@@ -337,13 +337,16 @@ extension LoginViewController
             }
             else
             {
-                let alert = UIAlertController(title: "Invalid Credentials", message: "No User Accounts were found for the entered Credentials ! Check your credentials or try creating a new account maybe !", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "Invalid Credentials", message: "No User Accounts were found for the entered Credentials ! Check your credentials or try creating a new account maybe !", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Proceed to Signup", style: .default) { _ in
                         (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped))
                 })
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
                         (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped), animationOption: 1)
                 })
+                let uiVisualEffectView = CustomVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial), intensity: 0.5)
+                uiVisualEffectView.frame = self.view.safeAreaLayoutGuide.layoutFrame
+                self.view.insertSubview(uiVisualEffectView, aboveSubview: self.tableView!)
                 alert.modalPresentationStyle = .popover
                 self.present(alert, animated: true)
             }

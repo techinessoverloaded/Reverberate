@@ -84,3 +84,14 @@ extension NSRegularExpression
         return firstMatch(in: string.trimmingCharacters(in: .whitespaces), options: [], range: range) != nil
     }
 }
+
+extension UIViewController
+{
+    var isInPortraitMode: Bool
+    {
+        get
+        {
+            return UIDevice.current.orientation == .portrait || UIDevice.current.orientation == .portraitUpsideDown
+        }
+    }
+}

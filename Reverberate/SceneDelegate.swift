@@ -44,8 +44,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         {
             if let _ = userDefaults.string(forKey: GlobalConstants.currentUserId)
             {
-                window?.rootViewController = LanguageGenreSelectionViewController()
-                //window?.rootViewController = ViewController()
+                window?.rootViewController = MainViewController()
             }
             else
             {

@@ -16,4 +16,5 @@ struct GlobalConstants
     static let currentUserId = "cUrReNt_UsEr_Id"
     //Asset color names
     static let techinessColor = "techinessColor"
+    static let selectionGreenColor = "selectionGreenColor"
 }

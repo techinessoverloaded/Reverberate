@@ -56,7 +56,7 @@ class LanguageGenreSelectionViewController: UIViewController
     
     private var selectedGenres: [Int16] = []
     
-    weak var delegate: LanguageGenreSelectionDelegate?
+    weak var delegate: LanguageSelectionDelegate?
     
     override func loadView()
     {
@@ -227,6 +227,6 @@ extension LanguageGenreSelectionViewController
 {
     @objc func onDoneButtonTap(_ sender: UIButton)
     {
-        delegate?.onSelectionConfirmation(selectedLanguages: selectedLanguages, selectedGenres: selectedGenres)
+        
     }
 }
