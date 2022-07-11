@@ -27,34 +27,37 @@ class SelectionCardCVCell: UICollectionViewCell
         return ctLabel
     }()
     
-    private let imageView: UIImageView = {
-        let iView = UIImageView(useAutoLayout: true)
-        return iView
+    private let checkView: UIImageView = {
+        let cView = UIImageView(useAutoLayout: true)
+        let imageConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 26))
+        cView.image = UIImage(systemName: "checkmark.circle.fill", withConfiguration: imageConfig)?.withRenderingMode(.alwaysTemplate)
+        cView.tintColor = .systemGreen
+        //cView.backgroundColor = .white
+        cView.alpha = 0
+        return cView
     }()
     
-    private let overlayView: UIView = {
-        let oView = UIView(useAutoLayout: true)
-        oView.backgroundColor = .systemGreen
-        oView.alpha = 0
-        return oView
-    }()
+//    private let overlayView: UIView = {
+//        let oView = UIView(useAutoLayout: true)
+//        oView.backgroundColor = .systemGreen
+//        oView.alpha = 0
+//        return oView
+//    }()
     
     override init(frame: CGRect)
     {
         super.init(frame: frame)
-        contentView.addSubview(imageView)
-        contentView.insertSubview(titleLabel, aboveSubview: imageView)
-        contentView.insertSubview(centerTextLabel, aboveSubview: imageView)
-        selectedBackgroundView = overlayView
+        clipsToBounds = false
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(centerTextLabel)
+        contentView.insertSubview(checkView, aboveSubview: contentView)
         NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
-            imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             centerTextLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             centerTextLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            checkView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -18),
+            checkView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 18)
         ])
     }
     
@@ -66,17 +69,27 @@ class SelectionCardCVCell: UICollectionViewCell
         return self
     }
     
-    func setSelectionOverlayView(isCellSelected: Bool)
+    func setSelection(isCellSelected: Bool)
     {
         if isCellSelected
         {
-            overlayView.alpha = 0.5
-            layer.borderWidth = 4
+            UIView.transition(with: self, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                self.layer.borderWidth = 4
+            }, completion: nil)
+            
+            UIView.transition(with: checkView, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                self.checkView.alpha = 1
+            }, completion: nil)
         }
         else
         {
-            overlayView.alpha = 0
-            layer.borderWidth = 0
+            UIView.transition(with: self, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                self.layer.borderWidth = 0
+            }, completion: nil)
+            
+            UIView.transition(with: checkView, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                self.checkView.alpha = 0
+            }, completion: nil)
         }
     }
     
@@ -89,7 +102,7 @@ class SelectionCardCVCell: UICollectionViewCell
     {
         super.layoutSubviews()
         layer.cornerRadius = 10
-        overlayView.layer.cornerRadius = 10
+        checkView.layer.cornerRadius = checkView.bounds.width / 2
         layer.shadowPath = UIBezierPath(rect: contentView.bounds).cgPath
         layer.shadowColor = UIColor.label.cgColor
         layer.borderColor = UIColor.systemGreen.cgColor

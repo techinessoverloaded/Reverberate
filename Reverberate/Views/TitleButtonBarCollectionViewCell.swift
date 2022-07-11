@@ -22,7 +22,6 @@ class TitleButtonBarCollectionViewCell: UICollectionViewCell
         var lButtonConfig = UIButton.Configuration.borderless()
         lButtonConfig.baseForegroundColor = .init(named: GlobalConstants.techinessColor)
         let lButton = UIButton(configuration: lButtonConfig)
-        lButton.isEnabled = false
         lButton.enableAutoLayout()
         return lButton
     }()
@@ -31,7 +30,6 @@ class TitleButtonBarCollectionViewCell: UICollectionViewCell
         var rButtonConfig = UIButton.Configuration.borderless()
         rButtonConfig.baseForegroundColor = .init(named: GlobalConstants.techinessColor)
         let rButton = UIButton(configuration: rButtonConfig)
-        rButton.isEnabled = false
         rButton.enableAutoLayout()
         return rButton
     }()

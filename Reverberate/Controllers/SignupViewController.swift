@@ -179,25 +179,26 @@ class SignupViewController: UITableViewController
     
     private var newUser: User?
     
+    private var languageSelectionController: LanguageSelectionCollectionViewController!
+    
     override func loadView()
     {
         super.loadView()
-        tableView.register(FormTableViewCell.self, forCellReuseIdentifier: FormTableViewCell.identifier)
-        tableView.allowsSelection = false
-        tableView.keyboardDismissMode = .onDrag
-        tableView.cellLayoutMarginsFollowReadableWidth = true
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        tableView.allowsSelection = false
+        tableView.keyboardDismissMode = .onDrag
+        tableView.cellLayoutMarginsFollowReadableWidth = true
         nameField.delegate = self
         phoneField.delegate = self
         emailField.delegate = self
         passwordField.delegate = self
         confirmPasswordField.delegate = self
-        nameField.becomeFirstResponder()
         signupButton.addTarget(self, action: #selector(onSignupButtonTap(_:)), for: .touchUpInside)
         accountExistsButton.addTarget(self, action: #selector(onExistingAccountButtonTap(_:)), for: .touchUpInside)
         if UIDevice.current.userInterfaceIdiom == .phone
@@ -214,6 +215,7 @@ class SignupViewController: UITableViewController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
+        nameField.becomeFirstResponder()
         print("Signup View Controller")
     }
     
@@ -416,7 +418,7 @@ extension SignupViewController
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: FormTableViewCell.identifier, for: indexPath) as! FormTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
         switch indexPath.section
         {
         case 0:
@@ -514,7 +516,7 @@ extension SignupViewController
                 UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
                 signupButton.configuration?.showsActivityIndicator = false
                 print("User Signed up successfully with id: \(String(describing: newUser!.id))")
-                let languageSelectionController = LanguageSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+               languageSelectionController = LanguageSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
                 languageSelectionController.modalPresentationStyle = .pageSheet
                 languageSelectionController.isModalInPresentation = true
                 languageSelectionController.delegate = self
@@ -546,12 +548,12 @@ extension SignupViewController: LanguageSelectionDelegate
     {
         newUser!.preferredLanguages = selectedLanguages
         contextSaveAction()
-//        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-//        genreSelectionController.modalPresentationStyle = .pageSheet
-//        genreSelectionController.modalTransitionStyle = .coverVertical
-//        genreSelectionController.isModalInPresentation = true
-//        genreSelectionController.delegate = self
-//        self.present(genreSelectionController, animated: true)
+        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        genreSelectionController.modalPresentationStyle = .pageSheet
+        genreSelectionController.modalTransitionStyle = .coverVertical
+        genreSelectionController.isModalInPresentation = true
+        genreSelectionController.delegate = self
+        languageSelectionController.present(genreSelectionController, animated: true)
     }
 }
 

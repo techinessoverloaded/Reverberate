@@ -31,6 +31,37 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         collectionView.collectionViewLayout.invalidateLayout()
     }
     
+    func setSelectedLanguages(languages: [Int16])
+    {
+        for language in languages
+        {
+            if !selectedLanguages.contains(language)
+            {
+                for indexPath in collectionView.indexPathsForVisibleItems
+                {
+                    let section = indexPath.section
+                    let item = indexPath.item
+                    if section == 0
+                    {
+                        continue
+                    }
+                    if availableLanguages[section][item] == language
+                    {
+                        // Select
+                        self.collectionView(self.collectionView, didSelectItemAt: indexPath)
+                        self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                    }
+                }
+            }
+        }
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
+        delegate?.languageCellsDidLoad()
+    }
+    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int
@@ -57,7 +88,8 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         if section == 0
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TitleButtonBarCollectionViewCell.identifier, for: indexPath) as! TitleButtonBarCollectionViewCell
-            nextButtonRef = cell.configureCell(title: "Select your Favourite Languages", leftButtonTitle: nil, buttonTarget: self, leftButtonAction: nil, rightButtonTitle: "next", rightButtonAction: #selector(onNextButtonTap(_:))).rightButtonRef
+            nextButtonRef = cell.configureCell(title: "Select your Favourite Languages", leftButtonTitle: nil, buttonTarget: self, leftButtonAction: nil, rightButtonTitle: "Next", rightButtonAction: #selector(onNextButtonTap(_:))).rightButtonRef
+            nextButtonRef?.isEnabled = false
             return cell
         }
         else
@@ -79,7 +111,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelectionOverlayView(isCellSelected: true)
+        cell.setSelection(isCellSelected: true)
         selectedLanguages.append(availableLanguages[indexPath.section][indexPath.item])
         print(selectedLanguages)
         nextButtonRef?.isEnabled = !selectedLanguages.isEmpty
@@ -88,7 +120,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath)
     {
         let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelectionOverlayView(isCellSelected: false)
+        cell.setSelection(isCellSelected: false)
         selectedLanguages.remove(at: selectedLanguages.firstIndex(of: availableLanguages[indexPath.section][indexPath.item])!)
         print(selectedLanguages)
         nextButtonRef?.isEnabled = !selectedLanguages.isEmpty
@@ -126,13 +158,6 @@ extension LanguageSelectionCollectionViewController
 {
     @objc func onNextButtonTap(_ sender: UIButton)
     {
-        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        genreSelectionController.modalPresentationStyle = .pageSheet
-        genreSelectionController.isModalInPresentation = true
-        self.present(genreSelectionController, animated: true) {
-            [unowned self] in
-            self.delegate?.onLanguageSelection(selectedLanguages: selectedLanguages)
-            genreSelectionController.delegate = self.delegate as! SignupViewController
-        }
+        self.delegate?.onLanguageSelection(selectedLanguages: selectedLanguages)
     }
 }

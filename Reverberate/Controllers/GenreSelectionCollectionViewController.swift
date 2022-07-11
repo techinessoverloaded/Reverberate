@@ -50,7 +50,8 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         if section == 0
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TitleButtonBarCollectionViewCell.identifier, for: indexPath) as! TitleButtonBarCollectionViewCell
-            doneButtonRef = cell.configureCell(title: "Select your Favourite Music Genres", leftButtonTitle: nil, buttonTarget: self, leftButtonAction: nil, rightButtonTitle: "done", rightButtonAction: #selector(onDoneButtonTap(_:))).rightButtonRef
+            doneButtonRef = cell.configureCell(title: "Select your Favourite Music Genres", leftButtonTitle: "Previous", buttonTarget: self, leftButtonAction: #selector(onPreviousButtonTap(_:)), rightButtonTitle: "Done", rightButtonAction: #selector(onDoneButtonTap(_:))).rightButtonRef
+            doneButtonRef?.isEnabled = false
             return cell
         }
         else
@@ -71,7 +72,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelectionOverlayView(isCellSelected: true)
+        cell.setSelection(isCellSelected: true)
         selectedGenres.append(availableGenres[indexPath.section][indexPath.item])
         print(selectedGenres)
         doneButtonRef?.isEnabled = !selectedGenres.isEmpty
@@ -80,7 +81,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath)
     {
         let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelectionOverlayView(isCellSelected: false)
+        cell.setSelection(isCellSelected: false)
         selectedGenres.remove(at: selectedGenres.firstIndex(of: availableGenres[indexPath.section][indexPath.item])!)
         print(selectedGenres)
         doneButtonRef?.isEnabled = !selectedGenres.isEmpty
@@ -113,6 +114,11 @@ extension GenreSelectionCollectionViewController: UICollectionViewDelegateFlowLa
 
 extension GenreSelectionCollectionViewController
 {
+    @objc func onPreviousButtonTap(_ sender: UIButton)
+    {
+        self.dismiss(animated: true)
+    }
+    
     @objc func onDoneButtonTap(_ sender: UIButton)
     {
         self.delegate?.onGenreSelection(selectedGenres: self.selectedGenres)

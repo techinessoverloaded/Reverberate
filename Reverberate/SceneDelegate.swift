@@ -32,7 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         
         if userDefaults.value(forKey: GlobalConstants.themePreference) == nil
         {
-            userDefaults.set(2, forKey: GlobalConstants.themePreference)
+            userDefaults.set(0, forKey: GlobalConstants.themePreference)
         }
         
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
@@ -55,14 +55,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         switch userDefaults.integer(forKey: GlobalConstants.themePreference)
         {
         case 0:
-            //window?.overrideUserInterfaceStyle = .light
-            print("Light Theme")
-        case 1:
-            //window?.overrideUserInterfaceStyle = .dark
-            print("Dark Theme")
-        default:
             //window?.overrideUserInterfaceStyle = .unspecified
             print("System Theme")
+        case 1:
+            //window?.overrideUserInterfaceStyle = .light
+            print("Light Theme")
+        default:
+            //window?.overrideUserInterfaceStyle = .dark
+            print("Dark Theme")
         }
     }
     

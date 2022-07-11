@@ -15,7 +15,7 @@ class MainViewController: UITabBarController
     
     private lazy var libraryVC = LibraryViewController()
     
-    private lazy var profileVC = ProfileViewController()
+    private lazy var profileVC = ProfileViewController(style: .insetGrouped)
     
     override func loadView()
     {
@@ -23,8 +23,8 @@ class MainViewController: UITabBarController
         view.backgroundColor = .systemBackground
         homeVC.title = "Home"
         searchVC.title = "Search"
-        libraryVC.title = "Library"
-        profileVC.title = "Profile"
+        libraryVC.title = "Your Library"
+        profileVC.title = "Your Profile"
         setViewControllers([
             UINavigationController(rootViewController: homeVC),
             UINavigationController(rootViewController: searchVC),

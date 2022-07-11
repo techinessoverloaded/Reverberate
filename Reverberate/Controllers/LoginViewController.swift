@@ -109,23 +109,22 @@ class LoginViewController: UITableViewController
     override func loadView()
     {
         super.loadView()
-        tableView.register(FormTableViewCell.self, forCellReuseIdentifier: FormTableViewCell.identifier)
-        tableView.allowsSelection = false
-        tableView.keyboardDismissMode = .onDrag
-        tableView.cellLayoutMarginsFollowReadableWidth = true
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        tableView.allowsSelection = false
+        tableView.keyboardDismissMode = .onDrag
+        tableView.cellLayoutMarginsFollowReadableWidth = true
         emailOrPhoneSelector.selectedSegmentIndex = 0
         emailOrPhoneSelector.selectedSegmentTintColor = UIColor(named: GlobalConstants.techinessColor)
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         emailOrPhoneSelector.setTitleTextAttributes(titleTextAttributes, for: .selected)
         emailCumPhoneField.delegate = self
         passwordField.delegate = self
-        emailCumPhoneField.becomeFirstResponder()
         emailOrPhoneSelector.addTarget(self, action: #selector(onEmailPhoneSelectionChange(_:)), for: .valueChanged)
         loginButton.addTarget(self, action: #selector(onLoginButtonTap(_:)), for: .touchUpInside)
         noAccountButton.addTarget(self, action: #selector(onNoAccountButtonTap(_:)), for: .touchUpInside)
@@ -136,6 +135,7 @@ class LoginViewController: UITableViewController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
+        emailCumPhoneField.becomeFirstResponder()
         print("Login View Controller")
     }
     
@@ -261,7 +261,7 @@ extension LoginViewController
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: FormTableViewCell.identifier, for: indexPath) as! FormTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
         switch indexPath.section
         {
         case 0:

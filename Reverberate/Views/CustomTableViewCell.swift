@@ -1,0 +1,54 @@
+//
+//  SignupTableViewCell.swift
+//  Reverberate
+//
+//  Created by arun-13930 on 06/07/22.
+//
+
+import UIKit
+
+class CustomTableViewCell: UITableViewCell
+{
+    static let identifier = "CustomTableViewCell"
+    
+    private var subView : UIView!
+    
+    private var useAutoLayout: Bool = false
+    
+    private var useClearBackground: Bool = true
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
+    {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    
+    required init(coder: NSCoder)
+    {
+        fatalError("Not initialized")
+    }
+    
+    func addSubViewToContentView(_ subView: UIView, useAutoLayout: Bool = false, useClearBackground: Bool = true)
+    {
+        contentView.addSubview(subView)
+        self.subView = subView
+        self.useAutoLayout = useAutoLayout
+        self.useClearBackground = useClearBackground
+    }
+    
+    override func layoutSubviews()
+    {
+        super.layoutSubviews()
+        if !useAutoLayout
+        {
+            subView.frame = contentView.bounds
+        }
+        else
+        {
+            NSLayoutConstraint.activate([
+                subView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+                subView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            ])
+        }
+        backgroundColor = useClearBackground ? .clear : .systemGroupedBackground
+    }
+}
