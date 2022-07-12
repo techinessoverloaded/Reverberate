@@ -69,6 +69,33 @@ class SelectionCardCVCell: UICollectionViewCell
         return self
     }
     
+    override var isSelected: Bool
+    {
+        didSet
+        {
+            if self.isSelected
+            {
+                UIView.transition(with: self, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                    self.layer.borderWidth = 4
+                }, completion: nil)
+                
+                UIView.transition(with: checkView, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                    self.checkView.alpha = 1
+                }, completion: nil)
+            }
+            else
+            {
+                UIView.transition(with: self, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                    self.layer.borderWidth = 0
+                }, completion: nil)
+                
+                UIView.transition(with: checkView, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
+                    self.checkView.alpha = 0
+                }, completion: nil)
+            }
+        }
+    }
+    
     func setSelection(isCellSelected: Bool)
     {
         if isCellSelected

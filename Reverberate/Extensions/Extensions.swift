@@ -19,6 +19,23 @@ extension UIView
     {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
+    
+    func addTopCornerRadius(radius: CGFloat = 10)
+    {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 10
+        self.layer.maskedCorners = [.layerMinXMinYCorner,.layerMaxXMinYCorner]
+        self.layer.cornerCurve = .circular
+    }
+    
+    func addBottomCornerRadius(radius: CGFloat = 10)
+    {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 10
+        self.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
+        self.layer.cornerCurve = .circular
+    }
+    
 }
 
 extension UITextField

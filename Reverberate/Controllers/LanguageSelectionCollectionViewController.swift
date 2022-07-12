@@ -17,6 +17,8 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     private weak var nextButtonRef: UIButton?
     
+    private var areCellsPreselected: Bool = false
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -33,10 +35,16 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     func setSelectedLanguages(languages: [Int16])
     {
+        guard !languages.isEmpty else
+        {
+            return
+        }
+        areCellsPreselected = true
         for language in languages
         {
             if !selectedLanguages.contains(language)
             {
+                //selectedLanguages.append(language)
                 for indexPath in collectionView.indexPathsForVisibleItems
                 {
                     let section = indexPath.section
@@ -48,18 +56,23 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
                     if availableLanguages[section][item] == language
                     {
                         // Select
-                        self.collectionView(self.collectionView, didSelectItemAt: indexPath)
-                        self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                        collectionView(collectionView, didSelectItemAt: indexPath)
                     }
                 }
             }
         }
     }
     
+    override func viewWillLayoutSubviews()
+    {
+        super.viewWillLayoutSubviews()
+        delegate?.languageCellsWillLoad()
+    }
+    
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-        delegate?.languageCellsDidLoad()
     }
     
     // MARK: UICollectionViewDataSource
@@ -68,8 +81,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     {
         return availableLanguages.count
     }
-
-
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         if section == 0
@@ -110,8 +122,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelection(isCellSelected: true)
+        print("Selection \(indexPath)")
         selectedLanguages.append(availableLanguages[indexPath.section][indexPath.item])
         print(selectedLanguages)
         nextButtonRef?.isEnabled = !selectedLanguages.isEmpty
@@ -119,8 +130,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath)
     {
-        let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelection(isCellSelected: false)
+        print("Deselection \(indexPath)")
         selectedLanguages.remove(at: selectedLanguages.firstIndex(of: availableLanguages[indexPath.section][indexPath.item])!)
         print(selectedLanguages)
         nextButtonRef?.isEnabled = !selectedLanguages.isEmpty

@@ -20,7 +20,7 @@ class MainViewController: UITabBarController
     override func loadView()
     {
         super.loadView()
-        view.backgroundColor = .systemBackground
+        tabBar.isTranslucent = true
         homeVC.title = "Home"
         searchVC.title = "Search"
         libraryVC.title = "Your Library"

@@ -7,8 +7,8 @@
 
 protocol LanguageSelectionDelegate: AnyObject
 {
-    /// This method is called after the language cells have been laid out. It can be used for selecting or configuring cells from View Controllers Programmatically. It is an Optional Method.
-    func languageCellsDidLoad()
+    /// This method is called before the language cells are laid out. It can be used for selecting or configuring cells from View Controllers Programmatically. It is an Optional Method.
+    func languageCellsWillLoad()
     
     /// This method is called after the user has selected the Languages.
     func onLanguageSelection(selectedLanguages: [Int16])
@@ -17,5 +17,5 @@ protocol LanguageSelectionDelegate: AnyObject
 extension LanguageSelectionDelegate
 {
     // Default implementation
-    func languageCellsDidLoad() {}
+    func languageCellsWillLoad() {}
 }

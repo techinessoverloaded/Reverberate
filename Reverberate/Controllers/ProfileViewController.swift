@@ -35,7 +35,7 @@ class ProfileViewController: UITableViewController
     private let emailLabel: UILabel = {
         let eLabel = UILabel(useAutoLayout: true)
         eLabel.textAlignment = .left
-        eLabel.font = .preferredFont(forTextStyle: .body)
+        eLabel.font = .preferredFont(forTextStyle: .subheadline)
         eLabel.textColor = .label
         return eLabel
     }()
@@ -43,28 +43,22 @@ class ProfileViewController: UITableViewController
     private let phoneLabel: UILabel = {
         let pLabel = UILabel(useAutoLayout: true)
         pLabel.textAlignment = .left
-        pLabel.font = .preferredFont(forTextStyle: .body)
+        pLabel.font = .preferredFont(forTextStyle: .subheadline)
         pLabel.textColor = .label
         return pLabel
     }()
     
-    private let editProfileButton: UIButton = {
-        var eButtonConfig = UIButton.Configuration.borderedTinted()
-        eButtonConfig.title = "Edit Profile"
-        eButtonConfig.buttonSize = .small
-        let eButton = UIButton(configuration: eButtonConfig)
-        eButton.enableAutoLayout()
-        return eButton
-    }()
+    private var editProfileButton: UIBarButtonItem!
     
     private let logoutButton: UIButton = {
-        var lButtonConfig = UIButton.Configuration.borderedTinted()
-        lButtonConfig.title = "Logout"
-        lButtonConfig.baseBackgroundColor = .systemRed
-        lButtonConfig.baseForegroundColor = .systemRed
-        lButtonConfig.buttonSize = .large
-        let lButton = UIButton(configuration: lButtonConfig)
-        lButton.enableAutoLayout()
+        let lButton = UIButton(type: .roundedRect)
+        lButton.setTitle("Logout", for: .normal)
+        lButton.backgroundColor = UIColor(named: GlobalConstants.techinessColor)
+        lButton.tintColor = .white
+        lButton.titleLabel?.font = .preferredFont(forTextStyle: .body)
+        lButton.layer.cornerRadius = 10
+        lButton.layer.cornerCurve = .circular
+        //lButton.enableAutoLayout()
         return lButton
     }()
     
@@ -72,6 +66,9 @@ class ProfileViewController: UITableViewController
         let tChooser = UISegmentedControl(items: ["System", "Light", "Dark"])
         tChooser.enableAutoLayout()
         tChooser.selectedSegmentIndex = UserDefaults.standard.integer(forKey: GlobalConstants.themePreference)
+        tChooser.selectedSegmentTintColor = .init(named: GlobalConstants.techinessColor)
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        tChooser.setTitleTextAttributes(titleTextAttributes, for: .selected)
         return tChooser
     }()
     
@@ -89,14 +86,14 @@ class ProfileViewController: UITableViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        view.backgroundColor = .systemGroupedBackground
+        self.navigationController?.navigationBar.prefersLargeTitles = false
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.register(LabeledInfoTableViewCell.self, forCellReuseIdentifier: LabeledInfoTableViewCell.identifier)
         tableView.allowsSelection = true
-        tableView.cellLayoutMarginsFollowReadableWidth = true
         setUserDetails()
-        editProfileButton.addTarget(self, action: #selector(onEditButtonTap(_:)), for: .touchUpInside)
+        editProfileButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(onEditButtonTap(_:)))
+        navigationItem.rightBarButtonItem = editProfileButton
         logoutButton.addTarget(self, action: #selector(onLogoutButtonTap(_:)), for: .touchUpInside)
         themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
     }
@@ -142,7 +139,7 @@ extension ProfileViewController
     {
         if section == 0
         {
-            return 3
+            return 2
         }
         else if section == 1
         {
@@ -186,19 +183,6 @@ extension ProfileViewController
         }
     }
     
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
-    {
-        let section = indexPath.section
-        if section == 0 || section == 2 || section == 3
-        {
-            cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
-        }
-        else
-        {
-            cell.separatorInset = .zero
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let section = indexPath.section
@@ -207,6 +191,8 @@ extension ProfileViewController
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
             cell.selectionStyle = .none
+            //Hide Separator
+            cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
             switch item
             {
             case 0:
@@ -214,9 +200,6 @@ extension ProfileViewController
                 return cell
             case 1:
                 cell.addSubViewToContentView(nameLabel, useAutoLayout: true)
-                return cell
-            case 2:
-                cell.addSubViewToContentView(editProfileButton, useAutoLayout: true)
                 return cell
             default:
                 return cell
@@ -226,13 +209,15 @@ extension ProfileViewController
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
             cell.selectionStyle = .none
+            //Show separator
+            cell.separatorInset = .zero
             switch item
             {
             case 0:
-                cell.configureCell(title: "Email Address", rightView: emailLabel)
+                cell.configureCell(title: "Email Address", infoView: emailLabel)
                 return cell
             case 1:
-                cell.configureCell(title: "Phone Number", rightView: phoneLabel)
+                cell.configureCell(title: "Phone Number", infoView: phoneLabel)
                 return cell
             default:
                 return cell
@@ -241,19 +226,23 @@ extension ProfileViewController
         else if section == 2
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
+            //Show separator
+            cell.separatorInset = .zero
             if item == 0
             {
-                cell.configureCell(title: "Preferred Languages", rightView: nil, shouldShowArrow: true, useBrightLabelColor: true)
+                cell.configureCell(title: "Languages", infoView: nil, useBrightLabelColor: true)
                 cell.selectionStyle = .default
+                cell.accessoryType = .disclosureIndicator
             }
             else if item == 1
             {
-                cell.configureCell(title: "Preferred Music Genres", rightView: nil, shouldShowArrow: true, useBrightLabelColor: true)
+                cell.configureCell(title: "Music Genres", infoView: nil, useBrightLabelColor: true)
                 cell.selectionStyle = .default
+                cell.accessoryType = .disclosureIndicator
             }
             else
             {
-                cell.configureCell(title: "Preferred Theme", rightView: themeChooser, useBrightLabelColor: true)
+                cell.configureCell(title: "Theme", infoView: themeChooser, arrangeInfoViewToRightEnd: true, useBrightLabelColor: true)
                 cell.selectionStyle = .none
             }
             return cell
@@ -261,8 +250,10 @@ extension ProfileViewController
         else
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-            cell.addSubViewToContentView(logoutButton, useAutoLayout: true)
+            cell.addSubViewToContentView(logoutButton, useAutoLayout: false)
             cell.selectionStyle = .none
+            // Hide Separator
+            cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
             return cell
         }
     }
@@ -296,9 +287,12 @@ extension ProfileViewController
     @objc func onEditButtonTap(_ sender: UIButton)
     {
         print("Edit Profile Tapped")
-        let editProfileController = EditProfileViewController()
+        let editProfileController = EditProfileViewController(style: .insetGrouped)
         editProfileController.userRef = user
-        navigationController?.pushViewController( editProfileController, animated: true)
+        let modalNavController = UINavigationController(rootViewController: editProfileController)
+        modalNavController.modalPresentationStyle = .formSheet
+        modalNavController.isModalInPresentation = true
+        self.present(modalNavController, animated: true)
     }
     
     @objc func onLogoutButtonTap(_ sender: UIButton)
@@ -309,28 +303,13 @@ extension ProfileViewController
             UserDefaults.standard.set(nil, forKey: GlobalConstants.currentUserId)
             (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped))
         })
-        alert.addAction(UIAlertAction(title: "No", style: .destructive))
+        alert.addAction(UIAlertAction(title: "No", style: .cancel))
         self.present(alert, animated: true)
     }
     
     @objc func onThemeSelection(_ sender: UISegmentedControl)
     {
-        let selectedIndex = sender.selectedSegmentIndex
-        if selectedIndex == 0
-        {
-            (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.overrideUserInterfaceStyle = .unspecified
-            UserDefaults.standard.set(0, forKey: GlobalConstants.themePreference)
-        }
-        else if selectedIndex == 1
-        {
-            (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.overrideUserInterfaceStyle = .light
-            UserDefaults.standard.set(1, forKey: GlobalConstants.themePreference)
-        }
-        else
-        {
-            (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.overrideUserInterfaceStyle = .dark
-            UserDefaults.standard.set(2, forKey: GlobalConstants.themePreference)
-        }
+        (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeTheme(themeOption: sender.selectedSegmentIndex)
     }
     
     @objc func onContextSaveAction(notification: NSNotification)
@@ -347,7 +326,7 @@ extension ProfileViewController: LanguageSelectionDelegate
         
     }
     
-    func languageCellsDidLoad()
+    func languageCellsWillLoad()
     {
         languageSelectionVC.setSelectedLanguages(languages: user.preferredLanguages!)
     }

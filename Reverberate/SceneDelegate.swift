@@ -51,19 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
                 window?.rootViewController = LoginViewController(style: .insetGrouped)
             }
         }
-        
-        switch userDefaults.integer(forKey: GlobalConstants.themePreference)
-        {
-        case 0:
-            //window?.overrideUserInterfaceStyle = .unspecified
-            print("System Theme")
-        case 1:
-            //window?.overrideUserInterfaceStyle = .light
-            print("Light Theme")
-        default:
-            //window?.overrideUserInterfaceStyle = .dark
-            print("Dark Theme")
-        }
+        restoreTheme()
     }
     
     func changeRootViewController(_ newVC: UIViewController, animationOption: Int = 0)
@@ -92,6 +80,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         }
     }
     
+    private func restoreTheme()
+    {
+        switch UserDefaults.standard.integer(forKey: GlobalConstants.themePreference)
+        {
+        case 0:
+            window?.overrideUserInterfaceStyle = .unspecified
+            print("System Theme")
+        case 1:
+            window?.overrideUserInterfaceStyle = .light
+            print("Light Theme")
+        default:
+            window?.overrideUserInterfaceStyle = .dark
+            print("Dark Theme")
+        }
+    }
+    
+    func changeTheme(themeOption: Int)
+    {
+        switch themeOption
+        {
+        case 0:
+            window?.overrideUserInterfaceStyle = .unspecified
+            UserDefaults.standard.set(0, forKey: GlobalConstants.themePreference)
+        case 1:
+            window?.overrideUserInterfaceStyle = .light
+            UserDefaults.standard.set(1, forKey: GlobalConstants.themePreference)
+        default:
+            window?.overrideUserInterfaceStyle = .dark
+            UserDefaults.standard.set(2, forKey: GlobalConstants.themePreference)
+        }
+    }
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -114,7 +134,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         // Use this method to undo the changes made on entering the background.
     }
 
-    func sceneDidEnterBackground(_ scene: UIScene) {
+    func sceneDidEnterBackground(_ scene: UIScene)
+    {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.

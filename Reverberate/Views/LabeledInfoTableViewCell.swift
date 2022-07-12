@@ -17,47 +17,37 @@ class LabeledInfoTableViewCell: UITableViewCell
         return tLabel
     }()
     
-    private let infoView: UIView = {
-        let iView = UIView(useAutoLayout: true)
-        return iView
-    }()
-    
-    private let rightArrowView: UIImageView = {
-        let raView = UIImageView(useAutoLayout: true)
-        raView.tintColor = .opaqueSeparator
-        return raView
-    }()
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
     {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+//        backgroundColor = .systemFill
         contentView.addSubview(titleLabel)
-        contentView.addSubview(infoView)
-        contentView.addSubview(rightArrowView)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            infoView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 20),
-            infoView.trailingAnchor.constraint(equalTo: rightArrowView.leadingAnchor, constant: -10),
-            infoView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            rightArrowView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            rightArrowView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
     
-    func configureCell(title: String, rightView: UIView?, shouldShowArrow: Bool = false, useBrightLabelColor: Bool = false)
+    func configureCell(title: String, infoView: UIView?, arrangeInfoViewToRightEnd: Bool = false, spreadInfoViewFromLeftEnd: Bool = false, widthMultiplier: CGFloat = 0.6, useBrightLabelColor: Bool = false)
     {
         titleLabel.text = title
         titleLabel.textColor = useBrightLabelColor ? .label : .systemGray
-        rightArrowView.image = UIImage(systemName: "chevron.right")
-        rightArrowView.isHidden = !shouldShowArrow
-        guard let rightView = rightView else {
+        
+        guard let infoView = infoView else {
             return
         }
-        infoView.addSubview(rightView)
-        NSLayoutConstraint.activate([
-            rightView.centerYAnchor.constraint(equalTo: infoView.centerYAnchor)
-        ])
+        var variableConstraints: [NSLayoutConstraint]!
+        
+        variableConstraints = arrangeInfoViewToRightEnd ?
+        [infoView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5)]
+        : [infoView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 20)]
+        if spreadInfoViewFromLeftEnd
+        {
+            variableConstraints.append(infoView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: widthMultiplier))
+        }
+        variableConstraints.append(infoView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor))
+        contentView.addSubview(infoView)
+        NSLayoutConstraint.activate(variableConstraints)
     }
     
     required init?(coder: NSCoder)
