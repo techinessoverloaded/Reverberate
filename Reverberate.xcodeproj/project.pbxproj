@@ -26,7 +26,6 @@
 		DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5522877ED0A00BDAE4B /* GenreSelectionDelegate.swift */; };
 		DA58B5552877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5542877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift */; };
 		DA58B5572877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */; };
-		DA58B5592877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5582877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift */; };
 		DA58B55B2878104900BDAE4B /* CustomVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B55A2878104900BDAE4B /* CustomVisualEffectView.swift */; };
 		DA58B55E28784E3600BDAE4B /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B55C28784E3600BDAE4B /* User+CoreDataClass.swift */; };
 		DA58B55F28784E3600BDAE4B /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B55D28784E3600BDAE4B /* User+CoreDataProperties.swift */; };
@@ -65,7 +64,6 @@
 		DA58B5522877ED0A00BDAE4B /* GenreSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionDelegate.swift; sourceTree = "<group>"; };
 		DA58B5542877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionCollectionViewController.swift; sourceTree = "<group>"; };
 		DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionCollectionViewController.swift; sourceTree = "<group>"; };
-		DA58B5582877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleButtonBarCollectionViewCell.swift; sourceTree = "<group>"; };
 		DA58B55A2878104900BDAE4B /* CustomVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVisualEffectView.swift; sourceTree = "<group>"; };
 		DA58B55C28784E3600BDAE4B /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DA58B55D28784E3600BDAE4B /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 			children = (
 				DAF64916287553020061C29B /* CustomTableViewCell.swift */,
 				DA668C8E2876E038001EE1C9 /* SelectionCardCVCell.swift */,
-				DA58B5582877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift */,
 				DA58B55A2878104900BDAE4B /* CustomVisualEffectView.swift */,
 				DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */,
 			);
@@ -305,7 +302,6 @@
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
 				DA28A349287414E900E36382 /* SignupViewController.swift in Sources */,
 				DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */,
-				DA58B5592877F2CB00BDAE4B /* TitleButtonBarCollectionViewCell.swift in Sources */,
 				DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */,
 				DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */,
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,

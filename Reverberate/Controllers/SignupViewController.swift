@@ -517,11 +517,13 @@ extension SignupViewController
                 signupButton.configuration?.showsActivityIndicator = false
                 print("User Signed up successfully with id: \(String(describing: newUser!.id))")
                languageSelectionController = LanguageSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-                languageSelectionController.modalPresentationStyle = .pageSheet
-                languageSelectionController.isModalInPresentation = true
                 languageSelectionController.delegate = self
+                languageSelectionController.rightBarButtonCustomTitle = "Next"
                 activateContentBlurViewConstraints()
-                self.present(languageSelectionController, animated: true)
+                let navController = UINavigationController(rootViewController: languageSelectionController)
+                navController.modalPresentationStyle = .pageSheet
+                navController.isModalInPresentation = true
+                self.present(navController, animated: true)
             }
         }
     }
@@ -549,11 +551,13 @@ extension SignupViewController: LanguageSelectionDelegate
         newUser!.preferredLanguages = selectedLanguages
         contextSaveAction()
         let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        genreSelectionController.modalPresentationStyle = .pageSheet
-        genreSelectionController.modalTransitionStyle = .coverVertical
-        genreSelectionController.isModalInPresentation = true
         genreSelectionController.delegate = self
-        languageSelectionController.present(genreSelectionController, animated: true)
+        genreSelectionController.leftBarButtonCustomTitle = "Previous"
+        genreSelectionController.rightBarButtonType = .done
+        let navController = UINavigationController(rootViewController: genreSelectionController)
+        navController.modalPresentationStyle = .pageSheet
+        navController.isModalInPresentation = true
+        languageSelectionController.present(navController, animated: true)
     }
 }
 

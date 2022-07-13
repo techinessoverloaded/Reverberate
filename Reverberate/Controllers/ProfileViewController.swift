@@ -74,9 +74,13 @@ class ProfileViewController: UITableViewController
     
     private var languageSelectionVC: LanguageSelectionCollectionViewController!
     
+    private var genreSelectionVC: GenreSelectionCollectionViewController!
+    
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private var user: User!
+    
+    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
     
     override func loadView()
     {
@@ -269,14 +273,24 @@ extension ProfileViewController
                 tableView.deselectRow(at: indexPath, animated: true)
                 languageSelectionVC = LanguageSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
                 languageSelectionVC.delegate = self
-                self.present(languageSelectionVC, animated: true)
+                languageSelectionVC.leftBarButtonType = .cancel
+                languageSelectionVC.rightBarButtonType = .done
+                let navController = UINavigationController(rootViewController: languageSelectionVC)
+                navController.modalPresentationStyle = .pageSheet
+                navController.isModalInPresentation = true
+                self.present(navController, animated: true)
             }
             else if item == 1
             {
                 tableView.deselectRow(at: indexPath, animated: true)
-                let genreSelectionVC = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+                genreSelectionVC = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
                 genreSelectionVC.delegate = self
-                self.present(genreSelectionVC, animated: true)
+                genreSelectionVC.leftBarButtonType = .cancel
+                genreSelectionVC.rightBarButtonType = .done
+                let navController = UINavigationController(rootViewController: genreSelectionVC)
+                navController.modalPresentationStyle = .pageSheet
+                navController.isModalInPresentation = true
+                self.present(navController, animated: true)
             }
         }
     }
@@ -290,7 +304,7 @@ extension ProfileViewController
         let editProfileController = EditProfileViewController(style: .insetGrouped)
         editProfileController.userRef = user
         let modalNavController = UINavigationController(rootViewController: editProfileController)
-        modalNavController.modalPresentationStyle = .formSheet
+        modalNavController.modalPresentationStyle = .pageSheet
         modalNavController.isModalInPresentation = true
         self.present(modalNavController, animated: true)
     }
@@ -323,10 +337,11 @@ extension ProfileViewController: LanguageSelectionDelegate
 {
     func onLanguageSelection(selectedLanguages: [Int16])
     {
-        
+        user.preferredLanguages = selectedLanguages
+        contextSaveAction()
     }
     
-    func languageCellsWillLoad()
+    func languageCellsDidLoad()
     {
         languageSelectionVC.setSelectedLanguages(languages: user.preferredLanguages!)
     }
@@ -336,6 +351,12 @@ extension ProfileViewController: GenreSelectionDelegate
 {
     func onGenreSelection(selectedGenres: [Int16])
     {
-        
+        user.preferredGenres = selectedGenres
+        contextSaveAction()
+    }
+    
+    func genreCellsDidLoad()
+    {
+        genreSelectionVC.setSelectedGenres(genres: user.preferredGenres!)
     }
 }
