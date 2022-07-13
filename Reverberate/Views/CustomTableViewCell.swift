@@ -27,7 +27,7 @@ class CustomTableViewCell: UITableViewCell
         fatalError("Not initialized")
     }
     
-    func addSubViewToContentView(_ subView: UIView, useAutoLayout: Bool = false, useClearBackground: Bool = true)
+    func addSubViewToContentView(_ subView: UIView, useAutoLayout: Bool = false,useClearBackground: Bool = true)
     {
         contentView.addSubview(subView)
         self.subView = subView
@@ -44,10 +44,16 @@ class CustomTableViewCell: UITableViewCell
         }
         else
         {
-            NSLayoutConstraint.activate([
+            var constraints: [NSLayoutConstraint] = [
                 subView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
                 subView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
-            ])
+            ]
+            if subView is UIImageView
+            {
+                constraints.append(subView.heightAnchor.constraint(equalTo: contentView.heightAnchor))
+                constraints.append(subView.widthAnchor.constraint(equalTo: subView.heightAnchor))
+            }
+            NSLayoutConstraint.activate(constraints)
         }
         backgroundColor = useClearBackground ? .clear : .systemGroupedBackground
     }

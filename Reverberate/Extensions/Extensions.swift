@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Photos
+import PhotosUI
 
 extension UIView
 {
@@ -110,5 +112,25 @@ extension UIViewController
         {
             return UIDevice.current.orientation == .portrait || UIDevice.current.orientation == .portraitUpsideDown
         }
+    }
+}
+
+extension UIImageView
+{
+    func addButtonToImageView(title: String)
+    {
+        let titleLabel = UILabel(useAutoLayout: true)
+        titleLabel.textColor = .systemBlue
+        titleLabel.backgroundColor = .black
+        titleLabel.text = title
+        titleLabel.textAlignment = .center
+        titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
+        titleLabel.clipsToBounds = true
+        addSubview(titleLabel)
+        NSLayoutConstraint.activate([
+            titleLabel.widthAnchor.constraint(equalTo: widthAnchor),
+            titleLabel.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.2),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -3)
+        ])
     }
 }

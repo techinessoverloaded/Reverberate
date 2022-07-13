@@ -8,8 +8,9 @@
         <attribute name="phone" optional="YES" attributeType="String"/>
         <attribute name="preferredGenres" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int16]"/>
         <attribute name="preferredLanguages" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int16]"/>
+        <attribute name="profilePicture" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
     </entity>
     <elements>
-        <element name="User" positionX="-63" positionY="-18" width="128" height="134"/>
+        <element name="User" positionX="-63" positionY="-18" width="128" height="149"/>
     </elements>
 </model>

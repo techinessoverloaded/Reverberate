@@ -12,14 +12,10 @@ class ProfileViewController: UITableViewController
 {
     private let profilePictureView: UIImageView = {
         let pView = UIImageView(useAutoLayout: true)
-        let profilePictureConfiguration = UIImage.SymbolConfiguration(pointSize: 130)
-        let defaultProfileImage = UIImage(systemName: "person.circle", withConfiguration: profilePictureConfiguration)
-        pView.image = defaultProfileImage
-        pView.layer.borderWidth = 0
-        pView.layer.borderColor = UIColor.systemGray.cgColor
+        pView.layer.borderWidth = 4
+        pView.layer.borderColor = UIColor.systemBlue.cgColor
         pView.backgroundColor = .clear
-        pView.tintColor = .systemGray
-        pView.contentMode = .scaleAspectFit
+        pView.contentMode = .scaleAspectFill
         pView.clipsToBounds = true
         return pView
     }()
@@ -35,7 +31,7 @@ class ProfileViewController: UITableViewController
     private let emailLabel: UILabel = {
         let eLabel = UILabel(useAutoLayout: true)
         eLabel.textAlignment = .left
-        eLabel.font = .preferredFont(forTextStyle: .subheadline)
+        eLabel.font = .preferredFont(forTextStyle: .body)
         eLabel.textColor = .label
         return eLabel
     }()
@@ -43,9 +39,27 @@ class ProfileViewController: UITableViewController
     private let phoneLabel: UILabel = {
         let pLabel = UILabel(useAutoLayout: true)
         pLabel.textAlignment = .left
-        pLabel.font = .preferredFont(forTextStyle: .subheadline)
+        pLabel.font = .preferredFont(forTextStyle: .body)
         pLabel.textColor = .label
         return pLabel
+    }()
+    
+    private let userInfoTitleLabel: UILabel = {
+        let uiLabel = UILabel()
+        uiLabel.textAlignment = .left
+        uiLabel.font = .preferredFont(forTextStyle: .footnote)
+        uiLabel.textColor = .secondaryLabel
+        uiLabel.text = " USER INFORMATION"
+        return uiLabel
+    }()
+    
+    private let userPrefTitleLabel: UILabel = {
+        let upLabel = UILabel()
+        upLabel.textAlignment = .left
+        upLabel.font = .preferredFont(forTextStyle: .footnote)
+        upLabel.textColor = .secondaryLabel
+        upLabel.text = " USER PREFERENCES"
+        return upLabel
     }()
     
     private var editProfileButton: UIBarButtonItem!
@@ -128,6 +142,8 @@ class ProfileViewController: UITableViewController
         nameLabel.text = user.name
         emailLabel.text = user.email
         phoneLabel.text = user.phone
+        let userProfilePicture = UIImage(data: user.profilePicture!)
+        profilePictureView.image = userProfilePicture
     }
 }
 
@@ -136,20 +152,24 @@ extension ProfileViewController
 {
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        return 4
+        return 5
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         if section == 0
         {
-            return 2
+            return 1
         }
         else if section == 1
         {
-            return 2
+            return 1
         }
         else if section == 2
+        {
+            return 2
+        }
+        else if section == 3
         {
             return 3
         }
@@ -161,9 +181,9 @@ extension ProfileViewController
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        if indexPath.section == 0 && indexPath.item == 0
+        if indexPath.section == 0
         {
-            return 150
+            return 130
         }
         else
         {
@@ -171,19 +191,28 @@ extension ProfileViewController
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
-        if section == 1
+        switch section
         {
-            return "User Information"
+        case 2:
+            return userInfoTitleLabel
+        case 3:
+            return userPrefTitleLabel
+        default:
+            return nil
         }
-        else if section == 2
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+    {
+        if section == 2 || section == 3
         {
-            return "User Preferences"
+            return 30
         }
         else
         {
-            return nil
+            return CGFloat.zero
         }
     }
     
@@ -197,19 +226,19 @@ extension ProfileViewController
             cell.selectionStyle = .none
             //Hide Separator
             cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
-            switch item
-            {
-            case 0:
-                cell.addSubViewToContentView(profilePictureView, useAutoLayout: true)
-                return cell
-            case 1:
-                cell.addSubViewToContentView(nameLabel, useAutoLayout: true)
-                return cell
-            default:
-                return cell
-            }
+            cell.addSubViewToContentView(profilePictureView, useAutoLayout: true)
+            return cell
         }
         else if section == 1
+        {
+            let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
+            cell.selectionStyle = .none
+            //Hide Separator
+            cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
+            cell.addSubViewToContentView(nameLabel, useAutoLayout: true)
+            return cell
+        }
+        else if section == 2
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
             cell.selectionStyle = .none
@@ -227,7 +256,7 @@ extension ProfileViewController
                 return cell
             }
         }
-        else if section == 2
+        else if section == 3
         {
             let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
             //Show separator
@@ -266,7 +295,7 @@ extension ProfileViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        if section == 2
+        if section == 3
         {
             if item == 0
             {

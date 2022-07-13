@@ -30,7 +30,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        title = "Select your Favourite Music Genres"
+        title = "Pick your Favourite Music Genres"
         setupNavBar()
         collectionView.register(SelectionCardCVCell.self, forCellWithReuseIdentifier: SelectionCardCVCell.identifier)
         collectionView.allowsMultipleSelection = true
@@ -38,9 +38,9 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     
     func setupNavBar()
     {
-        navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 24, weight: .bold)]
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 23, weight: .bold)]
         if leftBarButtonType != nil
         {
             if leftBarButtonType == .cancel

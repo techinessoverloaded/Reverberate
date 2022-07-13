@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import PhotosUI
 
 class EditProfileViewController: UITableViewController
 {
@@ -16,14 +17,11 @@ class EditProfileViewController: UITableViewController
     
     private let profilePictureView: UIImageView = {
         let pView = UIImageView(useAutoLayout: true)
-        let profilePictureConfiguration = UIImage.SymbolConfiguration(pointSize: 130)
-        let defaultProfileImage = UIImage(systemName: "person.circle", withConfiguration: profilePictureConfiguration)
-        pView.image = defaultProfileImage
-        pView.layer.borderWidth = 0
-        pView.layer.borderColor = UIColor.systemGray.cgColor
+        pView.layer.borderWidth = 4
+        pView.layer.borderColor = UIColor.systemBlue.cgColor
         pView.backgroundColor = .clear
-        pView.tintColor = .systemGray
-        pView.contentMode = .scaleAspectFit
+        pView.contentMode = .scaleAspectFill
+        pView.addButtonToImageView(title: "Change")
         pView.clipsToBounds = true
         return pView
     }()
@@ -61,6 +59,14 @@ class EditProfileViewController: UITableViewController
         return pField
     }()
     
+    private let phPickerViewController: PHPickerViewController = {
+        var pickerConfig = PHPickerConfiguration(photoLibrary: .shared())
+        pickerConfig.selectionLimit = 1
+        pickerConfig.filter = .images
+        let pickerView = PHPickerViewController(configuration: pickerConfig)
+        return pickerView
+    }()
+    
     private var doneButton: UIBarButtonItem!
     
     private var cancelButton: UIBarButtonItem!
@@ -71,16 +77,21 @@ class EditProfileViewController: UITableViewController
     
     private var phoneHasChanged: Bool = false
     
+    private var profilePictureHasChanged: Bool = false
+    
+    private var tapGestureRecognizer: UITapGestureRecognizer!
+    
+    private var userProfilePicture: UIImage!
+    
     override func loadView()
     {
         super.loadView()
         title = "Edit Profile"
         navigationItem.largeTitleDisplayMode = .never
-        doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
-        cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancelButtonTap(_:)))
-        doneButton.isEnabled = false
-        navigationItem.leftBarButtonItem = cancelButton
-        navigationItem.rightBarButtonItem = doneButton
+        if UIDevice.current.userInterfaceIdiom == .phone
+        {
+            phoneField.addReturnButtonToKeyboard(target: self, action: #selector(onCustomReturnButtonTap(_:)), title: "done")
+        }
     }
     
     override func viewDidLoad()
@@ -93,7 +104,24 @@ class EditProfileViewController: UITableViewController
         nameField.delegate = self
         phoneField.delegate = self
         emailField.delegate = self
+        phPickerViewController.delegate = self
+        doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
+        cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancelButtonTap(_:)))
+        doneButton.isEnabled = false
+        navigationItem.leftBarButtonItem = cancelButton
+        navigationItem.rightBarButtonItem = doneButton
         setupInitialData()
+        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onImageViewTap(_:)))
+        profilePictureView.isUserInteractionEnabled = true
+        profilePictureView.addGestureRecognizer(tapGestureRecognizer)
+        phPickerViewController.navigationItem.leftBarButtonItem?.action = #selector(onPickerCancelButtonTap(_:))
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
+        profilePictureView.layer.cornerRadius = profilePictureView.bounds.height / 2
+        profilePictureView.layer.cornerCurve = .circular
     }
     
     func setupInitialData()
@@ -101,6 +129,8 @@ class EditProfileViewController: UITableViewController
         nameField.text = userRef.name
         phoneField.text = userRef.phone
         emailField.text = userRef.email
+        userProfilePicture = UIImage(data: userRef.profilePicture!)
+        profilePictureView.image = userProfilePicture
     }
 }
 
@@ -128,7 +158,7 @@ extension EditProfileViewController
     {
         if indexPath.section == 0
         {
-            return 150
+            return 130
         }
         else
         {
@@ -157,13 +187,13 @@ extension EditProfileViewController
             switch item
             {
             case 0:
-                cell.configureCell(title: "Name", infoView: nameField, spreadInfoViewFromLeftEnd: true, widthMultiplier: 0.77)
+                cell.configureCell(title: "Name", infoView: nameField, spreadInfoViewFromLeftEnd: true, addErrorLabel: true)
                 return cell
             case 1:
-                cell.configureCell(title: "Phone Number", infoView: phoneField, spreadInfoViewFromLeftEnd: true, widthMultiplier: 0.61)
+                cell.configureCell(title: "Phone Number", infoView: phoneField, spreadInfoViewFromLeftEnd: true, addErrorLabel: true)
                 return cell
             case 2:
-                cell.configureCell(title: "Email Address", infoView: emailField, spreadInfoViewFromLeftEnd: true, widthMultiplier: 0.621)
+                cell.configureCell(title: "Email Address", infoView: emailField, spreadInfoViewFromLeftEnd: true, addErrorLabel: true)
                 return cell
                 
             default:
@@ -179,17 +209,68 @@ extension EditProfileViewController: UITextFieldDelegate
     {
         if textField === nameField
         {
-            nameHasChanged = textField.text != userRef.name
+            let name = textField.text ?? ""
+            let cell = tableView.cellForRow(at: IndexPath(item: 0, section: 1)) as! LabeledInfoTableViewCell
+            if name.isEmpty
+            {
+                textField.isInvalid = true
+                cell.setError(isErrorPresent: true, message: "Required")
+            }
+            else if !InputValidator.validateName(name)
+            {
+                textField.isInvalid = true
+                cell.setError(isErrorPresent: true, message: "Entered Name is Invalid !")
+            }
+            else
+            {
+                textField.isInvalid = false
+                cell.setError(isErrorPresent: false)
+            }
+            nameHasChanged = textField.text != userRef.name && !textField.isInvalid
         }
         else if textField === phoneField
         {
-            phoneHasChanged = textField.text != userRef.phone
+            let phone = textField.text ?? ""
+            let cell = tableView.cellForRow(at: IndexPath(item: 1, section: 1)) as! LabeledInfoTableViewCell
+            if phone.isEmpty
+            {
+                textField.isInvalid = true
+                cell.setError(isErrorPresent: true, message: "Required")
+            }
+            else if !InputValidator.validatePhone(phone)
+            {
+                textField.isInvalid = true
+                cell.setError(isErrorPresent: true, message: "Entered Phone Number is Invalid !")
+            }
+            else
+            {
+                textField.isInvalid = false
+                cell.setError(isErrorPresent: false)
+            }
+            phoneHasChanged = textField.text != userRef.phone && !textField.isInvalid
         }
         else
         {
-            emailHasChanged = textField.text != userRef.email
+            let email = textField.text ?? ""
+            let cell = tableView.cellForRow(at: IndexPath(item: 2, section: 1)) as! LabeledInfoTableViewCell
+            if email.isEmpty
+            {
+                textField.isInvalid = true
+                cell.setError(isErrorPresent: true, message: "Required")
+            }
+            else if !InputValidator.validateEmail(email)
+            {
+                textField.isInvalid = true
+                cell.setError(isErrorPresent: true, message: "Entered Email Address is Invalid !")
+            }
+            else
+            {
+                textField.isInvalid = false
+                cell.setError(isErrorPresent: false)
+            }
+            emailHasChanged = textField.text != userRef.email && !textField.isInvalid
         }
-        doneButton.isEnabled = nameHasChanged || emailHasChanged || phoneHasChanged
+        doneButton.isEnabled = nameHasChanged || emailHasChanged || phoneHasChanged || profilePictureHasChanged
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
@@ -200,17 +281,81 @@ extension EditProfileViewController: UITextFieldDelegate
 
 extension EditProfileViewController
 {
+    @objc func onImageViewTap(_ sender: UITapGestureRecognizer)
+    {
+        print("On Image View Tap")
+        if nameField.isFirstResponder
+        {
+            nameField.resignFirstResponder()
+        }
+        if phoneField.isFirstResponder
+        {
+            phoneField.resignFirstResponder()
+        }
+        if emailField.isFirstResponder
+        {
+            emailField.resignFirstResponder()
+        }
+        self.present(phPickerViewController, animated: true)
+    }
+    
+    @objc func onCustomReturnButtonTap(_ sender: UIBarButtonItem)
+    {
+        phoneField.resignFirstResponder()
+    }
+    
     @objc func onCancelButtonTap(_ sender: UIBarButtonItem)
     {
         self.dismiss(animated: true)
     }
     
+    @objc func onPickerCancelButtonTap(_ sender: UIBarButtonItem)
+    {
+        phPickerViewController.dismiss(animated: true)
+    }
+
     @objc func onDoneButtonTap(_ sender: UIBarButtonItem)
     {
-        userRef.name = nameField.text!.trimmingCharacters(in: .whitespaces)
-        userRef.email = emailField.text!.trimmingCharacters(in: .whitespaces)
-        userRef.phone = phoneField.text!.trimmingCharacters(in: .whitespaces)
+        if nameHasChanged
+        {
+            userRef.name = nameField.text!
+        }
+        if emailHasChanged
+        {
+            userRef.email = emailField.text!
+        }
+        if phoneHasChanged
+        {
+            userRef.phone = phoneField.text!
+        }
+        if profilePictureHasChanged
+        {
+            userRef.profilePicture = profilePictureView.image?.jpegData(compressionQuality: 1)
+        }
         contextSaveAction()
         self.dismiss(animated: true)
+    }
+}
+
+extension EditProfileViewController: PHPickerViewControllerDelegate
+{
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult])
+    {
+        results.first?.itemProvider.loadObject(ofClass: UIImage.self) { [unowned self] reading , error in
+            guard let image = reading as? UIImage, error == nil else
+            {
+                picker.dismiss(animated: true)
+                return
+            }
+            DispatchQueue.main.async {
+                picker.dismiss(animated: true)
+                self.profilePictureHasChanged = self.userProfilePicture != image
+                if self.profilePictureHasChanged
+                {
+                    self.profilePictureView.image = image
+                    self.doneButton.isEnabled = self.nameHasChanged || self.emailHasChanged || self.phoneHasChanged || self.profilePictureHasChanged
+                }
+            }
+        }
     }
 }

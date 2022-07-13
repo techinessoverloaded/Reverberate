@@ -2,7 +2,7 @@
 //  User+CoreDataProperties.swift
 //  Reverberate
 //
-//  Created by arun-13930 on 08/07/22.
+//  Created by arun-13930 on 13/07/22.
 //
 //
 
@@ -23,6 +23,7 @@ extension User {
     @NSManaged public var phone: String?
     @NSManaged public var preferredGenres: [Int16]?
     @NSManaged public var preferredLanguages: [Int16]?
+    @NSManaged public var profilePicture: Data?
 
 }
 

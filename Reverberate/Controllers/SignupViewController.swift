@@ -510,6 +510,7 @@ extension SignupViewController
                 newUser!.phone = phoneField.text!.trimmingCharacters(in: .whitespaces)
                 newUser!.email = emailField.text!.trimmingCharacters(in: .whitespaces)
                 newUser!.password = passwordField.text!.trimmingCharacters(in: .whitespaces)
+                newUser!.profilePicture = UIImage(systemName: "person.fill")!.withTintColor(.systemGray).jpegData(compressionQuality: 1)!
                 print("Signing up...")
                 self.contextSaveAction()
                 UserDefaults.standard.set(newUser!.id, forKey: GlobalConstants.currentUserId)
