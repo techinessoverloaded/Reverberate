@@ -17,21 +17,22 @@ class LabeledInfoTableViewCell: UITableViewCell
         return tLabel
     }()
     
-    private lazy var errorLabel: UILabel = {
-        let eLabel = UILabel(useAutoLayout: true)
-        eLabel.textColor = .systemRed
-        eLabel.font = .preferredFont(forTextStyle: .footnote)
-        eLabel.text = "Required"
-        eLabel.textAlignment = .right
-        eLabel.isHidden = true
-        return eLabel
-    }()
+    private var originalTitle: String!
+    
+    var hasError: Bool
+    {
+        get
+        {
+            layer.borderWidth != 0
+        }
+    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
     {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        backgroundColor = .systemFill
         contentView.addSubview(titleLabel)
+        layer.borderColor = UIColor.systemRed.cgColor
+        layer.borderWidth = 0
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -39,11 +40,11 @@ class LabeledInfoTableViewCell: UITableViewCell
         ])
     }
     
-    func configureCell(title: String, infoView: UIView?, arrangeInfoViewToRightEnd: Bool = false, spreadInfoViewFromLeftEnd: Bool = false, widthMultiplier: CGFloat = 0.6, useBrightLabelColor: Bool = false, addErrorLabel: Bool = false)
+    func configureCell(title: String, infoView: UIView?, arrangeInfoViewToRightEnd: Bool = false, spreadInfoViewFromLeftEnd: Bool = false, widthMultiplier: CGFloat = 0.6, useBrightLabelColor: Bool = false)
     {
         titleLabel.text = title
+        originalTitle = title
         titleLabel.textColor = useBrightLabelColor ? .label : .systemGray
-        
         guard let infoView = infoView else {
             return
         }
@@ -57,12 +58,6 @@ class LabeledInfoTableViewCell: UITableViewCell
             variableConstraints.append(infoView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: widthMultiplier))
         }
         variableConstraints.append(infoView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor))
-        if addErrorLabel
-        {
-            variableConstraints.append(errorLabel.topAnchor.constraint(equalTo: infoView.bottomAnchor, constant: 10))
-            variableConstraints.append(errorLabel.trailingAnchor.constraint(equalTo: infoView.trailingAnchor))
-            contentView.addSubview(errorLabel)
-        }
         contentView.addSubview(infoView)
         NSLayoutConstraint.activate(variableConstraints)
         contentView.preservesSuperviewLayoutMargins = true
@@ -72,12 +67,17 @@ class LabeledInfoTableViewCell: UITableViewCell
     {
         if isErrorPresent
         {
-            errorLabel.text = message
-            errorLabel.isHidden = false
+            layer.borderWidth = 2
+            titleLabel.textColor = .systemRed
+            titleLabel.text = message
+            titleLabel.font = .preferredFont(forTextStyle: .subheadline)
         }
         else
         {
-            errorLabel.isHidden = true
+            layer.borderWidth = 0
+            titleLabel.textColor = .systemGray
+            titleLabel.text = originalTitle
+            titleLabel.font = .preferredFont(forTextStyle: .body)
         }
     }
     

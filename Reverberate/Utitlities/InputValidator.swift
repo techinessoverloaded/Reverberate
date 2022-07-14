@@ -14,13 +14,14 @@ struct InputValidator
     
     static func validateName(_ name: String) -> Bool
     {
-        let regex = NSRegularExpression("[a-zA-Z\\s]+")
+        let regex = NSRegularExpression("[a-zA-Z\\s]+$")
         return regex.matches(name)
     }
     
     static func validatePhone(_ phone: String) -> Bool
     {
-        let regex = NSRegularExpression("(0/91)?[6-9][0-9]{9}")
+        // If Dialing Codes are to be supported, use Regex "^((\\+)|(00))[0-9]{6,14}$"
+        let regex = NSRegularExpression("^[0-9]{10}$")
         return regex.matches(phone)
     }
     

@@ -134,3 +134,27 @@ extension UIImageView
         ])
     }
 }
+
+extension String
+{
+    mutating func trim()
+    {
+        self = self.trimmingCharacters(in: .whitespaces)
+    }
+    
+    func trimmedCopy() -> Self
+    {
+        return self.trimmingCharacters(in: .whitespaces)
+    }
+}
+
+extension UIViewController
+{
+    var isUserLoggedIn: Bool
+    {
+        get
+        {
+            return UserDefaults.standard.string(forKey: GlobalConstants.currentUserId) != nil
+        }
+    }
+}

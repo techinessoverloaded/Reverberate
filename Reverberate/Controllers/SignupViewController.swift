@@ -245,7 +245,8 @@ extension SignupViewController: UITextFieldDelegate
     {
         if textField === nameField
         {
-            let name = textField.text ?? ""
+            var name = textField.text ?? ""
+            name.trim()
             if name.isEmpty
             {
                 textField.isInvalid = true
@@ -266,7 +267,8 @@ extension SignupViewController: UITextFieldDelegate
         }
         else if textField === phoneField
         {
-            let phone = textField.text ?? ""
+            var phone = textField.text ?? ""
+            phone.trim()
             if phone.isEmpty
             {
                 textField.isInvalid = true
@@ -287,7 +289,8 @@ extension SignupViewController: UITextFieldDelegate
         }
         else if textField === emailField
         {
-            let email = textField.text ?? ""
+            var email = textField.text ?? ""
+            email.trim()
             if email.isEmpty
             {
                 textField.isInvalid = true
@@ -308,7 +311,8 @@ extension SignupViewController: UITextFieldDelegate
         }
         else if textField === passwordField
         {
-            let password = textField.text ?? ""
+            var password = textField.text ?? ""
+            password.trim()
             if password.isEmpty
             {
                 textField.isInvalid = true
@@ -329,7 +333,8 @@ extension SignupViewController: UITextFieldDelegate
         }
         else
         {
-            let cnfmPassword = textField.text ?? ""
+            var cnfmPassword = textField.text ?? ""
+            cnfmPassword.trim()
             if cnfmPassword.isEmpty
             {
                 textField.isInvalid = true
@@ -487,7 +492,11 @@ extension SignupViewController
         if !nameField.isInvalid && !phoneField.isInvalid && !emailField.isInvalid && !passwordField.isInvalid && !confirmPasswordField.isInvalid
         {
             signupButton.configuration?.showsActivityIndicator = true
-            if doesUserAlreadyExist(phone: phoneField.text!.trimmingCharacters(in: .whitespaces), email: emailField.text!.trimmingCharacters(in: .whitespaces))
+            var phone = phoneField.text!
+            var email = emailField.text!
+            phone.trim()
+            email.trim()
+            if doesUserAlreadyExist(phone: phone, email: email)
             {
                 signupButton.configuration?.showsActivityIndicator = false
                 let alert = UIAlertController(title: "Existing Account", message: "A User Account with the given Phone Number and/or Email Address exists already ! You can proceed to Login !", preferredStyle: .alert)
@@ -506,10 +515,10 @@ extension SignupViewController
                 newUser = User(context: self.context)
                 // Generate Universally Unique ID using UUID
                 newUser!.id = UUID().uuidString
-                newUser!.name = nameField.text!.trimmingCharacters(in: .whitespaces)
-                newUser!.phone = phoneField.text!.trimmingCharacters(in: .whitespaces)
-                newUser!.email = emailField.text!.trimmingCharacters(in: .whitespaces)
-                newUser!.password = passwordField.text!.trimmingCharacters(in: .whitespaces)
+                newUser!.name = nameField.text!.trimmedCopy()
+                newUser!.phone = phoneField.text!.trimmedCopy()
+                newUser!.email = emailField.text!.trimmedCopy()
+                newUser!.password = passwordField.text!.trimmedCopy()
                 newUser!.profilePicture = UIImage(systemName: "person.fill")!.withTintColor(.systemGray).jpegData(compressionQuality: 1)!
                 print("Signing up...")
                 self.contextSaveAction()

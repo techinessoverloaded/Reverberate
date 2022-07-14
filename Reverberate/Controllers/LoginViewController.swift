@@ -162,7 +162,8 @@ extension LoginViewController: UITextFieldDelegate
         {
             if emailOrPhoneSelector.selectedSegmentIndex == 0
             {
-                let email = textField.text ?? ""
+                var email = textField.text ?? ""
+                email.trim()
                 if email.isEmpty
                 {
                     textField.isInvalid = true
@@ -183,7 +184,8 @@ extension LoginViewController: UITextFieldDelegate
             }
             else
             {
-                let phone = textField.text ?? ""
+                var phone = textField.text ?? ""
+                phone.trim()
                 if phone.isEmpty
                 {
                     textField.isInvalid = true
@@ -205,7 +207,8 @@ extension LoginViewController: UITextFieldDelegate
         }
         else
         {
-            let password = textField.text ?? ""
+            var password = textField.text ?? ""
+            password.trim()
             if password.isEmpty
             {
                 textField.isInvalid = true
@@ -333,14 +336,14 @@ extension LoginViewController
             var user: User?
             if emailOrPhoneSelector.selectedSegmentIndex == 0
             {
-                let email = emailCumPhoneField.text!
-                let password = passwordField.text!
+                let email = emailCumPhoneField.text!.trimmedCopy()
+                let password = passwordField.text!.trimmedCopy()
                 user = validateUser(email: email, password: password)
             }
             else
             {
-                let phone = emailCumPhoneField.text!
-                let password = passwordField.text!
+                let phone = emailCumPhoneField.text!.trimmedCopy()
+                let password = passwordField.text!.trimmedCopy()
                 user = validateUser(phone: phone, password: password)
             }
             if user != nil

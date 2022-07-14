@@ -83,6 +83,14 @@ class EditProfileViewController: UITableViewController
     
     private var userProfilePicture: UIImage!
     
+    private var nameHasError: Bool = false
+    
+    private var emailHasError: Bool = false
+    
+    private var phoneHasErrror: Bool = false
+    
+    private var profilePictureHasError: Bool = false
+    
     override func loadView()
     {
         super.loadView()
@@ -131,6 +139,11 @@ class EditProfileViewController: UITableViewController
         emailField.text = userRef.email
         userProfilePicture = UIImage(data: userRef.profilePicture!)
         profilePictureView.image = userProfilePicture
+    }
+    
+    func toggleDoneButtonEnabled()
+    {
+        doneButton.isEnabled = (nameHasChanged || emailHasChanged || phoneHasChanged || profilePictureHasChanged) && !(nameHasError || phoneHasErrror || emailHasError || profilePictureHasError)
     }
 }
 
@@ -187,13 +200,13 @@ extension EditProfileViewController
             switch item
             {
             case 0:
-                cell.configureCell(title: "Name", infoView: nameField, spreadInfoViewFromLeftEnd: true, addErrorLabel: true)
+                cell.configureCell(title: "Name", infoView: nameField, spreadInfoViewFromLeftEnd: true)
                 return cell
             case 1:
-                cell.configureCell(title: "Phone Number", infoView: phoneField, spreadInfoViewFromLeftEnd: true, addErrorLabel: true)
+                cell.configureCell(title: "Phone Number", infoView: phoneField, spreadInfoViewFromLeftEnd: true)
                 return cell
             case 2:
-                cell.configureCell(title: "Email Address", infoView: emailField, spreadInfoViewFromLeftEnd: true, addErrorLabel: true)
+                cell.configureCell(title: "Email Address", infoView: emailField, spreadInfoViewFromLeftEnd: true)
                 return cell
                 
             default:
@@ -209,68 +222,66 @@ extension EditProfileViewController: UITextFieldDelegate
     {
         if textField === nameField
         {
-            let name = textField.text ?? ""
+            var name = textField.text ?? ""
+            name.trim()
             let cell = tableView.cellForRow(at: IndexPath(item: 0, section: 1)) as! LabeledInfoTableViewCell
+            print(cell)
             if name.isEmpty
             {
-                textField.isInvalid = true
-                cell.setError(isErrorPresent: true, message: "Required")
+                cell.setError(isErrorPresent: true, message: "Name Required")
             }
             else if !InputValidator.validateName(name)
             {
-                textField.isInvalid = true
-                cell.setError(isErrorPresent: true, message: "Entered Name is Invalid !")
+                cell.setError(isErrorPresent: true, message: "Invalid Name")
             }
             else
             {
-                textField.isInvalid = false
                 cell.setError(isErrorPresent: false)
             }
-            nameHasChanged = textField.text != userRef.name && !textField.isInvalid
+            nameHasChanged = textField.text != userRef.name
+            nameHasError = cell.hasError
         }
         else if textField === phoneField
         {
-            let phone = textField.text ?? ""
+            var phone = textField.text ?? ""
+            phone.trim()
             let cell = tableView.cellForRow(at: IndexPath(item: 1, section: 1)) as! LabeledInfoTableViewCell
             if phone.isEmpty
             {
-                textField.isInvalid = true
-                cell.setError(isErrorPresent: true, message: "Required")
+                cell.setError(isErrorPresent: true, message: "Phone Required")
             }
             else if !InputValidator.validatePhone(phone)
             {
-                textField.isInvalid = true
-                cell.setError(isErrorPresent: true, message: "Entered Phone Number is Invalid !")
+                cell.setError(isErrorPresent: true, message: "Invalid Phone")
             }
             else
             {
-                textField.isInvalid = false
                 cell.setError(isErrorPresent: false)
             }
-            phoneHasChanged = textField.text != userRef.phone && !textField.isInvalid
+            phoneHasChanged = textField.text != userRef.phone
+            phoneHasErrror = cell.hasError
         }
         else
         {
-            let email = textField.text ?? ""
+            var email = textField.text ?? ""
+            email.trim()
             let cell = tableView.cellForRow(at: IndexPath(item: 2, section: 1)) as! LabeledInfoTableViewCell
             if email.isEmpty
             {
-                textField.isInvalid = true
-                cell.setError(isErrorPresent: true, message: "Required")
+                cell.setError(isErrorPresent: true, message: "Email Required")
             }
             else if !InputValidator.validateEmail(email)
             {
-                textField.isInvalid = true
-                cell.setError(isErrorPresent: true, message: "Entered Email Address is Invalid !")
+                cell.setError(isErrorPresent: true, message: "Invalid Email")
             }
             else
             {
-                textField.isInvalid = false
                 cell.setError(isErrorPresent: false)
             }
-            emailHasChanged = textField.text != userRef.email && !textField.isInvalid
+            emailHasChanged = textField.text != userRef.email
+            emailHasError = cell.hasError
         }
-        doneButton.isEnabled = nameHasChanged || emailHasChanged || phoneHasChanged || profilePictureHasChanged
+        toggleDoneButtonEnabled()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
@@ -316,6 +327,9 @@ extension EditProfileViewController
 
     @objc func onDoneButtonTap(_ sender: UIBarButtonItem)
     {
+        textFieldDidEndEditing(nameField)
+        textFieldDidEndEditing(emailField)
+        textFieldDidEndEditing(phoneField)
         if nameHasChanged
         {
             userRef.name = nameField.text!
@@ -344,16 +358,21 @@ extension EditProfileViewController: PHPickerViewControllerDelegate
         results.first?.itemProvider.loadObject(ofClass: UIImage.self) { [unowned self] reading , error in
             guard let image = reading as? UIImage, error == nil else
             {
-                picker.dismiss(animated: true)
+                DispatchQueue.main.async {
+                    picker.dismiss(animated: true)
+                    self.profilePictureHasError = true
+                    self.toggleDoneButtonEnabled()
+                }
                 return
             }
+            self.profilePictureHasError = false
             DispatchQueue.main.async {
                 picker.dismiss(animated: true)
                 self.profilePictureHasChanged = self.userProfilePicture != image
                 if self.profilePictureHasChanged
                 {
                     self.profilePictureView.image = image
-                    self.doneButton.isEnabled = self.nameHasChanged || self.emailHasChanged || self.phoneHasChanged || self.profilePictureHasChanged
+                    self.toggleDoneButtonEnabled()
                 }
             }
         }

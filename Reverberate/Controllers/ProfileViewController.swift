@@ -67,8 +67,8 @@ class ProfileViewController: UITableViewController
     private let logoutButton: UIButton = {
         let lButton = UIButton(type: .roundedRect)
         lButton.setTitle("Logout", for: .normal)
-        lButton.backgroundColor = UIColor(named: GlobalConstants.techinessColor)
-        lButton.tintColor = .white
+        lButton.backgroundColor = .systemRed.withAlphaComponent(0.3)
+        lButton.tintColor = .systemRed
         lButton.titleLabel?.font = .preferredFont(forTextStyle: .body)
         lButton.layer.cornerRadius = 10
         lButton.layer.cornerCurve = .circular
@@ -120,6 +120,7 @@ class ProfileViewController: UITableViewController
     {
         super.viewDidLayoutSubviews()
         profilePictureView.layer.cornerRadius = profilePictureView.bounds.height / 2
+        logoutButton.layer.shadowPath = UIBezierPath(rect: logoutButton.bounds).cgPath
     }
     
     override func viewWillAppear(_ animated: Bool)
