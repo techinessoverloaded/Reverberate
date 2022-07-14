@@ -11,7 +11,7 @@ class LoginViewController: UITableViewController
 {
     private let titleView: UILabel = {
         let tView = UILabel(useAutoLayout: true)
-        tView.text = "Welcome back"
+        tView.text = "Login"
         tView.textColor = .label
         tView.textAlignment = .center
         tView.font = .systemFont(ofSize: 34, weight: .bold)
@@ -95,16 +95,11 @@ class LoginViewController: UITableViewController
         return passErrorLabel
     }()
     
-    private let contentBlurView: CustomVisualEffectView =
-    {
-        let cbView = CustomVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial), intensity: 0.5)
-        cbView.enableAutoLayout()
-        return cbView
-    }()
-    
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    
+    weak var delegate: LoginDelegate?
     
     override func loadView()
     {
@@ -137,15 +132,6 @@ class LoginViewController: UITableViewController
         super.viewDidAppear(animated)
         emailCumPhoneField.becomeFirstResponder()
         print("Login View Controller")
-    }
-    
-    func activateContentBlurViewConstraints()
-    {
-        self.view.insertSubview(contentBlurView, aboveSubview: tableView)
-        NSLayoutConstraint.activate([
-            contentBlurView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            contentBlurView.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
     }
 }
 
@@ -352,28 +338,18 @@ extension LoginViewController
                 print("Logging in...")
                 UserDefaults.standard.set(user!.id, forKey: GlobalConstants.currentUserId)
                 loginButton.configuration?.showsActivityIndicator = false
-                (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(MainViewController())
+                delegate?.onSuccessfulLogin()
             }
             else
             {
-                let alert = UIAlertController(title: "Invalid Credentials", message: "No User Accounts were found for the entered Credentials ! Check your credentials or try creating a new account maybe !", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Proceed to Signup", style: .default) { _ in
-                        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped))
-                })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
-                        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped), animationOption: 1)
-                })
-                activateContentBlurViewConstraints()
-                alert.modalPresentationStyle = .popover
-                self.present(alert, animated: true)
+                delegate?.onLoginFailure()
             }
         }
     }
     
     @objc func onNoAccountButtonTap(_ sender: UIButton)
     {
-        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped))
-        print("Moving on to Signup Screen...")
+        delegate?.onNoAccountButtonTap()
     }
     
     @objc func onCustomReturnButtonTap(_ sender: UIBarButtonItem)

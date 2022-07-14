@@ -157,4 +157,12 @@ extension UIViewController
             return UserDefaults.standard.string(forKey: GlobalConstants.currentUserId) != nil
         }
     }
+    
+    func setCenteredLargeTitle(title: String)
+    {
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.largeTitleDisplayMode = .always
+//        self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.]
+        self.title = title
+    }
 }

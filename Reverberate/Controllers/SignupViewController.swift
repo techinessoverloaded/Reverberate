@@ -181,6 +181,8 @@ class SignupViewController: UITableViewController
     
     private var languageSelectionController: LanguageSelectionCollectionViewController!
     
+    weak var delegate: SignupDelegate?
+    
     override func loadView()
     {
         super.loadView()
@@ -499,16 +501,7 @@ extension SignupViewController
             if doesUserAlreadyExist(phone: phone, email: email)
             {
                 signupButton.configuration?.showsActivityIndicator = false
-                let alert = UIAlertController(title: "Existing Account", message: "A User Account with the given Phone Number and/or Email Address exists already ! You can proceed to Login !", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Proceed to Login", style: .default) { _ in
-                    (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped))
-                })
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel){ _ in
-                    (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(SignupViewController(style: .insetGrouped), animationOption: 1)
-                })
-                activateContentBlurViewConstraints()
-                alert.modalPresentationStyle = .popover
-                self.present(alert, animated: true)
+                delegate?.onSignupFailure()
             }
             else
             {
@@ -526,22 +519,14 @@ extension SignupViewController
                 UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
                 signupButton.configuration?.showsActivityIndicator = false
                 print("User Signed up successfully with id: \(String(describing: newUser!.id))")
-               languageSelectionController = LanguageSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-                languageSelectionController.delegate = self
-                languageSelectionController.rightBarButtonCustomTitle = "Next"
-                activateContentBlurViewConstraints()
-                let navController = UINavigationController(rootViewController: languageSelectionController)
-                navController.modalPresentationStyle = .pageSheet
-                navController.isModalInPresentation = true
-                self.present(navController, animated: true)
+                delegate?.onSuccessfulSignup()
             }
         }
     }
     
     @objc func onExistingAccountButtonTap(_ sender: UIButton)
     {
-        print("Moving on to Login Screen...")
-        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(LoginViewController(style: .insetGrouped))
+        delegate?.onAccountExistsButtonTap()
     }
     
     @objc func onCustomReturnButtonTap(_ sender: UIBarButtonItem)
@@ -551,33 +536,5 @@ extension SignupViewController
             emailField.becomeFirstResponder()
         }
         print("Custom Return Button Tapped")
-    }
-}
-
-extension SignupViewController: LanguageSelectionDelegate
-{
-    func onLanguageSelection(selectedLanguages: [Int16])
-    {
-        newUser!.preferredLanguages = selectedLanguages
-        contextSaveAction()
-        let genreSelectionController = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        genreSelectionController.delegate = self
-        genreSelectionController.leftBarButtonCustomTitle = "Previous"
-        genreSelectionController.rightBarButtonType = .done
-        let navController = UINavigationController(rootViewController: genreSelectionController)
-        navController.modalPresentationStyle = .pageSheet
-        navController.isModalInPresentation = true
-        languageSelectionController.present(navController, animated: true)
-    }
-}
-
-extension SignupViewController: GenreSelectionDelegate
-{
-    func onGenreSelection(selectedGenres: [Int16])
-    {
-        newUser!.preferredGenres = selectedGenres
-        contextSaveAction()
-        print(newUser!)
-        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).changeRootViewController(MainViewController())
     }
 }

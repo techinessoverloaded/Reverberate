@@ -35,6 +35,10 @@
 		DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C922877076B001EE1C9 /* SearchViewController.swift */; };
 		DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C9428770794001EE1C9 /* LibraryViewController.swift */; };
 		DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C96287707C4001EE1C9 /* ProfileViewController.swift */; };
+		DA6C8382287FF4DA00339937 /* SignInTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C8381287FF4DA00339937 /* SignInTableViewCell.swift */; };
+		DA6C838428800F6F00339937 /* LoginDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C838328800F6F00339937 /* LoginDelegate.swift */; };
+		DA6C83862880366A00339937 /* SignupDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C83852880366A00339937 /* SignupDelegate.swift */; };
+		DA6C8388288046F600339937 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C8387288046F600339937 /* InitialViewController.swift */; };
 		DA95CDB0287ED0D600809B7C /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA95CDAE287ED0D600809B7C /* User+CoreDataClass.swift */; };
 		DA95CDB1287ED0D600809B7C /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA95CDAF287ED0D600809B7C /* User+CoreDataProperties.swift */; };
 		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
@@ -72,6 +76,10 @@
 		DA668C922877076B001EE1C9 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DA668C9428770794001EE1C9 /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
 		DA668C96287707C4001EE1C9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		DA6C8381287FF4DA00339937 /* SignInTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInTableViewCell.swift; sourceTree = "<group>"; };
+		DA6C838328800F6F00339937 /* LoginDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDelegate.swift; sourceTree = "<group>"; };
+		DA6C83852880366A00339937 /* SignupDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupDelegate.swift; sourceTree = "<group>"; };
+		DA6C8387288046F600339937 /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		DA95CDAE287ED0D600809B7C /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DA95CDAF287ED0D600809B7C /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
@@ -150,6 +158,7 @@
 				DA58B5542877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift */,
 				DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */,
 				DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */,
+				DA6C8387288046F600339937 /* InitialViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -161,6 +170,7 @@
 				DA668C8E2876E038001EE1C9 /* SelectionCardCVCell.swift */,
 				DA58B55A2878104900BDAE4B /* CustomVisualEffectView.swift */,
 				DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */,
+				DA6C8381287FF4DA00339937 /* SignInTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -205,6 +215,8 @@
 			children = (
 				DA668C8C2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift */,
 				DA58B5522877ED0A00BDAE4B /* GenreSelectionDelegate.swift */,
+				DA6C838328800F6F00339937 /* LoginDelegate.swift */,
+				DA6C83852880366A00339937 /* SignupDelegate.swift */,
 			);
 			path = Abstract;
 			sourceTree = "<group>";
@@ -285,6 +297,7 @@
 				DA4556D028740B2000804CB8 /* Extensions.swift in Sources */,
 				DA58B5552877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift in Sources */,
 				DA58B55B2878104900BDAE4B /* CustomVisualEffectView.swift in Sources */,
+				DA6C8388288046F600339937 /* InitialViewController.swift in Sources */,
 				DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */,
 				DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */,
 				DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */,
@@ -293,6 +306,7 @@
 				DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */,
 				DA668C8D2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift in Sources */,
 				DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */,
+				DA6C8382287FF4DA00339937 /* SignInTableViewCell.swift in Sources */,
 				DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */,
 				DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
@@ -301,6 +315,7 @@
 				DA95CDB0287ED0D600809B7C /* User+CoreDataClass.swift in Sources */,
 				DA95CDB1287ED0D600809B7C /* User+CoreDataProperties.swift in Sources */,
 				DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */,
+				DA6C83862880366A00339937 /* SignupDelegate.swift in Sources */,
 				DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */,
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
@@ -308,6 +323,7 @@
 				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,
 				DA668C6E28769AC8001EE1C9 /* InputValidator.swift in Sources */,
+				DA6C838428800F6F00339937 /* LoginDelegate.swift in Sources */,
 				DA2810B9287BDDBB006EEF60 /* EditProfileViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

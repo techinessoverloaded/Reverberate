@@ -35,6 +35,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             userDefaults.set(0, forKey: GlobalConstants.themePreference)
         }
         
+        if userDefaults.value(forKey: GlobalConstants.preferredLanguages) == nil
+        {
+            userDefaults.set([], forKey: GlobalConstants.preferredLanguages)
+        }
+        
+        if userDefaults.value(forKey: GlobalConstants.preferredGenres) == nil
+        {
+            userDefaults.set([], forKey: GlobalConstants.preferredGenres)
+        }
+        
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
             window?.rootViewController = SignupViewController(style: .insetGrouped)
@@ -48,7 +58,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             }
             else
             {
-                window?.rootViewController = LoginViewController(style: .insetGrouped)
+                window?.rootViewController = MainViewController() //LoginViewController(style: .insetGrouped)
             }
         }
         restoreTheme()

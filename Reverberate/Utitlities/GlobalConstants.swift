@@ -14,6 +14,8 @@ struct GlobalConstants
     static let isUserLoggedIn = "Is_UsEr_LoGgEd_In"
     static let themePreference = "ThEmE_PrEfErEnCe"
     static let currentUserId = "cUrReNt_UsEr_Id"
+    static let preferredLanguages = "pReFeRrEd_lAnGuAgEs"
+    static let preferredGenres = "PrEfErReD_gEnReS"
     //Asset color names
     static let techinessColor = "techinessColor"
     static let selectionGreenColor = "selectionGreenColor"

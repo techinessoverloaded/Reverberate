@@ -59,14 +59,6 @@ class EditProfileViewController: UITableViewController
         return pField
     }()
     
-    private let phPickerViewController: PHPickerViewController = {
-        var pickerConfig = PHPickerConfiguration(photoLibrary: .shared())
-        pickerConfig.selectionLimit = 1
-        pickerConfig.filter = .images
-        let pickerView = PHPickerViewController(configuration: pickerConfig)
-        return pickerView
-    }()
-    
     private var doneButton: UIBarButtonItem!
     
     private var cancelButton: UIBarButtonItem!
@@ -91,6 +83,14 @@ class EditProfileViewController: UITableViewController
     
     private var profilePictureHasError: Bool = false
     
+    private lazy var phPickerViewController: PHPickerViewController = {
+        var pickerConfig = PHPickerConfiguration(photoLibrary: .shared())
+        pickerConfig.selectionLimit = 1
+        pickerConfig.filter = .images
+        let picker = PHPickerViewController(configuration: pickerConfig)
+        return picker
+    }()
+    
     override func loadView()
     {
         super.loadView()
@@ -112,7 +112,6 @@ class EditProfileViewController: UITableViewController
         nameField.delegate = self
         phoneField.delegate = self
         emailField.delegate = self
-        phPickerViewController.delegate = self
         doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
         cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancelButtonTap(_:)))
         doneButton.isEnabled = false
@@ -122,7 +121,6 @@ class EditProfileViewController: UITableViewController
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onImageViewTap(_:)))
         profilePictureView.isUserInteractionEnabled = true
         profilePictureView.addGestureRecognizer(tapGestureRecognizer)
-        phPickerViewController.navigationItem.leftBarButtonItem?.action = #selector(onPickerCancelButtonTap(_:))
     }
     
     override func viewDidLayoutSubviews()
@@ -307,6 +305,10 @@ extension EditProfileViewController
         {
             emailField.resignFirstResponder()
         }
+        if phPickerViewController.delegate == nil
+        {
+            phPickerViewController.delegate = self
+        }
         self.present(phPickerViewController, animated: true)
     }
     
@@ -320,11 +322,6 @@ extension EditProfileViewController
         self.dismiss(animated: true)
     }
     
-    @objc func onPickerCancelButtonTap(_ sender: UIBarButtonItem)
-    {
-        phPickerViewController.dismiss(animated: true)
-    }
-
     @objc func onDoneButtonTap(_ sender: UIBarButtonItem)
     {
         textFieldDidEndEditing(nameField)
@@ -355,6 +352,13 @@ extension EditProfileViewController: PHPickerViewControllerDelegate
 {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult])
     {
+        if results.isEmpty
+        {
+            DispatchQueue.main.async {
+                picker.dismiss(animated: true)
+            }
+            return
+        }
         results.first?.itemProvider.loadObject(ofClass: UIImage.self) { [unowned self] reading , error in
             guard let image = reading as? UIImage, error == nil else
             {
