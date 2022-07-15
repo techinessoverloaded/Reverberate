@@ -12,7 +12,7 @@ class LibraryViewController: UITableViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGroupedBackground
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
 }

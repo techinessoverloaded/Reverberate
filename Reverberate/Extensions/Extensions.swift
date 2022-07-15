@@ -157,12 +157,24 @@ extension UIViewController
             return UserDefaults.standard.string(forKey: GlobalConstants.currentUserId) != nil
         }
     }
-    
-    func setCenteredLargeTitle(title: String)
+}
+
+extension URL
+{
+    static func localURLForXCAsset(name: String) -> URL?
     {
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.largeTitleDisplayMode = .always
-//        self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.]
-        self.title = title
+        let fileManager = FileManager.default
+        guard let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else {return nil}
+        let url = cacheDirectory.appendingPathComponent("songs/\(name).mp3")
+        let path = url.path
+        if !fileManager.fileExists(atPath: path)
+        {
+            guard let data = try? Data(contentsOf: url) else
+            {
+                return nil
+            }
+            fileManager.createFile(atPath: path, contents: data, attributes: nil)
+        }
+        return url
     }
 }

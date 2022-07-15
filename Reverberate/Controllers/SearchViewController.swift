@@ -20,16 +20,15 @@ class SearchViewController: UITableViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGroupedBackground
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         self.navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController()
         searchController.searchBar.placeholder = "Artists, Songs, Albums"
         self.navigationItem.searchController = searchController
+        SongMetadataExtractor.extractSongMetadata(songName: "unmelaorukannu")
     }
-
 }
-
 //TableView Delegate and Datasource
 extension SearchViewController
 {

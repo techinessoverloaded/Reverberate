@@ -11,14 +11,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
 {
     var window: UIWindow?
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions)
+    {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
         setupRootViewController()
-        window?.makeKeyAndVisible()
+        window!.makeKeyAndVisible()
     }
 
     func setupRootViewController()
@@ -47,18 +48,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
-            window?.rootViewController = SignupViewController(style: .insetGrouped)
+            window!.rootViewController = SignupViewController(style: .insetGrouped)
             //window?.rootViewController = OnboardingViewController()
         }
         else
         {
             if let _ = userDefaults.string(forKey: GlobalConstants.currentUserId)
             {
-                window?.rootViewController = MainViewController()
+                window!.rootViewController = MainViewController()
             }
             else
             {
-                window?.rootViewController = MainViewController() //LoginViewController(style: .insetGrouped)
+                window!.rootViewController = MainViewController() //LoginViewController(style: .insetGrouped)
             }
         }
         restoreTheme()
@@ -95,13 +96,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         switch UserDefaults.standard.integer(forKey: GlobalConstants.themePreference)
         {
         case 0:
-            window?.overrideUserInterfaceStyle = .unspecified
+            window!.overrideUserInterfaceStyle = .unspecified
             print("System Theme")
         case 1:
-            window?.overrideUserInterfaceStyle = .light
+            window!.overrideUserInterfaceStyle = .light
             print("Light Theme")
         default:
-            window?.overrideUserInterfaceStyle = .dark
+            window!.overrideUserInterfaceStyle = .dark
             print("Dark Theme")
         }
     }
@@ -111,13 +112,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         switch themeOption
         {
         case 0:
-            window?.overrideUserInterfaceStyle = .unspecified
+            window!.overrideUserInterfaceStyle = .unspecified
             UserDefaults.standard.set(0, forKey: GlobalConstants.themePreference)
         case 1:
-            window?.overrideUserInterfaceStyle = .light
+            window!.overrideUserInterfaceStyle = .light
             UserDefaults.standard.set(1, forKey: GlobalConstants.themePreference)
         default:
-            window?.overrideUserInterfaceStyle = .dark
+            window!.overrideUserInterfaceStyle = .dark
             UserDefaults.standard.set(2, forKey: GlobalConstants.themePreference)
         }
     }

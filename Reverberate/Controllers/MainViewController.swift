@@ -47,7 +47,7 @@ class MainViewController: UITabBarController
     
     func replaceViewController(index: Int, newViewController: UIViewController)
     {
-        self.viewControllers!.replaceSubrange(index...index, with: [newViewController])
+    self.viewControllers!.replaceSubrange(index...index, with: [newViewController])
         let item = self.tabBar.items![index]
         item.image = UIImage(systemName: self.imageNames[index])
         item.selectedImage = UIImage(systemName: self.selectedImageNames[index])
