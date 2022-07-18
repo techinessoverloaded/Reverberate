@@ -48,7 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
-            window!.rootViewController = SignupViewController(style: .insetGrouped)
+            window!.rootViewController = InitialViewController(style: .insetGrouped)
             //window?.rootViewController = OnboardingViewController()
         }
         else

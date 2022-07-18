@@ -27,7 +27,7 @@ class CustomTableViewCell: UITableViewCell
         fatalError("Not initialized")
     }
     
-    func addSubViewToContentView(_ subView: UIView, useAutoLayout: Bool = false,useClearBackground: Bool = true)
+    func addSubViewToContentView(_ subView: UIView, useAutoLayout: Bool = false, useClearBackground: Bool = true)
     {
         contentView.addSubview(subView)
         self.subView = subView
@@ -55,6 +55,6 @@ class CustomTableViewCell: UITableViewCell
             }
             NSLayoutConstraint.activate(constraints)
         }
-        backgroundColor = useClearBackground ? .clear : .systemGroupedBackground
+        backgroundColor = useClearBackground ? .clear : backgroundColor
     }
 }

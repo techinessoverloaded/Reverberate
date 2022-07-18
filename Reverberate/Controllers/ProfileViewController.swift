@@ -545,12 +545,13 @@ extension ProfileViewController
             print("Logging out")
             UserDefaults.standard.set(nil, forKey: GlobalConstants.currentUserId)
             DispatchQueue.main.async {
-                let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
-                let newProfileVC = ProfileViewController(style: .insetGrouped)
-                newProfileVC.title = "Your Profile"
-                let navController = UINavigationController(rootViewController: newProfileVC)
-                mainVC.replaceViewController(index: 3, newViewController: navController)
-                alert.dismiss(animated: true)
+                UserDefaults.standard.set(true, forKey: GlobalConstants.isFirstTime)
+                (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(InitialViewController(style: .insetGrouped))
+//                let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
+//                let newProfileVC = ProfileViewController(style: .insetGrouped)
+//                newProfileVC.title = "Your Profile"
+//                let navController = UINavigationController(rootViewController: newProfileVC)
+//                mainVC.replaceViewController(index: 3, newViewController: navController)
             }
         })
         alert.addAction(UIAlertAction(title: "No", style: .destructive))
@@ -573,8 +574,15 @@ extension ProfileViewController: LanguageSelectionDelegate
 {
     func onLanguageSelection(selectedLanguages: [Int16])
     {
-        user.preferredLanguages = selectedLanguages
-        contextSaveAction()
+        if isUserLoggedIn
+        {
+            user.preferredLanguages = selectedLanguages
+            contextSaveAction()
+        }
+        else
+        {
+            UserDefaults.standard.set(selectedLanguages, forKey: GlobalConstants.preferredLanguages)
+        }
     }
     
     func languageCellsDidLoad()
@@ -594,8 +602,15 @@ extension ProfileViewController: GenreSelectionDelegate
 {
     func onGenreSelection(selectedGenres: [Int16])
     {
-        user.preferredGenres = selectedGenres
-        contextSaveAction()
+        if isUserLoggedIn
+        {
+            user.preferredGenres = selectedGenres
+            contextSaveAction()
+        }
+        else
+        {
+            UserDefaults.standard.set(selectedGenres, forKey: GlobalConstants.preferredGenres)
+        }
     }
     
     func genreCellsDidLoad()

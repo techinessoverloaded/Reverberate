@@ -18,49 +18,49 @@ struct GlobalConstants
     static let preferredGenres = "PrEfErReD_gEnReS"
     //Asset color names
     static let techinessColor = "techinessColor"
-    static let selectionGreenColor = "selectionGreenColor"
+    static let darkGreenColor = "darkGreenColor"
     //Asset song names
     static let songNames: [Language: [MusicGenre: [String]]] = [
         .tamil : [
             .classical: [],
             .melody: ["aarariraro", "unmelaorukannu"],
             .western: [],
-            .rap: [],
+            .rock: [],
             .folk: []
         ],
         .malayalam: [
             .classical: [],
             .melody: [],
             .western: [],
-            .rap: [],
+            .rock: [],
             .folk: []
         ],
         .hindi: [
             .classical: [],
             .melody: [],
             .western: [],
-            .rap: [],
+            .rock: [],
             .folk: []
         ],
         .telugu: [
             .classical: [],
             .melody: [],
             .western: [],
-            .rap: [],
+            .rock: [],
             .folk: []
         ],
         .kannada: [
             .classical: [],
             .melody: [],
             .western: [],
-            .rap: [],
+            .rock: [],
             .folk: []
         ],
         .english: [
             .classical: [],
             .melody: [],
             .western: [],
-            .rap: [],
+            .rock: [],
             .folk: []
         ]
     ]
