@@ -178,3 +178,14 @@ extension URL
         return url
     }
 }
+
+extension UIColor
+{
+    static func randomDarkColor(withAlpha alpha: CGFloat = 1) -> Self
+    {
+        let red = CGFloat(UInt.random(in: 11...145)) / 255
+        let green = CGFloat(UInt.random(in: 11...145)) / 255
+        let blue = CGFloat(UInt.random(in: 11...145)) / 255
+        return self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
+}

@@ -53,6 +53,10 @@ class CustomTableViewCell: UITableViewCell
                 constraints.append(subView.heightAnchor.constraint(equalTo: contentView.heightAnchor))
                 constraints.append(subView.widthAnchor.constraint(equalTo: subView.heightAnchor))
             }
+            if subView is UILabel
+            {
+                constraints.append(subView.widthAnchor.constraint(equalTo: contentView.widthAnchor))
+            }
             NSLayoutConstraint.activate(constraints)
         }
         backgroundColor = useClearBackground ? .clear : backgroundColor

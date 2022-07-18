@@ -36,11 +36,11 @@ class LabeledInfoTableViewCell: UITableViewCell
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            titleLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.3)
+            titleLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.32)
         ])
     }
     
-    func configureCell(title: String, infoView: UIView?, arrangeInfoViewToRightEnd: Bool = false, spreadInfoViewFromLeftEnd: Bool = false, widthMultiplier: CGFloat = 0.6, useBrightLabelColor: Bool = false)
+    func configureCell(title: String, infoView: UIView?, arrangeInfoViewToRightEnd: Bool = false, spreadInfoViewFromLeftEnd: Bool = false, widthMultiplier: CGFloat = 0.58, useBrightLabelColor: Bool = false)
     {
         titleLabel.text = title
         originalTitle = title

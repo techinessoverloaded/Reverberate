@@ -433,6 +433,7 @@ extension ProfileViewController
                 {
                     cell.configureCell(title: "Theme", infoView: themeChooser, arrangeInfoViewToRightEnd: true, useBrightLabelColor: true)
                     cell.selectionStyle = .none
+                    cell.accessoryType = .none
                 }
                 return cell
             }

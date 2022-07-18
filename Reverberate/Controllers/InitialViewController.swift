@@ -20,7 +20,7 @@ class InitialViewController: UITableViewController
         iLabel.font = .systemFont(ofSize: 26, weight: .bold)
         iLabel.textColor = .white
         iLabel.textAlignment = .center
-        iLabel.text = "Reverberate is ready to soothe \nyour ears. \n \n Let's get started !"
+        iLabel.text = "Reverberate is ready to soothe your ears. \n \n Let's get started !"
         iLabel.numberOfLines = 4
         iLabel.enableAutoLayout()
         return iLabel
@@ -98,11 +98,27 @@ class InitialViewController: UITableViewController
         signupButton.addTarget(self, action: #selector(onSignupButtonTap(_:)), for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(onLoginButtonTap(_:)), for: .touchUpInside)
         guestButton.addTarget(self, action: #selector(onGuestButtonTap(_:)), for: .touchUpInside)
+        tableView.showsVerticalScrollIndicator = false
+        tableView.isScrollEnabled = false
     }
 
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        tableView.scrollToRow(at: IndexPath(item: 0, section: 5), at: .bottom, animated: true)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
+    {
+        coordinator.animateAlongsideTransition(in: tableView)
+        {   [unowned self] _ in
+            self.tableView.scrollToRow(at: IndexPath(item: 0, section: 5), at: .bottom, animated: true)
+        }
     }
     
     func showLoginViewController()
@@ -127,22 +143,30 @@ class InitialViewController: UITableViewController
         self.present(navController, animated: true)
     }
     
-    func showLanguageSelectionViewController()
+    func showLanguageSelectionViewController(shouldShowCancelButton: Bool = false)
     {
         languageSelectionVC = LanguageSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
         languageSelectionVC.delegate = self
-        languageSelectionVC.rightBarButtonType = .done
+        languageSelectionVC.rightBarButtonCustomTitle = "Next"
+        if shouldShowCancelButton
+        {
+            languageSelectionVC.leftBarButtonType = .cancel
+        }
         let navController = UINavigationController(rootViewController: languageSelectionVC)
         navController.modalPresentationStyle = .pageSheet
         navController.isModalInPresentation = true
         self.present(navController, animated: true)
     }
     
-    func showGenreSelectionViewController()
+    func showGenreSelectionViewController(shouldShowCancelButton: Bool = false)
     {
         genreSelectionVC = GenreSelectionCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
         genreSelectionVC.delegate = self
         genreSelectionVC.rightBarButtonType = .done
+        if shouldShowCancelButton
+        {
+            genreSelectionVC.leftBarButtonType = .cancel
+        }
         let navController = UINavigationController(rootViewController: genreSelectionVC)
         navController.modalPresentationStyle = .pageSheet
         navController.isModalInPresentation = true
@@ -250,19 +274,20 @@ extension InitialViewController
         let alreadySelectedGenres = UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16]
         if alreadySelectedLanguages.isEmpty
         {
-            showLanguageSelectionViewController()
+            showLanguageSelectionViewController(shouldShowCancelButton: true)
             inGuestMode = true
         }
         else
         {
             if alreadySelectedGenres.isEmpty
             {
-                showGenreSelectionViewController()
+                showGenreSelectionViewController(shouldShowCancelButton: true)
                 inGuestMode = true
             }
             else
             {
                 (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(MainViewController())
+                UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
             }
         }
     }
@@ -372,7 +397,7 @@ extension InitialViewController: LanguageSelectionDelegate
             UserDefaults.standard.set(selectedLanguages, forKey: GlobalConstants.preferredLanguages)
             languageSelectionVC.dismiss(animated: true) {
                 [unowned self] in
-                self.showGenreSelectionViewController()
+                self.showGenreSelectionViewController(shouldShowCancelButton: true)
             }
         }
     }

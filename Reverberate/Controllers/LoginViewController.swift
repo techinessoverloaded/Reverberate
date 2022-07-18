@@ -78,7 +78,7 @@ class LoginViewController: UITableViewController
     }()
     
     private let emailCumPhoneErrorLabel: UILabel = {
-        let epErrorLabel = UILabel(useAutoLayout: true)
+        let epErrorLabel = UILabel(useAutoLayout: false)
         epErrorLabel.textColor = .systemRed
         epErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         epErrorLabel.text = "Required"
@@ -87,7 +87,7 @@ class LoginViewController: UITableViewController
     }()
     
     private let passwordErrorLabel: UILabel = {
-        let passErrorLabel = UILabel(useAutoLayout: true)
+        let passErrorLabel = UILabel(useAutoLayout: false)
         passErrorLabel.textColor = .systemRed
         passErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         passErrorLabel.text = "Required"
@@ -246,6 +246,11 @@ extension LoginViewController
         default:
             return nil
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
+    {
+        return 34
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell

@@ -120,7 +120,7 @@ class SignupViewController: UITableViewController
     }()
     
     private let nameErrorLabel: UILabel = {
-        let nErrorLabel = UILabel(useAutoLayout: true)
+        let nErrorLabel = UILabel(useAutoLayout: false)
         nErrorLabel.textColor = .systemRed
         nErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         nErrorLabel.text = "Required"
@@ -129,7 +129,7 @@ class SignupViewController: UITableViewController
     }()
     
     private let phoneErrorLabel: UILabel = {
-        let pErrorLabel = UILabel(useAutoLayout: true)
+        let pErrorLabel = UILabel(useAutoLayout: false)
         pErrorLabel.textColor = .systemRed
         pErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         pErrorLabel.text = "Required"
@@ -138,7 +138,7 @@ class SignupViewController: UITableViewController
     }()
     
     private let emailErrorLabel: UILabel = {
-        let eErrorLabel = UILabel(useAutoLayout: true)
+        let eErrorLabel = UILabel(useAutoLayout: false)
         eErrorLabel.textColor = .systemRed
         eErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         eErrorLabel.text = "Required"
@@ -147,7 +147,7 @@ class SignupViewController: UITableViewController
     }()
     
     private let passwordErrorLabel: UILabel = {
-        let passErrorLabel = UILabel(useAutoLayout: true)
+        let passErrorLabel = UILabel(useAutoLayout: false)
         passErrorLabel.textColor = .systemRed
         passErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         passErrorLabel.text = "Required"
@@ -158,7 +158,7 @@ class SignupViewController: UITableViewController
     }()
     
     private let confirmPasswordErrorLabel: UILabel = {
-        let cpErrorLabel = UILabel(useAutoLayout: true)
+        let cpErrorLabel = UILabel(useAutoLayout: false)
         cpErrorLabel.textColor = .systemRed
         cpErrorLabel.font = .preferredFont(forTextStyle: .footnote)
         cpErrorLabel.text = "Required"
@@ -396,12 +396,13 @@ extension SignupViewController
         1
     }
     
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 4
-        {
-            return 34
-        }
-        return tableView.estimatedSectionFooterHeight
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
+    {
+//        if section == 4
+//        {
+//            return 34
+//        }
+        return 34
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
