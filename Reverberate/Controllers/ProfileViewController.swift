@@ -165,11 +165,16 @@ class ProfileViewController: UITableViewController
         super.viewWillDisappear(animated)
     }
     
-    func setUserDetails()
+    func fetchUser()
     {
         user = try! context.fetch(User.fetchRequest()).first {
             $0.id == UserDefaults.standard.string(forKey: GlobalConstants.currentUserId)
         }
+    }
+    
+    func setUserDetails()
+    {
+        fetchUser()
         nameLabel.text = user.name
         emailLabel.text = user.email
         phoneLabel.text = user.phone
@@ -673,6 +678,10 @@ extension ProfileViewController: SignupDelegate
         let newProfileVC = ProfileViewController(style: .insetGrouped)
             newProfileVC.title = "Your Profile"
         let navController = UINavigationController(rootViewController: newProfileVC)
+        fetchUser()
+        user.preferredLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
+        user.preferredGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
+        contextSaveAction()
         mainVC.replaceViewController(index: 3, newViewController: navController)
         signupController.dismiss(animated: true)
     }

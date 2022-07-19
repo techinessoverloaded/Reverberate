@@ -110,7 +110,7 @@ extension UIViewController
     {
         get
         {
-            return UIDevice.current.orientation == .portrait || UIDevice.current.orientation == .portraitUpsideDown
+            return UIDevice.current.orientation.isPortrait ? true : (UIDevice.current.orientation == .unknown ? true : false)
         }
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import PhotosUI
 
 class SearchViewController: UITableViewController
 {
@@ -25,24 +24,48 @@ class SearchViewController: UITableViewController
     
     private lazy var categories: [[String]] = [["New Releases", "Top Charts"], ["Tamil", "Malayalam"], ["Hindi", "Telugu"], ["Kannada", "English"], ["Classical", "Melody"], ["Western", "Rock"], ["Folk"]]
     
+    private lazy var searchController: UISearchController = {
+        let searchResultsVC = SearchResultsViewController()
+        let sController = UISearchController(searchResultsController: searchResultsVC)
+        sController.searchResultsUpdater = searchResultsVC
+        sController.showsSearchResultsController = true
+        sController.hidesNavigationBarDuringPresentation = true
+        sController.searchBar.placeholder = "Artists, Songs, Albums"
+        return sController
+    }()
+    
+    private var previousColor: UIColor!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         navigationController?.navigationBar.prefersLargeTitles = true
-        let searchController = UISearchController()
-        searchController.searchBar.placeholder = "Artists, Songs, Albums"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.largeTitleDisplayMode = .always
-        collectionView.register(SelectionCardCVCell.self, forCellWithReuseIdentifier: SelectionCardCVCell.identifier)
+        collectionView.register(TitleCardCVCell.self, forCellWithReuseIdentifier: TitleCardCVCell.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.allowsSelection = false
+        collectionView.allowsSelection = true
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = false
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
+    {
+        coordinator.animate
+        {
+            [unowned self] _ in
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
     }
 }
 //TableView Delegate and Datasource
@@ -62,9 +85,18 @@ extension SearchViewController
     {
         if indexPath.section == 0
         {
-            let cellHeight = ((tableView.frame.width / 2.3) - 1) / 2
-            let margin: CGFloat = 20
-            return CGFloat(categories.count) * (cellHeight + margin)
+            if isInPortraitMode
+            {
+                let cellHeight = ((tableView.frame.width / 2.3) - 1) / 2
+                let margin: CGFloat = 20
+                return CGFloat(categories.count) * (cellHeight + margin)
+            }
+            else
+            {
+                let cellHeight = ((tableView.frame.width / 2.5) - 1) / 2.5
+                let margin: CGFloat = 20
+                return CGFloat(categories.count) * (cellHeight + margin)
+            }
         }
         else
         {
@@ -109,26 +141,54 @@ extension SearchViewController: UICollectionViewDataSource
     {
         let section = indexPath.section
         let item = indexPath.item
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectionCardCVCell.identifier, for: indexPath) as! SelectionCardCVCell
-        return cell.configureCell(title: nil, centerText: categories[section][item], backgroundColor: UIColor.randomDarkColor())
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TitleCardCVCell.identifier, for: indexPath) as! TitleCardCVCell
+        var randomColor = UIColor.randomDarkColor()
+        while randomColor == previousColor
+        {
+            randomColor = UIColor.randomDarkColor()
+        }
+        previousColor = randomColor
+        return cell.configureCell(title: categories[section][item], backgroundColor: randomColor)
     }
 }
 
 extension SearchViewController: UICollectionViewDelegate
 {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let categoricalVC = CategoricalSongsViewController(style: .insetGrouped)
+        categoricalVC.title = categories[indexPath.section][indexPath.item]
+        navigationController?.pushViewController(categoricalVC, animated: true)
+    }
 }
 
 extension SearchViewController: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        let cellWidth = (tableView.frame.width / 2.3) - 1
-        return .init(width: cellWidth, height: cellWidth / 2)
+        if isInPortraitMode
+        {
+            let cellWidth = (tableView.bounds.width / 2.3) - 1
+            return .init(width: cellWidth, height: cellWidth / 2)
+        }
+        else
+        {
+            let cellWidth = (tableView.bounds.width / 2.5) - 1
+            return .init(width: cellWidth, height: cellWidth / 2.5)
+        }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         return .init(top: 10, left: 0, bottom: 10, right: 0)
+    }
+}
+
+extension SearchViewController: UISearchControllerDelegate
+{
+    func didDismissSearchController(_ searchController: UISearchController)
+    {
+        
     }
 }

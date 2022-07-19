@@ -130,8 +130,6 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelection(isCellSelected: true)
         selectedGenres.append(availableGenres[indexPath.section][indexPath.item])
         print(selectedGenres)
         navigationItem.rightBarButtonItem!.isEnabled = !selectedGenres.isEmpty
@@ -143,8 +141,6 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath)
     {
-        let cell = collectionView.cellForItem(at: indexPath) as! SelectionCardCVCell
-        cell.setSelection(isCellSelected: false)
         selectedGenres.remove(at: selectedGenres.firstIndex(of: availableGenres[indexPath.section][indexPath.item])!)
         print(selectedGenres)
         navigationItem.rightBarButtonItem!.isEnabled = !selectedGenres.isEmpty

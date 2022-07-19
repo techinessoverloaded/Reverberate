@@ -110,14 +110,14 @@ class InitialViewController: UITableViewController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
-        tableView.scrollToRow(at: IndexPath(item: 0, section: 5), at: .bottom, animated: true)
+        tableView.scrollToRow(at: IndexPath(item: 0, section: 4), at: .bottom, animated: true)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
     {
         coordinator.animateAlongsideTransition(in: tableView)
         {   [unowned self] _ in
-            self.tableView.scrollToRow(at: IndexPath(item: 0, section: 5), at: .bottom, animated: true)
+            self.tableView.scrollToRow(at: IndexPath(item: 0, section: 4), at: .bottom, animated: true)
         }
     }
     
@@ -184,7 +184,7 @@ class InitialViewController: UITableViewController
 
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        return 6
+        return 5
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -192,17 +192,37 @@ class InitialViewController: UITableViewController
         return 1
     }
     
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    {
+        if section == 0
+        {
+            let dummyView = UIView(frame: .zero)
+            dummyView.backgroundColor = .clear
+            dummyView.isUserInteractionEnabled = false
+            return dummyView
+        }
+        else
+        {
+            return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+    {
+        if section == 0
+        {
+            return tableView.bounds.height * 0.15
+        }
+        return .zero
+    }
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         if indexPath.section == 0
         {
-            return tableView.bounds.height * 0.15
-        }
-        else if indexPath.section == 1
-        {
             return 180
         }
-        else if indexPath.section == 2
+        else if indexPath.section == 1
         {
             return 140
         }
@@ -220,27 +240,20 @@ class InitialViewController: UITableViewController
         cell.selectionStyle = .none
         if section == 0
         {
-            let dummyView = UIView()
-            dummyView.backgroundColor = .clear
-            cell.addSubViewToContentView(dummyView)
+            cell.addSubViewToContentView(logoView, useAutoLayout: true)
             return cell
         }
         else if section == 1
         {
-            cell.addSubViewToContentView(logoView, useAutoLayout: true)
+            cell.addSubViewToContentView(introLabel, useAutoLayout: true)
             return cell
         }
         else if section == 2
         {
-            cell.addSubViewToContentView(introLabel, useAutoLayout: true)
-            return cell
-        }
-        else if section == 3
-        {
             cell.addSubViewToContentView(signupButton)
             return cell
         }
-        else if section == 4
+        else if section == 3
         {
             cell.addSubViewToContentView(loginButton)
             return cell

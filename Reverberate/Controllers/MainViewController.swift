@@ -64,3 +64,11 @@ class MainViewController: UITabBarController
         print("Main View Controller")
     }
 }
+
+extension MainViewController
+{
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem)
+    {
+        
+    }
+}

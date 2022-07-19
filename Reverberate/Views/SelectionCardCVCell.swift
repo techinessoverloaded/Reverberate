@@ -96,30 +96,6 @@ class SelectionCardCVCell: UICollectionViewCell
         }
     }
     
-    func setSelection(isCellSelected: Bool)
-    {
-        if isCellSelected
-        {
-            UIView.transition(with: self, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
-                self.layer.borderWidth = 4
-            }, completion: nil)
-            
-            UIView.transition(with: checkView, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
-                self.checkView.alpha = 1
-            }, completion: nil)
-        }
-        else
-        {
-            UIView.transition(with: self, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
-                self.layer.borderWidth = 0
-            }, completion: nil)
-            
-            UIView.transition(with: checkView, duration: 0.2, options: [.transitionCrossDissolve], animations: { [unowned self] in
-                self.checkView.alpha = 0
-            }, completion: nil)
-        }
-    }
-    
     required init(coder: NSCoder)
     {
         fatalError("Not initialized")
