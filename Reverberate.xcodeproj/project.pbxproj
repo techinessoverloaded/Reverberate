@@ -45,7 +45,6 @@
 		DA5CE9A1288815FB0066AB2E /* AlbumWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5CE9A0288815FB0066AB2E /* AlbumWrapper.swift */; };
 		DA5CE9A3288835390066AB2E /* paakadha.m4a in Resources */ = {isa = PBXBuildFile; fileRef = DA5CE9A2288835390066AB2E /* paakadha.m4a */; };
 		DA5CE9A5288835AF0066AB2E /* unmelaorukannu.m4a in Resources */ = {isa = PBXBuildFile; fileRef = DA5CE9A4288835AF0066AB2E /* unmelaorukannu.m4a */; };
-		DA5CE9A7288837410066AB2E /* aarariraro.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA5CE9A6288837410066AB2E /* aarariraro.mp3 */; };
 		DA65D3B32886674300173F56 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B22886674300173F56 /* SearchResultsViewController.swift */; };
 		DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B428866D5000173F56 /* GlobalVariables.swift */; };
 		DA65D3B728866FA700173F56 /* CategoricalSongsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B628866FA700173F56 /* CategoricalSongsViewController.swift */; };
@@ -113,7 +112,6 @@
 		DA5CE9A0288815FB0066AB2E /* AlbumWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumWrapper.swift; sourceTree = "<group>"; };
 		DA5CE9A2288835390066AB2E /* paakadha.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = paakadha.m4a; sourceTree = "<group>"; };
 		DA5CE9A4288835AF0066AB2E /* unmelaorukannu.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = unmelaorukannu.m4a; sourceTree = "<group>"; };
-		DA5CE9A6288837410066AB2E /* aarariraro.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = aarariraro.mp3; sourceTree = "<group>"; };
 		DA65D3B22886674300173F56 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		DA65D3B428866D5000173F56 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		DA65D3B628866FA700173F56 /* CategoricalSongsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoricalSongsViewController.swift; sourceTree = "<group>"; };
@@ -334,7 +332,6 @@
 		DA7F24622881829800E4786F /* Melody */ = {
 			isa = PBXGroup;
 			children = (
-				DA5CE9A6288837410066AB2E /* aarariraro.mp3 */,
 				DA5CE9A4288835AF0066AB2E /* unmelaorukannu.m4a */,
 				DA5CE9A2288835390066AB2E /* paakadha.m4a */,
 			);
@@ -536,7 +533,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA5CE9A7288837410066AB2E /* aarariraro.mp3 in Resources */,
 				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
 				DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */,
 				DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */,
