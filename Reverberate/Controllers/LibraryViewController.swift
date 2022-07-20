@@ -90,18 +90,6 @@ class LibraryViewController: UITableViewController
         }
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-    {
-        if section == 0
-        {
-            return SortOptionsHeaderView()
-        }
-        else
-        {
-            return nil
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let section = indexPath.section

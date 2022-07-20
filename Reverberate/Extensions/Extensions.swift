@@ -146,6 +146,25 @@ extension String
     {
         return self.trimmingCharacters(in: .whitespaces)
     }
+    
+    func getNameWithoutExtension() -> Self?
+    {
+        guard self.contains(".") else
+        {
+            return nil
+        }
+        return String(self[..<self.firstIndex(of: ".")!])
+    }
+    
+    func getExtension() -> Self?
+    {
+        guard self.contains(".") else
+        {
+            return nil
+        }
+        return String(self[self.firstIndex(of: ".")!...])
+    }
+    
 }
 
 extension UIViewController

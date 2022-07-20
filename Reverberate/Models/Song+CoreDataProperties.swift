@@ -2,7 +2,7 @@
 //  Song+CoreDataProperties.swift
 //  Reverberate
 //
-//  Created by arun-13930 on 15/07/22.
+//  Created by arun-13930 on 20/07/22.
 //
 //
 
@@ -16,15 +16,30 @@ extension Song {
         return NSFetchRequest<Song>(entityName: "Song")
     }
 
-    @NSManaged public var title: String?
-    @NSManaged public var coverArt: Data?
-    @NSManaged public var singerNames: [String]?
-    @NSManaged public var musicDirectorNames: [String]?
     @NSManaged public var albumName: String?
-    @NSManaged public var duration: Float
-    @NSManaged public var lyricistName: String?
+    @NSManaged public var coverArt: Data?
     @NSManaged public var dateOfPublishing: Date?
-    @NSManaged public var relationship: Playlist?
+    @NSManaged public var duration: Float
+    @NSManaged public var title: String?
+    @NSManaged public var parentPlaylist: Playlist?
+    @NSManaged public var artists: NSSet?
+
+}
+
+// MARK: Generated accessors for artists
+extension Song {
+
+    @objc(addArtistsObject:)
+    @NSManaged public func addToArtists(_ value: Artist)
+
+    @objc(removeArtistsObject:)
+    @NSManaged public func removeFromArtists(_ value: Artist)
+
+    @objc(addArtists:)
+    @NSManaged public func addToArtists(_ values: NSSet)
+
+    @objc(removeArtists:)
+    @NSManaged public func removeFromArtists(_ values: NSSet)
 
 }
 

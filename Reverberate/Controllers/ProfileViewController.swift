@@ -102,13 +102,14 @@ class ProfileViewController: UITableViewController
     override func loadView()
     {
         super.loadView()
+        configureAccordingToSession()
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
-        configureAccordingToSession()
+        tableView.rowHeight = 44
     }
     
     func configureAccordingToSession()
@@ -269,7 +270,7 @@ extension ProfileViewController
             }
             else
             {
-                return tableView.estimatedRowHeight
+                return tableView.rowHeight
             }
         }
         else
@@ -280,7 +281,7 @@ extension ProfileViewController
             }
             else
             {
-                return tableView.estimatedRowHeight
+                return tableView.rowHeight
             }
         }
     }

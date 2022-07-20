@@ -5,7 +5,7 @@
 //  Created by arun-13930 on 19/07/22.
 //
 
-struct GlobalVariables
+class GlobalVariables
 {
     // Prevent Initialization
     private init() {}

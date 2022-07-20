@@ -18,6 +18,7 @@ class MainViewController: UITabBarController
     private lazy var profileVC = ProfileViewController(style: .insetGrouped)
     
     private lazy var imageNames = ["house", "magnifyingglass", "books.vertical", "person"]
+    
     private lazy var selectedImageNames = ["house.fill", "magnifyingglass", "books.vertical.fill", "person.fill"]
     
     override func loadView()

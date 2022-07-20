@@ -11,53 +11,179 @@ struct SongMetadataExtractor
     //Prevent Initialization
     private init() {}
     
-    static func extractSongMetadata(songName: String)
+    static func extractSongMetadata(songName: String) -> SongWrapper?
     {
-        let url = Bundle.main.url(forResource: songName, withExtension: "mp3")!
+        let url = Bundle.main.url(forResource: songName.getNameWithoutExtension(), withExtension: songName.getExtension())
+        guard let url = url else
+        {
+            return nil
+        }
+        print(url)
+        let songWrapper = SongWrapper()
         let avUrlAsset = AVURLAsset(url: url)
+        print(avUrlAsset)
         let songDurationInSeconds = CMTimeGetSeconds(avUrlAsset.duration)
+        songWrapper.duration = Float(songDurationInSeconds)
         print("Song duration in Seconds: \(songDurationInSeconds)")
+        songWrapper.artists = []
         for metadataItem in avUrlAsset.commonMetadata
         {
             let key = metadataItem.commonKey
             if key == .commonKeyAlbumName
             {
-                print("Album Name: \(metadataItem.stringValue ?? "")")
+                songWrapper.albumName = metadataItem.stringValue?.trimmedCopy()
+                print(songWrapper.albumName ?? "")
             }
             if key == .commonKeyTitle
             {
-                print("Song Title: \(metadataItem.stringValue ?? "")")
+                songWrapper.title = metadataItem.stringValue?.trimmedCopy()
+                print(songWrapper.title ?? "")
             }
             if key == .commonKeyArtist
             {
-                print("Artist Name: \(metadataItem.stringValue ?? "")")
+                let artistNames = metadataItem.stringValue
+                guard let artistNames = artistNames else
+                {
+                    continue
+                }
+                var singers: [ArtistWrapper] = []
+                if artistNames.contains(",")
+                {
+                    artistNames.split(separator: ",").forEach {
+                        let singer = ArtistWrapper()
+                        singer.name = String($0).trimmedCopy()
+                        singer.parentSong = songWrapper
+                        singer.artistType = .singer
+                        singers.append(singer)
+                    }
+                }
+                else if artistNames.contains("&")
+                {
+                    artistNames.split(separator: "&").forEach {
+                        let singer = ArtistWrapper()
+                        singer.name = String($0).trimmedCopy()
+                        singer.parentSong = songWrapper
+                        singer.artistType = .singer
+                        singers.append(singer)
+                    }
+                }
+                else
+                {
+                    let singer = ArtistWrapper()
+                    singer.name = artistNames.trimmedCopy()
+                    singer.parentSong = songWrapper
+                    singer.artistType = .singer
+                    singers.append(singer)
+                }
+                singers.forEach {
+                    print("Singer: \($0.name ?? "")")
+                    songWrapper.artists!.append($0)
+                }
             }
             if key == .commonKeyCreator
             {
-                print("Music Director: \(metadataItem.stringValue ?? "")")
+                let artistNames = metadataItem.stringValue
+                guard let artistNames = artistNames else
+                {
+                    continue
+                }
+                var musicDirectors: [ArtistWrapper] = []
+                if artistNames.contains(",")
+                {
+                    artistNames.split(separator: ",").forEach
+                    {
+                        let musicDirector = ArtistWrapper()
+                        musicDirector.name = String($0).trimmedCopy()
+                        musicDirector.parentSong = songWrapper
+                        musicDirector.artistType = .musicDirector
+                        musicDirectors.append(musicDirector)
+                    }
+                }
+                else if artistNames.contains("&")
+                {
+                    artistNames.split(separator: "&").forEach
+                    {
+                        let musicDirector = ArtistWrapper()
+                        musicDirector.name = String($0).trimmedCopy()
+                        musicDirector.parentSong = songWrapper
+                        musicDirector.artistType = .musicDirector
+                        musicDirectors.append(musicDirector)
+                    }
+                }
+                else
+                {
+                    let musicDirector = ArtistWrapper()
+                    musicDirector.name = artistNames.trimmedCopy()
+                    musicDirector.parentSong = songWrapper
+                    musicDirector.artistType = .musicDirector
+                    musicDirectors.append(musicDirector)
+                }
+                musicDirectors.forEach
+                {
+                    print("Music Director: \($0.name ?? "")")
+                    songWrapper.artists!.append($0)
+                }
             }
             if key == .commonKeyAuthor
             {
-                print("Lyricist: \(metadataItem.stringValue ?? "")")
+                let artistNames = metadataItem.stringValue
+                guard let artistNames = artistNames else
+                {
+                    continue
+                }
+                var lyricists: [ArtistWrapper] = []
+                if artistNames.contains(",")
+                {
+                    artistNames.split(separator: ",").forEach
+                    {
+                        let lyricist = ArtistWrapper()
+                        lyricist.name = String($0).trimmedCopy()
+                        lyricist.parentSong = songWrapper
+                        lyricist.artistType = .lyricist
+                        lyricists.append(lyricist)
+                    }
+                }
+                else if artistNames.contains("&")
+                {
+                    artistNames.split(separator: "&").forEach
+                    {
+                        let lyricist = ArtistWrapper()
+                        lyricist.name = String($0).trimmedCopy()
+                        lyricist.parentSong = songWrapper
+                        lyricist.artistType = .lyricist
+                        lyricists.append(lyricist)
+                    }
+                }
+                else
+                {
+                    let lyricist = ArtistWrapper()
+                    lyricist.name = artistNames.trimmedCopy()
+                    lyricist.parentSong = songWrapper
+                    lyricist.artistType = .lyricist
+                    lyricists.append(lyricist)
+                }
+                lyricists.forEach
+                {
+                    print("Lyricist: \($0.name ?? "")")
+                    songWrapper.artists!.append($0)
+                }
             }
             if key == .commonKeyArtwork
             {
-                let cover = UIImage(data: metadataItem.dataValue!)!
-                print("Cover: \(cover)")
-            }
-            if key == .commonKeyLastModifiedDate
-            {
-                print("Last Modified Date: \(String(describing: metadataItem.dataValue))")
+                let cover = UIImage(data: metadataItem.dataValue!)
+                guard let cover = cover else
+                {
+                    continue
+                }
+                songWrapper.coverArt = cover
+                print(cover)
             }
             if key == .commonKeyCreationDate
             {
-                print("Creation Date: \(String(describing: metadataItem.dataValue))")
-            }
-            if key == .commonKeyIdentifier
-            {
-                print("ID: \(metadataItem.stringValue ?? "")")
+                songWrapper.dateOfPublishing = metadataItem.dateValue
+                print(songWrapper.dateOfPublishing ?? "")
             }
         }
-        print(url)
+        return songWrapper
     }
 }

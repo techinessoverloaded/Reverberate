@@ -23,7 +23,7 @@ struct GlobalConstants
     static let songNames: [Language: [MusicGenre: [String]]] = [
         .tamil : [
             .classical: [],
-            .melody: ["aarariraro", "unmelaorukannu"],
+            .melody: ["unmelaorukannu.m4a", "paakadha.m4a"],
             .western: [],
             .rock: [],
             .folk: []
