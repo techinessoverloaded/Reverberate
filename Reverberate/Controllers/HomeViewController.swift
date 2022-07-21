@@ -4,7 +4,6 @@
 //
 //  Created by arun-13930 on 07/07/22.
 //
-
 import UIKit
 
 class HomeViewController: UITableViewController
@@ -19,11 +18,10 @@ class HomeViewController: UITableViewController
         return cView
     }()
     
-    private lazy var sectionHeaders: [String] = [
-        "To get you started",
-        "New Releases",
-        "Top Charts",
-    ]
+    private lazy var categories: [Category] = {
+//        return Category.allCases
+        return [.starter, .newReleases, .topCharts, .tamil, .melody]
+    }()
     
     private var songs: [SongWrapper] = []
     
@@ -48,23 +46,36 @@ class HomeViewController: UITableViewController
     private func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
     {
         //Item
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / 3), heightDimension: .fractionalHeight(1)))
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
         
         //Group
         let groupSize: NSCollectionLayoutSize!
         let group: NSCollectionLayoutGroup!
         if isInPortraitMode
         {
-//            groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .fractionalHeight(0.3))
-//            group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            
-            groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.2), heightDimension: .fractionalHeight(0.2))
-            group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
+            if isIpad
+            {
+                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.35), heightDimension: .absolute(420))
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
+            }
+            else
+            {
+                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(220))
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
+            }
         }
         else
         {
-            groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.2), heightDimension: .fractionalHeight(0.3))
-            group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 4)
+            if isIpad
+            {
+                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.7), heightDimension: .absolute(520))
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 4)
+            }
+            else
+            {
+                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.7), heightDimension: .absolute(380))
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 4)
+            }
         }
         
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
@@ -75,7 +86,6 @@ class HomeViewController: UITableViewController
         section.interGroupSpacing = 10
         section.orthogonalScrollingBehavior = .groupPaging
         section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(40)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
-        
         return section
     }
     
@@ -98,15 +108,29 @@ class HomeViewController: UITableViewController
             var cellHeight: CGFloat = 0
             if isInPortraitMode
             {
-                cellHeight = tableView.frame.height * 0.3
+                if isIpad
+                {
+                    cellHeight = 420
+                }
+                else
+                {
+                    cellHeight = 220
+                }
             }
             else
             {
-                cellHeight = tableView.frame.height * 0.6
+                if isIpad
+                {
+                    cellHeight = 520
+                }
+                else
+                {
+                    cellHeight = 380
+                }
             }
             let headerHeight: CGFloat = 40
             let margin: CGFloat = 40
-            return CGFloat(sectionHeaders.count) * (cellHeight + headerHeight + margin)
+            return CGFloat(categories.count) * (cellHeight + headerHeight + margin)
         }
         else
         {
@@ -126,7 +150,7 @@ extension HomeViewController: UICollectionViewDataSource
 {
     func numberOfSections(in collectionView: UICollectionView) -> Int
     {
-        return sectionHeaders.count
+        return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
@@ -142,9 +166,9 @@ extension HomeViewController: UICollectionViewDataSource
             let section = indexPath.section
             if section == 0
             {
-                return headerView.configure(title: sectionHeaders[section], shouldShowSeeAllButton: false)
+                return headerView.configure(title: categories[section].rawValue, shouldShowSeeAllButton: false)
             }
-            return headerView.configure(title: sectionHeaders[section])
+            return headerView.configure(title: categories[section].rawValue)
         }
         else
         {
@@ -156,17 +180,17 @@ extension HomeViewController: UICollectionViewDataSource
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SongCVCell.identifier, for: indexPath) as! SongCVCell
         let section = indexPath.section
-        let row = indexPath.item
+        let item = indexPath.item
         if section == 0
         {
-            if row == 0 || row == 1
+            if item == 0 || item == 1
             {
-                let artists = songs[row].artists!
+                let artists = songs[item].artists!
                 var artistNames = ""
                 artists.forEach {
                     artistNames.append("\($0.name!), ")
                 }
-                cell.configureCell(songPoster: songs[row].coverArt!, songTitle: songs[row].title!, artistNames: artistNames)
+                cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
             }
             else
             {
@@ -183,5 +207,17 @@ extension HomeViewController: UICollectionViewDataSource
 
 extension HomeViewController: UICollectionViewDelegate
 {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = indexPath.section
+        let item = indexPath.item
+        if section == 0
+        {
+            if item == 0 || item == 1
+            {
+                GlobalVariables.currentSong = songs[item]
+            }
+        }
+    }
 }

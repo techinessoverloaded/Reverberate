@@ -15,25 +15,28 @@ class SongCVCell: UICollectionViewCell
         let spView = UIImageView(useAutoLayout: true)
         spView.contentMode = .scaleAspectFill
         spView.clipsToBounds = true
+        spView.isUserInteractionEnabled = true
         return spView
     }()
     
     private lazy var songTitleView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
         stView.textColor = .label
-        stView.font = .systemFont(ofSize: 17, weight: .heavy)
+        stView.font = .preferredFont(forTextStyle: .body, weight: .heavy)
         stView.textAlignment = .left
         stView.lineBreakMode = .byTruncatingTail
-        stView.numberOfLines = 2
+        stView.numberOfLines = 1
+        stView.isUserInteractionEnabled = true
         return stView
     }()
     
     private lazy var artistsView: UILabel = {
         let aView = UILabel(useAutoLayout: true)
         aView.textColor = .label
-        aView.font = .systemFont(ofSize: 14, weight: .semibold)
+        aView.font = .preferredFont(forTextStyle: .footnote, weight: .semibold)
         aView.textAlignment = .left
         aView.lineBreakMode = .byTruncatingTail
+        aView.isUserInteractionEnabled = true
         return aView
     }()
     

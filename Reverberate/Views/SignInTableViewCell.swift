@@ -27,7 +27,7 @@ class SignInTableViewCell: UITableViewCell
     
     private let subtitleView: UILabel = {
         let sView = UILabel(useAutoLayout: true)
-        sView.font = .systemFont(ofSize: 14)
+        sView.font = .preferredFont(forTextStyle: .footnote)
         sView.textColor = .label
         return sView
     }()

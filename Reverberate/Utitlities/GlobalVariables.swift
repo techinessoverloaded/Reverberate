@@ -11,4 +11,8 @@ class GlobalVariables
     private init() {}
     
     static var availableSongs: [Language: [MusicGenre: Song]] = [:]
+    
+    static var currentSong: SongWrapper?
+    
+    static var currentPlaylist: PlaylistWrapper?
 }

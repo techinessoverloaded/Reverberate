@@ -18,14 +18,14 @@ struct SongMetadataExtractor
         {
             return nil
         }
-        print(url)
         let songWrapper = SongWrapper()
         let avUrlAsset = AVURLAsset(url: url)
-        print(avUrlAsset)
-        let songDurationInSeconds = CMTimeGetSeconds(avUrlAsset.duration)
-        songWrapper.duration = Float(songDurationInSeconds)
+        print(avUrlAsset.duration)
+        let songDurationInSeconds = avUrlAsset.duration.seconds
+        songWrapper.duration = songDurationInSeconds
         print("Song duration in Seconds: \(songDurationInSeconds)")
         songWrapper.artists = []
+        songWrapper.url = url
         for metadataItem in avUrlAsset.commonMetadata
         {
             let key = metadataItem.commonKey

@@ -157,6 +157,7 @@ class ProfileViewController: UITableViewController
         }
     }
     
+    
     override func viewWillDisappear(_ animated: Bool)
     {
         if isUserLoggedIn

@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import AVKit
 
 class MainViewController: UITabBarController
 {
     private lazy var homeVC = HomeViewController(style: .insetGrouped)
-    
+
     private lazy var searchVC = SearchViewController(style: .insetGrouped)
     
     private lazy var libraryVC = LibraryViewController(style: .insetGrouped)
@@ -20,6 +21,14 @@ class MainViewController: UITabBarController
     private lazy var imageNames = ["house", "magnifyingglass", "books.vertical", "person"]
     
     private lazy var selectedImageNames = ["house.fill", "magnifyingglass", "books.vertical.fill", "person.fill"]
+    
+    private lazy var miniPlayerView: MiniPlayerView = {
+        return MiniPlayerView(useAutoLayout: true)
+    }()
+    
+    private var playerController: PlayerViewController!
+    
+    private var avAudioPlayer: AVAudioPlayer!
     
     override func loadView()
     {
@@ -44,6 +53,14 @@ class MainViewController: UITabBarController
             items[x].image = UIImage(systemName: imageNames[x])
             items[x].selectedImage = UIImage(systemName: selectedImageNames[x])
         }
+        view.addSubview(miniPlayerView)
+        NSLayoutConstraint.activate([
+            miniPlayerView.heightAnchor.constraint(equalToConstant: 80),
+            miniPlayerView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            miniPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
+            miniPlayerView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        miniPlayerView.delegate = self
     }
     
     func replaceViewController(index: Int, newViewController: UIViewController)
@@ -64,12 +81,96 @@ class MainViewController: UITabBarController
         super.viewDidAppear(animated)
         print("Main View Controller")
     }
+    
+    func showPlayerController()
+    {
+        playerController = PlayerViewController(style: .insetGrouped)
+        let navController = UINavigationController(rootViewController: playerController)
+        playerController.delegate = self
+        avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.currentSong!.url!)
+        playerController.avPlayerRef = avAudioPlayer
+        playerController.title = GlobalVariables.currentSong!.albumName!.components(separatedBy: .whitespaces).first!
+        navController.modalPresentationStyle = .pageSheet
+        navController.navigationBar.isTranslucent = true
+        self.present(navController, animated: false)
+    }
 }
 
-extension MainViewController
+extension MainViewController: MiniPlayerDelegate
 {
-    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem)
+    func onPlayButtonTap(miniPlayerView: MiniPlayerView)
     {
         
+    }
+    
+    func onPauseButtonTap(miniPlayerView: MiniPlayerView)
+    {
+        
+    }
+    
+    func onRewindButtonTap(miniPlayerView: MiniPlayerView)
+    {
+        
+    }
+    
+    func onForwardButtonTap(miniPlayerView: MiniPlayerView)
+    {
+        
+    }
+    
+    func onPlayerExpansionRequest()
+    {
+        showPlayerController()
+    }
+}
+
+extension MainViewController: PlayerDelegate
+{
+    func onPlayButtonTap()
+    {
+        try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+        avAudioPlayer!.play()
+    }
+    
+    func onPauseButtonTap()
+    {
+        try! AVAudioSession.sharedInstance().setActive(false)
+        avAudioPlayer!.pause()
+    }
+    
+    func onRewindButtonTap()
+    {
+        
+    }
+    
+    func onForwardButtonTap()
+    {
+        
+    }
+    
+    func onNextButtonTap()
+    {
+        
+    }
+    
+    func onPreviousButtonTap()
+    {
+        
+    }
+    
+    func onSeekBarValueChange(songPosition value: Float)
+    {
+        
+    }
+    
+    func onVolumeSeekBarValueChange(volumeValue value: Float)
+    {
+        
+    }
+    
+    func onPlayerShrinkRequest()
+    {
+        playerController.dismiss(animated: true)
+        playerController = nil
     }
 }

@@ -14,10 +14,11 @@ class SongWrapper: Identifiable, Hashable
     public var albumName: String?
     public var coverArt: UIImage?
     public var dateOfPublishing: Date?
-    public var duration: Float?
+    public var duration: Double?
     public var title: String?
     public var parentPlaylist: PlaylistWrapper?
     public var artists: [ArtistWrapper]?
+    public var url: URL?
     
     func emitAsCoreDataObject() -> Song
     {
@@ -27,6 +28,7 @@ class SongWrapper: Identifiable, Hashable
         song.dateOfPublishing = self.dateOfPublishing
         song.duration = self.duration!
         song.title = self.title
+        song.url = self.url
         song.parentPlaylist = self.parentPlaylist!.emitAsCoreDataObject()
         var artistSet = Set<Artist>()
         artists!.forEach {
