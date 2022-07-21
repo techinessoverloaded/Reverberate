@@ -5,14 +5,24 @@
 //  Created by arun-13930 on 19/07/22.
 //
 
+import Foundation
+
 class GlobalVariables
 {
+    static let shared: GlobalVariables = GlobalVariables()
+    
     // Prevent Initialization
     private init() {}
     
-    static var availableSongs: [Language: [MusicGenre: Song]] = [:]
+    var availableSongs: [Language: [MusicGenre: Song]] = [:]
     
-    static var currentSong: SongWrapper?
+    var currentSong: SongWrapper? = nil
+    {
+        didSet
+        {
+            NotificationCenter.default.post(name: NSNotification.Name.currentSongSetNotification, object: nil)
+        }
+    }
     
-    static var currentPlaylist: PlaylistWrapper?
+    var currentPlaylist: PlaylistWrapper?
 }

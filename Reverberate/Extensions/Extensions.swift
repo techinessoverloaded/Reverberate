@@ -6,8 +6,7 @@
 //
 
 import UIKit
-import Photos
-import PhotosUI
+import Foundation
 
 extension UIView
 {
@@ -267,4 +266,9 @@ extension UILabel
         self.init(useAutoLayout: useAutoLayout)
         self.adjustsFontForContentSizeCategory = adjustsFontAccordingToCategory
     }
+}
+
+extension NSNotification.Name
+{
+    static let currentSongSetNotification = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
 }

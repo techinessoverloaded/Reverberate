@@ -37,7 +37,7 @@ class MiniPlayerView: UIView
     private lazy var songTitleView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
         stView.textColor = .label
-        stView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
+        stView.font = .preferredFont(forTextStyle: .body, weight: .heavy)
         stView.text = "No song is playing now"
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
@@ -52,6 +52,7 @@ class MiniPlayerView: UIView
         let popButton = UIButton(configuration: config)
         popButton.setImage(playIcon, for: .normal) // or pause.fill
         popButton.enableAutoLayout()
+        popButton.isEnabled = false
         return popButton
     }()
     
@@ -62,6 +63,7 @@ class MiniPlayerView: UIView
         config.buttonSize = .mini
         let rButton = UIButton(configuration: config)
         rButton.enableAutoLayout()
+        rButton.isEnabled = false
         return rButton
     }()
     
@@ -72,6 +74,7 @@ class MiniPlayerView: UIView
         config.buttonSize = .mini
         let fButton = UIButton(configuration: config)
         fButton.enableAutoLayout()
+        fButton.isEnabled = false
         return fButton
     }()
     
@@ -139,11 +142,42 @@ class MiniPlayerView: UIView
         self.addGestureRecognizer(tapRecognizer)
         swipeGestureRecognizer.addTarget(self, action: #selector(onMiniPlayerViewSwipe(_:)))
         self.addGestureRecognizer(swipeGestureRecognizer)
+        print(playOrPauseButton.isEnabled)
     }
     
     required init(coder: NSCoder)
     {
         fatalError("Not initialized")
+    }
+    
+    func setSong(song: SongWrapper?)
+    {
+        guard let song = song else {
+            songTitleView.text = "No song is playing now"
+            posterView.image = UIImage(named: "glassmorphic_bg")!
+            playOrPauseButton.isEnabled = false
+            forwardButton.isEnabled = false
+            rewindButton.isEnabled = false
+            playOrPauseButton.setImage(playIcon, for: .normal)
+            return
+        }
+        posterView.image = song.coverArt!
+        songTitleView.text = song.title!
+        playOrPauseButton.isEnabled = true
+        forwardButton.isEnabled = true
+        rewindButton.isEnabled = true
+    }
+    
+    func setPlaying(shouldPlaySong: Bool)
+    {
+        if shouldPlaySong
+        {
+            playOrPauseButton.setImage(pauseIcon, for: .normal)
+        }
+        else
+        {
+            playOrPauseButton.setImage(playIcon, for: .normal)
+        }
     }
 }
 
@@ -179,11 +213,17 @@ extension MiniPlayerView
     
     @objc func onMiniPlayerViewTap(_ sender: UIView)
     {
-        delegate?.onPlayerExpansionRequest()
+        if GlobalVariables.shared.currentSong != nil
+        {
+            delegate?.onPlayerExpansionRequest()
+        }
     }
     
     @objc func onMiniPlayerViewSwipe(_ sender: UIView)
     {
-        delegate?.onPlayerExpansionRequest()
+        if GlobalVariables.shared.currentSong != nil
+        {
+            delegate?.onPlayerExpansionRequest()
+        }
     }
 }

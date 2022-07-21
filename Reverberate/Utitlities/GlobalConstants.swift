@@ -5,7 +5,9 @@
 //  Created by arun-13930 on 05/07/22.
 //
 
-struct GlobalConstants
+import Foundation
+
+ class GlobalConstants
 {
     //Prevent Instantiation
     private init() { }
@@ -19,6 +21,10 @@ struct GlobalConstants
     //Asset color names
     static let techinessColor = "techinessColor"
     static let darkGreenColor = "darkGreenColor"
+    
+    //NSNotification Names
+     static let currentSongSetNotification: NSNotification.Name = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
+     
     //Asset song names
     static let songNames: [Language: [MusicGenre: [String]]] = [
         .tamil : [

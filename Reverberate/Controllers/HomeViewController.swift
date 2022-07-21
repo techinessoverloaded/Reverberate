@@ -216,7 +216,7 @@ extension HomeViewController: UICollectionViewDelegate
         {
             if item == 0 || item == 1
             {
-                GlobalVariables.currentSong = songs[item]
+                GlobalVariables.shared.currentSong = songs[item]
             }
         }
     }

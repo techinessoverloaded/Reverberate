@@ -69,8 +69,8 @@ class PlayerViewController: UITableViewController
         view.addGestureRecognizer(swipeGestureRecognizer)
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         avPlayerRef?.play()
-        posterView.image = GlobalVariables.currentSong!.coverArt!
-        songTitleView.text = GlobalVariables.currentSong!.title!
+        posterView.image = GlobalVariables.shared.currentSong!.coverArt!
+        songTitleView.text = GlobalVariables.shared.currentSong!.title!
     }
     
     override func viewDidDisappear(_ animated: Bool)
