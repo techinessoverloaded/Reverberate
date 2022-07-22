@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AVKit
 
 class GlobalVariables
 {
@@ -15,6 +16,8 @@ class GlobalVariables
     private init() {}
     
     var availableSongs: [Language: [MusicGenre: Song]] = [:]
+    
+    var avAudioPlayer: AVAudioPlayer!
     
     var currentSong: SongWrapper? = nil
     {

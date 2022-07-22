@@ -19,10 +19,15 @@ protocol PlayerDelegate: AnyObject
     
     func onPreviousButtonTap()
     
-    func onSeekBarValueChange(songPosition value: Float)
+    func onShuffleButtonTap()
     
-    func onVolumeSeekBarValueChange(volumeValue value: Float)
+    func onLoopButtonTap(loopMode: Int)
+    
+    func onSongSeekRequest(songPosition value: Double)
     
     func onPlayerShrinkRequest()
     
+    func onFavouriteButtonTap(shouldMakeAsFavourite: Bool)
+    
+    func onAddToPlaylistsButtonTap(shouldAddToPlaylists: Bool)
 }

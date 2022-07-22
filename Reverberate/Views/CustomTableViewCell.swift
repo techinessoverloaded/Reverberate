@@ -17,6 +17,8 @@ class CustomTableViewCell: UITableViewCell
     
     private var useClearBackground: Bool = true
     
+    private var widthMultiplier: CGFloat = 1
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
     {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -27,12 +29,13 @@ class CustomTableViewCell: UITableViewCell
         fatalError("Not initialized")
     }
     
-    func addSubViewToContentView(_ subView: UIView, useAutoLayout: Bool = false, useClearBackground: Bool = true)
+    func addSubViewToContentView(_ subView: UIView, useAutoLayout: Bool = false, useMultiplierForWidth widthMultiplier: CGFloat = 1, useClearBackground: Bool = true)
     {
         contentView.addSubview(subView)
         self.subView = subView
         self.useAutoLayout = useAutoLayout
         self.useClearBackground = useClearBackground
+        self.widthMultiplier = widthMultiplier
     }
     
     override func layoutSubviews()
@@ -56,6 +59,11 @@ class CustomTableViewCell: UITableViewCell
             if subView is UILabel
             {
                 constraints.append(subView.widthAnchor.constraint(equalTo: contentView.widthAnchor))
+            }
+            if widthMultiplier != 1
+            {
+                constraints.append(subView.heightAnchor.constraint(equalTo: contentView.heightAnchor))
+                constraints.append(subView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: widthMultiplier))
             }
             NSLayoutConstraint.activate(constraints)
         }

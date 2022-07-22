@@ -28,7 +28,11 @@ class MainViewController: UITabBarController
     
     private var playerController: PlayerViewController!
     
-    private var avAudioPlayer: AVAudioPlayer!
+    private var avAudioPlayer: AVAudioPlayer! = GlobalVariables.shared.avAudioPlayer
+    
+    private lazy var miniPlayerCompactConstraint: NSLayoutConstraint = miniPlayerView.heightAnchor.constraint(equalToConstant: 80)
+    
+    private lazy var miniPlayerExtendedConstraint: NSLayoutConstraint = miniPlayerView.heightAnchor.constraint(equalTo: view.heightAnchor)
     
     override func loadView()
     {
@@ -55,10 +59,10 @@ class MainViewController: UITabBarController
         }
         view.addSubview(miniPlayerView)
         NSLayoutConstraint.activate([
-            miniPlayerView.heightAnchor.constraint(equalToConstant: 80),
             miniPlayerView.widthAnchor.constraint(equalTo: view.widthAnchor),
             miniPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
-            miniPlayerView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            miniPlayerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            miniPlayerCompactConstraint
         ])
         miniPlayerView.delegate = self
     }
@@ -88,21 +92,26 @@ class MainViewController: UITabBarController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
-    func showPlayerController()
+    func showPlayerController(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
     {
         playerController = PlayerViewController(style: .insetGrouped)
         let navController = UINavigationController(rootViewController: playerController)
         playerController.delegate = self
-        avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url!)
-        playerController.avPlayerRef = avAudioPlayer
-        playerController.title = GlobalVariables.shared.currentSong!.albumName!.components(separatedBy: .whitespaces).first!
-        navController.modalPresentationStyle = .pageSheet
+        playerController.setPlaying(shouldPlaySongFromBeginning: shouldPlaySongFromBeginning, isSongPaused: isSongPaused)
+        navController.modalPresentationStyle = .overFullScreen
+        navController.modalTransitionStyle = .crossDissolve
         navController.navigationBar.isTranslucent = true
         if let sheet = navController.sheetPresentationController
         {
             sheet.prefersGrabberVisible = true
         }
-        self.present(navController, animated: false)
+        UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCrossDissolve], animations: { [unowned self] in
+            self.miniPlayerView.alpha = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCurlUp], animations: { [unowned self] in
+                self.present(navController, animated: false)
+            }, completion: nil)
+        })
     }
 }
 
@@ -110,58 +119,71 @@ extension MainViewController: MiniPlayerDelegate
 {
     func onPlayButtonTap(miniPlayerView: MiniPlayerView)
     {
-        if !avAudioPlayer.isPlaying
-        {
-            avAudioPlayer.play()
-        }
+        try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+        avAudioPlayer.play()
     }
     
     func onPauseButtonTap(miniPlayerView: MiniPlayerView)
     {
-        if avAudioPlayer.isPlaying
-        {
-            avAudioPlayer.pause()
-        }
+        try! AVAudioSession.sharedInstance().setActive(false)
+        avAudioPlayer.pause()
     }
     
     func onRewindButtonTap(miniPlayerView: MiniPlayerView)
     {
-        
+        avAudioPlayer.currentTime -= 10
     }
     
     func onForwardButtonTap(miniPlayerView: MiniPlayerView)
     {
-        
+        avAudioPlayer.currentTime += 10
     }
     
     func onPlayerExpansionRequest()
     {
-        showPlayerController()
+        showPlayerController(shouldPlaySongFromBeginning: false, isSongPaused: !avAudioPlayer.isPlaying)
     }
 }
 
 extension MainViewController: PlayerDelegate
 {
+    func onLoopButtonTap(loopMode: Int)
+    {
+        avAudioPlayer.numberOfLoops = loopMode
+    }
+    
+    func onFavouriteButtonTap(shouldMakeAsFavourite: Bool)
+    {
+        
+    }
+    
+    func onAddToPlaylistsButtonTap(shouldAddToPlaylists: Bool)
+    {
+        
+    }
+    
     func onPlayButtonTap()
     {
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-        avAudioPlayer!.play()
+        avAudioPlayer.play()
+        miniPlayerView.setPlaying(shouldPlaySong: true)
     }
     
     func onPauseButtonTap()
     {
         try! AVAudioSession.sharedInstance().setActive(false)
-        avAudioPlayer!.pause()
+        avAudioPlayer.pause()
+        miniPlayerView.setPlaying(shouldPlaySong: false)
     }
     
     func onRewindButtonTap()
     {
-        
+        avAudioPlayer.currentTime -= 10
     }
     
     func onForwardButtonTap()
     {
-        
+        avAudioPlayer.currentTime += 10
     }
     
     func onNextButtonTap()
@@ -174,20 +196,22 @@ extension MainViewController: PlayerDelegate
         
     }
     
-    func onSeekBarValueChange(songPosition value: Float)
+    func onSongSeekRequest(songPosition value: Double)
     {
-        
+        avAudioPlayer.currentTime = value
     }
     
-    func onVolumeSeekBarValueChange(volumeValue value: Float)
+    func onShuffleButtonTap()
     {
         
     }
     
     func onPlayerShrinkRequest()
     {
-        playerController.dismiss(animated: true)
-        playerController = nil
+        UIView.animate(withDuration: 0.2, delay: 0, options: [.transitionCurlDown], animations: { [unowned self] in
+                self.playerController.dismiss(animated: false)
+                self.miniPlayerView.alpha = 1
+        }, completion: nil)
     }
 }
 
@@ -195,8 +219,8 @@ extension MainViewController
 {
     @objc func onSongChange()
     {
-        miniPlayerView.setSong(song: GlobalVariables.shared.currentSong!)
-        miniPlayerView.setPlaying(shouldPlaySong: true)
-        showPlayerController()
+        GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url!)
+        avAudioPlayer = GlobalVariables.shared.avAudioPlayer
+        showPlayerController(shouldPlaySongFromBeginning: true)
     }
 }

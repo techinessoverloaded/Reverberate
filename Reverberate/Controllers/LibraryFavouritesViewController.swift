@@ -55,7 +55,7 @@ class LibraryFavouritesViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-
+        cell.backgroundColor = .clear
         // Configure the cell...
 
         return cell

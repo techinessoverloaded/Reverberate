@@ -20,10 +20,11 @@ struct SongMetadataExtractor
         }
         let songWrapper = SongWrapper()
         let avUrlAsset = AVURLAsset(url: url)
-        print(avUrlAsset.duration)
-        let songDurationInSeconds = avUrlAsset.duration.seconds
-        songWrapper.duration = songDurationInSeconds
-        print("Song duration in Seconds: \(songDurationInSeconds)")
+        var tempPlayer: AVAudioPlayer! = try! AVAudioPlayer(contentsOf: url)
+        print(tempPlayer.duration)
+        songWrapper.duration = tempPlayer.duration
+        print("Song duration in Seconds: \(songWrapper.duration ?? 0)")
+        tempPlayer = nil
         songWrapper.artists = []
         songWrapper.url = url
         for metadataItem in avUrlAsset.commonMetadata
@@ -31,7 +32,12 @@ struct SongMetadataExtractor
             let key = metadataItem.commonKey
             if key == .commonKeyAlbumName
             {
-                songWrapper.albumName = metadataItem.stringValue?.trimmedCopy()
+                var albumName = metadataItem.stringValue!.trimmedCopy()
+                if albumName.contains("(")
+                {
+                    albumName = String(albumName[albumName.startIndex..<albumName.firstIndex(of: "(")!]).trimmedCopy()
+                }
+                songWrapper.albumName = albumName
                 print(songWrapper.albumName ?? "")
             }
             if key == .commonKeyTitle

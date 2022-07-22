@@ -47,4 +47,12 @@ class SongWrapper: Identifiable, Hashable
     {
         hasher.combine(self)
     }
+    
+    func getArtistNamesAsString() -> String
+    {
+        let artistNameArray = artists!.map {
+            $0.name!
+        }
+        return artistNameArray.joined(separator: ", ")
+    }
 }

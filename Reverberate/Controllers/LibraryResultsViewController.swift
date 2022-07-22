@@ -42,17 +42,34 @@ class LibraryResultsViewController: UITableViewController {
     }()
     
     private lazy var emptyMessageLabel: UILabel = {
-        let emLabel = UILabel()
+        let emLabel = UILabel(useAutoLayout: true)
         emLabel.textAlignment = .center
         emLabel.numberOfLines = 4
         return emLabel
     }()
     
+    private lazy var backgroundView: UIVisualEffectView = {
+        let bView = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
+        return bView
+    }()
+    
+    override func loadView()
+    {
+        super.loadView()
+        backgroundView.contentView.addSubview(emptyMessageLabel)
+        NSLayoutConstraint.activate([
+            emptyMessageLabel.centerXAnchor.constraint(equalTo: backgroundView.contentView.centerXAnchor),
+            emptyMessageLabel.centerYAnchor.constraint(equalTo: backgroundView.contentView.centerYAnchor),
+            emptyMessageLabel.widthAnchor.constraint(equalTo: backgroundView.contentView.widthAnchor, multiplier: 0.8)
+        ])
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        view.backgroundColor = .systemGroupedBackground
-        tableView.backgroundView = emptyMessageLabel
+        view.backgroundColor = .clear
+        tableView.backgroundColor = .clear
+        tableView.backgroundView = backgroundView
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

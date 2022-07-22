@@ -185,11 +185,7 @@ extension HomeViewController: UICollectionViewDataSource
         {
             if item == 0 || item == 1
             {
-                let artists = songs[item].artists!
-                var artistNames = ""
-                artists.forEach {
-                    artistNames.append("\($0.name!), ")
-                }
+                let artistNames = songs[item].getArtistNamesAsString()
                 cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
             }
             else

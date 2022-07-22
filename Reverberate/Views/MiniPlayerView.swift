@@ -36,9 +36,9 @@ class MiniPlayerView: UIView
     
     private lazy var songTitleView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
-        stView.textColor = .label
-        stView.font = .preferredFont(forTextStyle: .body, weight: .heavy)
-        stView.text = "No song is playing now"
+        stView.textColor = .systemGray
+        stView.font = .preferredFont(forTextStyle: .body, weight: .bold)
+        stView.text = "No song"
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true
@@ -47,7 +47,7 @@ class MiniPlayerView: UIView
     
     private lazy var playOrPauseButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .systemGray
+        config.baseForegroundColor = .label
         config.buttonSize = .mini
         let popButton = UIButton(configuration: config)
         popButton.setImage(playIcon, for: .normal) // or pause.fill
@@ -58,8 +58,8 @@ class MiniPlayerView: UIView
     
     private lazy var rewindButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "backward.fill")!
-        config.baseForegroundColor = .systemGray
+        config.image = UIImage(systemName: "gobackward.10")!
+        config.baseForegroundColor = .label
         config.buttonSize = .mini
         let rButton = UIButton(configuration: config)
         rButton.enableAutoLayout()
@@ -69,13 +69,19 @@ class MiniPlayerView: UIView
     
     private lazy var forwardButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "forward.fill")!
-        config.baseForegroundColor = .systemGray
+        config.image = UIImage(systemName: "goforward.10")!
+        config.baseForegroundColor = .label
         config.buttonSize = .mini
         let fButton = UIButton(configuration: config)
         fButton.enableAutoLayout()
         fButton.isEnabled = false
         return fButton
+    }()
+    
+    private lazy var controlsView: UIView = {
+        let cView = UIView(useAutoLayout: true)
+        cView.backgroundColor = .clear
+        return cView
     }()
     
     private lazy var separator: UIView = {
@@ -106,10 +112,11 @@ class MiniPlayerView: UIView
         addSubview(backgroundView)
         addSubview(posterView)
         addSubview(songTitleView)
-        addSubview(playOrPauseButton)
-        addSubview(rewindButton)
-        addSubview(forwardButton)
+        addSubview(controlsView)
         addSubview(separator)
+        controlsView.addSubview(playOrPauseButton)
+        controlsView.addSubview(rewindButton)
+        controlsView.addSubview(forwardButton)
         isOpaque = false
         NSLayoutConstraint.activate([
             backgroundView.widthAnchor.constraint(equalTo: widthAnchor),
@@ -122,13 +129,16 @@ class MiniPlayerView: UIView
             posterView.centerYAnchor.constraint(equalTo: centerYAnchor),
             songTitleView.leadingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 10),
             songTitleView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            songTitleView.trailingAnchor.constraint(equalTo: rewindButton.leadingAnchor, constant: -10),
-            rewindButton.trailingAnchor.constraint(equalTo: playOrPauseButton.leadingAnchor, constant: -5),
-            rewindButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            playOrPauseButton.trailingAnchor.constraint(equalTo: forwardButton.leadingAnchor, constant: -5),
-            playOrPauseButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            forwardButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            forwardButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            songTitleView.trailingAnchor.constraint(equalTo: controlsView.leadingAnchor, constant: -10),
+            controlsView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.35),
+            controlsView.heightAnchor.constraint(equalTo: heightAnchor),
+            controlsView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            rewindButton.trailingAnchor.constraint(equalTo: playOrPauseButton.leadingAnchor, constant: -8),
+            rewindButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
+            playOrPauseButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
+            playOrPauseButton.centerXAnchor.constraint(equalTo: controlsView.centerXAnchor),
+            forwardButton.leadingAnchor.constraint(equalTo: playOrPauseButton.trailingAnchor, constant: 8),
+            forwardButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
             separator.widthAnchor.constraint(equalTo: widthAnchor),
             separator.heightAnchor.constraint(equalToConstant: 1),
             separator.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -150,10 +160,11 @@ class MiniPlayerView: UIView
         fatalError("Not initialized")
     }
     
-    func setSong(song: SongWrapper?)
+    func setDetails()
     {
-        guard let song = song else {
-            songTitleView.text = "No song is playing now"
+        guard let song = GlobalVariables.shared.currentSong else {
+            songTitleView.textColor = .systemGray
+            songTitleView.text = "No song"
             posterView.image = UIImage(named: "glassmorphic_bg")!
             playOrPauseButton.isEnabled = false
             forwardButton.isEnabled = false
@@ -163,6 +174,7 @@ class MiniPlayerView: UIView
         }
         posterView.image = song.coverArt!
         songTitleView.text = song.title!
+        songTitleView.textColor = .label
         playOrPauseButton.isEnabled = true
         forwardButton.isEnabled = true
         rewindButton.isEnabled = true
@@ -178,6 +190,7 @@ class MiniPlayerView: UIView
         {
             playOrPauseButton.setImage(playIcon, for: .normal)
         }
+        setDetails()
     }
 }
 

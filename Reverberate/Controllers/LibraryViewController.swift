@@ -167,11 +167,22 @@ extension LibraryViewController: UIPageViewControllerDataSource
 extension LibraryViewController: UIPageViewControllerDelegate
 {
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        favouritesOrPlaylistsSelector.selectedSegmentIndex = viewControllers.firstIndex(of: pendingViewControllers.first!)!
+        
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool)
     {
+        if completed
+        {
+            if previousViewControllers.first! == viewControllers.first!
+            {
+                favouritesOrPlaylistsSelector.selectedSegmentIndex = viewControllers.endIndex - 1
+            }
+            else
+            {
+                favouritesOrPlaylistsSelector.selectedSegmentIndex = viewControllers.startIndex
+            }
+        }
         
     }
 }

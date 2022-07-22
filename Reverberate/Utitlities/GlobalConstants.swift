@@ -7,7 +7,7 @@
 
 import Foundation
 
- class GlobalConstants
+class GlobalConstants
 {
     //Prevent Instantiation
     private init() { }
