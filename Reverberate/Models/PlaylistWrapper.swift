@@ -7,13 +7,35 @@
 
 import UIKit
 
-class PlaylistWrapper: Identifiable
+class PlaylistWrapper: Identifiable, CustomStringConvertible
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     public var name: String?
     public var songs: [SongWrapper]?
     public var parentUser: User?
+    
+    var description: String
+    {
+        "Playlist(name = \(name!), songs = \(songs!)"
+    }
+    
+    init(playlist: Playlist)
+    {
+        self.name = playlist.name
+        let songArray = playlist.songs!.allObjects as! [Song]
+        self.songs = []
+        for song in songArray
+        {
+            self.songs?.append(SongWrapper(song: song))
+        }
+        self.parentUser = playlist.parentUser
+    }
+    
+    init()
+    {
+        
+    }
     
     func emitAsCoreDataObject() -> Playlist
     {

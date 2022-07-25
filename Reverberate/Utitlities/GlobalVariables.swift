@@ -10,12 +10,15 @@ import AVKit
 
 class GlobalVariables
 {
+    // Singleton object
     static let shared: GlobalVariables = GlobalVariables()
     
     // Prevent Initialization
     private init() {}
     
-    var availableSongs: [Language: [MusicGenre: Song]] = [:]
+    var availableSongs: [Language: [MusicGenre: [SongWrapper]]] = [:]
+    
+    var availableAlbums: [AlbumWrapper] = []
     
     var avAudioPlayer: AVAudioPlayer!
     

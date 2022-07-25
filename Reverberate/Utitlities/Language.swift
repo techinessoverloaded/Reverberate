@@ -6,7 +6,8 @@
 //
 
 import UIKit
-enum Language: Int16, CaseIterable
+
+@objc enum Language: Int16, CaseIterable
 {
     case tamil = 0, malayalam, telugu, hindi, kannada, english
     

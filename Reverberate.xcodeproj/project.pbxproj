@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA12E696288E559100D502EC /* SongArtistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E695288E559100D502EC /* SongArtistsViewController.swift */; };
+		DA12E698288E5AB300D502EC /* ArtistCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E697288E5AB300D502EC /* ArtistCVCell.swift */; };
+		DA12E69A288E937800D502EC /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E699288E937800D502EC /* DataManager.swift */; };
+		DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */; };
 		DA2810B9287BDDBB006EEF60 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */; };
 		DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */; };
 		DA28A349287414E900E36382 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A348287414E900E36382 /* SignupViewController.swift */; };
@@ -72,12 +76,19 @@
 		DA6C838428800F6F00339937 /* LoginDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C838328800F6F00339937 /* LoginDelegate.swift */; };
 		DA6C83862880366A00339937 /* SignupDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C83852880366A00339937 /* SignupDelegate.swift */; };
 		DA6C8388288046F600339937 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C8387288046F600339937 /* InitialViewController.swift */; };
+		DA757431288D9A5A00A4CF80 /* arabickuthu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA75742E288D9A5900A4CF80 /* arabickuthu.mp3 */; };
+		DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */; };
+		DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */; };
 		DA7F246E288188E600E4786F /* SongMetaDataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */; };
 		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
 		DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF64916287553020061C29B /* CustomTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DA12E695288E559100D502EC /* SongArtistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongArtistsViewController.swift; sourceTree = "<group>"; };
+		DA12E697288E5AB300D502EC /* ArtistCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistCVCell.swift; sourceTree = "<group>"; };
+		DA12E699288E937800D502EC /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSegregator.swift; sourceTree = "<group>"; };
 		DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledInfoTableViewCell.swift; sourceTree = "<group>"; };
 		DA28A348287414E900E36382 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
@@ -145,6 +156,9 @@
 		DA6C838328800F6F00339937 /* LoginDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDelegate.swift; sourceTree = "<group>"; };
 		DA6C83852880366A00339937 /* SignupDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupDelegate.swift; sourceTree = "<group>"; };
 		DA6C8387288046F600339937 /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
+		DA75742E288D9A5900A4CF80 /* arabickuthu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = arabickuthu.mp3; sourceTree = "<group>"; };
+		DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beastmode.mp3; sourceTree = "<group>"; };
+		DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhana.mp3; sourceTree = "<group>"; };
 		DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMetaDataExtractor.swift; sourceTree = "<group>"; };
 		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
 		DAF64916287553020061C29B /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
@@ -231,6 +245,7 @@
 				DA65D3BC2886C6F200173F56 /* LibraryPlaylistsViewController.swift */,
 				DA65D3BE2886C70C00173F56 /* LibraryFavouritesViewController.swift */,
 				DA67F43E28892FFE00062985 /* PlayerViewController.swift */,
+				DA12E695288E559100D502EC /* SongArtistsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -248,6 +263,7 @@
 				DA5CE9682887C8F40066AB2E /* HeaderCVReusableView.swift */,
 				DA5CE96A2887D90A0066AB2E /* SongCVCell.swift */,
 				DA67F44428894EA400062985 /* MiniPlayerView.swift */,
+				DA12E697288E5AB300D502EC /* ArtistCVCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -284,6 +300,7 @@
 				DA65D3B428866D5000173F56 /* GlobalVariables.swift */,
 				DA5CE96C28880D1D0066AB2E /* ArtistType.swift */,
 				DA67F4382889182F00062985 /* Category.swift */,
+				DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */,
 			);
 			path = Utitlities;
 			sourceTree = "<group>";
@@ -299,6 +316,7 @@
 		DA4556CE28740B0600804CB8 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				DA12E699288E937800D502EC /* DataManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -348,8 +366,7 @@
 			children = (
 				DA7F24692881866300E4786F /* Folk */,
 				DA7F24682881864C00E4786F /* Western */,
-				DA7F2467288185DE00E4786F /* Rap */,
-				DA7F2466288185D400E4786F /* Classical */,
+				DA7F2467288185DE00E4786F /* Rock */,
 				DA7F24622881829800E4786F /* Melody */,
 			);
 			path = Tamil;
@@ -364,18 +381,14 @@
 			path = Melody;
 			sourceTree = "<group>";
 		};
-		DA7F2466288185D400E4786F /* Classical */ = {
+		DA7F2467288185DE00E4786F /* Rock */ = {
 			isa = PBXGroup;
 			children = (
+				DA75742E288D9A5900A4CF80 /* arabickuthu.mp3 */,
+				DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */,
+				DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */,
 			);
-			path = Classical;
-			sourceTree = "<group>";
-		};
-		DA7F2467288185DE00E4786F /* Rap */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Rap;
+			path = Rock;
 			sourceTree = "<group>";
 		};
 		DA7F24682881864C00E4786F /* Western */ = {
@@ -397,7 +410,7 @@
 			children = (
 				DA7F24732881961800E4786F /* Western */,
 				DA7F24722881961200E4786F /* Folk */,
-				DA7F24712881960B00E4786F /* Rap */,
+				DA7F24712881960B00E4786F /* Rock */,
 				DA7F246C2881868F00E4786F /* Melody */,
 				DA7F246B2881868600E4786F /* Classical */,
 			);
@@ -418,11 +431,11 @@
 			path = Melody;
 			sourceTree = "<group>";
 		};
-		DA7F24712881960B00E4786F /* Rap */ = {
+		DA7F24712881960B00E4786F /* Rock */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = Rap;
+			path = Rock;
 			sourceTree = "<group>";
 		};
 		DA7F24722881961200E4786F /* Folk */ = {
@@ -444,7 +457,7 @@
 			children = (
 				DA7F24792881965500E4786F /* Folk */,
 				DA7F24782881964C00E4786F /* Western */,
-				DA7F24772881964600E4786F /* Rap */,
+				DA7F24772881964600E4786F /* Rock */,
 				DA7F24762881963D00E4786F /* Classical */,
 				DA7F24752881962F00E4786F /* Melody */,
 			);
@@ -465,11 +478,11 @@
 			path = Classical;
 			sourceTree = "<group>";
 		};
-		DA7F24772881964600E4786F /* Rap */ = {
+		DA7F24772881964600E4786F /* Rock */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = Rap;
+			path = Rock;
 			sourceTree = "<group>";
 		};
 		DA7F24782881964C00E4786F /* Western */ = {
@@ -559,12 +572,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA757431288D9A5A00A4CF80 /* arabickuthu.mp3 in Resources */,
+				DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */,
 				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
 				DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */,
 				DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */,
 				DA5CE9A3288835390066AB2E /* paakadha.m4a in Resources */,
 				DA28A366287431BF00E36382 /* BubblegumSans-Regular.ttf in Resources */,
 				DA28A364287431AC00E36382 /* BebasFixNeue.ttf in Resources */,
+				DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */,
 				DA5CE9A5288835AF0066AB2E /* unmelaorukannu.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -592,12 +608,14 @@
 				DA668C7C2876DB1B001EE1C9 /* MusicGenre.swift in Sources */,
 				DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */,
 				DA65D3B92886868B00173F56 /* TitleCardCVCell.swift in Sources */,
+				DA12E698288E5AB300D502EC /* ArtistCVCell.swift in Sources */,
 				DA7F246E288188E600E4786F /* SongMetaDataExtractor.swift in Sources */,
 				DA5CE9A1288815FB0066AB2E /* AlbumWrapper.swift in Sources */,
 				DA65D3BF2886C70C00173F56 /* LibraryFavouritesViewController.swift in Sources */,
 				DA5CE9932888119F0066AB2E /* Playlist+CoreDataProperties.swift in Sources */,
 				DA5CE99F288815EB0066AB2E /* PlaylistWrapper.swift in Sources */,
 				DA67F44528894EA400062985 /* MiniPlayerView.swift in Sources */,
+				DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */,
 				DA668C8D2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift in Sources */,
 				DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */,
 				DA6C8382287FF4DA00339937 /* SignInTableViewCell.swift in Sources */,
@@ -608,6 +626,7 @@
 				DA67F44328893D2D00062985 /* Song+CoreDataProperties.swift in Sources */,
 				DA28A349287414E900E36382 /* SignupViewController.swift in Sources */,
 				DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */,
+				DA12E69A288E937800D502EC /* DataManager.swift in Sources */,
 				DA5CE99D288815080066AB2E /* SongWrapper.swift in Sources */,
 				DA65D3BB288695F400173F56 /* LibraryResultsViewController.swift in Sources */,
 				DA65D3C12886E28900173F56 /* SortOptionsHeaderView.swift in Sources */,
@@ -626,6 +645,7 @@
 				DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */,
 				DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */,
 				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,
+				DA12E696288E559100D502EC /* SongArtistsViewController.swift in Sources */,
 				DA67F44228893D2D00062985 /* Song+CoreDataClass.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,
 				DA5CE96B2887D90A0066AB2E /* SongCVCell.swift in Sources */,

@@ -187,7 +187,43 @@ extension String
         }
         return String(self[self.firstIndex(of: ".")!...])
     }
+}
+
+extension NSAttributedString
+{
+    static func getAttributedString(string1: String, string2: String, separator: String) -> NSMutableAttributedString
+    {
+        let largeTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 19, weight: .bold),
+            NSAttributedString.Key.foregroundColor : UIColor.label
+        ]
+        let smallerTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .body),
+            NSAttributedString.Key.foregroundColor : UIColor.secondaryLabel
+        ]
+        let mutableAttrString = NSMutableAttributedString(string: "\(string1)\(separator)", attributes: largeTextAttributes)
+        mutableAttrString.append(NSMutableAttributedString(string: string2, attributes: smallerTextAttributes))
+        return mutableAttrString
+    }
     
+    static var newLine: NSMutableAttributedString
+    {
+        get
+        {
+            NSMutableAttributedString(string: "\n")
+        }
+    }
+}
+
+extension NSMutableAttributedString
+{
+    func appendWithNewLine(_ attrString: NSAttributedString)
+    {
+        self.append(attrString)
+        self.append(NSAttributedString.newLine)
+    }
 }
 
 extension UIViewController
@@ -266,6 +302,45 @@ extension UILabel
         self.init(useAutoLayout: useAutoLayout)
         self.adjustsFontForContentSizeCategory = adjustsFontAccordingToCategory
     }
+    
+    var isTruncated: Bool
+    {
+        if self.translatesAutoresizingMaskIntoConstraints == false
+        {
+            self.layoutIfNeeded()
+        }
+        
+        if let labelText = text
+        {
+            let labelTextSize = (labelText as NSString).boundingRect(with: CGSize(width: frame.size.width, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [.font : font!], context: nil).size
+            return labelTextSize.height > bounds.size.height
+        }
+        else if let labelAttributedText = attributedText
+        {
+            let labelAttributedTextSize = (labelAttributedText as NSAttributedString).boundingRect(with: CGSize(width: frame.size.width, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil).size
+            return labelAttributedTextSize.height > bounds.size.height
+        }
+        else
+        {
+            return false
+        }
+    }
+    
+    func enableMarqueeIfNeeded()
+    {
+        if isTruncated
+        {
+            let textAnimation = CABasicAnimation(keyPath: "position.x")
+            textAnimation.beginTime = 0.0
+            textAnimation.duration = 1.5
+            let labelLHS: Double = Double(frame.maxX + frame.width)
+            let labelRHS: Double = Double(frame.minX + frame.width)
+            textAnimation.fromValue = NSNumber(value: labelLHS)
+            textAnimation.toValue = NSNumber(value: labelRHS)
+            textAnimation.repeatCount = .infinity
+            self.layer.add(textAnimation, forKey: "basic")
+        }
+    }
 }
 
 extension NSNotification.Name
@@ -295,5 +370,15 @@ extension UIImage
             return rotatedImage ?? self
         }
         return self
+    }
+}
+
+extension DateFormatter
+{
+    static func getDateFromString(dateString: String) -> Date?
+    {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yy"
+        return formatter.date(from: dateString)
     }
 }

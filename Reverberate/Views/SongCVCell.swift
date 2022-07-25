@@ -81,5 +81,4 @@ class SongCVCell: UICollectionViewCell
         contentView.layer.cornerCurve = .continuous
         contentView.layer.shadowPath = UIBezierPath(rect: contentView.bounds).cgPath
     }
-    
 }

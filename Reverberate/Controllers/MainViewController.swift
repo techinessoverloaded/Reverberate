@@ -30,10 +30,6 @@ class MainViewController: UITabBarController
     
     private var avAudioPlayer: AVAudioPlayer! = GlobalVariables.shared.avAudioPlayer
     
-    private lazy var miniPlayerCompactConstraint: NSLayoutConstraint = miniPlayerView.heightAnchor.constraint(equalToConstant: 80)
-    
-    private lazy var miniPlayerExtendedConstraint: NSLayoutConstraint = miniPlayerView.heightAnchor.constraint(equalTo: view.heightAnchor)
-    
     override func loadView()
     {
         super.loadView()
@@ -62,7 +58,7 @@ class MainViewController: UITabBarController
             miniPlayerView.widthAnchor.constraint(equalTo: view.widthAnchor),
             miniPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
             miniPlayerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            miniPlayerCompactConstraint
+            miniPlayerView.heightAnchor.constraint(equalToConstant: 80)
         ])
         miniPlayerView.delegate = self
     }
@@ -78,13 +74,13 @@ class MainViewController: UITabBarController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
         print("Main View Controller")
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -98,6 +94,7 @@ class MainViewController: UITabBarController
         let navController = UINavigationController(rootViewController: playerController)
         playerController.delegate = self
         playerController.setPlaying(shouldPlaySongFromBeginning: shouldPlaySongFromBeginning, isSongPaused: isSongPaused)
+        playerController.setLoopButton(loopMode: avAudioPlayer.numberOfLoops)
         navController.modalPresentationStyle = .overFullScreen
         navController.modalTransitionStyle = .crossDissolve
         navController.navigationBar.isTranslucent = true
@@ -147,6 +144,10 @@ extension MainViewController: MiniPlayerDelegate
 
 extension MainViewController: PlayerDelegate
 {
+    func onShuffle() {
+        
+    }
+    
     func onLoopButtonTap(loopMode: Int)
     {
         avAudioPlayer.numberOfLoops = loopMode
@@ -220,7 +221,35 @@ extension MainViewController
     @objc func onSongChange()
     {
         GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url!)
+        GlobalVariables.shared.avAudioPlayer.delegate = self
         avAudioPlayer = GlobalVariables.shared.avAudioPlayer
-        showPlayerController(shouldPlaySongFromBeginning: true)
+        avAudioPlayer.play()
+        miniPlayerView.setPlaying(shouldPlaySong: true)
+    }
+}
+
+extension MainViewController: AVAudioPlayerDelegate
+{
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool)
+    {
+        print(player.numberOfLoops)
+        if player.numberOfLoops == 0
+        {
+            print("Finished Playing")
+            playerController.setPlaying(shouldPlaySongFromBeginning: true)
+        }
+        if player.numberOfLoops == 1
+        {
+            print("Loop Once in Delegate")
+            player.play()
+            playerController.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
+            playerController.setLoopButton(loopMode: 0)
+            player.numberOfLoops = 0
+        }
+        if player.numberOfLoops == -1
+        {
+            player.play()
+            playerController.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
+        }
     }
 }

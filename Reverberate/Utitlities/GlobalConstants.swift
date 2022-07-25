@@ -23,15 +23,29 @@ class GlobalConstants
     static let darkGreenColor = "darkGreenColor"
     
     //NSNotification Names
-     static let currentSongSetNotification: NSNotification.Name = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
+    static let currentSongSetNotification: NSNotification.Name = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
      
+    //Album details
+    static let albumDetails: [String : (String)] = [
+        "Beast" : ("04/05/2022")
+    ]
+    
+    //Artist Pictures
+    static let artistPictures: [String : String] = [
+        "Anirudh Ravichander" : "anirudh",
+        "Jonita Gandhi" : "jonitagandhi",
+        "Ku. Karthik" : "kukarthik",
+        "Sivakarthikeyan" : "sivakarthikeyan",
+        "Vivek" : "vivek"
+    ]
+    
     //Asset song names
     static let songNames: [Language: [MusicGenre: [String]]] = [
         .tamil : [
             .classical: [],
-            .melody: ["unmelaorukannu.m4a", "paakadha.m4a"],
+            .melody: [], //"unmelaorukannu.m4a", "paakadha.m4a",
             .western: [],
-            .rock: [],
+            .rock: ["arabickuthu.mp3", "jollyogymkhana.mp3", "beastmode.mp3"],
             .folk: []
         ],
         .malayalam: [

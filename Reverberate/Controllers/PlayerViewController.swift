@@ -40,7 +40,7 @@ class PlayerViewController: UITableViewController
         }
         else
         {
-            return UIButton.Configuration.Size.small
+            return UIButton.Configuration.Size.medium
         }
     }()
     
@@ -58,7 +58,7 @@ class PlayerViewController: UITableViewController
     
     private lazy var albumTitleView: UILabel = {
         let atView = UILabel(useAutoLayout: true)
-        atView.textColor = .label
+        atView.textColor = .label.withAlphaComponent(0.8)
         atView.font = .preferredFont(forTextStyle: .title1, weight: .bold)
         atView.numberOfLines = 2
         atView.lineBreakMode = .byTruncatingTail
@@ -80,7 +80,7 @@ class PlayerViewController: UITableViewController
     
     private lazy var songTitleView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
-        stView.textColor = .label
+        stView.textColor = .label.withAlphaComponent(0.8)
         stView.font = .preferredFont(forTextStyle: .title2, weight: .bold)
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
@@ -91,9 +91,9 @@ class PlayerViewController: UITableViewController
     
     private lazy var songArtistsView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
-        stView.textColor = .label
+        stView.textColor = .label.withAlphaComponent(0.8)
         stView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
-        stView.numberOfLines = 2
+        stView.numberOfLines = 3
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true
         stView.textAlignment = .center
@@ -104,7 +104,7 @@ class PlayerViewController: UITableViewController
         let sSlider = UISlider(useAutoLayout: true)
         sSlider.setValue(20, animated: true)
         sSlider.minimumTrackTintColor = UIColor(named: GlobalConstants.techinessColor)!
-        sSlider.maximumTrackTintColor = .systemGray
+        sSlider.maximumTrackTintColor = .systemGray.withAlphaComponent(0.5)
         sSlider.thumbTintColor = UIColor(named: GlobalConstants.techinessColor)!
         sSlider.isContinuous = true
         return sSlider
@@ -136,7 +136,7 @@ class PlayerViewController: UITableViewController
     
     private lazy var playOrPauseButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let popButton = UIButton(configuration: config)
         popButton.setImage(playIcon, for: .normal)
@@ -147,7 +147,7 @@ class PlayerViewController: UITableViewController
     private lazy var rewindButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "gobackward.10")!
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let rButton = UIButton(configuration: config)
         rButton.enableAutoLayout()
@@ -157,7 +157,7 @@ class PlayerViewController: UITableViewController
     private lazy var forwardButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "goforward.10")!
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let fButton = UIButton(configuration: config)
         fButton.enableAutoLayout()
@@ -166,8 +166,8 @@ class PlayerViewController: UITableViewController
     
     private lazy var previousButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "backward.end.alt.fill")!
-        config.baseForegroundColor = .label
+        config.image = UIImage(systemName: "backward.end.fill")!
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let pButton = UIButton(configuration: config)
         pButton.enableAutoLayout()
@@ -177,8 +177,8 @@ class PlayerViewController: UITableViewController
     
     private lazy var nextButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "forward.end.alt.fill")!
-        config.baseForegroundColor = .label
+        config.image = UIImage(systemName: "forward.end.fill")!
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let nButton = UIButton(configuration: config)
         nButton.enableAutoLayout()
@@ -189,7 +189,7 @@ class PlayerViewController: UITableViewController
     private lazy var shuffleButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "shuffle")!
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let sButton = UIButton(configuration: config)
         sButton.enableAutoLayout()
@@ -199,7 +199,7 @@ class PlayerViewController: UITableViewController
     
     private lazy var loopButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let lButton = UIButton(configuration: config)
         lButton.enableAutoLayout()
@@ -215,17 +215,16 @@ class PlayerViewController: UITableViewController
     
     private lazy var addToPlaylistsButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = .large
         let atpButton = UIButton(configuration: config)
         atpButton.setImage(UIImage(systemName: "text.badge.plus")!, for: .normal)
-        atpButton.isEnabled = false
         return atpButton
     }()
     
     private lazy var favouriteButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = .large
         let favButton = UIButton(configuration: config)
         favButton.setImage(heartIcon, for: .normal)
@@ -273,15 +272,15 @@ class PlayerViewController: UITableViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrowtriangle.down.circle.fill")!.withTintColor(.systemGray, renderingMode: .alwaysTemplate), style: .plain, target: self, action: #selector(onMinimizeButtonTap(_:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(onMinimizeButtonTap(_:)))
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(customView: addToPlaylistsButton),
             UIBarButtonItem(customView: favouriteButton)
         ]
+        addToPlaylistsButton.isEnabled = false
         view.backgroundColor = .clear
         tableView.backgroundColor = .clear
         tableView.backgroundView = backgroundView
-        tableView.allowsSelection = false
         tableView.separatorStyle = .none
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         swipeGestureRecognizer.addTarget(self, action: #selector(onPlayerSwipeAction(_:)))
@@ -351,7 +350,7 @@ class PlayerViewController: UITableViewController
         albumTitleView.text = song.albumName!
         posterView.image = song.coverArt!
         songTitleView.text = song.title!
-        songArtistsView.text = song.getArtistNamesAsString()
+        songArtistsView.text = song.getArtistNamesAsString(artistType: nil)
         let songDuration = Float(GlobalVariables.shared.avAudioPlayer.duration)
         let seconds = String(format: "%02d", Int(songDuration) % 60)
         let minutes = String(format: "%02d", Int(songDuration) / 60)
@@ -365,6 +364,25 @@ class PlayerViewController: UITableViewController
         let seconds = String(format: "%02d", Int(currentTime) % 60)
         let minutes = String(format: "%02d", Int(currentTime) / 60)
         minimumDurationLabel.text = "\(minutes):\(seconds)"
+    }
+    
+    func setLoopButton(loopMode: Int)
+    {
+        if loopMode == 0
+        {
+            loopButton.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
+            loopButton.setImage(repeatIcon, for: .normal)
+        }
+        else if loopMode == 1
+        {
+            loopButton.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            loopButton.setImage(repeatOneIcon, for: .normal)
+        }
+        else
+        {
+            loopButton.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            loopButton.setImage(repeatIcon, for: .normal)
+        }
     }
 }
 
@@ -394,7 +412,7 @@ extension PlayerViewController
         let item = indexPath.item
         if section == 0
         {
-            return 70
+            return 60
         }
         else if section == 1
         {
@@ -402,7 +420,11 @@ extension PlayerViewController
         }
         else if section == 2
         {
-            if item == 3
+            if item == 1
+            {
+                return 80
+            }
+            else if item == 3
             {
                 return 10
             }
@@ -421,40 +443,64 @@ extension PlayerViewController
         }
     }
     
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath?
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        if section == 2
+        {
+            if item == 1
+            {
+                return indexPath
+            }
+        }
+        return nil
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
+        cell.selectionStyle = .none
         let section = indexPath.section
         let item = indexPath.item
         if section == 0
         {
             cell.addSubViewToContentView(albumTitleView, useAutoLayout: true, useClearBackground: true)
+            cell.accessoryType = .none
         }
         else if section == 1
         {
             cell.addSubViewToContentView(posterView, useAutoLayout: true, useClearBackground: true)
+            cell.accessoryType = .none
         }
         else if section == 2
         {
             if item == 0
             {
                 cell.addSubViewToContentView(songTitleView, useAutoLayout: true, useClearBackground: true)
+                cell.accessoryType = .none
             }
             else if item == 1
             {
                 cell.addSubViewToContentView(songArtistsView, useAutoLayout: true, useClearBackground: true)
+                cell.backgroundColor = .separator
+                cell.layer.cornerRadius = 10
+                cell.accessoryType = .disclosureIndicator
             }
             else if item == 2
             {
                 cell.addSubViewToContentView(songSlider, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
+                cell.accessoryType = .none
             }
             else if item == 3
             {
                 cell.addSubViewToContentView(durationView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
+                cell.accessoryType = .none
             }
             else
             {
                 cell.addSubViewToContentView(controlsView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
+                cell.accessoryType = .none
             }
         }
         else
@@ -462,6 +508,29 @@ extension PlayerViewController
             
         }
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        tableView.deselectRow(at: indexPath, animated: true)
+        print(indexPath)
+        let section = indexPath.section
+        let item = indexPath.item
+        if section == 2
+        {
+            if item == 1
+            {
+                let songArtistsController = SongArtistsViewController(style: .insetGrouped)
+                let navController = UINavigationController(rootViewController: songArtistsController)
+                navController.modalPresentationStyle = .pageSheet
+                if let sheet = navController.sheetPresentationController
+                {
+                    sheet.detents = [.medium()]
+                    sheet.prefersGrabberVisible = true
+                }
+                self.present(navController, animated: true)
+            }
+        }
     }
 }
 
@@ -484,13 +553,13 @@ extension PlayerViewController
         {
             delegate?.onFavouriteButtonTap(shouldMakeAsFavourite: false)
             sender.setImage(heartIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .label
+            sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
         }
     }
     
     @objc func onAddToPlaylistsButtonTap(_ sender: UIButton)
     {
-        if sender.configuration!.baseForegroundColor == .label
+        if sender.configuration!.baseForegroundColor == .label.withAlphaComponent(0.8)
         {
             delegate?.onAddToPlaylistsButtonTap(shouldAddToPlaylists: true)
             sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
@@ -498,7 +567,7 @@ extension PlayerViewController
         else
         {
             delegate?.onAddToPlaylistsButtonTap(shouldAddToPlaylists: false)
-            sender.configuration!.baseForegroundColor = .label
+            sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
         }
     }
     
@@ -554,7 +623,7 @@ extension PlayerViewController
     {
         if sender.image(for: .normal)!.pngData() == repeatIcon.pngData()
         {
-            if sender.configuration?.baseForegroundColor == .label
+            if sender.configuration?.baseForegroundColor == .label.withAlphaComponent(0.8)
             {
                 print("Loop Once")
                 delegate?.onLoopButtonTap(loopMode: 1)
@@ -565,7 +634,7 @@ extension PlayerViewController
             {
                 print("No Loop")
                 delegate?.onLoopButtonTap(loopMode: 0)
-                sender.configuration?.baseForegroundColor = .label
+                sender.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
             }
         }
         else

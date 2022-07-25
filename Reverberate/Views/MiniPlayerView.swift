@@ -47,7 +47,7 @@ class MiniPlayerView: UIView
     
     private lazy var playOrPauseButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = .mini
         let popButton = UIButton(configuration: config)
         popButton.setImage(playIcon, for: .normal) // or pause.fill
@@ -59,7 +59,7 @@ class MiniPlayerView: UIView
     private lazy var rewindButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "gobackward.10")!
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = .mini
         let rButton = UIButton(configuration: config)
         rButton.enableAutoLayout()
@@ -70,7 +70,7 @@ class MiniPlayerView: UIView
     private lazy var forwardButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "goforward.10")!
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = .mini
         let fButton = UIButton(configuration: config)
         fButton.enableAutoLayout()
@@ -174,7 +174,7 @@ class MiniPlayerView: UIView
         }
         posterView.image = song.coverArt!
         songTitleView.text = song.title!
-        songTitleView.textColor = .label
+        songTitleView.textColor = .label.withAlphaComponent(0.8)
         playOrPauseButton.isEnabled = true
         forwardButton.isEnabled = true
         rewindButton.isEnabled = true
@@ -182,6 +182,7 @@ class MiniPlayerView: UIView
     
     func setPlaying(shouldPlaySong: Bool)
     {
+        setDetails()
         if shouldPlaySong
         {
             playOrPauseButton.setImage(pauseIcon, for: .normal)
@@ -190,7 +191,6 @@ class MiniPlayerView: UIView
         {
             playOrPauseButton.setImage(playIcon, for: .normal)
         }
-        setDetails()
     }
 }
 

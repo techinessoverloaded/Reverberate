@@ -38,9 +38,15 @@ class HomeViewController: UITableViewController
         collectionView.delegate = self
         collectionView.backgroundColor = .clear
         collectionView.isScrollEnabled = false
-        GlobalConstants.songNames[.tamil]![.melody]!.forEach {
-            songs.append(SongMetadataExtractor.extractSongMetadata(songName: $0)!)
+        GlobalConstants.songNames[.tamil]!.forEach {
+            if $0.key == .melody || $0.key == .rock
+            {
+                $0.value.forEach {
+                    songs.append(SongMetadataExtractor.extractSongMetadata(songName: $0)!)
+                }
+            }
         }
+        print("Albums: \(AlbumSegregator.segregateAlbums(unsortedSongs: songs).first!)")
     }
     
     private func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
@@ -183,9 +189,9 @@ extension HomeViewController: UICollectionViewDataSource
         let item = indexPath.item
         if section == 0
         {
-            if item == 0 || item == 1
+            if (0...2).contains(item)
             {
-                let artistNames = songs[item].getArtistNamesAsString()
+                let artistNames = songs[item].getArtistNamesAsString(artistType: nil)
                 cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
             }
             else
@@ -210,7 +216,7 @@ extension HomeViewController: UICollectionViewDelegate
         let item = indexPath.item
         if section == 0
         {
-            if item == 0 || item == 1
+            if (0...2).contains(item)
             {
                 GlobalVariables.shared.currentSong = songs[item]
             }

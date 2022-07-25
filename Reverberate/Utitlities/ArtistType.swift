@@ -13,11 +13,11 @@ enum ArtistType: Int16, CaseIterable, CustomStringConvertible
         switch self
         {
         case .musicDirector:
-            return "Music Director"
+            return "Music Director(s)"
         case .singer:
-            return "Singer"
+            return "Singer(s)"
         case .lyricist:
-            return "Lyricist"
+            return "Lyricist(s)"
         }
     }
 }

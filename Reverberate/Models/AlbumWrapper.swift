@@ -13,6 +13,23 @@ class AlbumWrapper: PlaylistWrapper
     
     public var coverArt: UIImage?
     
+    override var description: String
+    {
+        "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt!))"
+    }
+    
+    
+    init(album: Album)
+    {
+        super.init(playlist: album)
+        self.coverArt = UIImage(data: album.coverArt!)
+    }
+    
+    override init()
+    {
+        super.init()
+    }
+    
     override func emitAsCoreDataObject() -> Album
     {
         let album = Album(context: context)

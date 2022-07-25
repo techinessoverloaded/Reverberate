@@ -27,9 +27,19 @@ struct SongMetadataExtractor
         tempPlayer = nil
         songWrapper.artists = []
         songWrapper.url = url
-        for metadataItem in avUrlAsset.commonMetadata
+        for metadataItem in avUrlAsset.metadata
         {
             let key = metadataItem.commonKey
+            if key == .iTunesMetadataKeyTrackSubTitle
+            {
+                print("comment")
+                let dateAsString = metadataItem.stringValue!.trimmedCopy()
+                print(dateAsString)
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "dd-MM-yyyy"
+                let date = dateFormatter.date(from: dateAsString)!
+                print("Date: \(date)")
+            }
             if key == .commonKeyAlbumName
             {
                 var albumName = metadataItem.stringValue!.trimmedCopy()
@@ -170,7 +180,7 @@ struct SongMetadataExtractor
                 }
                 lyricists.forEach
                 {
-                    print("Lyricist: \($0.name ?? "")")
+                    print("Lyricist From Author: \($0.name ?? "")")
                     songWrapper.artists!.append($0)
                 }
             }

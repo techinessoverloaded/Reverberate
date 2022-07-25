@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum MusicGenre: Int16, CaseIterable, CustomStringConvertible
+@objc enum MusicGenre: Int16, CaseIterable, CustomStringConvertible
 {
     case classical = 0, melody, western, rock, folk
     
