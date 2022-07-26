@@ -26,6 +26,8 @@
 		DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* MainViewController.swift */; };
 		DA4556D028740B2000804CB8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556CF28740B2000804CB8 /* Extensions.swift */; };
 		DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556D128740CD200804CB8 /* GlobalConstants.swift */; };
+		DA565DF5288FF1FA001F0220 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA565DF3288FF1FA001F0220 /* Song+CoreDataClass.swift */; };
+		DA565DF6288FF1FA001F0220 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA565DF4288FF1FA001F0220 /* Song+CoreDataProperties.swift */; };
 		DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5522877ED0A00BDAE4B /* GenreSelectionDelegate.swift */; };
 		DA58B5552877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5542877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift */; };
 		DA58B5572877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */; };
@@ -67,8 +69,6 @@
 		DA67F43528890F6000062985 /* HomeVCCompositionalLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F43428890F6000062985 /* HomeVCCompositionalLayout.swift */; };
 		DA67F4392889182F00062985 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F4382889182F00062985 /* Category.swift */; };
 		DA67F43F28892FFE00062985 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F43E28892FFE00062985 /* PlayerViewController.swift */; };
-		DA67F44228893D2D00062985 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F44028893D2D00062985 /* Song+CoreDataClass.swift */; };
-		DA67F44328893D2D00062985 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F44128893D2D00062985 /* Song+CoreDataProperties.swift */; };
 		DA67F44528894EA400062985 /* MiniPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F44428894EA400062985 /* MiniPlayerView.swift */; };
 		DA67F4472889527C00062985 /* MiniPlayerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F4462889527C00062985 /* MiniPlayerDelegate.swift */; };
 		DA67F4492889797400062985 /* PlayerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F4482889797400062985 /* PlayerDelegate.swift */; };
@@ -106,6 +106,8 @@
 		DA4556C728740A7000804CB8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DA4556CF28740B2000804CB8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		DA4556D128740CD200804CB8 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
+		DA565DF3288FF1FA001F0220 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DA565DF4288FF1FA001F0220 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA58B5522877ED0A00BDAE4B /* GenreSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionDelegate.swift; sourceTree = "<group>"; };
 		DA58B5542877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionCollectionViewController.swift; sourceTree = "<group>"; };
 		DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionCollectionViewController.swift; sourceTree = "<group>"; };
@@ -147,8 +149,6 @@
 		DA67F43428890F6000062985 /* HomeVCCompositionalLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVCCompositionalLayout.swift; sourceTree = "<group>"; };
 		DA67F4382889182F00062985 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		DA67F43E28892FFE00062985 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
-		DA67F44028893D2D00062985 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DA67F44128893D2D00062985 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA67F44428894EA400062985 /* MiniPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerView.swift; sourceTree = "<group>"; };
 		DA67F4462889527C00062985 /* MiniPlayerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerDelegate.swift; sourceTree = "<group>"; };
 		DA67F4482889797400062985 /* PlayerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerDelegate.swift; sourceTree = "<group>"; };
@@ -271,8 +271,8 @@
 		DA4556CA28740AE300804CB8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				DA67F44028893D2D00062985 /* Song+CoreDataClass.swift */,
-				DA67F44128893D2D00062985 /* Song+CoreDataProperties.swift */,
+				DA565DF3288FF1FA001F0220 /* Song+CoreDataClass.swift */,
+				DA565DF4288FF1FA001F0220 /* Song+CoreDataProperties.swift */,
 				DA5CE9822888119F0066AB2E /* Artist+CoreDataClass.swift */,
 				DA5CE9832888119F0066AB2E /* Artist+CoreDataProperties.swift */,
 				DA5CE9842888119F0066AB2E /* Album+CoreDataClass.swift */,
@@ -623,7 +623,6 @@
 				DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */,
 				DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
-				DA67F44328893D2D00062985 /* Song+CoreDataProperties.swift in Sources */,
 				DA28A349287414E900E36382 /* SignupViewController.swift in Sources */,
 				DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */,
 				DA12E69A288E937800D502EC /* DataManager.swift in Sources */,
@@ -639,6 +638,7 @@
 				DA5CE96D28880D1D0066AB2E /* ArtistType.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
 				DA65D3BD2886C6F200173F56 /* LibraryPlaylistsViewController.swift in Sources */,
+				DA565DF5288FF1FA001F0220 /* Song+CoreDataClass.swift in Sources */,
 				DA67F4472889527C00062985 /* MiniPlayerDelegate.swift in Sources */,
 				DA67F43F28892FFE00062985 /* PlayerViewController.swift in Sources */,
 				DA5CE98F2888119F0066AB2E /* Album+CoreDataProperties.swift in Sources */,
@@ -646,7 +646,7 @@
 				DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */,
 				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,
 				DA12E696288E559100D502EC /* SongArtistsViewController.swift in Sources */,
-				DA67F44228893D2D00062985 /* Song+CoreDataClass.swift in Sources */,
+				DA565DF6288FF1FA001F0220 /* Song+CoreDataProperties.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,
 				DA5CE96B2887D90A0066AB2E /* SongCVCell.swift in Sources */,
 				DA668C6E28769AC8001EE1C9 /* InputValidator.swift in Sources */,

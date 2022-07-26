@@ -41,12 +41,13 @@ class HomeViewController: UITableViewController
         GlobalConstants.songNames[.tamil]!.forEach {
             if $0.key == .melody || $0.key == .rock
             {
-                $0.value.forEach {
-                    songs.append(SongMetadataExtractor.extractSongMetadata(songName: $0)!)
-                }
+//                songs.append(SongMetadataExtractor.extractSongMetadata(fileName: "beastmode.mp3", )!)
+                print(songs)
+//                $0.value.forEach {
+//                    songs.append(SongMetadataExtractor.extractSongMetadata(songName: $0)!)
+//                }
             }
         }
-        print("Albums: \(AlbumSegregator.segregateAlbums(unsortedSongs: songs).first!)")
     }
     
     private func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
@@ -75,12 +76,12 @@ class HomeViewController: UITableViewController
             if isIpad
             {
                 groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.7), heightDimension: .absolute(520))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 4)
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
             }
             else
             {
                 groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.7), heightDimension: .absolute(380))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 4)
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
             }
         }
         
@@ -90,7 +91,7 @@ class HomeViewController: UITableViewController
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0)
         section.interGroupSpacing = 10
-        section.orthogonalScrollingBehavior = .groupPaging
+        section.orthogonalScrollingBehavior = .continuous
         section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(40)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
         return section
     }
@@ -191,8 +192,8 @@ extension HomeViewController: UICollectionViewDataSource
         {
             if (0...2).contains(item)
             {
-                let artistNames = songs[item].getArtistNamesAsString(artistType: nil)
-                cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
+//                let artistNames = songs[item].getArtistNamesAsString(artistType: nil)
+//                cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
             }
             else
             {

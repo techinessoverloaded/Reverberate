@@ -16,10 +16,6 @@ class GlobalVariables
     // Prevent Initialization
     private init() {}
     
-    var availableSongs: [Language: [MusicGenre: [SongWrapper]]] = [:]
-    
-    var availableAlbums: [AlbumWrapper] = []
-    
     var avAudioPlayer: AVAudioPlayer!
     
     var currentSong: SongWrapper? = nil

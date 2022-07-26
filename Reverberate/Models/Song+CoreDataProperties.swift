@@ -2,7 +2,7 @@
 //  Song+CoreDataProperties.swift
 //  Reverberate
 //
-//  Created by arun-13930 on 21/07/22.
+//  Created by arun-13930 on 26/07/22.
 //
 //
 
@@ -22,6 +22,8 @@ extension Song {
     @NSManaged public var duration: Double
     @NSManaged public var title: String?
     @NSManaged public var url: URL?
+    @NSManaged public var genre: Int16
+    @NSManaged public var language: Int16
     @NSManaged public var artists: NSSet?
     @NSManaged public var parentPlaylist: Playlist?
 

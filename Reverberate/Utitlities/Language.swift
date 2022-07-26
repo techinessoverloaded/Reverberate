@@ -7,11 +7,30 @@
 
 import UIKit
 
-@objc enum Language: Int16, CaseIterable
+@objc enum Language: Int16, CaseIterable, CustomStringConvertible
 {
     case tamil = 0, malayalam, telugu, hindi, kannada, english
     
-    var titleAndLetter: (String?, String)
+    var description: String
+    {
+        switch self
+        {
+        case .tamil:
+            return "Tamil"
+        case .malayalam:
+            return "Malayalam"
+        case .telugu:
+            return "Telugu"
+        case .hindi:
+            return "Hindi"
+        case .kannada:
+            return "Kannada"
+        case .english:
+            return "English"
+        }
+    }
+    
+    var titleAndScript: (String?, String)
     {
         switch self
         {

@@ -106,7 +106,7 @@ class PlayerViewController: UITableViewController
         sSlider.minimumTrackTintColor = UIColor(named: GlobalConstants.techinessColor)!
         sSlider.maximumTrackTintColor = .systemGray.withAlphaComponent(0.5)
         sSlider.thumbTintColor = UIColor(named: GlobalConstants.techinessColor)!
-        sSlider.isContinuous = true
+        sSlider.isContinuous = false
         return sSlider
     }()
     

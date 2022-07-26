@@ -45,7 +45,11 @@ class GlobalConstants
             .classical: [],
             .melody: [], //"unmelaorukannu.m4a", "paakadha.m4a",
             .western: [],
-            .rock: ["arabickuthu.mp3", "jollyogymkhana.mp3", "beastmode.mp3"],
+            .rock: [
+                "arabickuthu.mp3",
+                "jollyogymkhana.mp3",
+                "beastmode.mp3",
+            ],
             .folk: []
         ],
         .malayalam: [

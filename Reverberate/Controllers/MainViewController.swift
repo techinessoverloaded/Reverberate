@@ -58,7 +58,7 @@ class MainViewController: UITabBarController
             miniPlayerView.widthAnchor.constraint(equalTo: view.widthAnchor),
             miniPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
             miniPlayerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            miniPlayerView.heightAnchor.constraint(equalToConstant: 80)
+            miniPlayerView.heightAnchor.constraint(equalToConstant: 70)
         ])
         miniPlayerView.delegate = self
     }
@@ -116,14 +116,14 @@ extension MainViewController: MiniPlayerDelegate
 {
     func onPlayButtonTap(miniPlayerView: MiniPlayerView)
     {
-        try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         avAudioPlayer.play()
+        try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
     }
     
     func onPauseButtonTap(miniPlayerView: MiniPlayerView)
     {
-        try! AVAudioSession.sharedInstance().setActive(false)
         avAudioPlayer.pause()
+        try! AVAudioSession.sharedInstance().setActive(false)
     }
     
     func onRewindButtonTap(miniPlayerView: MiniPlayerView)
@@ -165,15 +165,15 @@ extension MainViewController: PlayerDelegate
     
     func onPlayButtonTap()
     {
-        try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         avAudioPlayer.play()
+        try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
     }
     
     func onPauseButtonTap()
     {
-        try! AVAudioSession.sharedInstance().setActive(false)
         avAudioPlayer.pause()
+        try! AVAudioSession.sharedInstance().setActive(false)
         miniPlayerView.setPlaying(shouldPlaySong: false)
     }
     
@@ -224,6 +224,7 @@ extension MainViewController
         GlobalVariables.shared.avAudioPlayer.delegate = self
         avAudioPlayer = GlobalVariables.shared.avAudioPlayer
         avAudioPlayer.play()
+        try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
     }
 }
@@ -236,12 +237,14 @@ extension MainViewController: AVAudioPlayerDelegate
         if player.numberOfLoops == 0
         {
             print("Finished Playing")
+            try! AVAudioSession.sharedInstance().setActive(false)
             playerController.setPlaying(shouldPlaySongFromBeginning: true)
         }
         if player.numberOfLoops == 1
         {
             print("Loop Once in Delegate")
             player.play()
+            try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             playerController.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
             playerController.setLoopButton(loopMode: 0)
             player.numberOfLoops = 0
@@ -249,6 +252,7 @@ extension MainViewController: AVAudioPlayerDelegate
         if player.numberOfLoops == -1
         {
             player.play()
+            try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             playerController.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
         }
     }

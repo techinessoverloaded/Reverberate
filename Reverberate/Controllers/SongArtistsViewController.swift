@@ -24,12 +24,12 @@ class SongArtistsViewController: UITableViewController
         return cView
     }()
     
-    private lazy var artists: [ArtistType : [String]] = {
+    private lazy var artists: [ArtistType : [ArtistWrapper]] = {
         let song = GlobalVariables.shared.currentSong!
-        var result: [ArtistType : [String]] = [:]
+        var result: [ArtistType : [ArtistWrapper]] = [:]
         for type in ArtistType.allCases
         {
-            result[type] = song.getArtistNamesAsArray(artistType: type)
+            result[type] = song.getArtists(ofType: type)
         }
         return result
     }()
@@ -87,12 +87,12 @@ class SongArtistsViewController: UITableViewController
             if isIpad
             {
                 groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(330))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 4)
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
             }
             else
             {
                 groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(270))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 4)
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
             }
         }
         
@@ -102,7 +102,7 @@ class SongArtistsViewController: UITableViewController
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0)
         section.interGroupSpacing = 10
-        section.orthogonalScrollingBehavior = .groupPaging
+        section.orthogonalScrollingBehavior = .continuous
         section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(40)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
         return section
     }
@@ -196,18 +196,10 @@ extension SongArtistsViewController: UICollectionViewDataSource, UICollectionVie
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ArtistCVCell.identifier, for: indexPath) as! ArtistCVCell
         let section = Int16(indexPath.section)
         let item = indexPath.item
-        let artistName = artists[ArtistType(rawValue: section)!]![item]
-        let artistPictureName = GlobalConstants.artistPictures[artistName]
-        if let artistPictureName = artistPictureName
-        {
-            let artistPicture = UIImage(named: artistPictureName)!
-            cell.configureCell(artistPicture: artistPicture, artistName: artistName)
-        }
-        else
-        {
-            cell.configureCell(artistName: artistName)
-        }
-//        cell.artistPictureView.layer.cornerRadius = cell.artistPictureView.bounds.size.height * 0.5
+        let artist = artists[ArtistType(rawValue: section)!]![item]
+        let artistName = artist.name!
+        let artistPhoto = artist.photo
+        cell.configureCell(artistPicture: artistPhoto, artistName: artistName)
         return cell
     }
     

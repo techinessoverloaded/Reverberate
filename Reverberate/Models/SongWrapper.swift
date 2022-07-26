@@ -19,10 +19,12 @@ class SongWrapper: Identifiable, Hashable, CustomStringConvertible
     public var parentPlaylist: PlaylistWrapper?
     public var artists: [ArtistWrapper]?
     public var url: URL?
+    public var genre: MusicGenre?
+    public var language: Language?
     
     var description: String
     {
-        "Song(title = \(title!), artists = \(artists!), duration = \(duration!), url = \(url!), albumName = \(albumName!), coverArt = \(coverArt!)"
+        "Song(title = \(title!), artists = \(artists!), duration = \(duration!), url = \(url!), albumName = \(albumName!), language = \(language), genre = \(genre), coverArt = \(coverArt!)"
     }
     
     init(song: Song)
@@ -39,6 +41,8 @@ class SongWrapper: Identifiable, Hashable, CustomStringConvertible
             self.artists?.append(ArtistWrapper(artist: artist))
         }
         self.url = song.url
+        self.genre = MusicGenre(rawValue: song.genre)
+        self.language = Language(rawValue: song.language)
     }
     
     init()
@@ -56,6 +60,8 @@ class SongWrapper: Identifiable, Hashable, CustomStringConvertible
         song.title = self.title
         song.url = self.url
         song.parentPlaylist = self.parentPlaylist!.emitAsCoreDataObject()
+        song.genre = self.genre!.rawValue
+        song.language = self.language!.rawValue
         var artistSet = Set<Artist>()
         artists!.forEach {
             artistSet.insert($0.emitAsCoreDataObject())
@@ -74,23 +80,15 @@ class SongWrapper: Identifiable, Hashable, CustomStringConvertible
         hasher.combine(self)
     }
     
-    func getArtistNamesAsArray(artistType: ArtistType?) -> [String]
+    func getArtists(ofType artistType: ArtistType?) -> [ArtistWrapper]
     {
-        guard let artistType = artistType else
-        {
-            var artistNameArray = artists!.map {
-                $0.name!
-            }
-            artistNameArray = Array(Set(artistNameArray)).sorted()
-            return artistNameArray
-        }
-
-        let artistNameArray = artists!.filter {
+        var result: [ArtistWrapper] = []
+        artists!.filter {
             $0.artistType == artistType
-        }.map {
-            $0.name!
+        }.forEach {
+            result.append($0)
         }
-        return artistNameArray.sorted()
+        return result
     }
     
     func getArtistNamesAsString(artistType: ArtistType?) -> String

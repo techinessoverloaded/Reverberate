@@ -10,21 +10,10 @@ struct AlbumSegregator
     //Prevent Initialization
     private init() {}
     
-    static func segregateAlbums(unsortedSongs: [SongWrapper]) -> [AlbumWrapper]
+    static func segregateAlbums(unsegregatedSongs: [SongWrapper]) -> [AlbumWrapper]
     {
         var albums: [AlbumWrapper] = []
-//        let availableSongs = GlobalVariables.shared.availableSongs
-//        var unsortedSongs: [SongWrapper] = []
-//        for language in availableSongs.keys
-//        {
-//            print(language)
-//            for genre in availableSongs[language]!.keys
-//            {
-//                print(genre)
-//                unsortedSongs.append(contentsOf: availableSongs[language]![genre]!)
-//            }
-//        }
-        for song in unsortedSongs
+        for song in unsegregatedSongs
         {
             if !albums.contains(where: { $0.name! == song.albumName! })
             {

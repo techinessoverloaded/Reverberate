@@ -11,9 +11,9 @@ struct SongMetadataExtractor
     //Prevent Initialization
     private init() {}
     
-    static func extractSongMetadata(songName: String) -> SongWrapper?
+    static func extractSongMetadata(withFileName fileName: String, ofLanguage language: Language, ofGenre genre: MusicGenre) -> SongWrapper?
     {
-        let url = Bundle.main.url(forResource: songName.getNameWithoutExtension(), withExtension: songName.getExtension())
+        let url = Bundle.main.url(forResource: fileName.getNameWithoutExtension(), withExtension: fileName.getExtension())
         guard let url = url else
         {
             return nil
@@ -27,19 +27,11 @@ struct SongMetadataExtractor
         tempPlayer = nil
         songWrapper.artists = []
         songWrapper.url = url
+        songWrapper.genre = genre
+        songWrapper.language = language
         for metadataItem in avUrlAsset.metadata
         {
             let key = metadataItem.commonKey
-            if key == .iTunesMetadataKeyTrackSubTitle
-            {
-                print("comment")
-                let dateAsString = metadataItem.stringValue!.trimmedCopy()
-                print(dateAsString)
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "dd-MM-yyyy"
-                let date = dateFormatter.date(from: dateAsString)!
-                print("Date: \(date)")
-            }
             if key == .commonKeyAlbumName
             {
                 var albumName = metadataItem.stringValue!.trimmedCopy()
@@ -70,16 +62,8 @@ struct SongMetadataExtractor
                         singer.name = String($0).trimmedCopy()
                         singer.parentSong = songWrapper
                         singer.artistType = .singer
-                        singers.append(singer)
-                    }
-                }
-                else if artistNames.contains("&")
-                {
-                    artistNames.split(separator: "&").forEach {
-                        let singer = ArtistWrapper()
-                        singer.name = String($0).trimmedCopy()
-                        singer.parentSong = songWrapper
-                        singer.artistType = .singer
+                        let singerPhotoName = GlobalConstants.artistPictures[singer.name!]
+                        singer.photo = UIImage(named: singerPhotoName!)
                         singers.append(singer)
                     }
                 }
@@ -89,6 +73,8 @@ struct SongMetadataExtractor
                     singer.name = artistNames.trimmedCopy()
                     singer.parentSong = songWrapper
                     singer.artistType = .singer
+                    let singerPhotoName = GlobalConstants.artistPictures[singer.name!]
+                    singer.photo = UIImage(named: singerPhotoName!)
                     singers.append(singer)
                 }
                 singers.forEach {
@@ -112,17 +98,8 @@ struct SongMetadataExtractor
                         musicDirector.name = String($0).trimmedCopy()
                         musicDirector.parentSong = songWrapper
                         musicDirector.artistType = .musicDirector
-                        musicDirectors.append(musicDirector)
-                    }
-                }
-                else if artistNames.contains("&")
-                {
-                    artistNames.split(separator: "&").forEach
-                    {
-                        let musicDirector = ArtistWrapper()
-                        musicDirector.name = String($0).trimmedCopy()
-                        musicDirector.parentSong = songWrapper
-                        musicDirector.artistType = .musicDirector
+                        let musicDirectorPhotoName = GlobalConstants.artistPictures[musicDirector.name!]
+                        musicDirector.photo = UIImage(named: musicDirectorPhotoName!)
                         musicDirectors.append(musicDirector)
                     }
                 }
@@ -132,6 +109,8 @@ struct SongMetadataExtractor
                     musicDirector.name = artistNames.trimmedCopy()
                     musicDirector.parentSong = songWrapper
                     musicDirector.artistType = .musicDirector
+                    let musicDirectorPhotoName = GlobalConstants.artistPictures[musicDirector.name!]
+                    musicDirector.photo = UIImage(named: musicDirectorPhotoName!)
                     musicDirectors.append(musicDirector)
                 }
                 musicDirectors.forEach
@@ -156,17 +135,8 @@ struct SongMetadataExtractor
                         lyricist.name = String($0).trimmedCopy()
                         lyricist.parentSong = songWrapper
                         lyricist.artistType = .lyricist
-                        lyricists.append(lyricist)
-                    }
-                }
-                else if artistNames.contains("&")
-                {
-                    artistNames.split(separator: "&").forEach
-                    {
-                        let lyricist = ArtistWrapper()
-                        lyricist.name = String($0).trimmedCopy()
-                        lyricist.parentSong = songWrapper
-                        lyricist.artistType = .lyricist
+                        let lyricistPhotoName = GlobalConstants.artistPictures[lyricist.name!]
+                        lyricist.photo = UIImage(named: lyricistPhotoName!)
                         lyricists.append(lyricist)
                     }
                 }
@@ -176,6 +146,8 @@ struct SongMetadataExtractor
                     lyricist.name = artistNames.trimmedCopy()
                     lyricist.parentSong = songWrapper
                     lyricist.artistType = .lyricist
+                    let lyricistPhotoName = GlobalConstants.artistPictures[lyricist.name!]
+                    lyricist.photo = UIImage(named: lyricistPhotoName!)
                     lyricists.append(lyricist)
                 }
                 lyricists.forEach
@@ -201,5 +173,22 @@ struct SongMetadataExtractor
             }
         }
         return songWrapper
+    }
+    
+    static func extractMultipleSongs(withFileNames songFileNames: [String], ofLanguageGenreAndCount languageGenreAndCount: [(language: Language, genre: MusicGenre, count: Int)]) -> [SongWrapper]
+    {
+        var songs: [SongWrapper?] = []
+        var index = 0
+        var offset = 0
+        for lgc in languageGenreAndCount
+        {
+            while index < (offset + lgc.count)
+            {
+                songs.append(extractSongMetadata(withFileName: songFileNames[index], ofLanguage: lgc.language, ofGenre: lgc.genre))
+                index += 1
+            }
+            offset = index
+        }
+        return songs.compactMap { $0 }
     }
 }

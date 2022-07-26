@@ -134,7 +134,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectionCardCVCell.identifier, for: indexPath) as! SelectionCardCVCell
         let language = Language(rawValue: availableLanguages[indexPath.section][indexPath.item])
-        let (title, subtitle) = language!.titleAndLetter
+        let (title, subtitle) = language!.titleAndScript
         return cell.configureCell(title: title, centerText: subtitle, backgroundColor: language!.preferredBackgroundColor)
     }
     
