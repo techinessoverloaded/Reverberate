@@ -297,6 +297,12 @@ extension UIFont
 
 extension UILabel
 {
+    private struct PropertyHolder
+    {
+        static var timer: Timer?
+        static var originalText: String!
+    }
+    
     convenience init(useAutoLayout: Bool, adjustsFontAccordingToCategory: Bool = true)
     {
         self.init(useAutoLayout: useAutoLayout)
@@ -330,15 +336,41 @@ extension UILabel
     {
         if isTruncated
         {
-            let textAnimation = CABasicAnimation(keyPath: "position.x")
-            textAnimation.beginTime = 0.0
-            textAnimation.duration = 1.5
-            let labelLHS: Double = Double(frame.maxX + frame.width)
-            let labelRHS: Double = Double(frame.minX + frame.width)
-            textAnimation.fromValue = NSNumber(value: labelLHS)
-            textAnimation.toValue = NSNumber(value: labelRHS)
-            textAnimation.repeatCount = .infinity
-            self.layer.add(textAnimation, forKey: "basic")
+            PropertyHolder.originalText = self.text!
+            PropertyHolder.timer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+                DispatchQueue.main.async { [unowned self] in
+                    var alternator = 0
+                    if alternator.isMultiple(of: 2)
+                    {
+                        if let text = self.text, !text.isEmpty {
+                            let index = text.index(after: text.startIndex)
+                            self.text = String(self.text![index...])
+                        }
+                    }
+                    else
+                    {
+                        if let text = self.text, !text.isEmpty {
+                            let index = text.index(before: text.endIndex)
+                            self.text = String(self.text![..<index])
+                        }
+                    }
+                    if self.text!.isEmpty
+                    {
+                        self.text = PropertyHolder.originalText
+                    }
+                    alternator += 1
+                }
+            }
+        }
+    }
+    
+    func disableMarquee()
+    {
+        if PropertyHolder.timer != nil
+        {
+            PropertyHolder.timer!.invalidate()
+            self.text = PropertyHolder.originalText
+            self.lineBreakMode = .byTruncatingTail
         }
     }
 }

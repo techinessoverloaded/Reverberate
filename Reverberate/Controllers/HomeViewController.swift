@@ -23,7 +23,7 @@ class HomeViewController: UITableViewController
         return [.starter, .newReleases, .topCharts, .tamil, .melody]
     }()
     
-    private var songs: [SongWrapper] = []
+    private var songs = DataManager.shared.availableSongs
     
     override func viewDidLoad()
     {
@@ -38,16 +38,6 @@ class HomeViewController: UITableViewController
         collectionView.delegate = self
         collectionView.backgroundColor = .clear
         collectionView.isScrollEnabled = false
-        GlobalConstants.songNames[.tamil]!.forEach {
-            if $0.key == .melody || $0.key == .rock
-            {
-//                songs.append(SongMetadataExtractor.extractSongMetadata(fileName: "beastmode.mp3", )!)
-                print(songs)
-//                $0.value.forEach {
-//                    songs.append(SongMetadataExtractor.extractSongMetadata(songName: $0)!)
-//                }
-            }
-        }
     }
     
     private func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
@@ -192,8 +182,20 @@ extension HomeViewController: UICollectionViewDataSource
         {
             if (0...2).contains(item)
             {
-//                let artistNames = songs[item].getArtistNamesAsString(artistType: nil)
-//                cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
+                let artistNames = songs[item].getArtistNamesAsString(artistType: nil)
+                cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
+            }
+            else
+            {
+                cell.configureCell(songTitle: "Song \(indexPath.item)", artistNames: "Artist 1, Artist 2, Artist 3, Artist 4")
+            }
+        }
+        else if section == 1
+        {
+            if (0...2).contains(item)
+            {
+                let artistNames = songs[item+3].getArtistNamesAsString(artistType: nil)
+                cell.configureCell(songPoster: songs[item+3].coverArt!, songTitle: songs[item+3].title!, artistNames: artistNames)
             }
             else
             {
@@ -220,6 +222,13 @@ extension HomeViewController: UICollectionViewDelegate
             if (0...2).contains(item)
             {
                 GlobalVariables.shared.currentSong = songs[item]
+            }
+        }
+        else if section == 1
+        {
+            if (0...2).contains(item)
+            {
+                GlobalVariables.shared.currentSong = songs[item+3]
             }
         }
     }

@@ -7,13 +7,13 @@
 
 protocol MiniPlayerDelegate: AnyObject
 {
-    func onPlayButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerPlayButtonTap()
     
-    func onPauseButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerPauseButtonTap()
     
-    func onRewindButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerNextButtonTap()
     
-    func onForwardButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerPreviousButtonTap()
     
     func onPlayerExpansionRequest()
 }

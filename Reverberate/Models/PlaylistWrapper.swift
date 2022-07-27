@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PlaylistWrapper: Identifiable, CustomStringConvertible
+class PlaylistWrapper: Identifiable, Hashable, CustomStringConvertible
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -48,5 +48,15 @@ class PlaylistWrapper: Identifiable, CustomStringConvertible
         playlist.addToSongs(NSSet(set: songSet))
         playlist.parentUser = self.parentUser
         return playlist
+    }
+    
+    func hash(into hasher: inout Hasher)
+    {
+        hasher.combine(self.id)
+    }
+    
+    static func == (lhs: PlaylistWrapper, rhs: PlaylistWrapper) -> Bool
+    {
+        return lhs.id == rhs.id
     }
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import AVKit
+import MediaPlayer
 
 class MainViewController: UITabBarController
 {
@@ -81,11 +82,13 @@ class MainViewController: UITabBarController
         super.viewDidAppear(animated)
         print("Main View Controller")
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
     }
     
     override func viewDidDisappear(_ animated: Bool)
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
     }
     
     func showPlayerController(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -110,30 +113,105 @@ class MainViewController: UITabBarController
             }, completion: nil)
         })
     }
+    
+    func handleMPNotificationActions()
+    {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        
+        commandCenter.playCommand.addTarget
+        { [unowned self] event in
+            avAudioPlayer.play()
+            try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+            if playerController != nil
+            {
+                playerController!.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: false)
+            }
+            else
+            {
+                miniPlayerView.setPlaying(shouldPlaySong: true)
+            }
+            return .success
+        }
+        
+        commandCenter.pauseCommand.addTarget
+        { [unowned self] event in
+            avAudioPlayer.pause()
+            try! AVAudioSession.sharedInstance().setActive(false)
+            if playerController != nil
+            {
+                playerController?.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: true)
+            }
+            else
+            {
+                miniPlayerView.setPlaying(shouldPlaySong: false)
+            }
+            return .success
+        }
+        
+        commandCenter.seekForwardCommand.addTarget {
+            [unowned self] event in
+            avAudioPlayer.currentTime += 10
+            return .success
+        }
+        
+        commandCenter.seekBackwardCommand.addTarget {
+            [unowned self] event in
+            avAudioPlayer.currentTime -= 10
+            return .success
+        }
+        
+        commandCenter.changePlaybackPositionCommand.addTarget {
+            [unowned self] event in
+            let changeEvent = event as! MPChangePlaybackPositionCommandEvent
+            avAudioPlayer.currentTime = changeEvent.positionTime
+            return .success
+        }
+        
+        commandCenter.seekForwardCommand.isEnabled = true
+        commandCenter.seekBackwardCommand.isEnabled = true
+    }
+    
+    func setupNowPlayingNotification()
+    {
+        var nowPlayingInfo = [String: Any]()
+        let currentSong = GlobalVariables.shared.currentSong!
+        nowPlayingInfo[MPMediaItemPropertyTitle] = currentSong.title!
+        nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: currentSong.coverArt!.size, requestHandler: { _ in
+            return currentSong.coverArt!
+        })
+        nowPlayingInfo[MPMediaItemPropertyArtist] = currentSong.getArtistNamesAsString(artistType: nil)
+        nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = currentSong.albumName!
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = avAudioPlayer.currentTime
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = avAudioPlayer.duration
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = avAudioPlayer.rate
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
 }
 
 extension MainViewController: MiniPlayerDelegate
 {
-    func onPlayButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerPlayButtonTap()
     {
         avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+        setupNowPlayingNotification()
     }
     
-    func onPauseButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerPauseButtonTap()
     {
         avAudioPlayer.pause()
         try! AVAudioSession.sharedInstance().setActive(false)
+        setupNowPlayingNotification()
     }
     
-    func onRewindButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerPreviousButtonTap()
     {
-        avAudioPlayer.currentTime -= 10
+        
     }
     
-    func onForwardButtonTap(miniPlayerView: MiniPlayerView)
+    func onMiniPlayerNextButtonTap()
     {
-        avAudioPlayer.currentTime += 10
+        
     }
     
     func onPlayerExpansionRequest()
@@ -144,7 +222,8 @@ extension MainViewController: MiniPlayerDelegate
 
 extension MainViewController: PlayerDelegate
 {
-    func onShuffle() {
+    func onShuffle()
+    {
         
     }
     
@@ -168,6 +247,7 @@ extension MainViewController: PlayerDelegate
         avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
+        setupNowPlayingNotification()
     }
     
     func onPauseButtonTap()
@@ -175,16 +255,19 @@ extension MainViewController: PlayerDelegate
         avAudioPlayer.pause()
         try! AVAudioSession.sharedInstance().setActive(false)
         miniPlayerView.setPlaying(shouldPlaySong: false)
+        setupNowPlayingNotification()
     }
     
     func onRewindButtonTap()
     {
         avAudioPlayer.currentTime -= 10
+        setupNowPlayingNotification()
     }
     
     func onForwardButtonTap()
     {
         avAudioPlayer.currentTime += 10
+        setupNowPlayingNotification()
     }
     
     func onNextButtonTap()
@@ -200,6 +283,7 @@ extension MainViewController: PlayerDelegate
     func onSongSeekRequest(songPosition value: Double)
     {
         avAudioPlayer.currentTime = value
+        setupNowPlayingNotification()
     }
     
     func onShuffleButtonTap()
@@ -218,6 +302,55 @@ extension MainViewController: PlayerDelegate
 
 extension MainViewController
 {
+    @objc func handleAudioSessionInterruptionChange(notification: Notification)
+    {
+        guard let userInfo = notification.userInfo,
+        let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+        let type = AVAudioSession.InterruptionType(rawValue: typeValue) else
+        {
+            return
+        }
+        switch type
+        {
+            case .began:
+            avAudioPlayer.pause()
+            print("Interruption Began")
+            if playerController != nil
+            {
+                playerController?.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: true)
+            }
+            else
+            {
+                miniPlayerView.setPlaying(shouldPlaySong: false)
+            }
+            setupNowPlayingNotification()
+            case .ended:
+            print("An interruption ended. Resume playback, if appropriate.")
+            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume)
+            {
+                print("An interruption ended. Resume playback.")
+                print(avAudioPlayer.prepareToPlay())
+                avAudioPlayer.play()
+                if playerController != nil
+                {
+                    playerController!.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: false)
+                }
+                else
+                {
+                    miniPlayerView.setPlaying(shouldPlaySong: true)
+                }
+                setupNowPlayingNotification()
+            }
+            else
+            {
+                print("An interruption ended. Don't resume playback.")
+            }
+            default: ()
+        }
+    }
+    
     @objc func onSongChange()
     {
         GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url!)
@@ -226,6 +359,8 @@ extension MainViewController
         avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
+        setupNowPlayingNotification()
+        handleMPNotificationActions()
     }
 }
 
@@ -238,22 +373,26 @@ extension MainViewController: AVAudioPlayerDelegate
         {
             print("Finished Playing")
             try! AVAudioSession.sharedInstance().setActive(false)
-            playerController.setPlaying(shouldPlaySongFromBeginning: true)
+            miniPlayerView.setPlaying(shouldPlaySong: false)
+            playerController?.setPlaying(shouldPlaySongFromBeginning: true)
         }
         if player.numberOfLoops == 1
         {
             print("Loop Once in Delegate")
             player.play()
             try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-            playerController.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
-            playerController.setLoopButton(loopMode: 0)
+            miniPlayerView.setPlaying(shouldPlaySong: true)
+            playerController?.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
+            playerController?.setLoopButton(loopMode: 0)
             player.numberOfLoops = 0
         }
         if player.numberOfLoops == -1
         {
             player.play()
             try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-            playerController.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
+            miniPlayerView.setPlaying(shouldPlaySong: true)
+            playerController?.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
         }
+        setupNowPlayingNotification()
     }
 }

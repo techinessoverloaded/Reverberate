@@ -36,7 +36,11 @@ class GlobalConstants
         "Jonita Gandhi" : "jonitagandhi",
         "Ku. Karthik" : "kukarthik",
         "Sivakarthikeyan" : "sivakarthikeyan",
-        "Vivek" : "vivek"
+        "Vivek" : "vivek",
+        "Chandrabose" : "chandrabose",
+        "Nakash Aziz" : "nakashaziz",
+        "Sreerama Chandra" : "sreeramachandra",
+        "Sri Sai Kiran" : "srisaikiran"
     ]
     
     //Asset song names
@@ -70,7 +74,7 @@ class GlobalConstants
             .classical: [],
             .melody: [],
             .western: [],
-            .rock: [],
+            .rock: ["halamathitelugu.mp3", "jollyogymkhanatelugu.mp3", "beastmodetelugu.mp3"],
             .folk: []
         ],
         .kannada: [

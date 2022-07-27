@@ -26,6 +26,10 @@
 		DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* MainViewController.swift */; };
 		DA4556D028740B2000804CB8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556CF28740B2000804CB8 /* Extensions.swift */; };
 		DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556D128740CD200804CB8 /* GlobalConstants.swift */; };
+		DA562A902891507E0017EEF2 /* halamathitelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */; };
+		DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */; };
+		DA562A922891507E0017EEF2 /* beastmodetelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */; };
+		DA562A942891668A0017EEF2 /* DataProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA562A932891668A0017EEF2 /* DataProcessor.swift */; };
 		DA565DF5288FF1FA001F0220 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA565DF3288FF1FA001F0220 /* Song+CoreDataClass.swift */; };
 		DA565DF6288FF1FA001F0220 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA565DF4288FF1FA001F0220 /* Song+CoreDataProperties.swift */; };
 		DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B5522877ED0A00BDAE4B /* GenreSelectionDelegate.swift */; };
@@ -106,6 +110,10 @@
 		DA4556C728740A7000804CB8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DA4556CF28740B2000804CB8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		DA4556D128740CD200804CB8 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
+		DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = halamathitelugu.mp3; sourceTree = "<group>"; };
+		DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhanatelugu.mp3; sourceTree = "<group>"; };
+		DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beastmodetelugu.mp3; sourceTree = "<group>"; };
+		DA562A932891668A0017EEF2 /* DataProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProcessor.swift; sourceTree = "<group>"; };
 		DA565DF3288FF1FA001F0220 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DA565DF4288FF1FA001F0220 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA58B5522877ED0A00BDAE4B /* GenreSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionDelegate.swift; sourceTree = "<group>"; };
@@ -301,6 +309,7 @@
 				DA5CE96C28880D1D0066AB2E /* ArtistType.swift */,
 				DA67F4382889182F00062985 /* Category.swift */,
 				DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */,
+				DA562A932891668A0017EEF2 /* DataProcessor.swift */,
 			);
 			path = Utitlities;
 			sourceTree = "<group>";
@@ -319,6 +328,16 @@
 				DA12E699288E937800D502EC /* DataManager.swift */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		DA562A89289150690017EEF2 /* Rock */ = {
+			isa = PBXGroup;
+			children = (
+				DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */,
+				DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */,
+				DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */,
+			);
+			path = Rock;
 			sourceTree = "<group>";
 		};
 		DA668C8B2876DE2B001EE1C9 /* Abstract */ = {
@@ -502,6 +521,7 @@
 		DA7F247A2881965E00E4786F /* Telugu */ = {
 			isa = PBXGroup;
 			children = (
+				DA562A89289150690017EEF2 /* Rock */,
 				DA7F247B2881966900E4786F /* Folk */,
 			);
 			path = Telugu;
@@ -573,6 +593,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA757431288D9A5A00A4CF80 /* arabickuthu.mp3 in Resources */,
+				DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */,
 				DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */,
 				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
 				DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */,
@@ -580,8 +601,10 @@
 				DA5CE9A3288835390066AB2E /* paakadha.m4a in Resources */,
 				DA28A366287431BF00E36382 /* BubblegumSans-Regular.ttf in Resources */,
 				DA28A364287431AC00E36382 /* BebasFixNeue.ttf in Resources */,
+				DA562A902891507E0017EEF2 /* halamathitelugu.mp3 in Resources */,
 				DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */,
 				DA5CE9A5288835AF0066AB2E /* unmelaorukannu.m4a in Resources */,
+				DA562A922891507E0017EEF2 /* beastmodetelugu.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,6 +662,7 @@
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
 				DA65D3BD2886C6F200173F56 /* LibraryPlaylistsViewController.swift in Sources */,
 				DA565DF5288FF1FA001F0220 /* Song+CoreDataClass.swift in Sources */,
+				DA562A942891668A0017EEF2 /* DataProcessor.swift in Sources */,
 				DA67F4472889527C00062985 /* MiniPlayerDelegate.swift in Sources */,
 				DA67F43F28892FFE00062985 /* PlayerViewController.swift in Sources */,
 				DA5CE98F2888119F0066AB2E /* Album+CoreDataProperties.swift in Sources */,

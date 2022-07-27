@@ -18,12 +18,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         let audioSession = AVAudioSession.sharedInstance()
         do
         {
-            try audioSession.setCategory(.playback, mode: .moviePlayback)
+            //try audioSession.setCategory(.playback, mode: .moviePlayback)
+            try audioSession.setCategory(.playback, mode: .moviePlayback, policy: .longFormAudio)
         }
         catch
         {
-            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+            print("Setting category to AVAudioSessionCategoryPlayback failed")
         }
+        application.beginReceivingRemoteControlEvents()
+        print(NSHomeDirectory())
+
+            let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            let documentsDirectory = urls[0]
+
+            print(documentsDirectory)
         return true
     }
 

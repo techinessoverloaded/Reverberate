@@ -32,6 +32,7 @@ struct AlbumSegregator
                 existingAlbum.songs!.append(song)
             }
         }
+        print("\(albums.count) Albums")
         return albums
     }
 }

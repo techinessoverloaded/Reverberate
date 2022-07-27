@@ -77,7 +77,7 @@ class SongWrapper: Identifiable, Hashable, CustomStringConvertible
     
     func hash(into hasher: inout Hasher)
     {
-        hasher.combine(self)
+        hasher.combine(self.id)
     }
     
     func getArtists(ofType artistType: ArtistType?) -> [ArtistWrapper]

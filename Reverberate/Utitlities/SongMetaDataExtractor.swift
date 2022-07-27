@@ -34,11 +34,7 @@ struct SongMetadataExtractor
             let key = metadataItem.commonKey
             if key == .commonKeyAlbumName
             {
-                var albumName = metadataItem.stringValue!.trimmedCopy()
-                if albumName.contains("(")
-                {
-                    albumName = String(albumName[albumName.startIndex..<albumName.firstIndex(of: "(")!]).trimmedCopy()
-                }
+                let albumName = metadataItem.stringValue!.trimmedCopy()
                 songWrapper.albumName = albumName
                 print(songWrapper.albumName ?? "")
             }

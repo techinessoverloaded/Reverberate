@@ -231,6 +231,8 @@ class PlayerViewController: UITableViewController
         return favButton
     }()
     
+    private var timer: Timer!
+    
     weak var delegate: PlayerDelegate?
     
     override func loadView()
@@ -300,7 +302,7 @@ class PlayerViewController: UITableViewController
         songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
         setDetails()
         updateTime()
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(onTimerFire(_:)), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(onTimerFire(_:)), userInfo: nil, repeats: true)
     }
     
     func setPlaying(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -329,10 +331,11 @@ class PlayerViewController: UITableViewController
     override func viewDidDisappear(_ animated: Bool)
     {
         super.viewDidDisappear(animated)
+        timer.invalidate()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.tableView.scrollToRow(at: IndexPath(item: 4, section: 2), at: .bottom, animated: true)
+        self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
@@ -340,7 +343,7 @@ class PlayerViewController: UITableViewController
         coordinator.animate(alongsideTransition: {
             _ in
         }, completion: { [unowned self] _ in
-            self.tableView.scrollToRow(at: IndexPath(item: 4, section: 2), at: .bottom, animated: true)
+            self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
         })
     }
     
@@ -391,19 +394,12 @@ extension PlayerViewController
 {
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        return 3
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        if section == 2
-        {
-            return 5
-        }
-        else
-        {
-            return 1
-        }
+       return 7
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
@@ -412,34 +408,38 @@ extension PlayerViewController
         let item = indexPath.item
         if section == 0
         {
-            return 60
-        }
-        else if section == 1
-        {
-            return 300
-        }
-        else if section == 2
-        {
-            if item == 1
+            if item == 0
             {
-                return 80
+                return 60
+            }
+            else if item == 1
+            {
+                return 250
+            }
+            else if item == 2
+            {
+                return 50
             }
             else if item == 3
             {
-                return 10
-            }
+                return 70
+            }   
             else if item == 4
             {
-                return 100
+                return 50
+            }
+            else if item == 5
+            {
+                return 30
             }
             else
             {
-                return 50
+                return 90
             }
         }
         else
         {
-            return 50
+            return .zero
         }
     }
     
@@ -447,9 +447,9 @@ extension PlayerViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        if section == 2
+        if section == 0
         {
-            if item == 1
+            if item == 3
             {
                 return indexPath
             }
@@ -465,34 +465,33 @@ extension PlayerViewController
         let item = indexPath.item
         if section == 0
         {
-            cell.addSubViewToContentView(albumTitleView, useAutoLayout: true, useClearBackground: true)
-            cell.accessoryType = .none
-        }
-        else if section == 1
-        {
-            cell.addSubViewToContentView(posterView, useAutoLayout: true, useClearBackground: true)
-            cell.accessoryType = .none
-        }
-        else if section == 2
-        {
             if item == 0
             {
-                cell.addSubViewToContentView(songTitleView, useAutoLayout: true, useClearBackground: true)
+                cell.addSubViewToContentView(albumTitleView, useAutoLayout: true, useClearBackground: true)
                 cell.accessoryType = .none
             }
             else if item == 1
             {
-                cell.addSubViewToContentView(songArtistsView, useAutoLayout: true, useClearBackground: true)
-                cell.backgroundColor = .separator
-                cell.layer.cornerRadius = 10
-                cell.accessoryType = .disclosureIndicator
+                cell.addSubViewToContentView(posterView, useAutoLayout: true, useClearBackground: true)
+                cell.accessoryType = .none
             }
             else if item == 2
+            {
+                cell.addSubViewToContentView(songTitleView, useAutoLayout: true, useClearBackground: true)
+                cell.accessoryType = .none
+            }
+            else if item == 3
+            {
+                cell.addSubViewToContentView(songArtistsView, useAutoLayout: true, useClearBackground: true)
+                cell.backgroundColor = .separator
+                cell.accessoryType = .disclosureIndicator
+            }
+            else if item == 4
             {
                 cell.addSubViewToContentView(songSlider, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
                 cell.accessoryType = .none
             }
-            else if item == 3
+            else if item == 5
             {
                 cell.addSubViewToContentView(durationView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
                 cell.accessoryType = .none
@@ -516,9 +515,9 @@ extension PlayerViewController
         print(indexPath)
         let section = indexPath.section
         let item = indexPath.item
-        if section == 2
+        if section == 0
         {
-            if item == 1
+            if item == 3
             {
                 let songArtistsController = SongArtistsViewController(style: .insetGrouped)
                 let navController = UINavigationController(rootViewController: songArtistsController)

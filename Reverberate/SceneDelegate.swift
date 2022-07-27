@@ -18,7 +18,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
-        setupRootViewController()
+        DataManager.shared.makeSongsAndAlbumsReady(onCompletion: {
+            [unowned self] startTime in
+            let endTime = DispatchTime.now()
+            let interval = TimeInterval(endTime.uptimeNanoseconds - startTime.uptimeNanoseconds)
+            print("Time Taken: \(interval / 1000000000) seconds")
+            setupRootViewController()
+        })
         window!.makeKeyAndVisible()
     }
 

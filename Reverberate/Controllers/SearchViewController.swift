@@ -30,7 +30,10 @@ class SearchViewController: UITableViewController
         sController.searchResultsUpdater = searchResultsVC
         sController.showsSearchResultsController = true
         sController.hidesNavigationBarDuringPresentation = true
-        sController.searchBar.placeholder = "Artists, Songs, Albums"
+        sController.searchBar.placeholder = "Songs, Albums, Artists"
+        sController.searchBar.scopeButtonTitles = ["Songs", "Albums", "Artists"]
+        sController.automaticallyShowsScopeBar = true
+        sController.searchBar.delegate = searchResultsVC
         return sController
     }()
     

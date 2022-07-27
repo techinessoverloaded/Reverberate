@@ -56,9 +56,9 @@ class MiniPlayerView: UIView
         return popButton
     }()
     
-    private lazy var rewindButton: UIButton = {
+    private lazy var previousButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "gobackward.10")!
+        config.image = UIImage(systemName: "backward.end.fill")!
         config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = .mini
         let rButton = UIButton(configuration: config)
@@ -67,9 +67,9 @@ class MiniPlayerView: UIView
         return rButton
     }()
     
-    private lazy var forwardButton: UIButton = {
+    private lazy var nextButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "goforward.10")!
+        config.image = UIImage(systemName: "forward.end.fill")!
         config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = .mini
         let fButton = UIButton(configuration: config)
@@ -115,8 +115,8 @@ class MiniPlayerView: UIView
         addSubview(controlsView)
         addSubview(separator)
         controlsView.addSubview(playOrPauseButton)
-        controlsView.addSubview(rewindButton)
-        controlsView.addSubview(forwardButton)
+        controlsView.addSubview(previousButton)
+        controlsView.addSubview(nextButton)
         isOpaque = false
         NSLayoutConstraint.activate([
             backgroundView.widthAnchor.constraint(equalTo: widthAnchor),
@@ -133,20 +133,20 @@ class MiniPlayerView: UIView
             controlsView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.35),
             controlsView.heightAnchor.constraint(equalTo: heightAnchor),
             controlsView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            rewindButton.trailingAnchor.constraint(equalTo: playOrPauseButton.leadingAnchor, constant: -8),
-            rewindButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
+            previousButton.trailingAnchor.constraint(equalTo: playOrPauseButton.leadingAnchor, constant: -8),
+            previousButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
             playOrPauseButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
             playOrPauseButton.centerXAnchor.constraint(equalTo: controlsView.centerXAnchor),
-            forwardButton.leadingAnchor.constraint(equalTo: playOrPauseButton.trailingAnchor, constant: 8),
-            forwardButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
+            nextButton.leadingAnchor.constraint(equalTo: playOrPauseButton.trailingAnchor, constant: 8),
+            nextButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
             separator.widthAnchor.constraint(equalTo: widthAnchor),
             separator.heightAnchor.constraint(equalToConstant: 1),
             separator.centerXAnchor.constraint(equalTo: centerXAnchor),
             separator.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         playOrPauseButton.addTarget(self, action: #selector(onPlayOrPauseButtonTap(_:)), for: .touchUpInside)
-        forwardButton.addTarget(self, action: #selector(onForwardButtonTap(_:)), for: .touchUpInside)
-        rewindButton.addTarget(self, action: #selector(onRewindButtonTap(_:)), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(onNextButtonTap(_:)), for: .touchUpInside)
+        previousButton.addTarget(self, action: #selector(onPreviousButtonTap(_:)), for: .touchUpInside)
         addTopCornerRadius(radius: 20)
         tapRecognizer.addTarget(self, action: #selector(onMiniPlayerViewTap(_:)))
         self.addGestureRecognizer(tapRecognizer)
@@ -167,8 +167,6 @@ class MiniPlayerView: UIView
             songTitleView.text = "No song"
             posterView.image = UIImage(named: "glassmorphic_bg")!
             playOrPauseButton.isEnabled = false
-            forwardButton.isEnabled = false
-            rewindButton.isEnabled = false
             playOrPauseButton.setImage(playIcon, for: .normal)
             return
         }
@@ -176,8 +174,6 @@ class MiniPlayerView: UIView
         songTitleView.text = song.title!
         songTitleView.textColor = .label.withAlphaComponent(0.8)
         playOrPauseButton.isEnabled = true
-        forwardButton.isEnabled = true
-        rewindButton.isEnabled = true
     }
     
     func setPlaying(shouldPlaySong: Bool)
@@ -201,27 +197,27 @@ extension MiniPlayerView
         if sender.image(for: .normal)!.pngData() == playIcon.pngData()
         {
             print("Gonna Play")
-            delegate?.onPlayButtonTap(miniPlayerView: self)
+            delegate?.onMiniPlayerPlayButtonTap()
             sender.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         }
         else
         {
             print("Gonna Pause")
-            delegate?.onPauseButtonTap(miniPlayerView: self)
+            delegate?.onMiniPlayerPauseButtonTap()
             sender.setImage(UIImage(systemName: "play.fill"), for: .normal)
         }
     }
     
-    @objc func onRewindButtonTap(_ sender: UIButton)
+    @objc func onPreviousButtonTap(_ sender: UIButton)
     {
-        print("Rewind")
-        delegate?.onRewindButtonTap(miniPlayerView: self)
+        print("Previous")
+        delegate?.onMiniPlayerPreviousButtonTap()
     }
     
-    @objc func onForwardButtonTap(_ sender: UIButton)
+    @objc func onNextButtonTap(_ sender: UIButton)
     {
-        print("Forward")
-        delegate?.onForwardButtonTap(miniPlayerView: self)
+        print("Next")
+        delegate?.onMiniPlayerNextButtonTap()
     }
     
     @objc func onMiniPlayerViewTap(_ sender: UIView)
