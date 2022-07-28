@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ArtistWrapper: Identifiable, Hashable, CustomStringConvertible
+class ArtistWrapper: Identifiable, Comparable, Hashable, CustomStringConvertible
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -46,11 +46,16 @@ class ArtistWrapper: Identifiable, Hashable, CustomStringConvertible
     
     static func == (lhs: ArtistWrapper, rhs: ArtistWrapper) -> Bool
     {
-        lhs.id == rhs.id
+        lhs.name! == rhs.name!
+    }
+    
+    static func < (lhs: ArtistWrapper, rhs: ArtistWrapper) -> Bool
+    {
+        return lhs.name! < rhs.name!
     }
     
     func hash(into hasher: inout Hasher)
     {
-        hasher.combine(self.id)
+        hasher.combine(self.name!)
     }
 }

@@ -25,7 +25,7 @@ class SearchViewController: UITableViewController
     private lazy var categories: [[String]] = [["New Releases", "Top Charts"], ["Tamil", "Malayalam"], ["Hindi", "Telugu"], ["Kannada", "English"], ["Classical", "Melody"], ["Western", "Rock"], ["Folk"]]
     
     private lazy var searchController: UISearchController = {
-        let searchResultsVC = SearchResultsViewController()
+        let searchResultsVC = SearchResultsViewController(style: .grouped)
         let sController = UISearchController(searchResultsController: searchResultsVC)
         sController.searchResultsUpdater = searchResultsVC
         sController.showsSearchResultsController = true
@@ -44,6 +44,8 @@ class SearchViewController: UITableViewController
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        tableView.contentInsetAdjustmentBehavior = .scrollableAxes
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -92,13 +94,13 @@ extension SearchViewController
             {
                 let cellHeight = ((tableView.frame.width / 2.3) - 1) / 2
                 let margin: CGFloat = 20
-                return CGFloat(categories.count) * (cellHeight + margin) + 25
+                return CGFloat(categories.count) * (cellHeight + margin)
             }
             else
             {
                 let cellHeight = ((tableView.frame.width / 2.5) - 1) / 2.5
                 let margin: CGFloat = 20
-                return CGFloat(categories.count) * (cellHeight + margin) + 25
+                return CGFloat(categories.count) * (cellHeight + margin)
             }
         }
         else

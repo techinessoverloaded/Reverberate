@@ -132,7 +132,7 @@ class ProfileViewController: UITableViewController
             navigationController?.navigationBar.prefersLargeTitles = true
             navigationItem.largeTitleDisplayMode = .always
             navigationItem.rightBarButtonItem = nil
-            tableView.register(SignInTableViewCell.self, forCellReuseIdentifier: SignInTableViewCell.identifier)
+            tableView.register(SigninTableViewCell.self, forCellReuseIdentifier: SigninTableViewCell.identifier)
             tableView.register(LabeledInfoTableViewCell.self, forCellReuseIdentifier: LabeledInfoTableViewCell.identifier)
             tableView.allowsSelection = true
             themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
@@ -414,7 +414,7 @@ extension ProfileViewController
         {
             if section == 0
             {
-                let cell = tableView.dequeueReusableCell(withIdentifier: SignInTableViewCell.identifier, for: indexPath) as! SignInTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: SigninTableViewCell.identifier, for: indexPath) as! SigninTableViewCell
                 //Hide Separator
                 cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
                 return cell.configureCell(title: "Login to get a better experience", subtitle: "Preserve favourite playlists and do more.")

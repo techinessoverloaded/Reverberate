@@ -16,6 +16,8 @@ class DataManager
     
     private(set) var availableAlbums: [AlbumWrapper] = []
     
+    private(set) var availableArtists: [ArtistWrapper] = []
+    
     // Prevent Instantiation
     private init() {}
     
@@ -40,6 +42,17 @@ class DataManager
         let start = DispatchTime.now()
         availableSongs = getSongs()
         availableAlbums = AlbumSegregator.segregateAlbums(unsegregatedSongs: availableSongs)
+        var artistSet: Set<ArtistWrapper> = []
+        for song in availableSongs
+        {
+            song.artists!.forEach {
+                if !artistSet.contains($0)
+                {
+                    artistSet.insert($0)
+                }
+            }
+        }
+        availableArtists = Array(artistSet)
         completionHandler?(start)
     }
 }

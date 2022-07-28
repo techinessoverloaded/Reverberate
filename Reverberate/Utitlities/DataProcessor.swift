@@ -15,14 +15,44 @@ class DataProcessor
     
     func getSongsThatSatisfy(theQuery query: String) -> [SongWrapper]?
     {
-        var querySet: Set<SongWrapper> = []
+        var resultSet: Set<SongWrapper> = []
         for song in DataManager.shared.availableSongs
         {
-            if song.albumName!.contains(query) || song.title!.contains(query) || song.language!.description.contains(query) || song.genre!.description.contains(query) || song.artists!.contains(where: { $0.name!.contains(query) })
+            if song.albumName!.lowercased().contains(query) || song.title!.lowercased().contains(query) || song.language!.description.lowercased().contains(query) || song.genre!.description.lowercased().contains(query) || song.artists!.contains(where: { $0.name!.lowercased().contains(query) })
             {
-                querySet.insert(song)
+                resultSet.insert(song)
             }
         }
-        return querySet.isEmpty ? nil : Array(querySet)
+        return resultSet.isEmpty ? nil : Array(resultSet).sorted()
+    }
+    
+    func getAlbumsThatSatisfy(theQuery query: String) -> [AlbumWrapper]?
+    {
+        var resultSet: Set<AlbumWrapper> = []
+        for album in DataManager.shared.availableAlbums
+        {
+            if album.name!.lowercased().contains(query) || album.songs!.contains(where: {
+                $0.title!.lowercased().contains(query) ||
+                $0.language!.description.lowercased().contains(query) ||
+                $0.genre!.description.lowercased().contains(query) ||
+                $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
+            {
+                resultSet.insert(album)
+            }
+        }
+        return resultSet.isEmpty ? nil : Array(resultSet).sorted()
+    }
+    
+    func getArtistsThatSatisfy(theQuery query: String) -> [ArtistWrapper]?
+    {
+        var resultSet: Set<ArtistWrapper> = []
+        for artist in DataManager.shared.availableArtists
+        {
+            if artist.name!.lowercased().contains(query) || artist.artistType!.description.contains(query)
+            {
+                resultSet.insert(artist)
+            }
+        }
+        return resultSet.isEmpty ? nil : Array(resultSet).sorted()
     }
 }

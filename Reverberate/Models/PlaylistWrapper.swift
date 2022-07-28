@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PlaylistWrapper: Identifiable, Hashable, CustomStringConvertible
+class PlaylistWrapper: Identifiable, Comparable, Hashable, CustomStringConvertible
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -58,5 +58,10 @@ class PlaylistWrapper: Identifiable, Hashable, CustomStringConvertible
     static func == (lhs: PlaylistWrapper, rhs: PlaylistWrapper) -> Bool
     {
         return lhs.id == rhs.id
+    }
+    
+    static func < (lhs: PlaylistWrapper, rhs: PlaylistWrapper) -> Bool
+    {
+        return lhs.name! < rhs.name!
     }
 }

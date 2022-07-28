@@ -29,7 +29,7 @@ class HomeViewController: UITableViewController
         view.backgroundColor = .systemGroupedBackground
         self.navigationController?.navigationBar.prefersLargeTitles = true
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
-        collectionView.register(SongCVCell.self, forCellWithReuseIdentifier: SongCVCell.identifier)
+        collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         tableView.separatorStyle = .none
         collectionView.dataSource = self
@@ -173,7 +173,7 @@ extension HomeViewController: UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SongCVCell.identifier, for: indexPath) as! SongCVCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterDetailCVCell.identifier, for: indexPath) as! PosterDetailCVCell
         let section = indexPath.section
         let item = indexPath.item
         if section == 0
@@ -181,11 +181,11 @@ extension HomeViewController: UICollectionViewDataSource
             if (0...2).contains(item)
             {
                 let artistNames = songs[item].getArtistNamesAsString(artistType: nil)
-                cell.configureCell(songPoster: songs[item].coverArt!, songTitle: songs[item].title!, artistNames: artistNames)
+                cell.configureCell(poster: songs[item].coverArt!, title: songs[item].title!, subtitle: artistNames)
             }
             else
             {
-                cell.configureCell(songTitle: "Song \(indexPath.item)", artistNames: "Artist 1, Artist 2, Artist 3, Artist 4")
+                cell.configureCell(title: "Song \(indexPath.item)", subtitle: "Artist 1, Artist 2, Artist 3, Artist 4")
             }
         }
         else if section == 1
@@ -193,16 +193,16 @@ extension HomeViewController: UICollectionViewDataSource
             if (0...3).contains(item)
             {
                 let artistNames = songs[item+3].getArtistNamesAsString(artistType: nil)
-                cell.configureCell(songPoster: songs[item+3].coverArt!, songTitle: songs[item+3].title!, artistNames: artistNames)
+                cell.configureCell(poster: songs[item+3].coverArt!, title: songs[item+3].title!, subtitle: artistNames)
             }
             else
             {
-                cell.configureCell(songTitle: "Song \(indexPath.item)", artistNames: "Artist 1, Artist 2, Artist 3, Artist 4")
+                cell.configureCell(title: "Song \(indexPath.item)", subtitle: "Artist 1, Artist 2, Artist 3, Artist 4")
             }
         }
         else
         {
-            cell.configureCell(songTitle: "Song \(indexPath.item)", artistNames: "Artist 1, Artist 2, Artist 3, Artist 4")
+            cell.configureCell(title: "Song \(indexPath.item)", subtitle: "Artist 1, Artist 2, Artist 3, Artist 4")
         }
         return cell
     }

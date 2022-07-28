@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SongWrapper: Identifiable, Hashable, CustomStringConvertible
+class SongWrapper: Identifiable, Hashable, Comparable, CustomStringConvertible
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -75,12 +75,17 @@ class SongWrapper: Identifiable, Hashable, CustomStringConvertible
         lhs.id == rhs.id
     }
     
+    static func < (lhs: SongWrapper, rhs: SongWrapper) -> Bool
+    {
+        return lhs.title! < rhs.title!
+    }
+    
     func hash(into hasher: inout Hasher)
     {
         hasher.combine(self.id)
     }
     
-    func getArtists(ofType artistType: ArtistType?) -> [ArtistWrapper]
+    func getArtists(ofType artistType: ArtistType) -> [ArtistWrapper]
     {
         var result: [ArtistWrapper] = []
         artists!.filter {
@@ -98,7 +103,7 @@ class SongWrapper: Identifiable, Hashable, CustomStringConvertible
             var artistNameArray = artists!.map {
                 $0.name!
             }
-            artistNameArray = Array(Set(artistNameArray)).sorted()
+            artistNameArray = Array(Set(artistNameArray))
             return artistNameArray.joined(separator: ", ")
         }
 
