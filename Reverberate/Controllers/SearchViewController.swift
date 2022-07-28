@@ -92,13 +92,13 @@ extension SearchViewController
             {
                 let cellHeight = ((tableView.frame.width / 2.3) - 1) / 2
                 let margin: CGFloat = 20
-                return CGFloat(categories.count) * (cellHeight + margin) + 20
+                return CGFloat(categories.count) * (cellHeight + margin) + 25
             }
             else
             {
                 let cellHeight = ((tableView.frame.width / 2.5) - 1) / 2.5
                 let margin: CGFloat = 20
-                return CGFloat(categories.count) * (cellHeight + margin) + 20
+                return CGFloat(categories.count) * (cellHeight + margin) + 25
             }
         }
         else

@@ -56,6 +56,12 @@ class PlayerViewController: UITableViewController
         return sRecognizer
     }()
     
+    private lazy var panGestureRecognizer: UIPanGestureRecognizer = {
+        let pRecognizer = UIPanGestureRecognizer()
+        pRecognizer.minimumNumberOfTouches = 1
+        return pRecognizer
+    }()
+    
     private lazy var albumTitleView: UILabel = {
         let atView = UILabel(useAutoLayout: true)
         atView.textColor = .label.withAlphaComponent(0.8)
@@ -95,6 +101,7 @@ class PlayerViewController: UITableViewController
         stView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
         stView.numberOfLines = 3
         stView.lineBreakMode = .byTruncatingTail
+        stView.lineBreakStrategy = .standard
         stView.isUserInteractionEnabled = true
         stView.textAlignment = .center
         return stView
@@ -286,7 +293,10 @@ class PlayerViewController: UITableViewController
         tableView.separatorStyle = .none
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         swipeGestureRecognizer.addTarget(self, action: #selector(onPlayerSwipeAction(_:)))
+        panGestureRecognizer.addTarget(self, action: #selector(onPlayerPanAction(_:)))
+        panGestureRecognizer.delegate = self
         navigationController?.view.addGestureRecognizer(swipeGestureRecognizer)
+        tableView.addGestureRecognizer(panGestureRecognizer)
         navigationController?.view.isUserInteractionEnabled = true
         playOrPauseButton.addTarget(self, action: #selector(onPlayOrPauseButtonTap(_:)), for: .touchUpInside)
         rewindButton.addTarget(self, action: #selector(onRewindButtonTap(_:)), for: .touchUpInside)
@@ -410,15 +420,22 @@ extension PlayerViewController
         {
             if item == 0
             {
-                return 60
+                return 70
             }
             else if item == 1
             {
-                return 250
+                if isIpad
+                {
+                    return 350
+                }
+                else
+                {
+                    return 250
+                }
             }
             else if item == 2
             {
-                return 50
+                return 60
             }
             else if item == 3
             {
@@ -434,7 +451,7 @@ extension PlayerViewController
             }
             else
             {
-                return 90
+                return 60
             }
         }
         else
@@ -658,6 +675,33 @@ extension PlayerViewController
     {
         print("Player swipe action")
         delegate?.onPlayerShrinkRequest()
+    }
+    
+    @objc func onPlayerPanAction(_ recognizer: UIPanGestureRecognizer)
+    {
+        if recognizer.state == .began && tableView.contentOffset.y == 0
+        {
+
+        }
+        else if recognizer.state != .ended && recognizer.state != .cancelled && recognizer.state != .failed
+        {
+            let panOffset = recognizer.translation(in: tableView)
+            let eligiblePanOffset = panOffset.y > 300
+            if eligiblePanOffset
+            {
+                recognizer.isEnabled = false
+                recognizer.isEnabled = true
+                delegate?.onPlayerShrinkRequest()
+            }
+        }
+    }
+}
+
+extension PlayerViewController: UIGestureRecognizerDelegate
+{
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        return true
     }
 }
 

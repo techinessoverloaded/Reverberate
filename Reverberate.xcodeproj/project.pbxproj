@@ -84,6 +84,7 @@
 		DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */; };
 		DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */; };
 		DA7F246E288188E600E4786F /* SongMetaDataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */; };
+		DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */; };
 		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
 		DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF64916287553020061C29B /* CustomTableViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -168,6 +169,7 @@
 		DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beastmode.mp3; sourceTree = "<group>"; };
 		DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhana.mp3; sourceTree = "<group>"; };
 		DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMetaDataExtractor.swift; sourceTree = "<group>"; };
+		DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ullamurugudhaiya.mp3; sourceTree = "<group>"; };
 		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
 		DAF64916287553020061C29B /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -383,6 +385,7 @@
 		DA7F24612881828B00E4786F /* Tamil */ = {
 			isa = PBXGroup;
 			children = (
+				DA9460052892490A00FEB486 /* Classical */,
 				DA7F24692881866300E4786F /* Folk */,
 				DA7F24682881864C00E4786F /* Western */,
 				DA7F2467288185DE00E4786F /* Rock */,
@@ -534,6 +537,14 @@
 			path = Folk;
 			sourceTree = "<group>";
 		};
+		DA9460052892490A00FEB486 /* Classical */ = {
+			isa = PBXGroup;
+			children = (
+				DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */,
+			);
+			path = Classical;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -596,6 +607,7 @@
 				DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */,
 				DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */,
 				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
+				DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */,
 				DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */,
 				DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */,
 				DA5CE9A3288835390066AB2E /* paakadha.m4a in Resources */,

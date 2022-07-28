@@ -9,8 +9,6 @@ import UIKit
 class HomeViewController: UITableViewController
 {
     private lazy var collectionView: UICollectionView = {
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.scrollDirection = .horizontal
         let cView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: {
             sectionIndex , _ -> NSCollectionLayoutSection? in
             self.createSectionLayout(section: sectionIndex)
@@ -192,7 +190,7 @@ extension HomeViewController: UICollectionViewDataSource
         }
         else if section == 1
         {
-            if (0...2).contains(item)
+            if (0...3).contains(item)
             {
                 let artistNames = songs[item+3].getArtistNamesAsString(artistType: nil)
                 cell.configureCell(songPoster: songs[item+3].coverArt!, songTitle: songs[item+3].title!, artistNames: artistNames)
@@ -221,14 +219,20 @@ extension HomeViewController: UICollectionViewDelegate
         {
             if (0...2).contains(item)
             {
-                GlobalVariables.shared.currentSong = songs[item]
+                if GlobalVariables.shared.currentSong != songs[item]
+                {
+                    GlobalVariables.shared.currentSong = songs[item]
+                }
             }
         }
         else if section == 1
         {
-            if (0...2).contains(item)
+            if (0...3).contains(item)
             {
-                GlobalVariables.shared.currentSong = songs[item+3]
+                if GlobalVariables.shared.currentSong != songs[item+3]
+                {
+                    GlobalVariables.shared.currentSong = songs[item+3]
+                }
             }
         }
     }

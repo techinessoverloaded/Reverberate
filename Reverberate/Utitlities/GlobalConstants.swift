@@ -40,21 +40,36 @@ class GlobalConstants
         "Chandrabose" : "chandrabose",
         "Nakash Aziz" : "nakashaziz",
         "Sreerama Chandra" : "sreeramachandra",
-        "Sri Sai Kiran" : "srisaikiran"
+        "Sri Sai Kiran" : "srisaikiran",
+        "D. Imman" : "dimman",
+        "G. V. Prakash Kumar" : "gvprakashkumar",
+        "Brindha Manickavasakan" : "brindhamanickavasakan",
+        "Vignesh Shivan" : "vigneshshivan",
+        "Yugabharathi" : "yugabharathi",
+        "Vandana Srinivasan" : "vandanasrinivasan",
+        "Pradeep Kumar" : "pradeepkumar",
+        "Armaan Malik" : "armaanmalik",
+        "Nikhita Gandhi" : "nikhitagandhi"
     ]
     
     //Asset song names
     static let songNames: [Language: [MusicGenre: [String]]] = [
         .tamil : [
-            .classical: [],
-            .melody: [], //"unmelaorukannu.m4a", "paakadha.m4a",
+            .classical: [
+                "ullamurugudhaiya.mp3"
+            ],
+            .melody: [
+            ], //"unmelaorukannu.m4a", "paakadha.m4a",
             .western: [],
             .rock: [
                 "arabickuthu.mp3",
                 "jollyogymkhana.mp3",
                 "beastmode.mp3",
+//                "summasurrunu.mp3",
             ],
-            .folk: []
+            .folk: [
+//                "vaadathambi.mp3"
+            ]
         ],
         .malayalam: [
             .classical: [],
