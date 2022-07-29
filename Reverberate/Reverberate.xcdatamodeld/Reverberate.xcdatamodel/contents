@@ -2,11 +2,13 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Album" representedClassName=".Album" parentEntity="Playlist" syncable="YES">
         <attribute name="coverArt" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="releaseDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <entity name="Artist" representedClassName="Artist" syncable="YES">
-        <attribute name="artistType" optional="YES" attributeType="Integer 16" valueTransformerName="NSSecureUnarchiveFromData" defaultValueString="0" usesScalarValueType="YES" customClassName=".ArtistType"/>
+        <attribute name="artistType" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName=".[Int16]"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="photo" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <relationship name="contributedSongs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Song" inverseName="parentArtist" inverseEntity="Song"/>
         <relationship name="parentSong" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Song" inverseName="artists" inverseEntity="Song"/>
     </entity>
     <entity name="Playlist" representedClassName=".Playlist" syncable="YES">
@@ -17,18 +19,18 @@
     <entity name="Song" representedClassName=".Song" syncable="YES">
         <attribute name="albumName" optional="YES" attributeType="String"/>
         <attribute name="coverArt" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
-        <attribute name="dateOfPublishing" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="genre" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="URI"/>
         <relationship name="artists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Artist" inverseName="parentSong" inverseEntity="Artist"/>
+        <relationship name="parentArtist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Artist" inverseName="contributedSongs" inverseEntity="Artist"/>
         <relationship name="parentPlaylist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Playlist" inverseName="songs" inverseEntity="Playlist"/>
+        <relationship name="parentUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="favouriteSongs" inverseEntity="User"/>
     </entity>
     <entity name="User" representedClassName=".User" syncable="YES">
         <attribute name="email" optional="YES" attributeType="String"/>
-        <attribute name="favouriteSongs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Playlist"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="password" optional="YES" attributeType="String"/>
@@ -37,12 +39,13 @@
         <attribute name="preferredLanguages" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int16]"/>
         <attribute name="profilePicture" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <relationship name="favouritePlaylists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Playlist" inverseName="parentUser" inverseEntity="Playlist"/>
+        <relationship name="favouriteSongs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Song" inverseName="parentUser" inverseEntity="Song"/>
     </entity>
     <elements>
-        <element name="Album" positionX="-36" positionY="72" width="128" height="44"/>
-        <element name="Artist" positionX="-54" positionY="90" width="128" height="89"/>
+        <element name="Album" positionX="-36" positionY="72" width="128" height="59"/>
+        <element name="Artist" positionX="-54" positionY="90" width="128" height="104"/>
         <element name="Playlist" positionX="-54" positionY="54" width="128" height="74"/>
-        <element name="Song" positionX="-63" positionY="45" width="128" height="179"/>
+        <element name="Song" positionX="-63" positionY="45" width="128" height="194"/>
         <element name="User" positionX="-63" positionY="-18" width="128" height="179"/>
     </elements>
 </model>

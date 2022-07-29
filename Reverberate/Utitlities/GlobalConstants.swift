@@ -25,31 +25,11 @@ class GlobalConstants
     //NSNotification Names
     static let currentSongSetNotification: NSNotification.Name = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
      
-    //Album details
-    static let albumDetails: [String : (String)] = [
-        "Beast" : ("04/05/2022")
-    ]
-    
-    //Artist Pictures
-    static let artistPictures: [String : String] = [
-        "Anirudh Ravichander" : "anirudh",
-        "Jonita Gandhi" : "jonitagandhi",
-        "Ku. Karthik" : "kukarthik",
-        "Sivakarthikeyan" : "sivakarthikeyan",
-        "Vivek" : "vivek",
-        "Chandrabose" : "chandrabose",
-        "Nakash Aziz" : "nakashaziz",
-        "Sreerama Chandra" : "sreeramachandra",
-        "Sri Sai Kiran" : "srisaikiran",
-        "D. Imman" : "dimman",
-        "G. V. Prakash Kumar" : "gvprakashkumar",
-        "Brindha Manickavasakan" : "brindhamanickavasakan",
-        "Vignesh Shivan" : "vigneshshivan",
-        "Yugabharathi" : "yugabharathi",
-        "Vandana Srinivasan" : "vandanasrinivasan",
-        "Pradeep Kumar" : "pradeepkumar",
-        "Armaan Malik" : "armaanmalik",
-        "Nikhita Gandhi" : "nikhitagandhi"
+    //Album Release Dates
+    static let albumReleaseDates: [String : String] = [
+        "Beast" : "04/05/2022",
+        "Beast (Telugu)" : "04/05/2022",
+        "Etharkkum Thunindhavan" : "31/01/2022"
     ]
     
     //Asset song names

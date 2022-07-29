@@ -13,6 +13,11 @@ class DataProcessor
     //Prevent Initialization
     private init() {}
     
+    func getAlbumBy(albumName: String) -> AlbumWrapper?
+    {
+        return DataManager.shared.availableAlbums.first(where: { $0.name! == albumName })
+    }
+    
     func getSongsThatSatisfy(theQuery query: String) -> [SongWrapper]?
     {
         var resultSet: Set<SongWrapper> = []

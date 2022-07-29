@@ -11,9 +11,8 @@ class PlaylistWrapper: Identifiable, Comparable, Hashable, CustomStringConvertib
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    public var name: String?
-    public var songs: [SongWrapper]?
-    public var parentUser: User?
+    public var name: String? = nil
+    public var songs: [SongWrapper]? = nil
     
     var description: String
     {
@@ -29,7 +28,6 @@ class PlaylistWrapper: Identifiable, Comparable, Hashable, CustomStringConvertib
         {
             self.songs?.append(SongWrapper(song: song))
         }
-        self.parentUser = playlist.parentUser
     }
     
     init()
@@ -46,18 +44,17 @@ class PlaylistWrapper: Identifiable, Comparable, Hashable, CustomStringConvertib
             songSet.insert($0.emitAsCoreDataObject())
         }
         playlist.addToSongs(NSSet(set: songSet))
-        playlist.parentUser = self.parentUser
         return playlist
     }
     
     func hash(into hasher: inout Hasher)
     {
-        hasher.combine(self.id)
+        hasher.combine(self.name!)
     }
     
     static func == (lhs: PlaylistWrapper, rhs: PlaylistWrapper) -> Bool
     {
-        return lhs.id == rhs.id
+        return lhs.name! == rhs.name!
     }
     
     static func < (lhs: PlaylistWrapper, rhs: PlaylistWrapper) -> Bool

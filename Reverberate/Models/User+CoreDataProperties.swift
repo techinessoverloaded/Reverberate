@@ -2,7 +2,7 @@
 //  User+CoreDataProperties.swift
 //  Reverberate
 //
-//  Created by arun-13930 on 20/07/22.
+//  Created by arun-13930 on 29/07/22.
 //
 //
 
@@ -24,8 +24,8 @@ extension User {
     @NSManaged public var preferredGenres: [Int16]?
     @NSManaged public var preferredLanguages: [Int16]?
     @NSManaged public var profilePicture: Data?
-    @NSManaged public var favouriteSongs: Playlist?
     @NSManaged public var favouritePlaylists: NSSet?
+    @NSManaged public var favouriteSongs: NSSet?
 
 }
 
@@ -43,6 +43,23 @@ extension User {
 
     @objc(removeFavouritePlaylists:)
     @NSManaged public func removeFromFavouritePlaylists(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for favouriteSongs
+extension User {
+
+    @objc(addFavouriteSongsObject:)
+    @NSManaged public func addToFavouriteSongs(_ value: Song)
+
+    @objc(removeFavouriteSongsObject:)
+    @NSManaged public func removeFromFavouriteSongs(_ value: Song)
+
+    @objc(addFavouriteSongs:)
+    @NSManaged public func addToFavouriteSongs(_ values: NSSet)
+
+    @objc(removeFavouriteSongs:)
+    @NSManaged public func removeFromFavouriteSongs(_ values: NSSet)
 
 }
 

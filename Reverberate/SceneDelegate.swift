@@ -23,6 +23,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             let endTime = DispatchTime.now()
             let interval = TimeInterval(endTime.uptimeNanoseconds - startTime.uptimeNanoseconds)
             print("Time Taken: \(interval / 1000000000) seconds")
+            print("Number of Artists: \(DataManager.shared.availableArtists.count)")
+            print("Number of songs contributed by each artist: \n")
+            DataManager.shared.availableArtists.forEach({
+                print("\($0.name!) : \($0.contributedSongs!.count) songs")
+            })
             self.setupRootViewController()
         })
         window!.makeKeyAndVisible()

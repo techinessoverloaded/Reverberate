@@ -2,7 +2,7 @@
 //  Album+CoreDataProperties.swift
 //  Reverberate
 //
-//  Created by arun-13930 on 20/07/22.
+//  Created by arun-13930 on 29/07/22.
 //
 //
 
@@ -17,5 +17,6 @@ extension Album {
     }
 
     @NSManaged public var coverArt: Data?
+    @NSManaged public var releaseDate: Date?
 
 }

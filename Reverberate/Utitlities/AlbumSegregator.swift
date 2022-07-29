@@ -5,6 +5,8 @@
 //  Created by arun-13930 on 25/07/22.
 //
 
+import Foundation
+
 struct AlbumSegregator
 {
     //Prevent Initialization
@@ -22,6 +24,7 @@ struct AlbumSegregator
                 newAlbum.songs = []
                 newAlbum.songs!.append(song)
                 newAlbum.name = song.albumName!
+                newAlbum.releaseDate = DateFormatter.getDateFromString(dateString: GlobalConstants.albumReleaseDates[newAlbum.name!]!)
                 albums.append(newAlbum)
             }
             else

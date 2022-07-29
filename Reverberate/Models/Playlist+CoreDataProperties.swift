@@ -2,7 +2,7 @@
 //  Playlist+CoreDataProperties.swift
 //  Reverberate
 //
-//  Created by arun-13930 on 20/07/22.
+//  Created by arun-13930 on 29/07/22.
 //
 //
 
@@ -17,8 +17,8 @@ extension Playlist {
     }
 
     @NSManaged public var name: String?
-    @NSManaged public var songs: NSSet?
     @NSManaged public var parentUser: User?
+    @NSManaged public var songs: NSSet?
 
 }
 

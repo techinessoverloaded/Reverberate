@@ -7,30 +7,40 @@
 
 import UIKit
 
-class AlbumWrapper: PlaylistWrapper
+class AlbumWrapper: Identifiable, Comparable, Hashable, CustomStringConvertible
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    public var coverArt: UIImage?
+    public var name: String? = nil
+    public var songs: [SongWrapper]? = nil
+    public var coverArt: UIImage? = nil
+    public var releaseDate: Date? = nil
     
-    override var description: String
+    var description: String
     {
-        "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt!))"
+        "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt!), releaseDate = \(releaseDate!))"
     }
     
     
     init(album: Album)
     {
-        super.init(playlist: album)
+        self.name = album.name!
+        let songArray = album.songs!.allObjects as! [Song]
+        self.songs = []
+        for song in songArray
+        {
+            self.songs?.append(SongWrapper(song: song))
+        }
         self.coverArt = UIImage(data: album.coverArt!)
+        self.releaseDate = album.releaseDate!
     }
     
-    override init()
+    init()
     {
-        super.init()
+        
     }
     
-    override func emitAsCoreDataObject() -> Album
+    func emitAsCoreDataObject() -> Album
     {
         let album = Album(context: context)
         album.name = self.name
@@ -39,8 +49,23 @@ class AlbumWrapper: PlaylistWrapper
             songSet.insert($0.emitAsCoreDataObject())
         }
         album.addToSongs(NSSet(set: songSet))
-        album.parentUser = self.parentUser
         album.coverArt = self.coverArt!.jpegData(compressionQuality: 1)
+        album.releaseDate = self.releaseDate!
         return album
+    }
+    
+    func hash(into hasher: inout Hasher)
+    {
+        hasher.combine(self.name!)
+    }
+    
+    static func == (lhs: AlbumWrapper, rhs: AlbumWrapper) -> Bool
+    {
+        return lhs.name! == rhs.name!
+    }
+    
+    static func < (lhs: AlbumWrapper, rhs: AlbumWrapper) -> Bool
+    {
+        return lhs.name! < rhs.name!
     }
 }

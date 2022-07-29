@@ -11,30 +11,26 @@ class SongWrapper: Identifiable, Hashable, Comparable, CustomStringConvertible
 {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    public var albumName: String?
-    public var coverArt: UIImage?
-    public var dateOfPublishing: Date?
-    public var duration: Double?
-    public var title: String?
-    public var parentPlaylist: PlaylistWrapper?
-    public var artists: [ArtistWrapper]?
-    public var url: URL?
-    public var genre: MusicGenre?
-    public var language: Language?
+    public var albumName: String? = nil
+    public var coverArt: UIImage? = nil
+    public var duration: Double? = nil
+    public var title: String? = nil
+    public var artists: [ArtistWrapper]? = nil
+    public var url: URL? = nil
+    public var genre: MusicGenre? = nil
+    public var language: Language? = nil
     
     var description: String
     {
-        "Song(title = \(title!), artists = \(artists!), duration = \(duration!), url = \(url!), albumName = \(albumName!), language = \(language), genre = \(genre), coverArt = \(coverArt!)"
+        "Song(title = \(title!), artists = \(String(describing: artists)), duration = \(duration!), url = \(url!), albumName = \(albumName!), language = \(String(describing: language)), genre = \(genre), coverArt = \(coverArt!)"
     }
     
     init(song: Song)
     {
         self.albumName = song.albumName
         self.coverArt = UIImage(data: song.coverArt!)
-        self.dateOfPublishing = song.dateOfPublishing
         self.duration = song.duration
         self.title = song.title
-        self.parentPlaylist = PlaylistWrapper(playlist: song.parentPlaylist!)
         self.artists = []
         let artistsAry = song.artists!.allObjects as! [Artist]
         for artist in artistsAry {
@@ -55,11 +51,9 @@ class SongWrapper: Identifiable, Hashable, Comparable, CustomStringConvertible
         let song = Song(context: context)
         song.albumName = self.albumName
         song.coverArt = self.coverArt!.jpegData(compressionQuality: 1)
-        song.dateOfPublishing = self.dateOfPublishing
         song.duration = self.duration!
         song.title = self.title
         song.url = self.url
-        song.parentPlaylist = self.parentPlaylist!.emitAsCoreDataObject()
         song.genre = self.genre!.rawValue
         song.language = self.language!.rawValue
         var artistSet = Set<Artist>()
@@ -72,7 +66,7 @@ class SongWrapper: Identifiable, Hashable, Comparable, CustomStringConvertible
     
     static func == (lhs: SongWrapper, rhs: SongWrapper) -> Bool
     {
-        lhs.id == rhs.id
+        lhs.title! == rhs.title!
     }
     
     static func < (lhs: SongWrapper, rhs: SongWrapper) -> Bool
@@ -82,14 +76,14 @@ class SongWrapper: Identifiable, Hashable, Comparable, CustomStringConvertible
     
     func hash(into hasher: inout Hasher)
     {
-        hasher.combine(self.id)
+        hasher.combine(self.title!)
     }
     
     func getArtists(ofType artistType: ArtistType) -> [ArtistWrapper]
     {
         var result: [ArtistWrapper] = []
         artists!.filter {
-            $0.artistType == artistType
+            $0.artistType!.contains(artistType)
         }.forEach {
             result.append($0)
         }
@@ -108,7 +102,7 @@ class SongWrapper: Identifiable, Hashable, Comparable, CustomStringConvertible
         }
 
         let artistNameArray = artists!.filter {
-            $0.artistType == artistType
+            $0.artistType!.contains(artistType)
         }.map {
             $0.name!
         }

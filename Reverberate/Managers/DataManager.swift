@@ -37,22 +37,44 @@ class DataManager
         return SongMetadataExtractor.extractMultipleSongs(withFileNames: songFileNames, ofLanguageGenreAndCount: songLangGenreAndCount)
     }
     
+    func getArtists() -> [ArtistWrapper]
+    {
+        var artistSet: Set<ArtistWrapper> = []
+        for song in availableSongs
+        {
+            song.artists!.forEach
+            {
+                if !artistSet.contains($0)
+                {
+                    artistSet.insert($0.copy() as! ArtistWrapper)
+                }
+            }
+        }
+        for artist in artistSet
+        {
+            let filteredSongs = availableSongs.filter({
+                $0.artists!.contains(where: { $0 == artist })
+            })
+            if !filteredSongs.isEmpty
+            {
+                if artist.contributedSongs == nil
+                {
+                    artist.contributedSongs = []
+                }
+                filteredSongs.forEach({
+                    artist.contributedSongs!.insert($0)
+                })
+            }
+        }
+        return Array(artistSet)
+    }
+    
     func makeSongsAndAlbumsReady(onCompletion completionHandler: ((DispatchTime) -> Void)? = nil)
     {
         let start = DispatchTime.now()
         availableSongs = getSongs()
         availableAlbums = AlbumSegregator.segregateAlbums(unsegregatedSongs: availableSongs)
-        var artistSet: Set<ArtistWrapper> = []
-        for song in availableSongs
-        {
-            song.artists!.forEach {
-                if !artistSet.contains($0)
-                {
-                    artistSet.insert($0)
-                }
-            }
-        }
-        availableArtists = Array(artistSet)
+        availableArtists = getArtists()
         completionHandler?(start)
     }
 }

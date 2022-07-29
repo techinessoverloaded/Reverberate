@@ -26,6 +26,7 @@ class SearchViewController: UITableViewController
     
     private lazy var searchController: UISearchController = {
         let searchResultsVC = SearchResultsViewController(style: .grouped)
+        searchResultsVC.delegate = self
         let sController = UISearchController(searchResultsController: searchResultsVC)
         sController.searchResultsUpdater = searchResultsVC
         sController.showsSearchResultsController = true
@@ -71,6 +72,13 @@ class SearchViewController: UITableViewController
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.tintColor = .systemBlue
+        print("Search will appear")
     }
 }
 //TableView Delegate and Datasource
@@ -193,6 +201,25 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout
 extension SearchViewController: UISearchControllerDelegate
 {
     func didDismissSearchController(_ searchController: UISearchController)
+    {
+        
+    }
+}
+
+extension SearchViewController: SearchResultDelegate
+{
+    func onArtistSelection(selectedArtist: ArtistWrapper)
+    {
+        searchController.searchBar.text = nil
+        searchController.searchBar.resignFirstResponder()
+        let artistVC = ArtistViewController(style: .grouped)
+        artistVC.artist = selectedArtist
+        searchController.dismiss(animated: true) { [unowned self] in
+            self.navigationController?.pushViewController(artistVC, animated: true)
+        }
+    }
+    
+    func onAlbumSelection(selectedAlbum: AlbumWrapper)
     {
         
     }

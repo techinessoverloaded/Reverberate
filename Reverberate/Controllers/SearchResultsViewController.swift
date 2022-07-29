@@ -65,6 +65,8 @@ class SearchResultsViewController: UITableViewController
     
     private lazy var filteredArtists: [ArtistWrapper] = []
     
+    weak var delegate: SearchResultDelegate?
+    
     override func loadView()
     {
         super.loadView()
@@ -315,14 +317,15 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-//        let item = indexPath.item
-//        if searchMode == 0
-//        {
-//            if GlobalVariables.shared.currentSong != filteredSongs[item]
-//            {
-//                GlobalVariables.shared.currentSong = filteredSongs[item]
-//            }
-//        }
+        let item = indexPath.item
+        if searchMode == 1
+        {
+            delegate?.onAlbumSelection(selectedAlbum: filteredAlbums[item])
+        }
+        else if searchMode == 2
+        {
+            delegate?.onArtistSelection(selectedArtist: filteredArtists[item])
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize

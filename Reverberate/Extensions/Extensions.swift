@@ -187,6 +187,11 @@ extension String
         }
         return String(self[self.firstIndex(of: ".")!...])
     }
+    
+    func getAlphaNumericLowercasedString() -> Self
+    {
+        return self.components(separatedBy: CharacterSet.alphanumerics.inverted).joined().lowercased()
+    }
 }
 
 extension NSAttributedString

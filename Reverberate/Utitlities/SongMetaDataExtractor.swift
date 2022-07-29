@@ -50,32 +50,43 @@ struct SongMetadataExtractor
                 {
                     continue
                 }
-                var singers: [ArtistWrapper] = []
                 if artistNames.contains(",")
                 {
                     artistNames.split(separator: ",").forEach {
-                        let singer = ArtistWrapper()
-                        singer.name = String($0).trimmedCopy()
-                        singer.parentSong = songWrapper
-                        singer.artistType = .singer
-                        let singerPhotoName = GlobalConstants.artistPictures[singer.name!]
-                        singer.photo = UIImage(named: singerPhotoName!)
-                        singers.append(singer)
+                        let name = String($0).trimmedCopy()
+                        if !songWrapper.artists!.contains(where: { $0.name! == name })
+                        {
+                            let singer = ArtistWrapper()
+                            singer.name = name
+                            singer.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
+                            singer.artistType = [.singer]
+                            songWrapper.artists!.append(singer)
+                        }
+                        else
+                        {
+                            songWrapper.artists!.first(where: {
+                                $0.name! == name
+                            })!.artistType!.append(.singer)
+                        }
                     }
                 }
                 else
                 {
-                    let singer = ArtistWrapper()
-                    singer.name = artistNames.trimmedCopy()
-                    singer.parentSong = songWrapper
-                    singer.artistType = .singer
-                    let singerPhotoName = GlobalConstants.artistPictures[singer.name!]
-                    singer.photo = UIImage(named: singerPhotoName!)
-                    singers.append(singer)
-                }
-                singers.forEach {
-                    print("Singer: \($0.name ?? "")")
-                    songWrapper.artists!.append($0)
+                    let name = artistNames.trimmedCopy()
+                    if !songWrapper.artists!.contains(where: { $0.name! == name })
+                    {
+                        let singer = ArtistWrapper()
+                        singer.name = name
+                        singer.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
+                        singer.artistType = [.singer]
+                        songWrapper.artists!.append(singer)
+                    }
+                    else
+                    {
+                        songWrapper.artists!.first(where: {
+                            $0.name! == name
+                        })!.artistType!.append(.singer)
+                    }
                 }
             }
             if key == .commonKeyCreator
@@ -85,34 +96,43 @@ struct SongMetadataExtractor
                 {
                     continue
                 }
-                var musicDirectors: [ArtistWrapper] = []
                 if artistNames.contains(",")
                 {
-                    artistNames.split(separator: ",").forEach
-                    {
-                        let musicDirector = ArtistWrapper()
-                        musicDirector.name = String($0).trimmedCopy()
-                        musicDirector.parentSong = songWrapper
-                        musicDirector.artistType = .musicDirector
-                        let musicDirectorPhotoName = GlobalConstants.artistPictures[musicDirector.name!]
-                        musicDirector.photo = UIImage(named: musicDirectorPhotoName!)
-                        musicDirectors.append(musicDirector)
+                    artistNames.split(separator: ",").forEach {
+                        let name = String($0).trimmedCopy()
+                        if !songWrapper.artists!.contains(where: { $0.name! == name })
+                        {
+                            let musicDirector = ArtistWrapper()
+                            musicDirector.name = name
+                            musicDirector.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
+                            musicDirector.artistType = [.musicDirector]
+                            songWrapper.artists!.append(musicDirector)
+                        }
+                        else
+                        {
+                            songWrapper.artists!.first(where: {
+                                $0.name! == name
+                            })!.artistType!.append(.musicDirector)
+                        }
                     }
                 }
                 else
                 {
-                    let musicDirector = ArtistWrapper()
-                    musicDirector.name = artistNames.trimmedCopy()
-                    musicDirector.parentSong = songWrapper
-                    musicDirector.artistType = .musicDirector
-                    let musicDirectorPhotoName = GlobalConstants.artistPictures[musicDirector.name!]
-                    musicDirector.photo = UIImage(named: musicDirectorPhotoName!)
-                    musicDirectors.append(musicDirector)
-                }
-                musicDirectors.forEach
-                {
-                    print("Music Director: \($0.name ?? "")")
-                    songWrapper.artists!.append($0)
+                    let name = artistNames.trimmedCopy()
+                    if !songWrapper.artists!.contains(where: { $0.name! == name })
+                    {
+                        let musicDirector = ArtistWrapper()
+                        musicDirector.name = name
+                        musicDirector.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
+                        musicDirector.artistType = [.musicDirector]
+                        songWrapper.artists!.append(musicDirector)
+                    }
+                    else
+                    {
+                        songWrapper.artists!.first(where: {
+                            $0.name! == name
+                        })!.artistType!.append(.musicDirector)
+                    }
                 }
             }
             if key == .commonKeyAuthor
@@ -122,34 +142,43 @@ struct SongMetadataExtractor
                 {
                     continue
                 }
-                var lyricists: [ArtistWrapper] = []
                 if artistNames.contains(",")
                 {
-                    artistNames.split(separator: ",").forEach
-                    {
-                        let lyricist = ArtistWrapper()
-                        lyricist.name = String($0).trimmedCopy()
-                        lyricist.parentSong = songWrapper
-                        lyricist.artistType = .lyricist
-                        let lyricistPhotoName = GlobalConstants.artistPictures[lyricist.name!]
-                        lyricist.photo = UIImage(named: lyricistPhotoName!)
-                        lyricists.append(lyricist)
+                    artistNames.split(separator: ",").forEach {
+                        let name = String($0).trimmedCopy()
+                        if !songWrapper.artists!.contains(where: { $0.name! == name })
+                        {
+                            let lyricist = ArtistWrapper()
+                            lyricist.name = name
+                            lyricist.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
+                            lyricist.artistType = [.lyricist]
+                            songWrapper.artists!.append(lyricist)
+                        }
+                        else
+                        {
+                            songWrapper.artists!.first(where: {
+                                $0.name! == name
+                            })!.artistType!.append(.lyricist)
+                        }
                     }
                 }
                 else
                 {
-                    let lyricist = ArtistWrapper()
-                    lyricist.name = artistNames.trimmedCopy()
-                    lyricist.parentSong = songWrapper
-                    lyricist.artistType = .lyricist
-                    let lyricistPhotoName = GlobalConstants.artistPictures[lyricist.name!]
-                    lyricist.photo = UIImage(named: lyricistPhotoName!)
-                    lyricists.append(lyricist)
-                }
-                lyricists.forEach
-                {
-                    print("Lyricist From Author: \($0.name ?? "")")
-                    songWrapper.artists!.append($0)
+                    let name = artistNames.trimmedCopy()
+                    if !songWrapper.artists!.contains(where: { $0.name! == name })
+                    {
+                        let lyricist = ArtistWrapper()
+                        lyricist.name = name
+                        lyricist.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
+                        lyricist.artistType = [.lyricist]
+                        songWrapper.artists!.append(lyricist)
+                    }
+                    else
+                    {
+                        songWrapper.artists!.first(where: {
+                            $0.name! == name
+                        })!.artistType!.append(.lyricist)
+                    }
                 }
             }
             if key == .commonKeyArtwork
@@ -162,12 +191,8 @@ struct SongMetadataExtractor
                 songWrapper.coverArt = cover
                 print(cover)
             }
-            if key == .commonKeyCreationDate
-            {
-                songWrapper.dateOfPublishing = metadataItem.dateValue
-                print(songWrapper.dateOfPublishing ?? "")
-            }
         }
+        print("Artists: \(songWrapper.artists!)")
         return songWrapper
     }
     
