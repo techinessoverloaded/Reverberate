@@ -419,3 +419,11 @@ extension DateFormatter
         return formatter.date(from: dateString)
     }
 }
+
+extension Date
+{
+    func get(_ component: Calendar.Component, calendar: Calendar = Calendar.current) -> Int
+    {
+        return calendar.component(component, from: self)
+    }
+}

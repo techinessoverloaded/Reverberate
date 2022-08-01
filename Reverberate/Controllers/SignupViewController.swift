@@ -32,6 +32,7 @@ class SignupViewController: UITableViewController
         nField.autocorrectionType = .no
         nField.textContentType = .name
         nField.borderStyle = .roundedRect
+        nField.enablesReturnKeyAutomatically = true
         return nField
     }()
     
@@ -48,6 +49,7 @@ class SignupViewController: UITableViewController
         pField.autocapitalizationType = .none
         pField.textContentType = .telephoneNumber
         pField.borderStyle = .roundedRect
+        pField.enablesReturnKeyAutomatically = true
         return pField
     }()
     
@@ -64,6 +66,7 @@ class SignupViewController: UITableViewController
         eField.autocapitalizationType = .none
         eField.textContentType = .emailAddress
         eField.borderStyle = .roundedRect
+        eField.enablesReturnKeyAutomatically = true
         return eField
     }()
         
@@ -81,6 +84,7 @@ class SignupViewController: UITableViewController
         passField.returnKeyType = .next
         passField.autocapitalizationType = .none
         passField.borderStyle = .roundedRect
+        passField.enablesReturnKeyAutomatically = true
         return passField
     }()
     
@@ -98,6 +102,7 @@ class SignupViewController: UITableViewController
         pass2Field.returnKeyType = .done
         pass2Field.autocapitalizationType = .none
         pass2Field.borderStyle = .roundedRect
+        pass2Field.enablesReturnKeyAutomatically = true
         return pass2Field
     }()
     

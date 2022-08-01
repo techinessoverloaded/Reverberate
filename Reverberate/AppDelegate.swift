@@ -18,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         let audioSession = AVAudioSession.sharedInstance()
         do
         {
-            //try audioSession.setCategory(.playback, mode: .moviePlayback)
             try audioSession.setCategory(.playback, mode: .moviePlayback, policy: .longFormAudio)
         }
         catch

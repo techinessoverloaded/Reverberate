@@ -50,7 +50,8 @@ class StretchyTableHeaderView: UIView
         
         titleView = UILabel(useAutoLayout: true)
         titleView.textColor = .white
-        titleView.font = .systemFont(ofSize: 34, weight: .bold)
+        titleView.font = .systemFont(ofSize: 30, weight: .bold)
+        titleView.numberOfLines = 2
         containerView.addSubview(imageView)
         imageView.addSubview(overlayView)
         containerView.insertSubview(titleView, aboveSubview: imageView)

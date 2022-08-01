@@ -34,6 +34,7 @@ class EditProfileViewController: UITableViewController
         nField.autocapitalizationType = .words
         nField.autocorrectionType = .no
         nField.textContentType = .name
+        nField.enablesReturnKeyAutomatically = true
         return nField
     }()
     
@@ -45,6 +46,7 @@ class EditProfileViewController: UITableViewController
         eField.autocapitalizationType = .none
         eField.autocorrectionType = .no
         eField.textContentType = .emailAddress
+        eField.enablesReturnKeyAutomatically = true
         return eField
     }()
     
@@ -56,6 +58,7 @@ class EditProfileViewController: UITableViewController
         pField.autocapitalizationType = .none
         pField.autocorrectionType = .no
         pField.textContentType = .telephoneNumber
+        pField.enablesReturnKeyAutomatically = true
         return pField
     }()
     
@@ -108,6 +111,7 @@ class EditProfileViewController: UITableViewController
         view.backgroundColor = .systemGroupedBackground
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.register(LabeledInfoTableViewCell.self, forCellReuseIdentifier: LabeledInfoTableViewCell.identifier)
+        tableView.keyboardDismissMode = .onDrag
         tableView.allowsSelection = false
         nameField.delegate = self
         phoneField.delegate = self

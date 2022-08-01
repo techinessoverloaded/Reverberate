@@ -25,6 +25,7 @@ struct AlbumSegregator
                 newAlbum.songs!.append(song)
                 newAlbum.name = song.albumName!
                 newAlbum.releaseDate = DateFormatter.getDateFromString(dateString: GlobalConstants.albumReleaseDates[newAlbum.name!]!)
+                newAlbum.composers = song.getArtists(ofType: .musicDirector)
                 albums.append(newAlbum)
             }
             else

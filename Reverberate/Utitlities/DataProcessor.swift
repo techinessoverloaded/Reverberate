@@ -60,4 +60,17 @@ class DataProcessor
         }
         return resultSet.isEmpty ? nil : Array(resultSet).sorted()
     }
+    
+    func getAlbumsInvolving(artist artistName: String) -> [AlbumWrapper]
+    {
+        var result: [AlbumWrapper] = []
+        for album in DataManager.shared.availableAlbums
+        {
+            if  album.composers!.contains(where: { $0.name! == artistName }) || album.songs!.contains(where: { $0.artists!.contains(where: {$0.name! == artistName}) })
+            {
+                result.append(album)
+            }
+        }
+        return result
+    }
 }

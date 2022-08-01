@@ -15,6 +15,7 @@ class AlbumWrapper: Identifiable, Comparable, Hashable, CustomStringConvertible
     public var songs: [SongWrapper]? = nil
     public var coverArt: UIImage? = nil
     public var releaseDate: Date? = nil
+    public var composers: [ArtistWrapper]? = nil
     
     var description: String
     {
@@ -33,6 +34,7 @@ class AlbumWrapper: Identifiable, Comparable, Hashable, CustomStringConvertible
         }
         self.coverArt = UIImage(data: album.coverArt!)
         self.releaseDate = album.releaseDate!
+        self.composers = (album.composers!.allObjects as! [ArtistWrapper])
     }
     
     init()
@@ -48,10 +50,26 @@ class AlbumWrapper: Identifiable, Comparable, Hashable, CustomStringConvertible
         songs!.forEach {
             songSet.insert($0.emitAsCoreDataObject())
         }
-        album.addToSongs(NSSet(set: songSet))
+        album.songs = NSSet(set: songSet)
         album.coverArt = self.coverArt!.jpegData(compressionQuality: 1)
         album.releaseDate = self.releaseDate!
+        var composerSet = Set<Artist>()
+        composers!.forEach{
+            composerSet.insert($0.emitAsCoreDataObject())
+        }
+        album.composers = NSSet(set: composerSet)
         return album
+    }
+    
+    func getComposersNameAsString() -> String
+    {
+        guard let composers = composers else
+        {
+            return ""
+        }
+        return composers.map({
+            $0.name!
+        }).joined(separator: ", ")
     }
     
     func hash(into hasher: inout Hasher)

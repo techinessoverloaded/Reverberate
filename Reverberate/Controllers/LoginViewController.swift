@@ -34,6 +34,7 @@ class LoginViewController: UITableViewController
         //Changeable Property
         epField.textContentType = .emailAddress
         epField.borderStyle = .roundedRect
+        epField.enablesReturnKeyAutomatically = true
         return epField
     }()
     
@@ -51,6 +52,7 @@ class LoginViewController: UITableViewController
         passField.textContentType = .oneTimeCode
         passField.autocapitalizationType = .none
         passField.borderStyle = .roundedRect
+        passField.enablesReturnKeyAutomatically = true
         return passField
     }()
     

@@ -148,15 +148,17 @@ class MainViewController: UITabBarController
             return .success
         }
         
-        commandCenter.seekForwardCommand.addTarget {
+        commandCenter.skipForwardCommand.addTarget {
             [unowned self] event in
             avAudioPlayer.currentTime += 10
+            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = avAudioPlayer.currentTime
             return .success
         }
         
-        commandCenter.seekBackwardCommand.addTarget {
+        commandCenter.skipBackwardCommand.addTarget {
             [unowned self] event in
             avAudioPlayer.currentTime -= 10
+            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = avAudioPlayer.currentTime
             return .success
         }
         
@@ -166,9 +168,6 @@ class MainViewController: UITabBarController
             avAudioPlayer.currentTime = changeEvent.positionTime
             return .success
         }
-        
-        commandCenter.seekForwardCommand.isEnabled = true
-        commandCenter.seekBackwardCommand.isEnabled = true
     }
     
     func setupNowPlayingNotification()
