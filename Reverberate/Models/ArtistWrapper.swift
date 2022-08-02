@@ -86,4 +86,13 @@ class ArtistWrapper: NSCopying, Identifiable, Comparable, Hashable, CustomString
         artistCopy.photo = self.photo
         return artistCopy
     }
+    
+    func getArtistTypesAsString(separator: String = " ·") -> String
+    {
+        self.artistType!.map({
+            let artistTypeName = $0.description
+            let endIndex = artistTypeName.firstIndex(of: "(")!
+            return String(artistTypeName[..<endIndex])
+        }).sorted().joined(separator: "\(separator) ")
+    }
 }

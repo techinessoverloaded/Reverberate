@@ -63,6 +63,11 @@ class DataManager
                 }
                 filteredSongs.forEach({
                     artist.contributedSongs!.insert($0)
+                    let existingArtistType = $0.artists!.first(where: { $0 == artist })!.artistType!
+                    if existingArtistType.count > artist.artistType!.count
+                    {
+                        artist.artistType = existingArtistType
+                    }
                 })
             }
         }

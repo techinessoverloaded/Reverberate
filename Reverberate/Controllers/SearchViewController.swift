@@ -212,7 +212,7 @@ extension SearchViewController: SearchResultDelegate
     {
         searchController.searchBar.text = nil
         searchController.searchBar.resignFirstResponder()
-        let artistVC = ArtistViewController(style: .insetGrouped)
+        let artistVC = ArtistViewController(style: .plain)
         artistVC.artist = selectedArtist
         searchController.dismiss(animated: true) { [unowned self] in
             self.navigationController?.pushViewController(artistVC, animated: true)
@@ -220,6 +220,14 @@ extension SearchViewController: SearchResultDelegate
     }
     
     func onAlbumSelection(selectedAlbum: AlbumWrapper)
+    {
+        
+    }
+}
+
+extension SearchViewController: ArtistDelegate
+{
+    func onFavouriteButtonTap(artist: ArtistWrapper, shouldMakeAsFavourite: Bool)
     {
         
     }

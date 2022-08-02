@@ -58,6 +58,8 @@
 		DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C922877076B001EE1C9 /* SearchViewController.swift */; };
 		DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C9428770794001EE1C9 /* LibraryViewController.swift */; };
 		DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C96287707C4001EE1C9 /* ProfileViewController.swift */; };
+		DA67E0642898E57A00593251 /* PlaylistDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67E0632898E57A00593251 /* PlaylistDataSource.swift */; };
+		DA67E06628994D3A00593251 /* ArtistDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67E06528994D3A00593251 /* ArtistDelegate.swift */; };
 		DA67F43528890F6000062985 /* HomeVCCompositionalLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F43428890F6000062985 /* HomeVCCompositionalLayout.swift */; };
 		DA67F4392889182F00062985 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F4382889182F00062985 /* Category.swift */; };
 		DA67F43F28892FFE00062985 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F43E28892FFE00062985 /* PlayerViewController.swift */; };
@@ -88,7 +90,7 @@
 		DAFC0AD82893A6A600EECE4B /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0ACE2893A6A600EECE4B /* User+CoreDataProperties.swift */; };
 		DAFC0AE02893D59100EECE4B /* ArtistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */; };
 		DAFC0AE22893D81200EECE4B /* SearchResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */; };
-		DAFC0AE62893ED7500EECE4B /* StretchyTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0AE52893ED7500EECE4B /* StretchyTableHeaderView.swift */; };
+		DAFC0AE62893ED7500EECE4B /* StretchyArtistHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0AE52893ED7500EECE4B /* StretchyArtistHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -145,6 +147,8 @@
 		DA668C922877076B001EE1C9 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DA668C9428770794001EE1C9 /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
 		DA668C96287707C4001EE1C9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		DA67E0632898E57A00593251 /* PlaylistDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDataSource.swift; sourceTree = "<group>"; };
+		DA67E06528994D3A00593251 /* ArtistDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistDelegate.swift; sourceTree = "<group>"; };
 		DA67F43428890F6000062985 /* HomeVCCompositionalLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVCCompositionalLayout.swift; sourceTree = "<group>"; };
 		DA67F4382889182F00062985 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		DA67F43E28892FFE00062985 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
@@ -175,7 +179,7 @@
 		DAFC0ACE2893A6A600EECE4B /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewController.swift; sourceTree = "<group>"; };
 		DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultDelegate.swift; sourceTree = "<group>"; };
-		DAFC0AE52893ED7500EECE4B /* StretchyTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchyTableHeaderView.swift; sourceTree = "<group>"; };
+		DAFC0AE52893ED7500EECE4B /* StretchyArtistHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchyArtistHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -280,7 +284,7 @@
 				DA5CE96A2887D90A0066AB2E /* PosterDetailCVCell.swift */,
 				DA67F44428894EA400062985 /* MiniPlayerView.swift */,
 				DA12E697288E5AB300D502EC /* ArtistCVCell.swift */,
-				DAFC0AE52893ED7500EECE4B /* StretchyTableHeaderView.swift */,
+				DAFC0AE52893ED7500EECE4B /* StretchyArtistHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -359,6 +363,8 @@
 				DA67F4462889527C00062985 /* MiniPlayerDelegate.swift */,
 				DA67F4482889797400062985 /* PlayerDelegate.swift */,
 				DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */,
+				DA67E0632898E57A00593251 /* PlaylistDataSource.swift */,
+				DA67E06528994D3A00593251 /* ArtistDelegate.swift */,
 			);
 			path = Abstract;
 			sourceTree = "<group>";
@@ -641,6 +647,7 @@
 				DA6C8388288046F600339937 /* InitialViewController.swift in Sources */,
 				DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */,
 				DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */,
+				DA67E0642898E57A00593251 /* PlaylistDataSource.swift in Sources */,
 				DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */,
 				DA58B5572877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift in Sources */,
 				DA67F43528890F6000062985 /* HomeVCCompositionalLayout.swift in Sources */,
@@ -679,6 +686,7 @@
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,
 				DAFC0AD72893A6A600EECE4B /* User+CoreDataClass.swift in Sources */,
 				DA5CE96D28880D1D0066AB2E /* ArtistType.swift in Sources */,
+				DA67E06628994D3A00593251 /* ArtistDelegate.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
 				DA65D3BD2886C6F200173F56 /* LibraryPlaylistsViewController.swift in Sources */,
 				DA562A942891668A0017EEF2 /* DataProcessor.swift in Sources */,
@@ -698,7 +706,7 @@
 				DA6C838428800F6F00339937 /* LoginDelegate.swift in Sources */,
 				DA5CE9692887C8F40066AB2E /* HeaderCVReusableView.swift in Sources */,
 				DA67F4492889797400062985 /* PlayerDelegate.swift in Sources */,
-				DAFC0AE62893ED7500EECE4B /* StretchyTableHeaderView.swift in Sources */,
+				DAFC0AE62893ED7500EECE4B /* StretchyArtistHeaderView.swift in Sources */,
 				DA2810B9287BDDBB006EEF60 /* EditProfileViewController.swift in Sources */,
 				DA5CE99B2888145A0066AB2E /* ArtistWrapper.swift in Sources */,
 			);
