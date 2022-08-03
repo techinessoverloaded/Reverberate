@@ -28,33 +28,48 @@ class ArtistViewController: UITableViewController
     private lazy var favouriteButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.baseForegroundColor = .white
-        config.buttonSize = .large
+        config.buttonSize = .medium
         let favButton = UIButton(configuration: config)
         favButton.setImage(heartIcon, for: .normal)
         return favButton
     }()
     
     private lazy var playButton: UIButton = {
-        let pButton = UIButton(type: .roundedRect)
-        pButton.backgroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
-        pButton.tintColor = .white
-        pButton.setTitle("Play All", for: .normal)
-        pButton.setImage(playIcon, for: .normal)
-        pButton.layer.cornerRadius = 20
-        pButton.enableAutoLayout()
-        pButton.clipsToBounds = true
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = .white
+        config.buttonSize = .medium
+        config.image = UIImage(systemName: "play.fill")!
+        config.imagePadding = 10
+        let pButton = UIButton(configuration: config)
+//        favButton.setImage(heartIcon, for: .normal)
         return pButton
     }()
     
-    private lazy var playButtonHeaderView: UIView = {
-        let pbView = UIView()
-        pbView.backgroundColor = .clear
-        return pbView
+    private lazy var seeAllSongsButton: UIButton = {
+        let saButton = UIButton(type: .system)
+        saButton.setTitle("See All Songs", for: .normal)
+        saButton.enableAutoLayout()
+        return saButton
+    }()
+    
+    private lazy var seeAllAlbumsButton: UIButton = {
+        let saaButton = UIButton(type: .system)
+        saaButton.setTitle("See All Albums", for: .normal)
+        saaButton.enableAutoLayout()
+        return saaButton
     }()
     
     private lazy var songs = Array(artist.contributedSongs!)
 
     private lazy var albums = DataProcessor.shared.getAlbumsInvolving(artist: artist.name!)
+    
+    private lazy var minimumVisibleSongsCount: Int = min(songs.count, 5)
+    
+    private lazy var minimumVisibleAlbumsCount: Int = min(albums.count, 5)
+    
+    private lazy var shouldSeeAllSongs: Bool = false
+    
+    private lazy var shouldSeeAllAlbums: Bool = false
     
     var artist: ArtistWrapper!
     
@@ -65,12 +80,14 @@ class ArtistViewController: UITableViewController
         super.viewDidLoad()
         navigationController?.navigationBar.tintColor = .white
         navigationController?.navigationBar.backgroundColor = .clear
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: favouriteButton)
+        //navigationItem.rightBarButtonItem = UIBarButtonItem(customView: favouriteButton)
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: playButton), UIBarButtonItem(customView: favouriteButton)]
+        
         navigationItem.largeTitleDisplayMode = .never
         tableView.backgroundColor = .systemGroupedBackground
         tableView.contentInsetAdjustmentBehavior = .scrollableAxes
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
-        let headerView = StretchyArtistHeaderView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 300))
+        let headerView = StretchyArtistHeaderView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 260))
         headerView.setDetails(artistName: artist.name!, artistType: artist.getArtistTypesAsString(), artistPhoto: artist.photo!)
         tableView.tableHeaderView = headerView
         tableView.allowsMultipleSelection = false
@@ -78,6 +95,8 @@ class ArtistViewController: UITableViewController
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         //tableView.sectionHeaderTopPadding = 0
         favouriteButton.addTarget(self, action: #selector(onFavouriteButtonTap(_:)), for: .touchUpInside)
+        seeAllSongsButton.addTarget(self, action: #selector(onSeeAllSongsButtonTap(_:)), for: .touchUpInside)
+        seeAllAlbumsButton.addTarget(self, action: #selector(onSeeAllAlbumsButtonTap(_:)), for: .touchUpInside)
 //        playButtonHeaderView.addSubview(playButton)
 //        NSLayoutConstraint.activate([
 //            playButton.heightAnchor.constraint(equalTo: playButtonHeaderView.heightAnchor),
@@ -97,7 +116,7 @@ class ArtistViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return section == 0 ? songs.count : albums.count
+        return section == 0 ? (shouldSeeAllSongs ? songs.count : minimumVisibleSongsCount) : (shouldSeeAllAlbums ? albums.count : minimumVisibleAlbumsCount)
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
@@ -118,6 +137,46 @@ class ArtistViewController: UITableViewController
 //            return nil
 //        }
 //    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
+    {
+        if section == 0
+        {
+            if songs.count == minimumVisibleSongsCount
+            {
+                return nil
+            }
+            else
+            {
+                let footerView = UITableViewHeaderFooterView()
+                footerView.backgroundColor = .clear
+                footerView.contentView.addSubview(seeAllSongsButton)
+                NSLayoutConstraint.activate([
+                    seeAllSongsButton.heightAnchor.constraint(equalTo: footerView.contentView.heightAnchor),
+                    seeAllSongsButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor)
+                ])
+                return footerView
+            }
+        }
+        else
+        {
+            if albums.count == minimumVisibleAlbumsCount
+            {
+                return nil
+            }
+            else
+            {
+                let footerView = UITableViewHeaderFooterView()
+                footerView.backgroundColor = .clear
+                footerView.contentView.addSubview(seeAllAlbumsButton)
+                NSLayoutConstraint.activate([
+                    seeAllAlbumsButton.heightAnchor.constraint(equalTo: footerView.contentView.heightAnchor),
+                    seeAllAlbumsButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor)
+                ])
+                return footerView
+            }
+        }
+    }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
@@ -157,6 +216,13 @@ class ArtistViewController: UITableViewController
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             cell.contentConfiguration = config
             cell.selectionStyle = .none
+            var favBtnconfig = UIButton.Configuration.plain()
+            favBtnconfig.baseForegroundColor = .white
+            favBtnconfig.buttonSize = .medium
+            let favButton = UIButton(configuration: favBtnconfig)
+            favButton.setImage(heartIcon, for: .normal)
+            favButton.sizeToFit()
+            cell.accessoryView = favButton
             return cell
         }
         else
@@ -176,6 +242,13 @@ class ArtistViewController: UITableViewController
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             cell.contentConfiguration = config
             cell.selectionStyle = .none
+            var favBtnconfig = UIButton.Configuration.plain()
+            favBtnconfig.baseForegroundColor = .white
+            favBtnconfig.buttonSize = .medium
+            let favButton = UIButton(configuration: favBtnconfig)
+            favButton.setImage(heartIcon, for: .normal)
+            favButton.sizeToFit()
+            cell.accessoryView = favButton
             return cell
         }
     }
@@ -215,20 +288,64 @@ extension ArtistViewController
         headerView.scrollViewDidScroll(scrollView: tableView)
         UIView.animate(withDuration: 0.1, delay: 0, options: .transitionCrossDissolve, animations: {
             [unowned self] in
-            tableView.contentOffset.y > 0 ? headerView.changeAlphaOfSubviews(newAlphaValue: 0) : headerView.changeAlphaOfSubviews(newAlphaValue: 1)
+            headerView.changeAlphaOfSubviews(newAlphaValue: 1-(tableView.contentOffset.y / headerView.bounds.height))
+            print("Alpha : \(1-(tableView.contentOffset.y / headerView.bounds.height))")
             print(self.tableView.contentOffset.y)
-            self.navigationItem.title = tableView.contentOffset.y > -89 ? artist.name! : nil
-            self.navigationController?.navigationBar.tintColor = tableView.contentOffset.y > -89 ? .systemBlue : .white
+            self.navigationItem.title = tableView.contentOffset.y > -91 ? artist.name! : nil
+            self.navigationController?.navigationBar.tintColor = tableView.contentOffset.y > -91 ? .systemBlue : .white
             if favouriteButton.image(for: .normal)!.pngData() == heartIcon.pngData()
             {
-                favouriteButton.configuration!.baseForegroundColor = tableView.contentOffset.y > -89 ? .label : .white
+                favouriteButton.configuration!.baseForegroundColor = tableView.contentOffset.y > -91 ? .label : .white
             }
+            playButton.configuration!.baseForegroundColor = tableView.contentOffset.y > -91 ? .label : .white
         }, completion: nil)
     }
 }
 
 extension ArtistViewController
 {
+    @objc func onSeeAllSongsButtonTap(_ sender: UIButton)
+    {
+        if sender.title(for: .normal)! == "See All Songs"
+        {
+            shouldSeeAllSongs = true
+            tableView.reloadSections(IndexSet(integer: 0), with: .top, onCompletion: {
+                [unowned self] in
+                self.tableView.scrollToRow(at: IndexPath(item: songs.endIndex - 1, section: 0), at: .bottom, animated: true)
+                sender.setTitle("See Less Songs", for: .normal)
+            })
+        }
+        else
+        {
+            shouldSeeAllSongs = false
+            tableView.reloadSections(IndexSet(integer: 0), with: .top, onCompletion: { [unowned self] in
+                self.tableView.scrollToRow(at: IndexPath(item: minimumVisibleSongsCount - 1, section: 0), at: .bottom, animated: true)
+                sender.setTitle("See All Songs", for: .normal)
+            })
+        }
+    }
+    
+    @objc func onSeeAllAlbumsButtonTap(_ sender: UIButton)
+    {
+        if sender.title(for: .normal)! == "See All Albums"
+        {
+            shouldSeeAllAlbums = true
+            tableView.reloadSections(IndexSet(integer: 1), with: .top, onCompletion: { [unowned self] in
+                self.tableView.scrollToRow(at: IndexPath(item: albums.endIndex - 1, section: 1), at: .bottom, animated: true)
+                sender.setTitle("See Less Albums", for: .normal)
+            })
+        }
+        else
+        {
+            shouldSeeAllAlbums = false
+            tableView.reloadSections(IndexSet(integer: 1), with: .top, onCompletion:
+            { [unowned self] in
+                self.tableView.scrollToRow(at: IndexPath(item: minimumVisibleAlbumsCount - 1, section: 1), at: .bottom, animated: true)
+                sender.setTitle("See All Albums", for: .normal)
+            })
+        }
+    }
+    
     @objc func onFavouriteButtonTap(_ sender: UIButton)
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()

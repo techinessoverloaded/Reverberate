@@ -37,17 +37,6 @@ class StretchyArtistHeaderView: UIView
         return bView
     }()
     
-    private lazy var overlayView: UIView = {
-        let olView = UIView()
-        olView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        olView.backgroundColor = .black
-        olView.alpha = 0
-        olView.clipsToBounds = true
-        olView.layer.cornerCurve = .continuous
-        olView.layer.cornerRadius = 10
-        return olView
-    }()
-    
     private lazy var artistNameView: UILabel = {
         let anView = UILabel(useAutoLayout: true)
         anView.textColor = .white
@@ -66,28 +55,6 @@ class StretchyArtistHeaderView: UIView
         return atView
     }()
     
-    private lazy var playButton: UIButton = {
-        var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
-        config.baseForegroundColor = .white
-        config.image = UIImage(systemName: "play.fill")
-        config.title = "Play All"
-        config.imagePadding = 10
-        config.cornerStyle = .capsule
-        config.buttonSize = .small
-//        let pButton = UIButton(type: .roundedRect)
-//        pButton.backgroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
-//        pButton.tintColor = .white
-//        pButton.setTitle("Play All", for: .normal)
-//        pButton.setImage(playIcon, for: .normal)
-//        pButton.layer.cornerRadius = 20
-        let pButton = UIButton(configuration: config)
-        pButton.enableAutoLayout()
-        pButton.clipsToBounds = true
-        return pButton
-    }()
-    
-    
     override init(frame: CGRect)
     {
         super.init(frame: frame)
@@ -103,11 +70,9 @@ class StretchyArtistHeaderView: UIView
     {
         self.addSubview(containerView)
         containerView.addSubview(backgroundView)
-        artistPhotoView.addSubview(overlayView)
         backgroundView.addSubview(artistPhotoView)
         backgroundView.addSubview(artistNameView)
         backgroundView.addSubview(artistTypeView)
-        backgroundView.addSubview(playButton)
         
         NSLayoutConstraint.activate([
             self.widthAnchor.constraint(equalTo: containerView.widthAnchor),
@@ -117,21 +82,16 @@ class StretchyArtistHeaderView: UIView
             containerView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor),
             backgroundViewHeight,
             backgroundViewBottom,
-            artistPhotoView.widthAnchor.constraint(equalToConstant: 150),
+            artistPhotoView.widthAnchor.constraint(equalToConstant: 140),
             artistPhotoView.heightAnchor.constraint(equalTo: artistPhotoView.widthAnchor),
             artistPhotoView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            artistPhotoView.bottomAnchor.constraint(equalTo: artistNameView.topAnchor, constant: -10),            //artistPhotoView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -30),
-            //artistNameView.topAnchor.constraint(equalTo: artistPhotoView.bottomAnchor, constant: 20),
-            artistNameView.bottomAnchor.constraint(equalTo: artistTypeView.topAnchor, constant: -10),
+            artistPhotoView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -20),
+            artistNameView.topAnchor.constraint(equalTo: artistPhotoView.bottomAnchor, constant: 20),
             artistNameView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             artistNameView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.7),
-            //artistTypeView.topAnchor.constraint(equalTo: artistNameView.bottomAnchor, constant: 10),
-            artistTypeView.bottomAnchor.constraint(equalTo: playButton.topAnchor, constant: -10),
+            artistTypeView.topAnchor.constraint(equalTo: artistNameView.bottomAnchor, constant: 10),
             artistTypeView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             artistTypeView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.6),
-            //playButton.topAnchor.constraint(equalTo: artistTypeView.bottomAnchor, constant: 10),
-            playButton.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -10),
-            playButton.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor)
         ])
     }
     
@@ -148,7 +108,6 @@ class StretchyArtistHeaderView: UIView
         artistPhotoView.alpha = newAlphaValue
         artistTypeView.alpha = newAlphaValue
         backgroundView.alpha = newAlphaValue
-        playButton.alpha = newAlphaValue
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView)

@@ -427,3 +427,15 @@ extension Date
         return calendar.component(component, from: self)
     }
 }
+
+extension UITableView
+{
+    func reloadSections(_ sections: IndexSet, with animation: UITableView.RowAnimation, onCompletion: @escaping () -> ())
+    {
+        UIView.animate(withDuration: 0, animations: { [unowned self] in
+            self.reloadSections(sections, with: animation)
+        }) { _ in
+            onCompletion()
+        }
+    }
+}

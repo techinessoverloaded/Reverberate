@@ -25,12 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
             print("Setting category to AVAudioSessionCategoryPlayback failed")
         }
         application.beginReceivingRemoteControlEvents()
-        print(NSHomeDirectory())
-
-            let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            let documentsDirectory = urls[0]
-
-            print(documentsDirectory)
         return true
     }
 
