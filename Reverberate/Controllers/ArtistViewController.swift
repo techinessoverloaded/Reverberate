@@ -217,7 +217,7 @@ class ArtistViewController: UITableViewController
             cell.contentConfiguration = config
             cell.selectionStyle = .none
             var favBtnconfig = UIButton.Configuration.plain()
-            favBtnconfig.baseForegroundColor = .white
+            favBtnconfig.baseForegroundColor = .label
             favBtnconfig.buttonSize = .medium
             let favButton = UIButton(configuration: favBtnconfig)
             favButton.setImage(heartIcon, for: .normal)
@@ -243,7 +243,7 @@ class ArtistViewController: UITableViewController
             cell.contentConfiguration = config
             cell.selectionStyle = .none
             var favBtnconfig = UIButton.Configuration.plain()
-            favBtnconfig.baseForegroundColor = .white
+            favBtnconfig.baseForegroundColor = .label
             favBtnconfig.buttonSize = .medium
             let favButton = UIButton(configuration: favBtnconfig)
             favButton.setImage(heartIcon, for: .normal)
@@ -291,13 +291,13 @@ extension ArtistViewController
             headerView.changeAlphaOfSubviews(newAlphaValue: 1-(tableView.contentOffset.y / headerView.bounds.height))
             print("Alpha : \(1-(tableView.contentOffset.y / headerView.bounds.height))")
             print(self.tableView.contentOffset.y)
-            self.navigationItem.title = tableView.contentOffset.y > -91 ? artist.name! : nil
-            self.navigationController?.navigationBar.tintColor = tableView.contentOffset.y > -91 ? .systemBlue : .white
+            self.navigationItem.title = tableView.contentOffset.y >= 0 ? artist.name! : nil
+            self.navigationController?.navigationBar.tintColor = tableView.contentOffset.y >= 0 ? .systemBlue : .white
             if favouriteButton.image(for: .normal)!.pngData() == heartIcon.pngData()
             {
-                favouriteButton.configuration!.baseForegroundColor = tableView.contentOffset.y > -91 ? .label : .white
+                favouriteButton.configuration!.baseForegroundColor = tableView.contentOffset.y >= 0 ? .label : .white
             }
-            playButton.configuration!.baseForegroundColor = tableView.contentOffset.y > -91 ? .label : .white
+            playButton.configuration!.baseForegroundColor = tableView.contentOffset.y >= 0 ? .label : .white
         }, completion: nil)
     }
 }

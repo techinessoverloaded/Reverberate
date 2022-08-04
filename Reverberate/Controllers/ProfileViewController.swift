@@ -29,7 +29,7 @@ class ProfileViewController: UITableViewController
     }()
     
     private lazy var emailLabel: UILabel = {
-        let eLabel = UILabel(useAutoLayout: true)
+        let eLabel = UILabel(useAutoLayout: false)
         eLabel.textAlignment = .left
         eLabel.font = .preferredFont(forTextStyle: .body)
         eLabel.textColor = .label
@@ -37,7 +37,7 @@ class ProfileViewController: UITableViewController
     }()
     
     private lazy var phoneLabel: UILabel = {
-        let pLabel = UILabel(useAutoLayout: true)
+        let pLabel = UILabel(useAutoLayout: false)
         pLabel.textAlignment = .left
         pLabel.font = .preferredFont(forTextStyle: .body)
         pLabel.textColor = .label
@@ -77,7 +77,6 @@ class ProfileViewController: UITableViewController
     
     private let themeChooser: UISegmentedControl = {
         let tChooser = UISegmentedControl(items: ["System", "Light", "Dark"])
-        tChooser.enableAutoLayout()
         tChooser.selectedSegmentIndex = UserDefaults.standard.integer(forKey: GlobalConstants.themePreference)
         tChooser.selectedSegmentTintColor = .init(named: GlobalConstants.techinessColor)
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
@@ -110,6 +109,7 @@ class ProfileViewController: UITableViewController
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = 44
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
     }
     
     func configureAccordingToSession()
@@ -120,8 +120,8 @@ class ProfileViewController: UITableViewController
             navigationItem.largeTitleDisplayMode = .never
             tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
             tableView.register(LabeledInfoTableViewCell.self, forCellReuseIdentifier: LabeledInfoTableViewCell.identifier)
+            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
             tableView.allowsSelection = true
-            setUserDetails()
             editProfileButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(onEditButtonTap(_:)))
             navigationItem.rightBarButtonItem = editProfileButton
             logoutButton.addTarget(self, action: #selector(onLogoutButtonTap(_:)), for: .touchUpInside)
@@ -132,8 +132,7 @@ class ProfileViewController: UITableViewController
             navigationController?.navigationBar.prefersLargeTitles = true
             navigationItem.largeTitleDisplayMode = .always
             navigationItem.rightBarButtonItem = nil
-            tableView.register(SigninTableViewCell.self, forCellReuseIdentifier: SigninTableViewCell.identifier)
-            tableView.register(LabeledInfoTableViewCell.self, forCellReuseIdentifier: LabeledInfoTableViewCell.identifier)
+            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
             tableView.allowsSelection = true
             themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
         }
@@ -144,6 +143,7 @@ class ProfileViewController: UITableViewController
         super.viewDidLayoutSubviews()
         if isUserLoggedIn
         {
+            setUserDetails()
             profilePictureView.layer.cornerRadius = profilePictureView.bounds.height / 2
         }
     }
@@ -178,8 +178,14 @@ class ProfileViewController: UITableViewController
     {
         fetchUser()
         nameLabel.text = user.name
-        emailLabel.text = user.email
-        phoneLabel.text = user.phone
+        let emailCell = tableView.cellForRow(at: IndexPath(item: 0, section: 2))!
+        var emailConfig = emailCell.contentConfiguration as! UIListContentConfiguration
+        emailConfig.secondaryText = user.email
+        emailCell.contentConfiguration = emailConfig
+        let phoneCell = tableView.cellForRow(at: IndexPath(item: 1, section: 2))!
+        var phoneConfig = phoneCell.contentConfiguration as! UIListContentConfiguration
+        phoneConfig.secondaryText = user.phone
+        phoneCell.contentConfiguration = phoneConfig
         let userProfilePicture = UIImage(data: user.profilePicture!)
         profilePictureView.image = userProfilePicture
     }
@@ -360,17 +366,29 @@ extension ProfileViewController
             }
             else if section == 2
             {
-                let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
+                //let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
                 cell.selectionStyle = .none
                 //Show separator
                 cell.separatorInset = .zero
+                var config = UIListContentConfiguration.valueCell()
                 switch item
                 {
                 case 0:
-                    cell.configureCell(title: "Email Address", infoView: emailLabel)
+                    config.text = "Email Address"
+                    config.textProperties.color = .systemGray
+                    config.secondaryTextProperties.color = .label
+                    config.textToSecondaryTextHorizontalPadding = 10
+                    cell.contentConfiguration = config
+                    //cell.configureCell(title: "Email Address", infoView: emailLabel)
                     return cell
                 case 1:
-                    cell.configureCell(title: "Phone Number", infoView: phoneLabel)
+                    config.text = "Phone Number"
+                    config.textProperties.color = .systemGray
+                    config.secondaryTextProperties.color = .label
+                    config.textToSecondaryTextHorizontalPadding = 10
+                    cell.contentConfiguration = config
+                    //cell.configureCell(title: "Phone Number", infoView: phoneLabel)
                     return cell
                 default:
                     return cell
@@ -378,26 +396,30 @@ extension ProfileViewController
             }
             else if section == 3
             {
-                let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
                 //Show separator
                 cell.separatorInset = .zero
+                var config = cell.defaultContentConfiguration()
                 if item == 0
                 {
-                    cell.configureCell(title: "Languages", infoView: nil, useBrightLabelColor: true)
+                    config.text = "Languages"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
                 }
                 else if item == 1
                 {
-                    cell.configureCell(title: "Music Genres", infoView: nil, useBrightLabelColor: true)
+                    config.text = "Music Genres"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
                 }
                 else
                 {
-                    cell.configureCell(title: "Theme", infoView: themeChooser, arrangeInfoViewToRightEnd: true, useBrightLabelColor: true)
+                    config.text = "Theme"
                     cell.selectionStyle = .none
+                    cell.accessoryType = .none
+                    cell.accessoryView = themeChooser
                 }
+                cell.contentConfiguration = config
                 return cell
             }
             else
@@ -414,34 +436,47 @@ extension ProfileViewController
         {
             if section == 0
             {
-                let cell = tableView.dequeueReusableCell(withIdentifier: SigninTableViewCell.identifier, for: indexPath) as! SigninTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
                 //Hide Separator
+                var config = cell.defaultContentConfiguration()
+                config.image = UIImage(systemName: "person.crop.circle.fill")!
+                config.imageProperties.tintColor = .systemGray
+                config.imageProperties.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: cell.bounds.height * 0.5)
+                config.imageToTextPadding = 20
+                config.text = "Login to get a better experience"
+                config.textProperties.color = .systemBlue
+                config.secondaryText = "Preserve favourite playlists and do more."
+                config.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 20)
+                cell.contentConfiguration = config
                 cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
-                return cell.configureCell(title: "Login to get a better experience", subtitle: "Preserve favourite playlists and do more.")
+                return cell
             }
             else
             {
-                let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
                 //Show separator
                 cell.separatorInset = .zero
+                var config = cell.defaultContentConfiguration()
                 if item == 0
                 {
-                    cell.configureCell(title: "Languages", infoView: nil, useBrightLabelColor: true)
+                    config.text = "Languages"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
                 }
                 else if item == 1
                 {
-                    cell.configureCell(title: "Music Genres", infoView: nil, useBrightLabelColor: true)
+                    config.text = "Music Genres"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
                 }
                 else
                 {
-                    cell.configureCell(title: "Theme", infoView: themeChooser, arrangeInfoViewToRightEnd: true, useBrightLabelColor: true)
+                    config.text = "Theme"
                     cell.selectionStyle = .none
                     cell.accessoryType = .none
+                    cell.accessoryView = themeChooser
                 }
+                cell.contentConfiguration = config
                 return cell
             }
         }

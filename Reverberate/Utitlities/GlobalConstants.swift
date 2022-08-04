@@ -79,12 +79,5 @@ class GlobalConstants
             .rock: [],
             .folk: []
         ],
-        .english: [
-            .classical: [],
-            .melody: [],
-            .western: [],
-            .rock: [],
-            .folk: []
-        ]
     ]
 }

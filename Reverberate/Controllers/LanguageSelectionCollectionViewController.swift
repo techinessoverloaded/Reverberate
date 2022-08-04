@@ -9,7 +9,7 @@ import UIKit
 
 class LanguageSelectionCollectionViewController: UICollectionViewController
 {
-    private let availableLanguages: [[Int16]] = [[0, 1], [2, 3], [4, 5]]
+    private let availableLanguages: [[Int16]] = [[0, 1], [2, 3], [4]]
     
     private var selectedLanguages: [Int16] = []
     

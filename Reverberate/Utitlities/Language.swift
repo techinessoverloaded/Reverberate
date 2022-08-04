@@ -9,7 +9,7 @@ import UIKit
 
 @objc enum Language: Int16, CaseIterable, CustomStringConvertible
 {
-    case tamil = 0, malayalam, telugu, hindi, kannada, english
+    case tamil = 0, malayalam, telugu, hindi, kannada
     
     var description: String
     {
@@ -25,8 +25,6 @@ import UIKit
             return "Hindi"
         case .kannada:
             return "Kannada"
-        case .english:
-            return "English"
         }
     }
     
@@ -44,8 +42,6 @@ import UIKit
             return ("Hindi", "हिंदी")
         case .kannada:
             return ("Kannada", "ಕನ್ನಡ")
-        case .english:
-            return (nil, "English")
         }
     }
     
@@ -63,8 +59,6 @@ import UIKit
             return .systemPink
         case .kannada:
             return .systemOrange
-        case .english:
-            return .systemIndigo
         }
     }
 }
