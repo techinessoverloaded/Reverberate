@@ -371,22 +371,26 @@ extension ProfileViewController
                 cell.selectionStyle = .none
                 //Show separator
                 cell.separatorInset = .zero
-                var config = UIListContentConfiguration.valueCell()
+                var config = UIListContentConfiguration.valueCell()//cell.defaultContentConfiguration()
                 switch item
                 {
                 case 0:
                     config.text = "Email Address"
                     config.textProperties.color = .systemGray
+                    config.textProperties.adjustsFontForContentSizeCategory = true
                     config.secondaryTextProperties.color = .label
-                    config.textToSecondaryTextHorizontalPadding = 10
+                    config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+                    config.prefersSideBySideTextAndSecondaryText = true
                     cell.contentConfiguration = config
                     //cell.configureCell(title: "Email Address", infoView: emailLabel)
                     return cell
                 case 1:
                     config.text = "Phone Number"
                     config.textProperties.color = .systemGray
+                    config.textProperties.adjustsFontForContentSizeCategory = true
                     config.secondaryTextProperties.color = .label
-                    config.textToSecondaryTextHorizontalPadding = 10
+                    config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+                    config.prefersSideBySideTextAndSecondaryText = true
                     cell.contentConfiguration = config
                     //cell.configureCell(title: "Phone Number", infoView: phoneLabel)
                     return cell
@@ -442,7 +446,8 @@ extension ProfileViewController
                 config.image = UIImage(systemName: "person.crop.circle.fill")!
                 config.imageProperties.tintColor = .systemGray
                 config.imageProperties.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: cell.bounds.height * 0.5)
-                config.imageToTextPadding = 20
+                config.imageToTextPadding = 25
+                config.textToSecondaryTextVerticalPadding = 10
                 config.text = "Login to get a better experience"
                 config.textProperties.color = .systemBlue
                 config.secondaryText = "Preserve favourite playlists and do more."

@@ -75,6 +75,12 @@ class ArtistViewController: UITableViewController
     
     weak var delegate: ArtistDelegate?
     
+    private var user: User!
+    
+    private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private lazy var contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -95,6 +101,7 @@ class ArtistViewController: UITableViewController
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         //tableView.sectionHeaderTopPadding = 0
         favouriteButton.addTarget(self, action: #selector(onFavouriteButtonTap(_:)), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(onShufflePlayButtonTap(_:)), for: .touchUpInside)
         seeAllSongsButton.addTarget(self, action: #selector(onSeeAllSongsButtonTap(_:)), for: .touchUpInside)
         seeAllAlbumsButton.addTarget(self, action: #selector(onSeeAllAlbumsButtonTap(_:)), for: .touchUpInside)
 //        playButtonHeaderView.addSubview(playButton)
@@ -105,6 +112,14 @@ class ArtistViewController: UITableViewController
 //            playButton.centerXAnchor.constraint(equalTo: playButtonHeaderView.centerXAnchor)
 //        ])
         songs.append(contentsOf: Array(artist.contributedSongs!))
+        fetchUser()
+    }
+    
+    func fetchUser()
+    {
+        user = try! context.fetch(User.fetchRequest()).first {
+            $0.id == UserDefaults.standard.string(forKey: GlobalConstants.currentUserId)
+        }
     }
     
     // MARK: - Table view data source
@@ -222,6 +237,13 @@ class ArtistViewController: UITableViewController
             let favButton = UIButton(configuration: favBtnconfig)
             favButton.setImage(heartIcon, for: .normal)
             favButton.sizeToFit()
+            favButton.tag = item
+            favButton.addTarget(self, action: #selector(onSongFavouriteButtonTap(_:)), for: .touchUpInside)
+            if user.favouriteSongs!.contains(songs[item].emitAsCoreDataObject())
+            {
+                favButton.configuration!.baseForegroundColor = .systemPink
+                favButton.setImage(heartFilledIcon, for: .normal)
+            }
             cell.accessoryView = favButton
             return cell
         }
@@ -248,6 +270,8 @@ class ArtistViewController: UITableViewController
             let favButton = UIButton(configuration: favBtnconfig)
             favButton.setImage(heartIcon, for: .normal)
             favButton.sizeToFit()
+            favButton.tag = item
+            favButton.addTarget(self, action: #selector(onAlbumFavouriteButtonTap(_:)), for: .touchUpInside)
             cell.accessoryView = favButton
             return cell
         }
@@ -304,6 +328,56 @@ extension ArtistViewController
 
 extension ArtistViewController
 {
+    @objc func onShufflePlayButtonTap(_ sender: UIButton)
+    {
+        if sender.configuration!.image!.pngData() == playIcon.pngData()
+        {
+            print("Gonna Play")
+            sender.configuration!.image = pauseIcon
+        }
+        else
+        {
+            print("Gonna Pause")
+            sender.configuration!.image = playIcon
+        }
+    }
+    
+    @objc func onSongFavouriteButtonTap(_ sender: UIButton)
+    {
+        print("Request to favourite song at: \(sender.tag)")
+        if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
+        {
+            user.addToFavouriteSongs(songs[sender.tag].emitAsCoreDataObject())
+            contextSaveAction()
+            print(user)
+            sender.setImage(heartFilledIcon, for: .normal)
+            sender.configuration!.baseForegroundColor = .systemPink
+        }
+        else
+        {
+            user.removeFromFavouriteSongs(songs[sender.tag].emitAsCoreDataObject())
+            contextSaveAction()
+            print(user)
+            sender.setImage(heartIcon, for: .normal)
+            sender.configuration!.baseForegroundColor = .label
+        }
+    }
+    
+    @objc func onAlbumFavouriteButtonTap(_ sender: UIButton)
+    {
+        print("Request to favourite album at: \(sender.tag)")
+        if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
+        {
+            sender.setImage(heartFilledIcon, for: .normal)
+            sender.configuration!.baseForegroundColor = .systemPink
+        }
+        else
+        {
+            sender.setImage(heartIcon, for: .normal)
+            sender.configuration!.baseForegroundColor = .label
+        }
+    }
+    
     @objc func onSeeAllSongsButtonTap(_ sender: UIButton)
     {
         if sender.title(for: .normal)! == "See All Songs"
