@@ -1,5 +1,5 @@
 //
-//  ArtistDataClass.swift
+//  Artist.swift
 //  Reverberate
 //
 //  Created by arun-13930 on 20/07/22.
@@ -87,3 +87,4 @@ public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparab
         }).sorted().joined(separator: "\(separator) ")
     }
 }
+
