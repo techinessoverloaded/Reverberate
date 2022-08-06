@@ -16,7 +16,7 @@ class DataManager
     
     private(set) var availableAlbums: [Album] = []
     
-    private(set) var availableArtists: [ArtistClass] = []
+    private(set) var availableArtists: [Artist] = []
     
     // Prevent Instantiation
     private init() {}
@@ -37,14 +37,14 @@ class DataManager
         return SongMetadataExtractor.extractMultipleSongs(withFileNames: songFileNames, ofLanguageGenreAndCount: songLangGenreAndCount)
     }
     
-    func getArtists() -> [ArtistClass]
+    func getArtists() -> [Artist]
     {
-        var artists: [ArtistClass] = []
+        var artists: [Artist] = []
         for song in availableSongs
         {
             song.artists!.forEach
             {
-                artists.appendUniquely($0.copy() as! ArtistClass)
+                artists.appendUniquely($0.copy() as! Artist)
             }
         }
         for artist in artists

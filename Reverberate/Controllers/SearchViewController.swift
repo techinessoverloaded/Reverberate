@@ -208,7 +208,7 @@ extension SearchViewController: UISearchControllerDelegate
 
 extension SearchViewController: SearchResultDelegate
 {
-    func onArtistSelection(selectedArtist: ArtistClass)
+    func onArtistSelection(selectedArtist: Artist)
     {
         searchController.searchBar.text = nil
         searchController.searchBar.resignFirstResponder()
@@ -227,7 +227,7 @@ extension SearchViewController: SearchResultDelegate
 
 extension SearchViewController: ArtistDelegate
 {
-    func onFavouriteButtonTap(artist: ArtistClass, shouldMakeAsFavourite: Bool)
+    func onFavouriteButtonTap(artist: Artist, shouldMakeAsFavourite: Bool)
     {
         
     }

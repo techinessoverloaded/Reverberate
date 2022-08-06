@@ -27,7 +27,7 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
     public var coverArt: UIImage? = nil
     public var duration: Double? = nil
     public var title: String? = nil
-    public var artists: [ArtistClass]? = nil
+    public var artists: [Artist]? = nil
     public var url: URL? = nil
     public var genre: MusicGenre? = nil
     public var language: Language? = nil
@@ -77,9 +77,9 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
         lhs.title! == rhs.title!
     }
     
-    func getArtists(ofType artistType: ArtistType) -> [ArtistClass]
+    func getArtists(ofType artistType: ArtistType) -> [Artist]
         {
-            var result: [ArtistClass] = []
+            var result: [Artist] = []
             artists!.filter {
                 $0.artistType!.contains(artistType)
             }.forEach {

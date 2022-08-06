@@ -7,7 +7,7 @@
 
 protocol SearchResultDelegate: AnyObject
 {
-    func onArtistSelection(selectedArtist: ArtistClass)
+    func onArtistSelection(selectedArtist: Artist)
     
     func onAlbumSelection(selectedAlbum: Album)
 }

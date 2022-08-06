@@ -48,9 +48,9 @@ class DataProcessor
         return result.isEmpty ? nil : result.sorted()
     }
     
-    func getArtistsThatSatisfy(theQuery query: String) -> [ArtistClass]?
+    func getArtistsThatSatisfy(theQuery query: String) -> [Artist]?
     {
-        var result: [ArtistClass] = []
+        var result: [Artist] = []
         for artist in DataManager.shared.availableArtists
         {
             if artist.name!.lowercased().contains(query) || artist.artistType!.description.contains(query)

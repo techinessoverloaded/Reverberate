@@ -56,7 +56,7 @@ struct SongMetadataExtractor
                         let name = String($0).trimmedCopy()
                         if !song.artists!.contains(where: { $0.name! == name })
                         {
-                            let singer = ArtistClass()
+                            let singer = Artist()
                             singer.name = name
                             singer.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
                             singer.artistType = [.singer]
@@ -75,7 +75,7 @@ struct SongMetadataExtractor
                     let name = artistNames.trimmedCopy()
                     if !song.artists!.contains(where: { $0.name! == name })
                     {
-                        let singer = ArtistClass()
+                        let singer = Artist()
                         singer.name = name
                         singer.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
                         singer.artistType = [.singer]
@@ -102,7 +102,7 @@ struct SongMetadataExtractor
                         let name = String($0).trimmedCopy()
                         if !song.artists!.contains(where: { $0.name! == name })
                         {
-                            let musicDirector = ArtistClass()
+                            let musicDirector = Artist()
                             musicDirector.name = name
                             musicDirector.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
                             musicDirector.artistType = [.musicDirector]
@@ -121,7 +121,7 @@ struct SongMetadataExtractor
                     let name = artistNames.trimmedCopy()
                     if !song.artists!.contains(where: { $0.name! == name })
                     {
-                        let musicDirector = ArtistClass()
+                        let musicDirector = Artist()
                         musicDirector.name = name
                         musicDirector.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
                         musicDirector.artistType = [.musicDirector]
@@ -148,7 +148,7 @@ struct SongMetadataExtractor
                         let name = String($0).trimmedCopy()
                         if !song.artists!.contains(where: { $0.name! == name })
                         {
-                            let lyricist = ArtistClass()
+                            let lyricist = Artist()
                             lyricist.name = name
                             lyricist.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
                             lyricist.artistType = [.lyricist]
@@ -167,7 +167,7 @@ struct SongMetadataExtractor
                     let name = artistNames.trimmedCopy()
                     if !song.artists!.contains(where: { $0.name! == name })
                     {
-                        let lyricist = ArtistClass()
+                        let lyricist = Artist()
                         lyricist.name = name
                         lyricist.photo = UIImage(named: name.getAlphaNumericLowercasedString())!
                         lyricist.artistType = [.lyricist]
