@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparable
+public class ArtistDataClass: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparable
 {
     enum CoderKeys: String
     {
@@ -87,4 +87,5 @@ public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparab
         }).sorted().joined(separator: "\(separator) ")
     }
 }
+
 
