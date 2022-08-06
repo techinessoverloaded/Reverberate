@@ -12,14 +12,14 @@ struct AlbumSegregator
     //Prevent Initialization
     private init() {}
     
-    static func segregateAlbums(unsegregatedSongs: [SongWrapper]) -> [AlbumWrapper]
+    static func segregateAlbums(unsegregatedSongs: [Song]) -> [Album]
     {
-        var albums: [AlbumWrapper] = []
+        var albums: [Album] = []
         for song in unsegregatedSongs
         {
             if !albums.contains(where: { $0.name! == song.albumName! })
             {
-                let newAlbum = AlbumWrapper()
+                let newAlbum = Album()
                 newAlbum.coverArt = song.coverArt!
                 newAlbum.songs = []
                 newAlbum.songs!.append(song)

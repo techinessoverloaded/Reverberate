@@ -12,16 +12,16 @@ class DataManager
     // Singleton Object
     static let shared = DataManager()
     
-    private(set) var availableSongs: [SongWrapper] = []
+    private(set) var availableSongs: [Song] = []
     
-    private(set) var availableAlbums: [AlbumWrapper] = []
+    private(set) var availableAlbums: [Album] = []
     
-    private(set) var availableArtists: [ArtistWrapper] = []
+    private(set) var availableArtists: [Artist] = []
     
     // Prevent Instantiation
     private init() {}
     
-    private func getSongs() -> [SongWrapper]
+    private func getSongs() -> [Song]
     {
         var songFileNames: [String] = []
         var songLangGenreAndCount: [(language: Language, genre: MusicGenre, count: Int)] = []
@@ -37,20 +37,17 @@ class DataManager
         return SongMetadataExtractor.extractMultipleSongs(withFileNames: songFileNames, ofLanguageGenreAndCount: songLangGenreAndCount)
     }
     
-    func getArtists() -> [ArtistWrapper]
+    func getArtists() -> [Artist]
     {
-        var artistSet: Set<ArtistWrapper> = []
+        var artists: [Artist] = []
         for song in availableSongs
         {
             song.artists!.forEach
             {
-                if !artistSet.contains($0)
-                {
-                    artistSet.insert($0.copy() as! ArtistWrapper)
-                }
+                artists.appendUniquely($0.copy() as! Artist)
             }
         }
-        for artist in artistSet
+        for artist in artists
         {
             let filteredSongs = availableSongs.filter({
                 $0.artists!.contains(where: { $0 == artist })
@@ -62,7 +59,7 @@ class DataManager
                     artist.contributedSongs = []
                 }
                 filteredSongs.forEach({
-                    artist.contributedSongs!.insert($0)
+                    artist.contributedSongs!.appendUniquely($0)
                     let existingArtistType = $0.artists!.first(where: { $0 == artist })!.artistType!
                     if existingArtistType.count > artist.artistType!.count
                     {
@@ -71,7 +68,7 @@ class DataManager
                 })
             }
         }
-        return Array(artistSet)
+        return artists
     }
     
     func makeSongsAndAlbumsReady(onCompletion completionHandler: ((DispatchTime) -> Void)? = nil)

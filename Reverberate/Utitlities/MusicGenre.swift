@@ -7,11 +7,11 @@
 
 import UIKit
 
-@objc enum MusicGenre: Int16, CaseIterable, CustomStringConvertible
+@objc public enum MusicGenre: Int16, CaseIterable, CustomStringConvertible
 {
     case classical = 0, melody, western, rock, folk
     
-    var description: String
+    public var description: String
     {
         switch self
         {

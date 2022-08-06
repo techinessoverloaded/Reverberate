@@ -7,7 +7,7 @@
 
 protocol PlaylistDataSource: AnyObject
 {
-    func song(_ playlistViewController: PlaylistViewController, beforeSong: SongWrapper) -> SongWrapper?
+    func song(_ playlistViewController: PlaylistViewController, beforeSong: Song) -> Song?
     
-    func song(_ playlistViewController: PlaylistViewController, afterSong: SongWrapper) -> SongWrapper?
+    func song(_ playlistViewController: PlaylistViewController, afterSong: Song) -> Song?
 }

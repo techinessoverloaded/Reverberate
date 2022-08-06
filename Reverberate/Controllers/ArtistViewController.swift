@@ -71,7 +71,7 @@ class ArtistViewController: UITableViewController
     
     private lazy var shouldSeeAllAlbums: Bool = false
     
-    var artist: ArtistWrapper!
+    var artist: Artist!
     
     weak var delegate: ArtistDelegate?
     
@@ -239,11 +239,6 @@ class ArtistViewController: UITableViewController
             favButton.sizeToFit()
             favButton.tag = item
             favButton.addTarget(self, action: #selector(onSongFavouriteButtonTap(_:)), for: .touchUpInside)
-            if user.favouriteSongs!.contains(songs[item].emitAsCoreDataObject())
-            {
-                favButton.configuration!.baseForegroundColor = .systemPink
-                favButton.setImage(heartFilledIcon, for: .normal)
-            }
             cell.accessoryView = favButton
             return cell
         }
@@ -345,9 +340,14 @@ extension ArtistViewController
     @objc func onSongFavouriteButtonTap(_ sender: UIButton)
     {
         print("Request to favourite song at: \(sender.tag)")
+        let song = songs[sender.tag]
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
-            user.addToFavouriteSongs(songs[sender.tag].emitAsCoreDataObject())
+            if user.favSongs == nil
+            {
+                user.favSongs = []
+            }
+            user.favSongs!.appendUniquely(song)
             contextSaveAction()
             print(user)
             sender.setImage(heartFilledIcon, for: .normal)
@@ -355,7 +355,7 @@ extension ArtistViewController
         }
         else
         {
-            user.removeFromFavouriteSongs(songs[sender.tag].emitAsCoreDataObject())
+            user.favSongs!.removeUniquely(song)
             contextSaveAction()
             print(user)
             sender.setImage(heartIcon, for: .normal)

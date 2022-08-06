@@ -439,3 +439,20 @@ extension UITableView
         }
     }
 }
+
+extension Array where Element: Equatable
+{
+    mutating func appendUniquely(_ newElement: Element)
+    {
+        if !self.contains(where: { $0 == newElement })
+        {
+            print("Gonna Append New Element: \(newElement)")
+            self.append(newElement)
+        }
+    }
+    
+    mutating func removeUniquely(_ existingElement: Element)
+    {
+        self.removeAll(where: { $0 == existingElement })
+    }
+}

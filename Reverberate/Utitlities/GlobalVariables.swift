@@ -18,7 +18,7 @@ class GlobalVariables
     
     var avAudioPlayer: AVAudioPlayer!
     
-    var currentSong: SongWrapper? = nil
+    var currentSong: Song? = nil
     {
         didSet
         {
@@ -26,5 +26,5 @@ class GlobalVariables
         }
     }
     
-    var currentPlaylist: PlaylistWrapper?
+    var currentPlaylist: Playlist?
 }

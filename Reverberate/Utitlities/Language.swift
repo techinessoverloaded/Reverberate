@@ -7,11 +7,11 @@
 
 import UIKit
 
-@objc enum Language: Int16, CaseIterable, CustomStringConvertible
+@objc public enum Language: Int16, CaseIterable, CustomStringConvertible
 {
     case tamil = 0, malayalam, telugu, hindi, kannada
     
-    var description: String
+    public var description: String
     {
         switch self
         {

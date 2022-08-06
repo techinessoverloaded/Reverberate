@@ -13,27 +13,27 @@ class DataProcessor
     //Prevent Initialization
     private init() {}
     
-    func getAlbumBy(albumName: String) -> AlbumWrapper?
+    func getAlbumBy(albumName: String) -> Album?
     {
         return DataManager.shared.availableAlbums.first(where: { $0.name! == albumName })
     }
     
-    func getSongsThatSatisfy(theQuery query: String) -> [SongWrapper]?
+    func getSongsThatSatisfy(theQuery query: String) -> [Song]?
     {
-        var resultSet: Set<SongWrapper> = []
+        var result: [Song] = []
         for song in DataManager.shared.availableSongs
         {
             if song.albumName!.lowercased().contains(query) || song.title!.lowercased().contains(query) || song.language!.description.lowercased().contains(query) || song.genre!.description.lowercased().contains(query) || song.artists!.contains(where: { $0.name!.lowercased().contains(query) })
             {
-                resultSet.insert(song)
+                result.appendUniquely(song)
             }
         }
-        return resultSet.isEmpty ? nil : Array(resultSet).sorted()
+        return result.isEmpty ? nil : result.sorted()
     }
     
-    func getAlbumsThatSatisfy(theQuery query: String) -> [AlbumWrapper]?
+    func getAlbumsThatSatisfy(theQuery query: String) -> [Album]?
     {
-        var resultSet: Set<AlbumWrapper> = []
+        var result: [Album] = []
         for album in DataManager.shared.availableAlbums
         {
             if album.name!.lowercased().contains(query) || album.songs!.contains(where: {
@@ -42,33 +42,33 @@ class DataProcessor
                 $0.genre!.description.lowercased().contains(query) ||
                 $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
             {
-                resultSet.insert(album)
+                result.appendUniquely(album)
             }
         }
-        return resultSet.isEmpty ? nil : Array(resultSet).sorted()
+        return result.isEmpty ? nil : result.sorted()
     }
     
-    func getArtistsThatSatisfy(theQuery query: String) -> [ArtistWrapper]?
+    func getArtistsThatSatisfy(theQuery query: String) -> [Artist]?
     {
-        var resultSet: Set<ArtistWrapper> = []
+        var result: [Artist] = []
         for artist in DataManager.shared.availableArtists
         {
             if artist.name!.lowercased().contains(query) || artist.artistType!.description.contains(query)
             {
-                resultSet.insert(artist)
+                result.appendUniquely(artist)
             }
         }
-        return resultSet.isEmpty ? nil : Array(resultSet).sorted()
+        return result.isEmpty ? nil : result.sorted()
     }
     
-    func getAlbumsInvolving(artist artistName: String) -> [AlbumWrapper]
+    func getAlbumsInvolving(artist artistName: String) -> [Album]
     {
-        var result: [AlbumWrapper] = []
+        var result: [Album] = []
         for album in DataManager.shared.availableAlbums
         {
             if  album.composers!.contains(where: { $0.name! == artistName }) || album.songs!.contains(where: { $0.artists!.contains(where: {$0.name! == artistName}) })
             {
-                result.append(album)
+                result.appendUniquely(album)
             }
         }
         return result

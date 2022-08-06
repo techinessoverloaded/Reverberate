@@ -7,5 +7,5 @@
 
 protocol ArtistDelegate: AnyObject
 {
-    func onFavouriteButtonTap(artist: ArtistWrapper, shouldMakeAsFavourite: Bool)
+    func onFavouriteButtonTap(artist: Artist, shouldMakeAsFavourite: Bool)
 }
