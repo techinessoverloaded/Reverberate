@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparable
+public class ArtistClass: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparable
 {
     enum CoderKeys: String
     {
@@ -58,19 +58,19 @@ public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparab
         self.name! == (object as! Self).name!
     }
     
-    public static func == (lhs: Artist, rhs: Artist) -> Bool
+    public static func == (lhs: ArtistClass, rhs: ArtistClass) -> Bool
     {
         lhs.name! == rhs.name!
     }
     
-    public static func < (lhs: Artist, rhs: Artist) -> Bool
+    public static func < (lhs: ArtistClass, rhs: ArtistClass) -> Bool
     {
         return lhs.name! < rhs.name!
     }
     
     public func copy(with zone: NSZone? = nil) -> Any
     {
-        let artistCopy = Artist()
+        let artistCopy = ArtistClass()
         artistCopy.name = self.name
         artistCopy.artistType = self.artistType
         artistCopy.contributedSongs = self.contributedSongs

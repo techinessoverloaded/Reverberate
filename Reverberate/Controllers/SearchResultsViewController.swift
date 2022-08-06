@@ -63,7 +63,7 @@ class SearchResultsViewController: UITableViewController
     
     private lazy var filteredAlbums: [Album] = []
     
-    private lazy var filteredArtists: [Artist] = []
+    private lazy var filteredArtists: [ArtistClass] = []
     
     weak var delegate: SearchResultDelegate?
     

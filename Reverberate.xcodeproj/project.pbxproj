@@ -74,7 +74,7 @@
 		DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */; };
 		DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */; };
 		DA7F246E288188E600E4786F /* SongMetaDataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */; };
-		DA8DCDC9289E61F500624670 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8DCDC8289E61F500624670 /* Artist.swift */; };
+		DA8DCDC9289E61F500624670 /* ArtistClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8DCDC8289E61F500624670 /* ArtistClass.swift */; };
 		DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */; };
 		DABA1435289791D700DAAF13 /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA1434289791D700DAAF13 /* PlaylistViewController.swift */; };
 		DACBA429289CF85A00DDEBDE /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACBA428289CF85A00DDEBDE /* Song.swift */; };
@@ -155,7 +155,7 @@
 		DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beastmode.mp3; sourceTree = "<group>"; };
 		DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhana.mp3; sourceTree = "<group>"; };
 		DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMetaDataExtractor.swift; sourceTree = "<group>"; };
-		DA8DCDC8289E61F500624670 /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
+		DA8DCDC8289E61F500624670 /* ArtistClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistClass.swift; sourceTree = "<group>"; };
 		DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ullamurugudhaiya.mp3; sourceTree = "<group>"; };
 		DABA1434289791D700DAAF13 /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		DACBA428289CF85A00DDEBDE /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
@@ -281,7 +281,7 @@
 				DA5CE99E288815EB0066AB2E /* Playlist.swift */,
 				DA5CE9A0288815FB0066AB2E /* Album.swift */,
 				DACBA428289CF85A00DDEBDE /* Song.swift */,
-				DA8DCDC8289E61F500624670 /* Artist.swift */,
+				DA8DCDC8289E61F500624670 /* ArtistClass.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -643,7 +643,7 @@
 				DA668C8D2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift in Sources */,
 				DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */,
 				DA6C8382287FF4DA00339937 /* SigninTableViewCell.swift in Sources */,
-				DA8DCDC9289E61F500624670 /* Artist.swift in Sources */,
+				DA8DCDC9289E61F500624670 /* ArtistClass.swift in Sources */,
 				DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */,
 				DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,

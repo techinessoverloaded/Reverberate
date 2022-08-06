@@ -12,7 +12,7 @@ public class Album: Playlist
 {
     public var coverArt: UIImage? = nil
     public var releaseDate: Date? = nil
-    public var composers: [Artist]? = nil
+    public var composers: [ArtistClass]? = nil
     
     public override var description: String
     {
@@ -35,7 +35,7 @@ public class Album: Playlist
         self.songs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? [Song]
         self.coverArt = coder.decodeObject(forKey: CoderKeys.coverArtKey.rawValue) as? UIImage
         self.releaseDate = coder.decodeObject(forKey: CoderKeys.releaseDateKey.rawValue) as? Date
-        self.composers = coder.decodeObject(forKey: CoderKeys.composersKey.rawValue) as? [Artist]
+        self.composers = coder.decodeObject(forKey: CoderKeys.composersKey.rawValue) as? [ArtistClass]
     }
     
     public override init()

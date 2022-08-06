@@ -71,7 +71,7 @@ class ArtistViewController: UITableViewController
     
     private lazy var shouldSeeAllAlbums: Bool = false
     
-    var artist: Artist!
+    var artist: ArtistClass!
     
     weak var delegate: ArtistDelegate?
     

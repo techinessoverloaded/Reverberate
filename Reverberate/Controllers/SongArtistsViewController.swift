@@ -24,9 +24,9 @@ class SongArtistsViewController: UITableViewController
         return cView
     }()
     
-    private lazy var artists: [ArtistType : [Artist]] = {
+    private lazy var artists: [ArtistType : [ArtistClass]] = {
         let song = GlobalVariables.shared.currentSong!
-        var result: [ArtistType : [Artist]] = [:]
+        var result: [ArtistType : [ArtistClass]] = [:]
         for type in ArtistType.allCases
         {
             result[type] = song.getArtists(ofType: type)
