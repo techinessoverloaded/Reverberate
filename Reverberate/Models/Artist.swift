@@ -1,5 +1,5 @@
 //
-//  ArtistData.swift
+//  Artist.swift
 //  Reverberate
 //
 //  Created by arun-13930 on 20/07/22.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class ArtistDataClass: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparable
+public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparable
 {
     enum CoderKeys: String
     {

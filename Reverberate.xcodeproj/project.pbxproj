@@ -41,6 +41,7 @@
 		DA5CE96D28880D1D0066AB2E /* ArtistType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5CE96C28880D1D0066AB2E /* ArtistType.swift */; };
 		DA5CE99F288815EB0066AB2E /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5CE99E288815EB0066AB2E /* Playlist.swift */; };
 		DA5CE9A1288815FB0066AB2E /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5CE9A0288815FB0066AB2E /* Album.swift */; };
+		DA63B0B9289E7B7A0068775C /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA63B0B8289E7B7A0068775C /* Artist.swift */; };
 		DA65D3B32886674300173F56 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B22886674300173F56 /* SearchResultsViewController.swift */; };
 		DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B428866D5000173F56 /* GlobalVariables.swift */; };
 		DA65D3B728866FA700173F56 /* CategoricalSongsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B628866FA700173F56 /* CategoricalSongsViewController.swift */; };
@@ -78,7 +79,6 @@
 		DABA1435289791D700DAAF13 /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA1434289791D700DAAF13 /* PlaylistViewController.swift */; };
 		DACBA429289CF85A00DDEBDE /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACBA428289CF85A00DDEBDE /* Song.swift */; };
 		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
-		DAEFC8CA289E7A9B00E800D7 /* ArtistDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAEFC8C9289E7A9B00E800D7 /* ArtistDataClass.swift */; };
 		DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF64916287553020061C29B /* CustomTableViewCell.swift */; };
 		DAFC0AE02893D59100EECE4B /* ArtistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */; };
 		DAFC0AE22893D81200EECE4B /* SearchResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */; };
@@ -122,6 +122,7 @@
 		DA5CE96C28880D1D0066AB2E /* ArtistType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistType.swift; sourceTree = "<group>"; };
 		DA5CE99E288815EB0066AB2E /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		DA5CE9A0288815FB0066AB2E /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
+		DA63B0B8289E7B7A0068775C /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		DA65D3B22886674300173F56 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		DA65D3B428866D5000173F56 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		DA65D3B628866FA700173F56 /* CategoricalSongsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoricalSongsViewController.swift; sourceTree = "<group>"; };
@@ -159,7 +160,6 @@
 		DABA1434289791D700DAAF13 /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		DACBA428289CF85A00DDEBDE /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
-		DAEFC8C9289E7A9B00E800D7 /* ArtistDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistDataClass.swift; sourceTree = "<group>"; };
 		DAF64916287553020061C29B /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewController.swift; sourceTree = "<group>"; };
 		DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultDelegate.swift; sourceTree = "<group>"; };
@@ -281,7 +281,7 @@
 				DA5CE99E288815EB0066AB2E /* Playlist.swift */,
 				DA5CE9A0288815FB0066AB2E /* Album.swift */,
 				DACBA428289CF85A00DDEBDE /* Song.swift */,
-				DAEFC8C9289E7A9B00E800D7 /* ArtistDataClass.swift */,
+				DA63B0B8289E7B7A0068775C /* Artist.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -636,7 +636,6 @@
 				DA12E698288E5AB300D502EC /* ArtistCVCell.swift in Sources */,
 				DA7F246E288188E600E4786F /* SongMetaDataExtractor.swift in Sources */,
 				DA5CE9A1288815FB0066AB2E /* Album.swift in Sources */,
-				DAEFC8CA289E7A9B00E800D7 /* ArtistDataClass.swift in Sources */,
 				DA65D3BF2886C70C00173F56 /* LibraryFavouritesViewController.swift in Sources */,
 				DA5CE99F288815EB0066AB2E /* Playlist.swift in Sources */,
 				DA67F44528894EA400062985 /* MiniPlayerView.swift in Sources */,
@@ -644,6 +643,7 @@
 				DA668C8D2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift in Sources */,
 				DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */,
 				DA6C8382287FF4DA00339937 /* SigninTableViewCell.swift in Sources */,
+				DA63B0B9289E7B7A0068775C /* Artist.swift in Sources */,
 				DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */,
 				DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
