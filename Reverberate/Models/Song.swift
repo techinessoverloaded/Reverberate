@@ -72,6 +72,11 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
         lhs.title! < rhs.title!
     }
     
+    public override func isEqual(_ object: Any?) -> Bool
+    {
+        return self.title! == (object as! Self).title!
+    }
+    
     public static func == (lhs: Song, rhs: Song) -> Bool
     {
         lhs.title! == rhs.title!
