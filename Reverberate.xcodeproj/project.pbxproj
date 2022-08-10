@@ -13,6 +13,10 @@
 		DA12E698288E5AB300D502EC /* ArtistCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E697288E5AB300D502EC /* ArtistCVCell.swift */; };
 		DA12E69A288E937800D502EC /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E699288E937800D502EC /* DataManager.swift */; };
 		DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */; };
+		DA1DA69B28A40AFA00721F5C /* vaadathambi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69A28A40AFA00721F5C /* vaadathambi.mp3 */; };
+		DA1DA69D28A40B1A00721F5C /* summasurrunu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69C28A40B1A00721F5C /* summasurrunu.mp3 */; };
+		DA1DA6A028A40C3F00721F5C /* kalaavathi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */; };
+		DA1DA6A228A40C7900721F5C /* mamamahesha.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */; };
 		DA2810B9287BDDBB006EEF60 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */; };
 		DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */; };
 		DA28A349287414E900E36382 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A348287414E900E36382 /* SignupViewController.swift */; };
@@ -95,6 +99,10 @@
 		DA12E697288E5AB300D502EC /* ArtistCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistCVCell.swift; sourceTree = "<group>"; };
 		DA12E699288E937800D502EC /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSegregator.swift; sourceTree = "<group>"; };
+		DA1DA69A28A40AFA00721F5C /* vaadathambi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = vaadathambi.mp3; sourceTree = "<group>"; };
+		DA1DA69C28A40B1A00721F5C /* summasurrunu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = summasurrunu.mp3; sourceTree = "<group>"; };
+		DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kalaavathi.mp3; sourceTree = "<group>"; };
+		DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mamamahesha.mp3; sourceTree = "<group>"; };
 		DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledInfoTableViewCell.swift; sourceTree = "<group>"; };
 		DA28A348287414E900E36382 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
@@ -184,6 +192,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DA1DA69928A40AB900721F5C /* Hindi */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Hindi;
+			sourceTree = "<group>";
+		};
+		DA1DA69E28A40C2C00721F5C /* Classical */ = {
+			isa = PBXGroup;
+			children = (
+				DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */,
+			);
+			path = Classical;
+			sourceTree = "<group>";
+		};
 		DA28A3502874201B00E36382 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +363,7 @@
 		DA562A89289150690017EEF2 /* Rock */ = {
 			isa = PBXGroup;
 			children = (
+				DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */,
 				DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */,
 				DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */,
 				DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */,
@@ -382,6 +406,7 @@
 		DA7F24602881827F00E4786F /* Songs */ = {
 			isa = PBXGroup;
 			children = (
+				DA1DA69928A40AB900721F5C /* Hindi */,
 				DA7F247A2881965E00E4786F /* Telugu */,
 				DA7F24742881962400E4786F /* Kannada */,
 				DA7F246A2881866900E4786F /* Malayalam */,
@@ -412,6 +437,7 @@
 		DA7F2467288185DE00E4786F /* Rock */ = {
 			isa = PBXGroup;
 			children = (
+				DA1DA69C28A40B1A00721F5C /* summasurrunu.mp3 */,
 				DA75742E288D9A5900A4CF80 /* arabickuthu.mp3 */,
 				DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */,
 				DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */,
@@ -429,6 +455,7 @@
 		DA7F24692881866300E4786F /* Folk */ = {
 			isa = PBXGroup;
 			children = (
+				DA1DA69A28A40AFA00721F5C /* vaadathambi.mp3 */,
 			);
 			path = Folk;
 			sourceTree = "<group>";
@@ -530,6 +557,7 @@
 		DA7F247A2881965E00E4786F /* Telugu */ = {
 			isa = PBXGroup;
 			children = (
+				DA1DA69E28A40C2C00721F5C /* Classical */,
 				DA562A89289150690017EEF2 /* Rock */,
 				DA7F247B2881966900E4786F /* Folk */,
 			);
@@ -609,7 +637,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA1DA6A228A40C7900721F5C /* mamamahesha.mp3 in Resources */,
+				DA1DA6A028A40C3F00721F5C /* kalaavathi.mp3 in Resources */,
 				DA757431288D9A5A00A4CF80 /* arabickuthu.mp3 in Resources */,
+				DA1DA69D28A40B1A00721F5C /* summasurrunu.mp3 in Resources */,
 				DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */,
 				DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */,
 				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
@@ -619,6 +650,7 @@
 				DA28A366287431BF00E36382 /* BubblegumSans-Regular.ttf in Resources */,
 				DA28A364287431AC00E36382 /* BebasFixNeue.ttf in Resources */,
 				DA562A902891507E0017EEF2 /* halamathitelugu.mp3 in Resources */,
+				DA1DA69B28A40AFA00721F5C /* vaadathambi.mp3 in Resources */,
 				DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */,
 				DA562A922891507E0017EEF2 /* beastmodetelugu.mp3 in Resources */,
 			);
@@ -833,9 +865,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RZFG3568AJ;
+				DEVELOPMENT_TEAM = R4F89R73A4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -848,8 +881,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.ios.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -861,9 +895,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RZFG3568AJ;
+				DEVELOPMENT_TEAM = R4F89R73A4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -876,8 +911,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.ios.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

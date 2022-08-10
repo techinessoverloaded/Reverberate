@@ -29,7 +29,8 @@ class GlobalConstants
     static let albumReleaseDates: [String : String] = [
         "Beast" : "04/05/2022",
         "Beast (Telugu)" : "04/05/2022",
-        "Etharkkum Thunindhavan" : "31/01/2022"
+        "Etharkkum Thunindhavan" : "31/01/2022",
+        "Sarkaru Vaari Paata" : "13/06/2022"
     ]
     
     //Asset song names
@@ -45,10 +46,10 @@ class GlobalConstants
                 "arabickuthu.mp3",
                 "jollyogymkhana.mp3",
                 "beastmode.mp3",
-//                "summasurrunu.mp3",
+                "summasurrunu.mp3",
             ],
             .folk: [
-//                "vaadathambi.mp3"
+                "vaadathambi.mp3"
             ]
         ],
         .malayalam: [
@@ -66,10 +67,10 @@ class GlobalConstants
             .folk: []
         ],
         .telugu: [
-            .classical: [],
+            .classical: ["kalaavathi.mp3",],
             .melody: [],
             .western: [],
-            .rock: ["halamathitelugu.mp3", "jollyogymkhanatelugu.mp3", "beastmodetelugu.mp3"],
+            .rock: ["halamathitelugu.mp3", "jollyogymkhanatelugu.mp3", "beastmodetelugu.mp3", "mamamahesha.mp3"],
             .folk: []
         ],
         .kannada: [
