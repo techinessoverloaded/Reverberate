@@ -31,6 +31,8 @@ class MainViewController: UITabBarController
     
     private var avAudioPlayer: AVAudioPlayer! = GlobalVariables.shared.avAudioPlayer
     
+    private var miniPlayerTimer: CADisplayLink!
+    
     override func loadView()
     {
         super.loadView()
@@ -62,6 +64,9 @@ class MainViewController: UITabBarController
             miniPlayerView.heightAnchor.constraint(equalToConstant: 70)
         ])
         miniPlayerView.delegate = self
+        miniPlayerTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
+        miniPlayerTimer.add(to: .main, forMode: .common)
+        miniPlayerTimer.isPaused = true
     }
     
     func replaceViewController(index: Int, newViewController: UIViewController)
@@ -193,6 +198,7 @@ extension MainViewController: MiniPlayerDelegate
     {
         avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+        miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
     }
     
@@ -200,6 +206,7 @@ extension MainViewController: MiniPlayerDelegate
     {
         avAudioPlayer.pause()
         try! AVAudioSession.sharedInstance().setActive(false)
+        miniPlayerTimer.isPaused = true
         setupNowPlayingNotification()
     }
     
@@ -283,6 +290,10 @@ extension MainViewController: PlayerDelegate
     {
         avAudioPlayer.currentTime = value
         setupNowPlayingNotification()
+        if miniPlayerTimer.isPaused
+        {
+            miniPlayerView.updateSongDurationView(newValue: Float(value))
+        }
     }
     
     func onShuffleButtonTap()
@@ -296,11 +307,25 @@ extension MainViewController: PlayerDelegate
                 self.playerController.dismiss(animated: false)
                 self.miniPlayerView.alpha = 1
         }, completion: nil)
+        if avAudioPlayer.isPlaying
+        {
+            miniPlayerTimer.isPaused = false
+        }
+        else
+        {
+            miniPlayerTimer.isPaused = true
+        }
     }
 }
 
 extension MainViewController
 {
+    @objc func onTimerFire(_ sender: Timer)
+    {
+        let currentTime = Float(avAudioPlayer.currentTime)
+        miniPlayerView.updateSongDurationView(newValue: currentTime)
+    }
+    
     @objc func handleAudioSessionInterruptionChange(notification: Notification)
     {
         guard let userInfo = notification.userInfo,
@@ -358,6 +383,7 @@ extension MainViewController
         avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
+        miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
         handleMPNotificationActions()
     }
@@ -373,6 +399,8 @@ extension MainViewController: AVAudioPlayerDelegate
             print("Finished Playing")
             try! AVAudioSession.sharedInstance().setActive(false)
             miniPlayerView.setPlaying(shouldPlaySong: false)
+            miniPlayerTimer.isPaused = true
+            miniPlayerView.updateSongDurationView(newValue: 0)
             playerController?.setPlaying(shouldPlaySongFromBeginning: true)
         }
         if player.numberOfLoops == 1
@@ -381,6 +409,7 @@ extension MainViewController: AVAudioPlayerDelegate
             player.play()
             try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             miniPlayerView.setPlaying(shouldPlaySong: true)
+            miniPlayerTimer.isPaused = false
             playerController?.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
             playerController?.setLoopButton(loopMode: 0)
             player.numberOfLoops = 0
@@ -390,6 +419,7 @@ extension MainViewController: AVAudioPlayerDelegate
             player.play()
             try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             miniPlayerView.setPlaying(shouldPlaySong: true)
+            miniPlayerTimer.isPaused = false
             playerController?.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
         }
         setupNowPlayingNotification()

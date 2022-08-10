@@ -62,14 +62,15 @@ class PlayerViewController: UITableViewController
         return pRecognizer
     }()
     
-    private lazy var albumTitleView: UILabel = {
-        let atView = UILabel(useAutoLayout: true)
+    private lazy var albumTitleView: MarqueeLabel = {
+        let atView = MarqueeLabel(useAutoLayout: true)
         atView.textColor = .label.withAlphaComponent(0.8)
         atView.font = .preferredFont(forTextStyle: .title1, weight: .bold)
         atView.numberOfLines = 2
         atView.lineBreakMode = .byTruncatingTail
         atView.isUserInteractionEnabled = true
         atView.textAlignment = .center
+        atView.fadeLength = 10
         return atView
     }()
     
@@ -84,14 +85,15 @@ class PlayerViewController: UITableViewController
         return pView
     }()
     
-    private lazy var songTitleView: UILabel = {
-        let stView = UILabel(useAutoLayout: true)
+    private lazy var songTitleView: MarqueeLabel = {
+        let stView = MarqueeLabel(useAutoLayout: true)
         stView.textColor = .label.withAlphaComponent(0.8)
         stView.font = .preferredFont(forTextStyle: .title2, weight: .bold)
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true
         stView.textAlignment = .center
+        stView.fadeLength = 10
         return stView
     }()
     
@@ -99,7 +101,7 @@ class PlayerViewController: UITableViewController
         let stView = UILabel(useAutoLayout: true)
         stView.textColor = .label.withAlphaComponent(0.8)
         stView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
-        stView.numberOfLines = 3
+        stView.numberOfLines = 4
         stView.lineBreakMode = .byTruncatingTail
         stView.lineBreakStrategy = .standard
         stView.isUserInteractionEnabled = true
@@ -109,7 +111,6 @@ class PlayerViewController: UITableViewController
     
     private lazy var songSlider: UISlider = {
         let sSlider = UISlider(useAutoLayout: true)
-        sSlider.setValue(20, animated: true)
         sSlider.minimumTrackTintColor = UIColor(named: GlobalConstants.techinessColor)!
         sSlider.maximumTrackTintColor = .systemGray.withAlphaComponent(0.5)
         sSlider.thumbTintColor = UIColor(named: GlobalConstants.techinessColor)!
@@ -238,7 +239,7 @@ class PlayerViewController: UITableViewController
         return favButton
     }()
     
-    private var timer: Timer!
+    private var caDisplayLinkTimer: CADisplayLink!
     
     weak var delegate: PlayerDelegate?
     
@@ -306,13 +307,15 @@ class PlayerViewController: UITableViewController
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
         loopButton.addTarget(self, action: #selector(onLoopButtonTap(_:)), for: .touchUpInside)
         songSlider.addTarget(self, action: #selector(onSongSliderValueChange(_:)), for: .valueChanged)
+        songSlider.addTarget(self, action: #selector(onSongSliderDragBegin(_:)), for: .touchDown)
         favouriteButton.addTarget(self, action: #selector(onFavouriteButtonTap(_:)), for: .touchUpInside)
         addToPlaylistsButton.addTarget(self, action: #selector(onAddToPlaylistsButtonTap(_:)), for: .touchUpInside)
         songSlider.minimumValue = 0.0
         songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
         setDetails()
         updateTime()
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(onTimerFire(_:)), userInfo: nil, repeats: true)
+        caDisplayLinkTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
+        caDisplayLinkTimer.add(to: .main, forMode: .common)
     }
     
     func setPlaying(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -341,7 +344,7 @@ class PlayerViewController: UITableViewController
     override func viewDidDisappear(_ animated: Bool)
     {
         super.viewDidDisappear(animated)
-        timer.invalidate()
+        caDisplayLinkTimer.invalidate()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -373,7 +376,7 @@ class PlayerViewController: UITableViewController
     func updateTime()
     {
         let currentTime = Float(GlobalVariables.shared.avAudioPlayer.currentTime)
-        songSlider.value = currentTime
+        songSlider.setValue(currentTime, animated: true)
         let seconds = String(format: "%02d", Int(currentTime) % 60)
         let minutes = String(format: "%02d", Int(currentTime) / 60)
         minimumDurationLabel.text = "\(minutes):\(seconds)"
@@ -552,7 +555,7 @@ extension PlayerViewController
 
 extension PlayerViewController
 {
-    @objc func onTimerFire(_ timer: Timer)
+    @objc func onTimerFire(_ timer: CADisplayLink)
     {
         updateTime()
     }
@@ -661,9 +664,15 @@ extension PlayerViewController
         }
     }
     
+    @objc func onSongSliderDragBegin(_ sender: UISlider)
+    {
+        caDisplayLinkTimer.isPaused = true
+    }
+    
     @objc func onSongSliderValueChange(_ sender: UISlider)
     {
         delegate?.onSongSeekRequest(songPosition: Double(sender.value))
+        caDisplayLinkTimer.isPaused = false
     }
     
     @objc func onMinimizeButtonTap(_ sender: UIBarButtonItem)

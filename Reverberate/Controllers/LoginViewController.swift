@@ -331,19 +331,19 @@ extension LoginViewController
             {
                 let email = emailCumPhoneField.text!.trimmedCopy()
                 let password = passwordField.text!.trimmedCopy()
-                user = validateUser(email: email, password: password)
+                user = SessionManager.shared.validateUser(email: email, password: password)
             }
             else
             {
                 let phone = emailCumPhoneField.text!.trimmedCopy()
                 let password = passwordField.text!.trimmedCopy()
-                user = validateUser(phone: phone, password: password)
+                user = SessionManager.shared.validateUser(phone: phone, password: password)
             }
             if user != nil
             {
                 loginButton.configuration?.showsActivityIndicator = true
                 print("Logging in...")
-                UserDefaults.standard.set(user!.id, forKey: GlobalConstants.currentUserId)
+                SessionManager.shared.loginUser(user!)
                 loginButton.configuration?.showsActivityIndicator = false
                 delegate?.onSuccessfulLogin()
             }
@@ -366,55 +366,5 @@ extension LoginViewController
             passwordField.becomeFirstResponder()
         }
         print("Custom Return Button Tapped")
-    }
-}
-
-// Core Data Functions
-extension LoginViewController
-{
-    func validateUser(email: String, password: String) -> User?
-    {
-        var allUsers: [User]!
-        do
-        {
-            allUsers = try context.fetch(User.fetchRequest())
-            print(allUsers ?? "No users")
-        }
-        catch
-        {
-            print("Error in retrieving saved Users !")
-            return nil
-        }
-        let filteredUsers = allUsers.filter {
-            $0.email == email && $0.password == password
-        }
-        if filteredUsers.isEmpty
-        {
-            return nil
-        }
-        return filteredUsers[0]
-    }
-    
-    func validateUser(phone: String, password: String) -> User?
-    {
-        var allUsers: [User]!
-        do
-        {
-            allUsers = try context.fetch(User.fetchRequest())
-            print(allUsers ?? "No users")
-        }
-        catch
-        {
-            print("Error in retrieving saved Users !")
-            return nil
-        }
-        let filteredUsers = allUsers.filter {
-            $0.phone == phone && $0.password == password
-        }
-        if filteredUsers.isEmpty
-        {
-            return nil
-        }
-        return filteredUsers[0]
     }
 }

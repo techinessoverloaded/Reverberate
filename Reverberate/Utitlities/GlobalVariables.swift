@@ -26,5 +26,7 @@ class GlobalVariables
         }
     }
     
+    var currentUser: User? = nil
+    
     var currentPlaylist: Playlist?
 }

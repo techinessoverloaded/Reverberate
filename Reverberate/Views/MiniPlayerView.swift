@@ -34,14 +34,15 @@ class MiniPlayerView: UIView
         return pView
     }()
     
-    private lazy var songTitleView: UILabel = {
-        let stView = UILabel(useAutoLayout: true)
+    private lazy var songTitleView: MarqueeLabel = {
+        let stView = MarqueeLabel(useAutoLayout: true)
         stView.textColor = .systemGray
         stView.font = .preferredFont(forTextStyle: .body, weight: .bold)
         stView.text = "No song"
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true
+        stView.fadeLength = 10
         return stView
     }()
     
@@ -84,10 +85,12 @@ class MiniPlayerView: UIView
         return cView
     }()
     
-    private lazy var separator: UIView = {
-        let sView = UIView(useAutoLayout: true)
-        sView.backgroundColor = .separator
-        return sView
+    private lazy var songDurationView: UIProgressView = {
+        let sdView = UIProgressView(progressViewStyle: .bar)
+        sdView.progressTintColor = UIColor(named: GlobalConstants.techinessColor)!
+        sdView.trackTintColor = .separator
+        sdView.enableAutoLayout()
+        return sdView
     }()
     
     private lazy var tapRecognizer: UITapGestureRecognizer = {
@@ -104,6 +107,8 @@ class MiniPlayerView: UIView
         return sRecognizer
     }()
     
+    private var totalSongDuration: Double = 0
+    
     weak var delegate: MiniPlayerDelegate?
     
     override init(frame: CGRect)
@@ -113,7 +118,7 @@ class MiniPlayerView: UIView
         addSubview(posterView)
         addSubview(songTitleView)
         addSubview(controlsView)
-        addSubview(separator)
+        addSubview(songDurationView)
         controlsView.addSubview(playOrPauseButton)
         controlsView.addSubview(previousButton)
         controlsView.addSubview(nextButton)
@@ -139,10 +144,10 @@ class MiniPlayerView: UIView
             playOrPauseButton.centerXAnchor.constraint(equalTo: controlsView.centerXAnchor),
             nextButton.leadingAnchor.constraint(equalTo: playOrPauseButton.trailingAnchor, constant: 8),
             nextButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
-            separator.widthAnchor.constraint(equalTo: widthAnchor),
-            separator.heightAnchor.constraint(equalToConstant: 1),
-            separator.centerXAnchor.constraint(equalTo: centerXAnchor),
-            separator.bottomAnchor.constraint(equalTo: bottomAnchor)
+            songDurationView.widthAnchor.constraint(equalTo: widthAnchor),
+            songDurationView.heightAnchor.constraint(equalToConstant: 2),
+            songDurationView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            songDurationView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         playOrPauseButton.addTarget(self, action: #selector(onPlayOrPauseButtonTap(_:)), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(onNextButtonTap(_:)), for: .touchUpInside)
@@ -174,6 +179,7 @@ class MiniPlayerView: UIView
         songTitleView.text = song.title!
         songTitleView.textColor = .label.withAlphaComponent(0.8)
         playOrPauseButton.isEnabled = true
+        totalSongDuration = song.duration!
     }
     
     func setPlaying(shouldPlaySong: Bool)
@@ -187,6 +193,13 @@ class MiniPlayerView: UIView
         {
             playOrPauseButton.setImage(playIcon, for: .normal)
         }
+    }
+    
+    func updateSongDurationView(newValue: Float)
+    {
+        let normalizedDuration = Float(Double(newValue) / totalSongDuration)
+        print("Duration: \(normalizedDuration)")
+        songDurationView.setProgress(normalizedDuration, animated: true)
     }
 }
 

@@ -231,17 +231,6 @@ extension NSMutableAttributedString
     }
 }
 
-extension UIViewController
-{
-    var isUserLoggedIn: Bool
-    {
-        get
-        {
-            return UserDefaults.standard.string(forKey: GlobalConstants.currentUserId) != nil
-        }
-    }
-}
-
 extension URL
 {
     static func localURLForXCAsset(name: String) -> URL?

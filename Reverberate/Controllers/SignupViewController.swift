@@ -178,10 +178,6 @@ class SignupViewController: UITableViewController
         return cbView
     }()
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     private var newUser: User?
     
     private var languageSelectionController: LanguageSelectionCollectionViewController!
@@ -464,29 +460,6 @@ extension SignupViewController
     }
 }
 
-// Core Data Functions
-extension SignupViewController
-{
-    func doesUserAlreadyExist(phone: String, email: String) -> Bool
-    {
-        var allUsers: [User]!
-        do
-        {
-            allUsers = try context.fetch(User.fetchRequest())
-            print(allUsers ?? "nil")
-        }
-        catch
-        {
-            print("An error occurred while fetching users \(error)!")
-            return false
-        }
-        return !allUsers.allSatisfy {
-            $0.email != email && $0.phone != phone
-        }
-    }
-    
-}
-
 // Obj-C Runtime Functions
 extension SignupViewController
 {
@@ -504,27 +477,15 @@ extension SignupViewController
             var email = emailField.text!
             phone.trim()
             email.trim()
-            if doesUserAlreadyExist(phone: phone, email: email)
+            if SessionManager.shared.doesUserAlreadyExist(phone: phone, email: email)
             {
                 signupButton.configuration?.showsActivityIndicator = false
                 delegate?.onSignupFailure()
             }
             else
             {
-                newUser = User(context: self.context)
-                // Generate Universally Unique ID using UUID
-                newUser!.id = UUID().uuidString
-                newUser!.name = nameField.text!.trimmedCopy()
-                newUser!.phone = phoneField.text!.trimmedCopy()
-                newUser!.email = emailField.text!.trimmedCopy()
-                newUser!.password = passwordField.text!.trimmedCopy()
-                newUser!.profilePicture = UIImage(systemName: "person.fill")!.withTintColor(.systemGray).jpegData(compressionQuality: 1)!
-                print("Signing up...")
-                self.contextSaveAction()
-                UserDefaults.standard.set(newUser!.id, forKey: GlobalConstants.currentUserId)
-                UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
+                newUser = SessionManager.shared.createNewUserWith(name: nameField.text!.trimmedCopy(), phone: phone, email: email, password: passwordField.text!.trimmedCopy())
                 signupButton.configuration?.showsActivityIndicator = false
-                print("User Signed up successfully with id: \(String(describing: newUser!.id))")
                 delegate?.onSuccessfulSignup()
             }
         }

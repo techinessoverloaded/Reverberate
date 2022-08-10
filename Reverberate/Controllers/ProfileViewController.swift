@@ -114,7 +114,7 @@ class ProfileViewController: UITableViewController
     
     func configureAccordingToSession()
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             navigationController?.navigationBar.prefersLargeTitles = false
             navigationItem.largeTitleDisplayMode = .never
@@ -141,7 +141,7 @@ class ProfileViewController: UITableViewController
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             setUserDetails()
             profilePictureView.layer.cornerRadius = profilePictureView.bounds.height / 2
@@ -151,7 +151,7 @@ class ProfileViewController: UITableViewController
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: context)
         }
@@ -160,7 +160,7 @@ class ProfileViewController: UITableViewController
     
     override func viewWillDisappear(_ animated: Bool)
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: context)
         }
@@ -218,7 +218,7 @@ extension ProfileViewController
 {
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             return 5
         }
@@ -230,7 +230,7 @@ extension ProfileViewController
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             if section == 0
             {
@@ -269,7 +269,7 @@ extension ProfileViewController
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             if indexPath.section == 0
             {
@@ -295,7 +295,7 @@ extension ProfileViewController
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             switch section
             {
@@ -323,7 +323,7 @@ extension ProfileViewController
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             if section == 2 || section == 3
             {
@@ -344,7 +344,7 @@ extension ProfileViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             if section == 0
             {
@@ -491,7 +491,7 @@ extension ProfileViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             if section == 3
             {
@@ -622,7 +622,7 @@ extension ProfileViewController: LanguageSelectionDelegate
 {
     func onLanguageSelection(selectedLanguages: [Int16])
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             user.preferredLanguages = selectedLanguages
             contextSaveAction()
@@ -635,7 +635,7 @@ extension ProfileViewController: LanguageSelectionDelegate
     
     func languageCellsDidLoad()
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             languageSelectionVC.setSelectedLanguages(languages: user.preferredLanguages!)
         }
@@ -650,7 +650,7 @@ extension ProfileViewController: GenreSelectionDelegate
 {
     func onGenreSelection(selectedGenres: [Int16])
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             user.preferredGenres = selectedGenres
             contextSaveAction()
@@ -663,7 +663,7 @@ extension ProfileViewController: GenreSelectionDelegate
     
     func genreCellsDidLoad()
     {
-        if isUserLoggedIn
+        if SessionManager.shared.isUserLoggedIn
         {
             genreSelectionVC.setSelectedGenres(genres: user.preferredGenres!)
         }

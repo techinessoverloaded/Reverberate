@@ -52,6 +52,11 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable
         return lhs.name! == rhs.name!
     }
     
+    public override func isEqual(_ object: Any?) -> Bool
+    {
+        return self.name! == (object as! Self).name!
+    }
+    
     public static func < (lhs: Playlist, rhs: Playlist) -> Bool
     {
         return lhs.name! < rhs.name!
