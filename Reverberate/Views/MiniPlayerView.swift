@@ -198,7 +198,6 @@ class MiniPlayerView: UIView
     func updateSongDurationView(newValue: Float)
     {
         let normalizedDuration = Float(Double(newValue) / totalSongDuration)
-        print("Duration: \(normalizedDuration)")
         songDurationView.setProgress(normalizedDuration, animated: true)
     }
 }

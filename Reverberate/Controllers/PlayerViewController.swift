@@ -640,27 +640,17 @@ extension PlayerViewController
     
     @objc func onLoopButtonTap(_ sender: UIButton)
     {
-        if sender.image(for: .normal)!.pngData() == repeatIcon.pngData()
-        {
-            if sender.configuration?.baseForegroundColor == .label.withAlphaComponent(0.8)
-            {
-                print("Loop Once")
-                delegate?.onLoopButtonTap(loopMode: 1)
-                sender.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
-                sender.setImage(repeatOneIcon, for: .normal)
-            }
-            else if sender.configuration?.baseForegroundColor == UIColor(named: GlobalConstants.darkGreenColor)!
-            {
-                print("No Loop")
-                delegate?.onLoopButtonTap(loopMode: 0)
-                sender.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
-            }
-        }
-        else
+        if sender.configuration?.baseForegroundColor == .label.withAlphaComponent(0.8)
         {
             print("Loop")
             delegate?.onLoopButtonTap(loopMode: -1)
-            sender.setImage(repeatIcon, for: .normal)
+            sender.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+        }
+        else
+        {
+            print("No Loop")
+            delegate?.onLoopButtonTap(loopMode: 0)
+            sender.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
         }
     }
     

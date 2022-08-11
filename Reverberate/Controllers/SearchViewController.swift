@@ -29,6 +29,7 @@ class SearchViewController: UITableViewController
         searchResultsVC.delegate = self
         let sController = UISearchController(searchResultsController: searchResultsVC)
         sController.searchResultsUpdater = searchResultsVC
+        searchResultsVC.searchBarRef = sController.searchBar
         sController.showsSearchResultsController = true
         sController.hidesNavigationBarDuringPresentation = true
         sController.searchBar.placeholder = "Songs, Albums, Artists"

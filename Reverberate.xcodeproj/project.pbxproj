@@ -13,10 +13,25 @@
 		DA12E698288E5AB300D502EC /* ArtistCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E697288E5AB300D502EC /* ArtistCVCell.swift */; };
 		DA12E69A288E937800D502EC /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E699288E937800D502EC /* DataManager.swift */; };
 		DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */; };
-		DA1DA69B28A40AFA00721F5C /* vaadathambi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69A28A40AFA00721F5C /* vaadathambi.mp3 */; };
-		DA1DA69D28A40B1A00721F5C /* summasurrunu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69C28A40B1A00721F5C /* summasurrunu.mp3 */; };
 		DA1DA6A028A40C3F00721F5C /* kalaavathi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */; };
 		DA1DA6A228A40C7900721F5C /* mamamahesha.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */; };
+		DA252E6128A543C500791267 /* vaadathambi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6028A543C500791267 /* vaadathambi.mp3 */; };
+		DA252E6328A543DA00791267 /* summasurrunu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6228A543DA00791267 /* summasurrunu.mp3 */; };
+		DA252E6628A5456200791267 /* penny.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6528A5456200791267 /* penny.mp3 */; };
+		DA252E6B28A54C6C00791267 /* murarivaa.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6A28A54C6C00791267 /* murarivaa.mp3 */; };
+		DA252E6D28A54D2600791267 /* jollyogymkhana.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6C28A54D2600791267 /* jollyogymkhana.mp3 */; };
+		DA252E7028A54EE500791267 /* paramsundari.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6F28A54EE500791267 /* paramsundari.mp3 */; };
+		DA252E7528A5513000791267 /* yaaneyaane.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E7428A5513000791267 /* yaaneyaane.mp3 */; };
+		DA252E7828A5517300791267 /* hututu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E7728A5517300791267 /* hututu.mp3 */; };
+		DA252E7B28A551EB00791267 /* chotisichiraiya.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E7A28A551EB00791267 /* chotisichiraiya.mp3 */; };
+		DA252E7D28A5522500791267 /* phuljhadiyon.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E7C28A5522500791267 /* phuljhadiyon.mp3 */; };
+		DA252E7F28A557D100791267 /* rihaayide.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E7E28A557D100791267 /* rihaayide.mp3 */; };
+		DA252E8128A5587800791267 /* kalakkatha.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E8028A5587800791267 /* kalakkatha.mp3 */; };
+		DA252E8328A5590600791267 /* ariyathariyathe.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E8228A5590600791267 /* ariyathariyathe.mp3 */; };
+		DA252E8528A559B800791267 /* thaalampoyi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E8428A559B800791267 /* thaalampoyi.mp3 */; };
+		DA252E8728A55A9500791267 /* naangaveramaari.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E8628A55A9500791267 /* naangaveramaari.mp3 */; };
+		DA252E8928A55ACD00791267 /* ennakurai.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E8828A55ACD00791267 /* ennakurai.mp3 */; };
+		DA252E8B28A55B0500791267 /* mothersong.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E8A28A55B0500791267 /* mothersong.mp3 */; };
 		DA2810B9287BDDBB006EEF60 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */; };
 		DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */; };
 		DA28A349287414E900E36382 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A348287414E900E36382 /* SignupViewController.swift */; };
@@ -79,7 +94,6 @@
 		DA6C8388288046F600339937 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C8387288046F600339937 /* InitialViewController.swift */; };
 		DA757431288D9A5A00A4CF80 /* arabickuthu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA75742E288D9A5900A4CF80 /* arabickuthu.mp3 */; };
 		DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */; };
-		DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */; };
 		DA7B1BB728A3E26A009CDBC6 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1BB628A3E26A009CDBC6 /* SessionManager.swift */; };
 		DA7F246E288188E600E4786F /* SongMetaDataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */; };
 		DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */; };
@@ -99,10 +113,25 @@
 		DA12E697288E5AB300D502EC /* ArtistCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistCVCell.swift; sourceTree = "<group>"; };
 		DA12E699288E937800D502EC /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSegregator.swift; sourceTree = "<group>"; };
-		DA1DA69A28A40AFA00721F5C /* vaadathambi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = vaadathambi.mp3; sourceTree = "<group>"; };
-		DA1DA69C28A40B1A00721F5C /* summasurrunu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = summasurrunu.mp3; sourceTree = "<group>"; };
 		DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kalaavathi.mp3; sourceTree = "<group>"; };
 		DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mamamahesha.mp3; sourceTree = "<group>"; };
+		DA252E6028A543C500791267 /* vaadathambi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = vaadathambi.mp3; sourceTree = "<group>"; };
+		DA252E6228A543DA00791267 /* summasurrunu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = summasurrunu.mp3; sourceTree = "<group>"; };
+		DA252E6528A5456200791267 /* penny.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = penny.mp3; sourceTree = "<group>"; };
+		DA252E6A28A54C6C00791267 /* murarivaa.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = murarivaa.mp3; sourceTree = "<group>"; };
+		DA252E6C28A54D2600791267 /* jollyogymkhana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhana.mp3; sourceTree = "<group>"; };
+		DA252E6F28A54EE500791267 /* paramsundari.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = paramsundari.mp3; sourceTree = "<group>"; };
+		DA252E7428A5513000791267 /* yaaneyaane.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = yaaneyaane.mp3; sourceTree = "<group>"; };
+		DA252E7728A5517300791267 /* hututu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = hututu.mp3; sourceTree = "<group>"; };
+		DA252E7A28A551EB00791267 /* chotisichiraiya.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = chotisichiraiya.mp3; sourceTree = "<group>"; };
+		DA252E7C28A5522500791267 /* phuljhadiyon.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = phuljhadiyon.mp3; sourceTree = "<group>"; };
+		DA252E7E28A557D100791267 /* rihaayide.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rihaayide.mp3; sourceTree = "<group>"; };
+		DA252E8028A5587800791267 /* kalakkatha.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kalakkatha.mp3; sourceTree = "<group>"; };
+		DA252E8228A5590600791267 /* ariyathariyathe.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ariyathariyathe.mp3; sourceTree = "<group>"; };
+		DA252E8428A559B800791267 /* thaalampoyi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = thaalampoyi.mp3; sourceTree = "<group>"; };
+		DA252E8628A55A9500791267 /* naangaveramaari.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = naangaveramaari.mp3; sourceTree = "<group>"; };
+		DA252E8828A55ACD00791267 /* ennakurai.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ennakurai.mp3; sourceTree = "<group>"; };
+		DA252E8A28A55B0500791267 /* mothersong.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mothersong.mp3; sourceTree = "<group>"; };
 		DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledInfoTableViewCell.swift; sourceTree = "<group>"; };
 		DA28A348287414E900E36382 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
@@ -167,7 +196,6 @@
 		DA6C8387288046F600339937 /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		DA75742E288D9A5900A4CF80 /* arabickuthu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = arabickuthu.mp3; sourceTree = "<group>"; };
 		DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beastmode.mp3; sourceTree = "<group>"; };
-		DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhana.mp3; sourceTree = "<group>"; };
 		DA7B1BB628A3E26A009CDBC6 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		DA7F246D288188E600E4786F /* SongMetaDataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMetaDataExtractor.swift; sourceTree = "<group>"; };
 		DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ullamurugudhaiya.mp3; sourceTree = "<group>"; };
@@ -195,6 +223,10 @@
 		DA1DA69928A40AB900721F5C /* Hindi */ = {
 			isa = PBXGroup;
 			children = (
+				DA252E7928A551DC00791267 /* Classical */,
+				DA252E7628A5515900791267 /* Melody */,
+				DA252E7128A550DE00791267 /* Western */,
+				DA252E6E28A54EC300791267 /* Rock */,
 			);
 			path = Hindi;
 			sourceTree = "<group>";
@@ -203,6 +235,56 @@
 			isa = PBXGroup;
 			children = (
 				DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */,
+			);
+			path = Classical;
+			sourceTree = "<group>";
+		};
+		DA252E6428A5454B00791267 /* Western */ = {
+			isa = PBXGroup;
+			children = (
+				DA252E6528A5456200791267 /* penny.mp3 */,
+			);
+			path = Western;
+			sourceTree = "<group>";
+		};
+		DA252E6728A545D100791267 /* Melody */ = {
+			isa = PBXGroup;
+			children = (
+				DA252E6A28A54C6C00791267 /* murarivaa.mp3 */,
+			);
+			path = Melody;
+			sourceTree = "<group>";
+		};
+		DA252E6E28A54EC300791267 /* Rock */ = {
+			isa = PBXGroup;
+			children = (
+				DA252E7428A5513000791267 /* yaaneyaane.mp3 */,
+				DA252E6F28A54EE500791267 /* paramsundari.mp3 */,
+			);
+			path = Rock;
+			sourceTree = "<group>";
+		};
+		DA252E7128A550DE00791267 /* Western */ = {
+			isa = PBXGroup;
+			children = (
+				DA252E7E28A557D100791267 /* rihaayide.mp3 */,
+				DA252E7C28A5522500791267 /* phuljhadiyon.mp3 */,
+			);
+			path = Western;
+			sourceTree = "<group>";
+		};
+		DA252E7628A5515900791267 /* Melody */ = {
+			isa = PBXGroup;
+			children = (
+				DA252E7728A5517300791267 /* hututu.mp3 */,
+			);
+			path = Melody;
+			sourceTree = "<group>";
+		};
+		DA252E7928A551DC00791267 /* Classical */ = {
+			isa = PBXGroup;
+			children = (
+				DA252E7A28A551EB00791267 /* chotisichiraiya.mp3 */,
 			);
 			path = Classical;
 			sourceTree = "<group>";
@@ -430,6 +512,7 @@
 		DA7F24622881829800E4786F /* Melody */ = {
 			isa = PBXGroup;
 			children = (
+				DA252E8A28A55B0500791267 /* mothersong.mp3 */,
 			);
 			path = Melody;
 			sourceTree = "<group>";
@@ -437,10 +520,11 @@
 		DA7F2467288185DE00E4786F /* Rock */ = {
 			isa = PBXGroup;
 			children = (
-				DA1DA69C28A40B1A00721F5C /* summasurrunu.mp3 */,
+				DA252E8628A55A9500791267 /* naangaveramaari.mp3 */,
+				DA252E6C28A54D2600791267 /* jollyogymkhana.mp3 */,
+				DA252E6228A543DA00791267 /* summasurrunu.mp3 */,
 				DA75742E288D9A5900A4CF80 /* arabickuthu.mp3 */,
 				DA75742F288D9A5A00A4CF80 /* beastmode.mp3 */,
-				DA757430288D9A5A00A4CF80 /* jollyogymkhana.mp3 */,
 			);
 			path = Rock;
 			sourceTree = "<group>";
@@ -455,7 +539,7 @@
 		DA7F24692881866300E4786F /* Folk */ = {
 			isa = PBXGroup;
 			children = (
-				DA1DA69A28A40AFA00721F5C /* vaadathambi.mp3 */,
+				DA252E6028A543C500791267 /* vaadathambi.mp3 */,
 			);
 			path = Folk;
 			sourceTree = "<group>";
@@ -482,6 +566,8 @@
 		DA7F246C2881868F00E4786F /* Melody */ = {
 			isa = PBXGroup;
 			children = (
+				DA252E8428A559B800791267 /* thaalampoyi.mp3 */,
+				DA252E8228A5590600791267 /* ariyathariyathe.mp3 */,
 			);
 			path = Melody;
 			sourceTree = "<group>";
@@ -496,6 +582,7 @@
 		DA7F24722881961200E4786F /* Folk */ = {
 			isa = PBXGroup;
 			children = (
+				DA252E8028A5587800791267 /* kalakkatha.mp3 */,
 			);
 			path = Folk;
 			sourceTree = "<group>";
@@ -557,6 +644,8 @@
 		DA7F247A2881965E00E4786F /* Telugu */ = {
 			isa = PBXGroup;
 			children = (
+				DA252E6728A545D100791267 /* Melody */,
+				DA252E6428A5454B00791267 /* Western */,
 				DA1DA69E28A40C2C00721F5C /* Classical */,
 				DA562A89289150690017EEF2 /* Rock */,
 				DA7F247B2881966900E4786F /* Folk */,
@@ -574,6 +663,7 @@
 		DA9460052892490A00FEB486 /* Classical */ = {
 			isa = PBXGroup;
 			children = (
+				DA252E8828A55ACD00791267 /* ennakurai.mp3 */,
 				DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */,
 			);
 			path = Classical;
@@ -640,19 +730,33 @@
 				DA1DA6A228A40C7900721F5C /* mamamahesha.mp3 in Resources */,
 				DA1DA6A028A40C3F00721F5C /* kalaavathi.mp3 in Resources */,
 				DA757431288D9A5A00A4CF80 /* arabickuthu.mp3 in Resources */,
-				DA1DA69D28A40B1A00721F5C /* summasurrunu.mp3 in Resources */,
 				DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */,
-				DA757433288D9A5A00A4CF80 /* jollyogymkhana.mp3 in Resources */,
+				DA252E8328A5590600791267 /* ariyathariyathe.mp3 in Resources */,
+				DA252E6B28A54C6C00791267 /* murarivaa.mp3 in Resources */,
+				DA252E8928A55ACD00791267 /* ennakurai.mp3 in Resources */,
+				DA252E7D28A5522500791267 /* phuljhadiyon.mp3 in Resources */,
+				DA252E6D28A54D2600791267 /* jollyogymkhana.mp3 in Resources */,
+				DA252E6328A543DA00791267 /* summasurrunu.mp3 in Resources */,
+				DA252E8B28A55B0500791267 /* mothersong.mp3 in Resources */,
 				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
+				DA252E6128A543C500791267 /* vaadathambi.mp3 in Resources */,
 				DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */,
+				DA252E7028A54EE500791267 /* paramsundari.mp3 in Resources */,
 				DA4556AD287402C600804CB8 /* LaunchScreen.storyboard in Resources */,
 				DA4556AA287402C600804CB8 /* Assets.xcassets in Resources */,
 				DA28A366287431BF00E36382 /* BubblegumSans-Regular.ttf in Resources */,
 				DA28A364287431AC00E36382 /* BebasFixNeue.ttf in Resources */,
 				DA562A902891507E0017EEF2 /* halamathitelugu.mp3 in Resources */,
-				DA1DA69B28A40AFA00721F5C /* vaadathambi.mp3 in Resources */,
+				DA252E7528A5513000791267 /* yaaneyaane.mp3 in Resources */,
+				DA252E6628A5456200791267 /* penny.mp3 in Resources */,
+				DA252E7F28A557D100791267 /* rihaayide.mp3 in Resources */,
+				DA252E8128A5587800791267 /* kalakkatha.mp3 in Resources */,
+				DA252E8528A559B800791267 /* thaalampoyi.mp3 in Resources */,
+				DA252E8728A55A9500791267 /* naangaveramaari.mp3 in Resources */,
 				DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */,
 				DA562A922891507E0017EEF2 /* beastmodetelugu.mp3 in Resources */,
+				DA252E7828A5517300791267 /* hututu.mp3 in Resources */,
+				DA252E7B28A551EB00791267 /* chotisichiraiya.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -865,10 +969,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R4F89R73A4;
+				DEVELOPMENT_TEAM = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -883,7 +987,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -895,10 +999,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R4F89R73A4;
+				DEVELOPMENT_TEAM = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -913,7 +1017,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

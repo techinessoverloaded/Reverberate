@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             print("Number of Artists: \(DataManager.shared.availableArtists.count)")
             print("Number of songs contributed by each artist: \n")
             DataManager.shared.availableArtists.forEach({
-                print("\($0.name!) : \($0.contributedSongs!.count) songs")
+                print("\($0.name!) : \($0.contributedSongs!.count) songs : \($0.artistType!)")
             })
             self.setupRootViewController()
         })

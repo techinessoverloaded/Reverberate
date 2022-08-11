@@ -67,6 +67,8 @@ class SearchResultsViewController: UITableViewController
     
     weak var delegate: SearchResultDelegate?
     
+    weak var searchBarRef: UISearchBar?
+    
     override func loadView()
     {
         super.loadView()
@@ -256,6 +258,7 @@ class SearchResultsViewController: UITableViewController
     {
         if searchMode == 0
         {
+            searchBarRef?.resignFirstResponder()
             let item = indexPath.item
             if GlobalVariables.shared.currentSong != filteredSongs[item]
             {

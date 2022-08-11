@@ -111,7 +111,7 @@ class ArtistViewController: UITableViewController
 //            playButton.topAnchor.constraint(equalTo: playButtonHeaderView.topAnchor),
 //            playButton.centerXAnchor.constraint(equalTo: playButtonHeaderView.centerXAnchor)
 //        ])
-        songs.append(contentsOf: Array(artist.contributedSongs!))
+//        songs.append(contentsOf: Array(artist.contributedSongs!))
         fetchUser()
     }
     

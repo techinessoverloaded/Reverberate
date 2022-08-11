@@ -435,7 +435,6 @@ extension Array where Element: Equatable
     {
         if !self.contains(where: { $0 == newElement })
         {
-            print("Gonna Append New Element: \(newElement)")
             self.append(newElement)
         }
     }
