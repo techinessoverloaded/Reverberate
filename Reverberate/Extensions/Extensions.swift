@@ -372,6 +372,7 @@ extension UILabel
 extension NSNotification.Name
 {
     static let currentSongSetNotification = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
+    static let currentPlaylistSetNotification = NSNotification.Name("cUrReNtPlAyLiStSeTnOtIfIcAtIoN")
 }
 
 
