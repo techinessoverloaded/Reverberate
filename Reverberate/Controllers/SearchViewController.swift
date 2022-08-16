@@ -22,7 +22,7 @@ class SearchViewController: UITableViewController
         return cView
     }()
     
-    private lazy var categories: [[String]] = [["New Releases", "Top Charts"], ["Tamil", "Malayalam"], ["Hindi", "Telugu"], ["Kannada", "English"], ["Classical", "Melody"], ["Western", "Rock"], ["Folk"]]
+    private lazy var categories: [[Int]] = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]]
     
     private lazy var searchController: UISearchController = {
         let searchResultsVC = SearchResultsViewController(style: .grouped)
@@ -162,7 +162,7 @@ extension SearchViewController: UICollectionViewDataSource
             randomColor = UIColor.randomDarkColor()
         }
         previousColor = randomColor
-        return cell.configureCell(title: categories[section][item], backgroundColor: randomColor)
+        return cell.configureCell(title: Category(rawValue: categories[section][item])!.description, backgroundColor: randomColor)
     }
 }
 
@@ -171,8 +171,8 @@ extension SearchViewController: UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         collectionView.deselectItem(at: indexPath, animated: true)
-        let categoricalVC = CategoricalSongsViewController(style: .insetGrouped)
-        categoricalVC.title = categories[indexPath.section][indexPath.item]
+        let categoricalVC = CategoricalSongsViewController(style: .grouped)
+        categoricalVC.category = Category(rawValue: categories[indexPath.section][indexPath.item])
         navigationController?.pushViewController(categoricalVC, animated: true)
     }
 }

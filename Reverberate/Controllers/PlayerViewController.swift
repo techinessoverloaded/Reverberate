@@ -293,6 +293,7 @@ class PlayerViewController: UITableViewController
         tableView.backgroundView = backgroundView
         tableView.separatorStyle = .none
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        tableView.isScrollEnabled = false
         swipeGestureRecognizer.addTarget(self, action: #selector(onPlayerSwipeAction(_:)))
         panGestureRecognizer.addTarget(self, action: #selector(onPlayerPanAction(_:)))
         panGestureRecognizer.delegate = self

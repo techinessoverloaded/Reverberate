@@ -16,12 +16,14 @@ class HomeViewController: UITableViewController
         return cView
     }()
     
-    private lazy var categories: [Category] = {
-//        return Category.allCases
-        return [.starter, .newReleases, .topCharts, .tamil, .melody]
+    private lazy var songs : [Category : [Song]] = {
+        var result: [Category: [Song]] = [:]
+        Category.allCases.forEach
+        {
+            result[$0] = DataProcessor.shared.getSongsOf(category: $0, andLimitNumberOfResultsTo: 10)
+        }
+        return result
     }()
-    
-    private var songs = DataManager.shared.availableSongs
     
     override func viewDidLoad()
     {
@@ -29,6 +31,7 @@ class HomeViewController: UITableViewController
         view.backgroundColor = .systemGroupedBackground
         self.navigationController?.navigationBar.prefersLargeTitles = true
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         tableView.separatorStyle = .none
@@ -77,10 +80,9 @@ class HomeViewController: UITableViewController
         
         //Section
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0)
-        section.interGroupSpacing = 10
+        section.interGroupSpacing = 15
         section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(40)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
+        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(80)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
         return section
     }
     
@@ -123,9 +125,9 @@ class HomeViewController: UITableViewController
                     cellHeight = 380
                 }
             }
-            let headerHeight: CGFloat = 40
-            let margin: CGFloat = 40
-            return CGFloat(categories.count) * (cellHeight + headerHeight + margin)
+            let headerHeight: CGFloat = 80
+            let margin: CGFloat = 0
+            return CGFloat(songs.count) * (cellHeight + headerHeight + margin)
         }
         else
         {
@@ -145,12 +147,12 @@ extension HomeViewController: UICollectionViewDataSource
 {
     func numberOfSections(in collectionView: UICollectionView) -> Int
     {
-        return categories.count
+        return songs.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        return 10
+        return songs[Category(rawValue: section)!]!.count
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
@@ -159,11 +161,10 @@ extension HomeViewController: UICollectionViewDataSource
         {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderCVReusableView.identifier, for: indexPath) as! HeaderCVReusableView
             let section = indexPath.section
-            if section == 0
-            {
-                return headerView.configure(title: categories[section].rawValue, shouldShowSeeAllButton: false)
-            }
-            return headerView.configure(title: categories[section].rawValue)
+            let category = Category(rawValue: section)!
+            headerView.configure(title: category.description, tagForSeeAllButton: indexPath.section)
+            headerView.addTargetToSeeAllButton(target: self, action: #selector(onSeeAllButtonTap(_:)))
+            return headerView
         }
         else
         {
@@ -176,34 +177,10 @@ extension HomeViewController: UICollectionViewDataSource
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterDetailCVCell.identifier, for: indexPath) as! PosterDetailCVCell
         let section = indexPath.section
         let item = indexPath.item
-        if section == 0
-        {
-            if (0...2).contains(item)
-            {
-                let artistNames = songs[item].getArtistNamesAsString(artistType: nil)
-                cell.configureCell(poster: songs[item].coverArt!, title: songs[item].title!, subtitle: artistNames)
-            }
-            else
-            {
-                cell.configureCell(title: "Song \(indexPath.item)", subtitle: "Artist 1, Artist 2, Artist 3, Artist 4")
-            }
-        }
-        else if section == 1
-        {
-            if (0...3).contains(item)
-            {
-                let artistNames = songs[item+3].getArtistNamesAsString(artistType: nil)
-                cell.configureCell(poster: songs[item+3].coverArt!, title: songs[item+3].title!, subtitle: artistNames)
-            }
-            else
-            {
-                cell.configureCell(title: "Song \(indexPath.item)", subtitle: "Artist 1, Artist 2, Artist 3, Artist 4")
-            }
-        }
-        else
-        {
-            cell.configureCell(title: "Song \(indexPath.item)", subtitle: "Artist 1, Artist 2, Artist 3, Artist 4")
-        }
+        let category = Category(rawValue: section)!
+        let categoricalSongs = songs[category]!
+        let artistNames = categoricalSongs[item].getArtistNamesAsString(artistType: nil)
+        cell.configureCell(poster: categoricalSongs[item].coverArt!, title: categoricalSongs[item].title!, subtitle: artistNames)
         return cell
     }
 }
@@ -215,25 +192,21 @@ extension HomeViewController: UICollectionViewDelegate
         collectionView.deselectItem(at: indexPath, animated: true)
         let section = indexPath.section
         let item = indexPath.item
-        if section == 0
+        let category = Category(rawValue: section)!
+        let categoricalSongs = songs[category]!
+        if GlobalVariables.shared.currentSong != categoricalSongs[item]
         {
-            if (0...2).contains(item)
-            {
-                if GlobalVariables.shared.currentSong != songs[item]
-                {
-                    GlobalVariables.shared.currentSong = songs[item]
-                }
-            }
+            GlobalVariables.shared.currentSong = categoricalSongs[item]
         }
-        else if section == 1
-        {
-            if (0...3).contains(item)
-            {
-                if GlobalVariables.shared.currentSong != songs[item+3]
-                {
-                    GlobalVariables.shared.currentSong = songs[item+3]
-                }
-            }
-        }
+    }
+}
+
+extension HomeViewController
+{
+    @objc func onSeeAllButtonTap(_ sender: UIButton)
+    {
+        let categoricalVC = CategoricalSongsViewController(style: .grouped)
+        categoricalVC.category = Category(rawValue: sender.tag)
+        navigationController?.pushViewController(categoricalVC, animated: true)
     }
 }

@@ -15,7 +15,7 @@ class MainViewController: UITabBarController
 
     private lazy var searchVC = SearchViewController(style: .insetGrouped)
     
-    private lazy var libraryVC = LibraryViewController(style: .insetGrouped)
+    private lazy var libraryVC = LibraryViewController(style: .plain)
     
     private lazy var profileVC = ProfileViewController(style: .insetGrouped)
     

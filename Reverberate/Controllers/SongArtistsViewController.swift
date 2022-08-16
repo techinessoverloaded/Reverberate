@@ -183,7 +183,8 @@ extension SongArtistsViewController: UICollectionViewDataSource, UICollectionVie
         {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderCVReusableView.identifier, for: indexPath) as! HeaderCVReusableView
             let section = Int16(indexPath.section)
-            return headerView.configure(title: ArtistType(rawValue: section)!.description, shouldShowSeeAllButton: false, headerFontColorOpacity: 0.8)
+            headerView.configure(title: ArtistType(rawValue: section)!.description, shouldShowSeeAllButton: false, headerFontColorOpacity: 0.8)
+            return headerView
         }
         else
         {

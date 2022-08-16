@@ -26,27 +26,16 @@ class SortOptionsHeaderView: UIView
         return oButton
     }()
     
-    lazy var viewModeButton: UIButton = {
-        let vmButton = UIButton(type: .custom)
-        vmButton.setImage(UIImage(systemName: "square.grid.2x2")!, for: .normal)
-        vmButton.tintColor = .secondaryLabel
-        vmButton.enableAutoLayout()
-        return vmButton
-    }()
-    
     override init(frame: CGRect)
     {
         super.init(frame: frame)
         addSubview(titleLabel)
         addSubview(orderingButton)
-        addSubview(viewModeButton)
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             orderingButton.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 10),
             orderingButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            viewModeButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            viewModeButton.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
     

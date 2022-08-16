@@ -69,7 +69,7 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
     
     public static func < (lhs: Song, rhs: Song) -> Bool
     {
-        lhs.title! < rhs.title!
+        return lhs.title! < rhs.title!
     }
     
     public override func isEqual(_ object: Any?) -> Bool
@@ -79,7 +79,7 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
     
     public static func == (lhs: Song, rhs: Song) -> Bool
     {
-        lhs.title! == rhs.title!
+        return lhs.title! == rhs.title!
     }
     
     func getArtists(ofType artistType: ArtistType) -> [Artist]

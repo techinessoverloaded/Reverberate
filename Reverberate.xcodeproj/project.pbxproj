@@ -41,6 +41,8 @@
 		DA28A366287431BF00E36382 /* BubblegumSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA28A365287431BF00E36382 /* BubblegumSans-Regular.ttf */; };
 		DA2F0C1228A3AB22003F35F1 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */; };
 		DA2F0C1528A3B0BB003F35F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */; };
+		DA36C87B28AB5A8700F18694 /* LibraryTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA36C87A28AB5A8700F18694 /* LibraryTabView.swift */; };
+		DA36C87D28AB5CDE00F18694 /* LibraryTabViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA36C87C28AB5CDE00F18694 /* LibraryTabViewDelegate.swift */; };
 		DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569D287402C400804CB8 /* AppDelegate.swift */; };
 		DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569F287402C400804CB8 /* SceneDelegate.swift */; };
 		DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA4556A6287402C400804CB8 /* Reverberate.xcdatamodeld */; };
@@ -141,6 +143,8 @@
 		DA28A365287431BF00E36382 /* BubblegumSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BubblegumSans-Regular.ttf"; sourceTree = "<group>"; };
 		DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DA36C87A28AB5A8700F18694 /* LibraryTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryTabView.swift; sourceTree = "<group>"; };
+		DA36C87C28AB5CDE00F18694 /* LibraryTabViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryTabViewDelegate.swift; sourceTree = "<group>"; };
 		DA45569A287402C400804CB8 /* Reverberate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverberate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA45569D287402C400804CB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA45569F287402C400804CB8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -390,6 +394,7 @@
 				DA67F44428894EA400062985 /* MiniPlayerView.swift */,
 				DA12E697288E5AB300D502EC /* ArtistCVCell.swift */,
 				DAFC0AE52893ED7500EECE4B /* StretchyArtistHeaderView.swift */,
+				DA36C87A28AB5A8700F18694 /* LibraryTabView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -465,6 +470,7 @@
 				DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */,
 				DA67E0632898E57A00593251 /* PlaylistDataSource.swift */,
 				DA67E06528994D3A00593251 /* ArtistDelegate.swift */,
+				DA36C87C28AB5CDE00F18694 /* LibraryTabViewDelegate.swift */,
 			);
 			path = Abstract;
 			sourceTree = "<group>";
@@ -812,8 +818,10 @@
 				DA65D3B728866FA700173F56 /* CategoricalSongsViewController.swift in Sources */,
 				DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */,
 				DA6C83862880366A00339937 /* SignupDelegate.swift in Sources */,
+				DA36C87D28AB5CDE00F18694 /* LibraryTabViewDelegate.swift in Sources */,
 				DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */,
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,
+				DA36C87B28AB5A8700F18694 /* LibraryTabView.swift in Sources */,
 				DA5CE96D28880D1D0066AB2E /* ArtistType.swift in Sources */,
 				DA67E06628994D3A00593251 /* ArtistDelegate.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
@@ -969,10 +977,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RZFG3568AJ;
+				DEVELOPMENT_TEAM = R4F89R73A4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -987,7 +995,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -999,10 +1007,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RZFG3568AJ;
+				DEVELOPMENT_TEAM = R4F89R73A4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1017,7 +1025,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

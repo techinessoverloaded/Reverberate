@@ -417,6 +417,17 @@ extension Date
     }
 }
 
+extension Calendar
+{
+    static var currentYear: Int
+    {
+        get
+        {
+            return Calendar(identifier: .gregorian).component(.year, from: .now)
+        }
+    }
+}
+
 extension UITableView
 {
     func reloadSections(_ sections: IndexSet, with animation: UITableView.RowAnimation, onCompletion: @escaping () -> ())

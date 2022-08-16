@@ -13,21 +13,15 @@ class LibraryViewController: UITableViewController
         let libraryResultsVC = LibraryResultsViewController(style: .insetGrouped)
         let sController = UISearchController(searchResultsController: libraryResultsVC)
         sController.searchResultsUpdater = libraryResultsVC
+        sController.searchBar.delegate = self
         sController.showsSearchResultsController = true
-        sController.hidesNavigationBarDuringPresentation = true
+        sController.hidesNavigationBarDuringPresentation = false
         sController.searchBar.placeholder = "Search your library"
+        self.definesPresentationContext = true
         return sController
     }()
     
-    private lazy var favouritesOrPlaylistsSelector: UISegmentedControl = {
-        let selector = UISegmentedControl(items: ["Favourites", "Playlists"])
-        selector.selectedSegmentIndex = 0
-        selector.selectedSegmentTintColor = UIColor(named: GlobalConstants.techinessColor)!
-        let titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
-        selector.setTitleTextAttributes(titleTextAttributes, for: .selected)
-        selector.enableAutoLayout()
-        return selector
-    }()
+    private lazy var favOrPlayTabView: LibraryTabView = LibraryTabView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 60))
     
     private lazy var viewControllers: [UIViewController] =
     [
@@ -42,6 +36,8 @@ class LibraryViewController: UITableViewController
     
     private var addBarButton: UIBarButtonItem!
     
+    private var searchButton: UIBarButtonItem!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -49,13 +45,15 @@ class LibraryViewController: UITableViewController
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.allowsSelection = false
+        tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 70, right: 0)
+        tableView.tableHeaderView = favOrPlayTabView
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.hidesSearchBarWhenScrolling = false
-        navigationItem.searchController = searchController
-        addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAddButtonTapped(_:)))
-        navigationItem.rightBarButtonItem = addBarButton
-        favouritesOrPlaylistsSelector.addTarget(self, action: #selector(onFavouritesOrPlaylistsChange(_:)), for: .valueChanged)
+        searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(onSearchButtonTap(_:)))
+        addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAddButtonTap(_:)))
+        navigationItem.rightBarButtonItems = [addBarButton, searchButton]
+        favOrPlayTabView.delegate = self
         contentPager.dataSource = self
         contentPager.delegate = self
         contentPager.setViewControllers([viewControllers[0]], direction: .forward, animated: true)
@@ -70,7 +68,7 @@ class LibraryViewController: UITableViewController
     
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        return 2
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -80,44 +78,35 @@ class LibraryViewController: UITableViewController
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        if indexPath.section == 0
-        {
-            return 50
-        }
-        else
-        {
-            return tableView.bounds.height * 0.8
-        }
+        return tableView.bounds.height
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let section = indexPath.section
-        if section == 0
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-            cell.addSubViewToContentView(favouritesOrPlaylistsSelector, useAutoLayout: true)
-            return cell
-        }
-        else
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            addChild(contentPager)
-            contentPager.didMove(toParent: self)
-            contentPager.view.frame = cell.contentView.bounds
-            cell.contentView.addSubview(contentPager.view)
-            cell.backgroundColor = .clear
-            cell.clipsToBounds =  false
-            return cell
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        addChild(contentPager)
+        contentPager.didMove(toParent: self)
+        contentPager.view.frame = cell.contentView.bounds
+        cell.contentView.addSubview(contentPager.view)
+        cell.backgroundColor = .clear
+        cell.clipsToBounds =  false
+        return cell
     }
 }
 
 extension LibraryViewController
 {
-    @objc func onAddButtonTapped(_ sender: UIBarButtonItem)
+    @objc func onAddButtonTap(_ sender: UIBarButtonItem)
     {
         
+    }
+    
+    @objc func onSearchButtonTap(_ sender: UIBarButtonItem)
+    {
+        navigationItem.titleView = searchController.searchBar
+        navigationItem.title = nil
+        navigationItem.rightBarButtonItems = nil
+        searchController.searchBar.becomeFirstResponder()
     }
     
     @objc func onFavouritesOrPlaylistsChange(_ sender: UISegmentedControl)
@@ -136,8 +125,9 @@ extension LibraryViewController
 
 extension LibraryViewController: UISearchControllerDelegate
 {
-    func willDismissSearchController(_ searchController: UISearchController) {
-        //navigationItem.searchController = nil
+    func willDismissSearchController(_ searchController: UISearchController)
+    {
+        
     }
 }
 
@@ -164,25 +154,56 @@ extension LibraryViewController: UIPageViewControllerDataSource
     }
 }
 
-extension LibraryViewController: UIPageViewControllerDelegate
+extension LibraryViewController: LibraryTabViewDelegate
 {
-    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        
+    func onFavouritesTabTap(_ tabView: LibraryTabView)
+    {
+        contentPager.setViewControllers([viewControllers[0]], direction: .reverse, animated: true)
     }
     
+    func onPlaylistsTabTap(_ tabView: LibraryTabView)
+    {
+        contentPager.setViewControllers([viewControllers[1]], direction: .forward, animated: true)
+    }
+}
+
+extension LibraryViewController: UIPageViewControllerDelegate
+{
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool)
     {
         if completed
         {
             if previousViewControllers.first! == viewControllers.first!
             {
-                favouritesOrPlaylistsSelector.selectedSegmentIndex = viewControllers.endIndex - 1
+                favOrPlayTabView.updateIndicator(forTab: .playlists)
             }
             else
             {
-                favouritesOrPlaylistsSelector.selectedSegmentIndex = viewControllers.startIndex
+                favOrPlayTabView.updateIndicator(forTab: .favourites)
+            }
+        }
+        else
+        {
+            if previousViewControllers.first! == viewControllers.first!
+            {
+                favOrPlayTabView.updateIndicator(forTab: .favourites)
+            }
+            else
+            {
+                favOrPlayTabView.updateIndicator(forTab: .playlists)
             }
         }
         
+    }
+}
+
+extension LibraryViewController: UISearchBarDelegate
+{
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
+    {
+        searchController.searchBar.resignFirstResponder()
+        navigationItem.title = title
+        navigationItem.rightBarButtonItems = [addBarButton, searchButton]
+        navigationItem.titleView = nil
     }
 }

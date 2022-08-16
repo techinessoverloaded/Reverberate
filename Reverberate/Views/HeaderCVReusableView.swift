@@ -44,7 +44,7 @@ class HeaderCVReusableView: UICollectionReusableView
         fatalError("Not initialized")
     }
     
-    func configure(title: String, shouldShowSeeAllButton: Bool = true, headerFontColorOpacity: CGFloat = 1) -> Self
+    func configure(title: String, shouldShowSeeAllButton: Bool = true, tagForSeeAllButton: Int? = nil, headerFontColorOpacity: CGFloat = 1)
     {
         titleLabel.text = title
         if headerFontColorOpacity != 1
@@ -52,6 +52,11 @@ class HeaderCVReusableView: UICollectionReusableView
             titleLabel.textColor = .label.withAlphaComponent(headerFontColorOpacity)
         }
         seeAllButton.isHidden = !shouldShowSeeAllButton
-        return self
+        seeAllButton.tag = tagForSeeAllButton ?? -1
+    }
+    
+    func addTargetToSeeAllButton(target: Any, action: Selector)
+    {
+        seeAllButton.addTarget(target, action: action, for: .touchUpInside)
     }
 }

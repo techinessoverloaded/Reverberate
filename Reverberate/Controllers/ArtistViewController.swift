@@ -41,7 +41,6 @@ class ArtistViewController: UITableViewController
         config.image = UIImage(systemName: "play.fill")!
         config.imagePadding = 10
         let pButton = UIButton(configuration: config)
-//        favButton.setImage(heartIcon, for: .normal)
         return pButton
     }()
     
@@ -230,7 +229,6 @@ class ArtistViewController: UITableViewController
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             cell.contentConfiguration = config
-            cell.selectionStyle = .none
             var favBtnconfig = UIButton.Configuration.plain()
             favBtnconfig.baseForegroundColor = .label
             favBtnconfig.buttonSize = .medium
@@ -258,7 +256,6 @@ class ArtistViewController: UITableViewController
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             cell.contentConfiguration = config
-            cell.selectionStyle = .none
             var favBtnconfig = UIButton.Configuration.plain()
             favBtnconfig.baseForegroundColor = .label
             favBtnconfig.buttonSize = .medium
@@ -269,6 +266,29 @@ class ArtistViewController: UITableViewController
             favButton.addTarget(self, action: #selector(onAlbumFavouriteButtonTap(_:)), for: .touchUpInside)
             cell.accessoryView = favButton
             return cell
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        if section == 0
+        {
+            let song = songs[item]
+            print(song)
+            if GlobalVariables.shared.currentSong == song
+            {
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                {
+                    playButton.configuration!.image = pauseIcon
+                }
+                else
+                {
+                    playButton.configuration!.image = playIcon
+                }
+            }
         }
     }
     
