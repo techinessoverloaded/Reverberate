@@ -222,7 +222,14 @@ extension SearchViewController: SearchResultDelegate
     
     func onAlbumSelection(selectedAlbum: Album)
     {
-        
+        searchController.searchBar.text = nil
+        searchController.searchBar.resignFirstResponder()
+        let albumVC = PlaylistViewController(style: .grouped)
+        albumVC.playlist = selectedAlbum
+        searchController.dismiss(animated: true)
+        { [unowned self] in
+            self.navigationController?.pushViewController(albumVC, animated: true)
+        }
     }
 }
 

@@ -62,7 +62,7 @@ class LibraryTabView: UIView
             playlistsButton.heightAnchor.constraint(equalTo: heightAnchor, constant: -20),
             playlistsButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5),
             playlistsButton.leadingAnchor.constraint(equalTo: favouritesButton.trailingAnchor),
-            indicatorView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.45),
+            indicatorView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5),
             indicatorView.heightAnchor.constraint(equalToConstant: 4),
             indicatorViewTopFavAnchor,
             indicatorViewCenXFavAnchor

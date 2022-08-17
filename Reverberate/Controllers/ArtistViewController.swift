@@ -92,8 +92,8 @@ class ArtistViewController: UITableViewController
         tableView.backgroundColor = .systemGroupedBackground
         tableView.contentInsetAdjustmentBehavior = .scrollableAxes
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
-        let headerView = StretchyArtistHeaderView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 260))
-        headerView.setDetails(artistName: artist.name!, artistType: artist.getArtistTypesAsString(), artistPhoto: artist.photo!)
+        let headerView = StretchyHeaderView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 260))
+        headerView.setDetails(title: artist.name!, subtitle: artist.getArtistTypesAsString(), photo: artist.photo!)
         tableView.tableHeaderView = headerView
         tableView.allowsMultipleSelection = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -323,7 +323,7 @@ extension ArtistViewController
 {
     override func scrollViewDidScroll(_ scrollView: UIScrollView)
     {
-        let headerView = tableView.tableHeaderView as! StretchyArtistHeaderView
+        let headerView = tableView.tableHeaderView as! StretchyHeaderView
         headerView.scrollViewDidScroll(scrollView: tableView)
         UIView.animate(withDuration: 0.1, delay: 0, options: .transitionCrossDissolve, animations: {
             [unowned self] in

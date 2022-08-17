@@ -49,7 +49,6 @@ class LibraryViewController: UITableViewController
         tableView.tableHeaderView = favOrPlayTabView
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-        navigationItem.hidesSearchBarWhenScrolling = false
         searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(onSearchButtonTap(_:)))
         addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAddButtonTap(_:)))
         navigationItem.rightBarButtonItems = [addBarButton, searchButton]
@@ -107,6 +106,7 @@ extension LibraryViewController
         navigationItem.title = nil
         navigationItem.rightBarButtonItems = nil
         searchController.searchBar.becomeFirstResponder()
+//self.present(searchController, animated: true)
     }
     
     @objc func onFavouritesOrPlaylistsChange(_ sender: UISegmentedControl)
@@ -202,8 +202,8 @@ extension LibraryViewController: UISearchBarDelegate
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
     {
         searchController.searchBar.resignFirstResponder()
+        navigationItem.titleView = nil
         navigationItem.title = title
         navigationItem.rightBarButtonItems = [addBarButton, searchButton]
-        navigationItem.titleView = nil
     }
 }

@@ -92,11 +92,11 @@ class ProfileViewController: UITableViewController
     
     private var signupController: SignupViewController!
     
-    private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
     private var user: User!
     
-    private lazy var contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
     
     override func loadView()
     {
@@ -167,16 +167,14 @@ class ProfileViewController: UITableViewController
         super.viewWillDisappear(animated)
     }
     
-    func fetchUser()
+    func getUserReference()
     {
-        user = try! context.fetch(User.fetchRequest()).first {
-            $0.id == UserDefaults.standard.string(forKey: GlobalConstants.currentUserId)
-        }
+        user = GlobalVariables.shared.currentUser!
     }
     
     func setUserDetails()
     {
-        fetchUser()
+        getUserReference()
         nameLabel.text = user.name
         let emailCell = tableView.cellForRow(at: IndexPath(item: 0, section: 2))!
         var emailConfig = emailCell.contentConfiguration as! UIListContentConfiguration
@@ -720,7 +718,7 @@ extension ProfileViewController: SignupDelegate
         let newProfileVC = ProfileViewController(style: .insetGrouped)
             newProfileVC.title = "Your Profile"
         let navController = UINavigationController(rootViewController: newProfileVC)
-        fetchUser()
+        getUserReference()
         user.preferredLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
         user.preferredGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
         contextSaveAction()

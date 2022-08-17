@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class StretchyArtistHeaderView: UIView
+class StretchyHeaderView: UIView
 {
     private lazy var backgroundViewHeight: NSLayoutConstraint = backgroundView.heightAnchor.constraint(equalTo: containerView.heightAnchor)
     
@@ -18,7 +18,7 @@ class StretchyArtistHeaderView: UIView
     
     private lazy var containerView: UIView = UIView(useAutoLayout: true)
     
-    private lazy var artistPhotoView: UIImageView = {
+    private lazy var photoView: UIImageView = {
         let apView = UIImageView(useAutoLayout: true)
         apView.clipsToBounds = true
         apView.contentMode = .scaleAspectFill
@@ -33,11 +33,10 @@ class StretchyArtistHeaderView: UIView
         let bView = UIImageView(useAutoLayout: true)
         bView.clipsToBounds = true
         bView.contentMode = .scaleAspectFill
-        bView.image = UIImage(named: "dark_gradient_bg")!
         return bView
     }()
     
-    private lazy var artistNameView: UILabel = {
+    private lazy var titleView: UILabel = {
         let anView = UILabel(useAutoLayout: true)
         anView.textColor = .white
         anView.font = .systemFont(ofSize: 28, weight: .bold)
@@ -46,7 +45,7 @@ class StretchyArtistHeaderView: UIView
         return anView
     }()
     
-    private lazy var artistTypeView: UILabel = {
+    private lazy var subtitleView: UILabel = {
         let atView = UILabel(useAutoLayout: true)
         atView.textColor = .white
         atView.font = .preferredFont(forTextStyle: .subheadline, weight: .semibold)
@@ -70,9 +69,9 @@ class StretchyArtistHeaderView: UIView
     {
         self.addSubview(containerView)
         containerView.addSubview(backgroundView)
-        backgroundView.addSubview(artistPhotoView)
-        backgroundView.addSubview(artistNameView)
-        backgroundView.addSubview(artistTypeView)
+        backgroundView.addSubview(photoView)
+        backgroundView.addSubview(titleView)
+        backgroundView.addSubview(subtitleView)
         
         NSLayoutConstraint.activate([
             self.widthAnchor.constraint(equalTo: containerView.widthAnchor),
@@ -82,31 +81,32 @@ class StretchyArtistHeaderView: UIView
             containerView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor),
             backgroundViewHeight,
             backgroundViewBottom,
-            artistPhotoView.widthAnchor.constraint(equalToConstant: 140),
-            artistPhotoView.heightAnchor.constraint(equalTo: artistPhotoView.widthAnchor),
-            artistPhotoView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            artistPhotoView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -20),
-            artistNameView.topAnchor.constraint(equalTo: artistPhotoView.bottomAnchor, constant: 20),
-            artistNameView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            artistNameView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.7),
-            artistTypeView.topAnchor.constraint(equalTo: artistNameView.bottomAnchor, constant: 10),
-            artistTypeView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            artistTypeView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.6),
+            photoView.widthAnchor.constraint(equalToConstant: 140),
+            photoView.heightAnchor.constraint(equalTo: photoView.widthAnchor),
+            photoView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            photoView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -20),
+            titleView.topAnchor.constraint(equalTo: photoView.bottomAnchor, constant: 20),
+            titleView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            titleView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.7),
+            subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 10),
+            subtitleView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            subtitleView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.6),
         ])
     }
     
-    func setDetails(artistName: String, artistType: String, artistPhoto: UIImage)
+    func setDetails(title: String, subtitle: String? = nil, photo: UIImage? = nil, backgroundImage: UIImage? = nil)
     {
-        artistNameView.text = artistName
-        artistTypeView.text = artistType
-        artistPhotoView.image = artistPhoto
+        titleView.text = title
+        subtitleView.text = subtitle
+        photoView.image = photo
+        backgroundView.image = backgroundImage == nil ? UIImage(named: "dark_gradient_bg")! : backgroundImage
     }
     
     func changeAlphaOfSubviews(newAlphaValue: CGFloat)
     {
-        artistNameView.alpha = newAlphaValue
-        artistPhotoView.alpha = newAlphaValue
-        artistTypeView.alpha = newAlphaValue
+        titleView.alpha = newAlphaValue
+        photoView.alpha = newAlphaValue
+        subtitleView.alpha = newAlphaValue
         backgroundView.alpha = newAlphaValue
     }
     
