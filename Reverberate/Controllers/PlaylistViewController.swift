@@ -27,13 +27,17 @@ class PlaylistViewController: UITableViewController
     
     var playlist: Playlist!
     
+    var defaultContentOffset : CGFloat = 0
+    
     private lazy var playlistSearchController: UISearchController = {
         let sResultController = PlaylistResultsViewController(style: .plain)
         let sController = UISearchController(searchResultsController: sResultController)
+        sController.delegate = self
         sController.searchResultsUpdater = sResultController
         sController.searchBar.delegate = self
+        sController.searchBar.isUserInteractionEnabled = true
         sController.showsSearchResultsController = true
-        sController.hidesNavigationBarDuringPresentation = true
+        sController.hidesNavigationBarDuringPresentation = false
         sController.popoverPresentationController?.backgroundColor = .clear
         return sController
     }()
@@ -71,10 +75,17 @@ class PlaylistViewController: UITableViewController
         self.definesPresentationContext = true
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        defaultContentOffset = tableView.contentOffset.y
+        print(tableView.contentOffset.y)
+    }
+    
     override func viewDidDisappear(_ animated: Bool)
     {
         super.viewDidDisappear(animated)
         self.definesPresentationContext = false
+        
     }
     
     func setPlaylistDetails()
@@ -118,6 +129,22 @@ class PlaylistViewController: UITableViewController
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         let section = indexPath.section
+        if section == 0
+        {
+            let offset = tableView.contentOffset.y
+            if isIpad
+            {
+                return offset > 0 ? max(350 - offset, 0) : max(350 + offset, 0)
+            }
+            else
+            {
+                return offset > 0 ? max(abs(offset - 250), 0) : max(abs(250 + offset), 0)
+            }
+        }
+        else
+        {
+            return 90
+        }
         return section == 0 ? (isIpad ? 350 : 250) : 90
     }
     
@@ -178,6 +205,23 @@ extension PlaylistViewController: UISearchBarDelegate
 
 extension PlaylistViewController
 {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView)
+    {
+//        tableView.reloadRows(at: [IndexPath(item: 0, section: 0)], with: .none)
+        print("Offset: \(tableView.contentOffset.y)")
+        print("Calculated Height: \(tableView.contentOffset.y > 0 ? max(250 - tableView.contentOffset.y, 0) : max(250 + tableView.contentOffset.y, 0))")
+//        if let lastIP = tableView.indexPathsForVisibleRows?.last, lastIP.row != playlist.songs!.count - 1 {
+//            tableView.beginUpdates()
+//            tableView.endUpdates()
+//        }
+        tableView.beginUpdates()
+        tableView.endUpdates()
+        
+    }
+    
+    override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+//        tableView.endUpdates()
+    }
 //    override func scrollViewDidScroll(_ scrollView: UIScrollView)
 //    {
 //        let headerView = tableView.tableHeaderView as! StretchyHeaderView
@@ -202,7 +246,13 @@ extension PlaylistViewController
 {
     @objc func onSearchButtonTap(_ sender: UIBarButtonItem)
     {
-        self.present(playlistSearchController, animated: true)
+        navigationItem.titleView = playlistSearchController.searchBar
+        playlistSearchController.isActive = true
+        DispatchQueue.main.async {
+           self.playlistSearchController.searchBar.becomeFirstResponder()
+         }
+//        playlistSearchController.searchBar.becomeFirstResponder()
+        //self.present(playlistSearchController, animated: true)
     }
     
     @objc func onSongFavouriteButtonTap(_ sender: UIButton)
@@ -217,5 +267,14 @@ extension PlaylistViewController
             sender.setImage(heartIcon, for: .normal)
             sender.configuration!.baseForegroundColor = tableView.contentOffset.y > 0 ? .label : .white
         }
+    }
+}
+
+extension PlaylistViewController : UISearchControllerDelegate {
+    func willPresentSearchController(_ searchController: UISearchController) {
+        DispatchQueue.main.async {[weak self] in
+            searchController.searchBar.becomeFirstResponder()
+        }
+        
     }
 }

@@ -21,6 +21,12 @@ extension UIView
         self.translatesAutoresizingMaskIntoConstraints = false
     }
     
+    func disableAutoLayout()
+    {
+        self.translatesAutoresizingMaskIntoConstraints = true
+        self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
+    
     func addTopCornerRadius(radius: CGFloat = 10)
     {
         self.clipsToBounds = true

@@ -125,10 +125,14 @@ extension LibraryViewController
 
 extension LibraryViewController: UISearchControllerDelegate
 {
+    
+
     func willDismissSearchController(_ searchController: UISearchController)
     {
         
     }
+    
+    
 }
 
 extension LibraryViewController: UIPageViewControllerDataSource

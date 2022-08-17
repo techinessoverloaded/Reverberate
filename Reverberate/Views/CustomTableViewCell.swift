@@ -41,6 +41,7 @@ class CustomTableViewCell: UITableViewCell
     override func layoutSubviews()
     {
         super.layoutSubviews()
+        print("layoutSubviews")
         if !useAutoLayout
         {
             subView.frame = contentView.bounds
@@ -51,12 +52,13 @@ class CustomTableViewCell: UITableViewCell
                 subView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
                 subView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
             ]
+            
             if subView is UIImageView
             {
                 constraints.append(subView.heightAnchor.constraint(equalTo: contentView.heightAnchor))
                 constraints.append(subView.widthAnchor.constraint(equalTo: subView.heightAnchor))
             }
-            if subView is UILabel
+            else if subView is UILabel
             {
                 constraints.append(subView.widthAnchor.constraint(equalTo: contentView.widthAnchor))
             }
