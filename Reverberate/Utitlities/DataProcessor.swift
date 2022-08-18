@@ -15,9 +15,14 @@ class DataProcessor
     //Prevent Initialization
     private init() {}
     
-    func getAlbumBy(albumName: String) -> Album?
+    func getAlbum(named albumName: String) -> Album?
     {
         return DataManager.shared.availableAlbums.first(where: { $0.name! == albumName })
+    }
+    
+    func getArtist(named artistName: String) -> Artist?
+    {
+        return DataManager.shared.availableArtists.first(where: { $0.name! == artistName })
     }
     
     func getSongsThatSatisfy(theQuery query: String) -> [Song]?
@@ -84,7 +89,7 @@ class DataProcessor
         case .newReleases:
             DataManager.shared.availableSongs.forEach
             {
-                if getAlbumBy(albumName: $0.albumName!)!.releaseDate!.get(.year) == Calendar.currentYear
+                if getAlbum(named: $0.albumName!)!.releaseDate!.get(.year) == Calendar.currentYear
                 {
                     result.append($0)
                 }

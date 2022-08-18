@@ -58,7 +58,6 @@ extension UIView
             return UIDevice.current.userInterfaceIdiom == .pad
         }
     }
-    
 }
 
 extension UITextField
@@ -448,6 +447,13 @@ extension Date
     {
         return calendar.component(component, from: self)
     }
+    
+    func getFormattedString() -> String
+    {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM y"
+        return formatter.string(from: self)
+    }
 }
 
 extension Calendar
@@ -486,5 +492,36 @@ extension Array where Element: Equatable
     mutating func removeUniquely(_ existingElement: Element)
     {
         self.removeAll(where: { $0 == existingElement })
+    }
+}
+
+extension Numeric where Self: Comparable
+{
+    func constrain(lowerBound: Self, upperBound: Self) -> Self
+    {
+        return self < lowerBound ? lowerBound : (self > upperBound ? upperBound : self)
+    }
+}
+
+extension UITableView
+{
+    func setGradientBackground(topColor: UIColor, bottomColor: UIColor)
+    {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.frame = self.bounds
+        let bView = UIView(frame: self.bounds)
+        bView.layer.insertSublayer(gradientLayer, at: 0)
+        self.backgroundView = bView
+        print(topColor)
+    }
+}
+
+extension UIScrollView
+{
+    var isBottomBouncing: Bool
+    {
+        return contentOffset.y > max(0.0, contentSize.height - bounds.height + adjustedContentInset.bottom)
     }
 }

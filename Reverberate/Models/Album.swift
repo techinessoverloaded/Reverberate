@@ -43,7 +43,7 @@ public class Album: Playlist
         super.init()
     }
     
-    func getComposersNameAsString() -> String
+    public var composerNames: String
     {
         guard let composers = composers else
         {
@@ -52,5 +52,10 @@ public class Album: Playlist
         return composers.map({
             $0.name!
         }).joined(separator: ", ")
+    }
+    
+    public var language: String
+    {
+        return songs!.first!.language!.description
     }
 }

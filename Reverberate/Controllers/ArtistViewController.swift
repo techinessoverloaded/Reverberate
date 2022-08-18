@@ -246,7 +246,7 @@ class ArtistViewController: UITableViewController
             var config = cell.defaultContentConfiguration()
             let album = albums[item]
             config.text = album.name!
-            config.secondaryText = "\(album.getComposersNameAsString()) · \(album.releaseDate!.get(.year))"
+            config.secondaryText = "\(album.composerNames) · \(album.releaseDate!.get(.year))"
             config.imageProperties.cornerRadius = 10
             config.image = album.coverArt!
             config.textProperties.adjustsFontForContentSizeCategory = true
