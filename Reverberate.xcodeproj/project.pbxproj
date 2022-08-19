@@ -101,7 +101,6 @@
 		DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */; };
 		DABA1435289791D700DAAF13 /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA1434289791D700DAAF13 /* PlaylistViewController.swift */; };
 		DACBA429289CF85A00DDEBDE /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACBA428289CF85A00DDEBDE /* Song.swift */; };
-		DAD8AD0328ACC36C0078FFDE /* PlaylistResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD8AD0228ACC36C0078FFDE /* PlaylistResultsViewController.swift */; };
 		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
 		DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF64916287553020061C29B /* CustomTableViewCell.swift */; };
 		DAFC0AE02893D59100EECE4B /* ArtistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */; };
@@ -206,7 +205,6 @@
 		DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ullamurugudhaiya.mp3; sourceTree = "<group>"; };
 		DABA1434289791D700DAAF13 /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		DACBA428289CF85A00DDEBDE /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
-		DAD8AD0228ACC36C0078FFDE /* PlaylistResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistResultsViewController.swift; sourceTree = "<group>"; };
 		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
 		DAF64916287553020061C29B /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewController.swift; sourceTree = "<group>"; };
@@ -377,7 +375,6 @@
 				DA12E695288E559100D502EC /* SongArtistsViewController.swift */,
 				DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */,
 				DABA1434289791D700DAAF13 /* PlaylistViewController.swift */,
-				DAD8AD0228ACC36C0078FFDE /* PlaylistResultsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -842,7 +839,6 @@
 				DA6C838428800F6F00339937 /* LoginDelegate.swift in Sources */,
 				DA5CE9692887C8F40066AB2E /* HeaderCVReusableView.swift in Sources */,
 				DA67F4492889797400062985 /* PlayerDelegate.swift in Sources */,
-				DAD8AD0328ACC36C0078FFDE /* PlaylistResultsViewController.swift in Sources */,
 				DAFC0AE62893ED7500EECE4B /* StretchyHeaderView.swift in Sources */,
 				DA2810B9287BDDBB006EEF60 /* EditProfileViewController.swift in Sources */,
 			);

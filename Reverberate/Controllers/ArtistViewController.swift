@@ -308,7 +308,10 @@ class ArtistViewController: UITableViewController
         }
         else
         {
-            
+            let album = albums[item]
+            let albumVc = PlaylistViewController(style: .grouped)
+            albumVc.playlist = album
+            self.navigationController?.pushViewController(albumVc, animated: true)
         }
     }
     
