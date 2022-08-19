@@ -13,7 +13,7 @@ class SelectionCardCVCell: UICollectionViewCell
     
     private let titleLabel: UILabel = {
         let tLabel = UILabel(useAutoLayout: true)
-        tLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        tLabel.font = .systemFont(ofSize: 20, weight: .semibold)
         tLabel.textAlignment = .left
         tLabel.textColor = .white
         return tLabel
@@ -21,7 +21,7 @@ class SelectionCardCVCell: UICollectionViewCell
     
     private let centerTextLabel: UILabel = {
         let ctLabel = UILabel(useAutoLayout: true)
-        ctLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        ctLabel.font = .systemFont(ofSize: 24, weight: .semibold)
         ctLabel.textAlignment = .center
         ctLabel.textColor = .white
         return ctLabel

@@ -12,7 +12,7 @@ class SearchViewController: UITableViewController
     private lazy var browseLabel: UILabel = {
         let bLabel = UILabel(useAutoLayout: true)
         bLabel.textColor = .label
-        bLabel.font = .systemFont(ofSize: 26, weight: .bold)
+        bLabel.font = .systemFont(ofSize: 26, weight: .semibold)
         bLabel.text = "Browse All"
         return bLabel
     }()

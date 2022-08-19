@@ -82,7 +82,7 @@ class HomeViewController: UITableViewController
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 15
         section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(80)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
+        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
         return section
     }
     
@@ -125,7 +125,7 @@ class HomeViewController: UITableViewController
                     cellHeight = 380
                 }
             }
-            let headerHeight: CGFloat = 80
+            let headerHeight: CGFloat = 60
             let margin: CGFloat = 0
             return CGFloat(songs.count) * (cellHeight + headerHeight + margin)
         }

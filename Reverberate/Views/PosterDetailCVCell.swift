@@ -22,7 +22,7 @@ class PosterDetailCVCell: UICollectionViewCell
     private lazy var titleView: UILabel = {
         let tView = UILabel(useAutoLayout: true)
         tView.textColor = .label
-        tView.font = .preferredFont(forTextStyle: .body, weight: .heavy)
+        tView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
         tView.textAlignment = .left
         tView.lineBreakMode = .byTruncatingTail
         tView.numberOfLines = 1
@@ -33,7 +33,7 @@ class PosterDetailCVCell: UICollectionViewCell
     private lazy var subtitleView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
         stView.textColor = .label
-        stView.font = .preferredFont(forTextStyle: .footnote, weight: .semibold)
+        stView.font = .preferredFont(forTextStyle: .footnote, weight: .regular)
         stView.textAlignment = .left
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true

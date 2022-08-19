@@ -58,7 +58,7 @@ class CustomTableViewCell: UITableViewCell
                 constraints.append(subView.heightAnchor.constraint(equalTo: contentView.heightAnchor))
                 constraints.append(subView.widthAnchor.constraint(equalTo: subView.heightAnchor))
             }
-            else if subView is UILabel
+            if subView is UILabel
             {
                 constraints.append(subView.widthAnchor.constraint(equalTo: contentView.widthAnchor))
             }

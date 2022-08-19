@@ -13,7 +13,7 @@ class HeaderCVReusableView: UICollectionReusableView
     
     private lazy var titleLabel: UILabel = {
         let tLabel = UILabel(useAutoLayout: true)
-        tLabel.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+        tLabel.font = .preferredFont(forTextStyle: .title1, weight: .semibold)
         tLabel.textAlignment = .left
         tLabel.textColor = .label
         return tLabel
@@ -33,9 +33,9 @@ class HeaderCVReusableView: UICollectionReusableView
         addSubview(seeAllButton)
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 12),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             seeAllButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            seeAllButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
+            seeAllButton.topAnchor.constraint(equalTo: titleLabel.topAnchor)
         ])
     }
     

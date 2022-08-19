@@ -13,7 +13,7 @@ class TitleCardCVCell: UICollectionViewCell
     
     private let titleLabel: UILabel = {
         let tLabel = UILabel(useAutoLayout: true)
-        tLabel.font = .preferredFont(forTextStyle: .title2, weight: .bold)
+        tLabel.font = .preferredFont(forTextStyle: .title2, weight: .semibold)
         tLabel.textAlignment = .center
         tLabel.textColor = .white
         return tLabel

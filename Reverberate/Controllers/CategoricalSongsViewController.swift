@@ -99,15 +99,23 @@ class CategoricalSongsViewController: UITableViewController
             config.secondaryTextProperties.color = .secondaryLabel
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
-            var favBtnconfig = UIButton.Configuration.plain()
-            favBtnconfig.baseForegroundColor = .label
-            favBtnconfig.buttonSize = .medium
-            let favButton = UIButton(configuration: favBtnconfig)
-            favButton.setImage(heartIcon, for: .normal)
-            favButton.sizeToFit()
-            favButton.tag = item
-            favButton.addTarget(self, action: #selector(onSongFavouriteButtonTap(_:)), for: .touchUpInside)
-            cell.accessoryView = favButton
+            var menuButtonConfig = UIButton.Configuration.plain()
+            menuButtonConfig.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
+            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+            menuButtonConfig.buttonSize = .medium
+            let menuButton = UIButton(configuration: menuButtonConfig)
+            menuButton.tag = item
+            menuButton.sizeToFit()
+            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
+                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+            }
+            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
+                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
+            }
+            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem])
+            menuButton.menu = songMenu
+            menuButton.showsMenuAsPrimaryAction = true
+            cell.accessoryView = menuButton
         }
         else
         {
@@ -122,15 +130,20 @@ class CategoricalSongsViewController: UITableViewController
             config.secondaryTextProperties.color = .secondaryLabel
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
-            var favBtnconfig = UIButton.Configuration.plain()
-            favBtnconfig.baseForegroundColor = .label
-            favBtnconfig.buttonSize = .medium
-            let favButton = UIButton(configuration: favBtnconfig)
-            favButton.setImage(heartIcon, for: .normal)
-            favButton.sizeToFit()
-            favButton.tag = item
-            favButton.addTarget(self, action: #selector(onAlbumFavouriteButtonTap(_:)), for: .touchUpInside)
-            cell.accessoryView = favButton
+            var menuButtonConfig = UIButton.Configuration.plain()
+            menuButtonConfig.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
+            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+            menuButtonConfig.buttonSize = .medium
+            let menuButton = UIButton(configuration: menuButtonConfig)
+            menuButton.tag = item
+            menuButton.sizeToFit()
+            let albumFavMenuItem = UIAction(title: "Add Album to Favourites", image: heartIcon) { [unowned self] menuItem in
+                onAlbumFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+            }
+            let albumMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [albumFavMenuItem])
+            menuButton.menu = albumMenu
+            menuButton.showsMenuAsPrimaryAction = true
+            cell.accessoryView = menuButton
         }
         cell.contentConfiguration = config
         return cell
@@ -193,18 +206,19 @@ extension CategoricalSongsViewController
         }
     }
     
-    @objc func onSongFavouriteButtonTap(_ sender: UIButton)
+    func onSongFavouriteMenuItemTap(menuItem: UIAction, tag: Int)
     {
-        if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
-        {
-            sender.setImage(heartFilledIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .systemPink
-        }
-        else
-        {
-            sender.setImage(heartIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = tableView.contentOffset.y > 0 ? .label : .white
-        }
+        
+    }
+    
+    func onSongAddToPlaylistMenuItemTap(menuItem: UIAction, tag: Int)
+    {
+        
+    }
+    
+    func onAlbumFavouriteMenuItemTap(menuItem: UIAction, tag: Int)
+    {
+        
     }
     
     @objc func onAlbumFavouriteButtonTap(_ sender: UIButton)

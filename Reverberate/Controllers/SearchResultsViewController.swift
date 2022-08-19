@@ -8,6 +8,14 @@ import UIKit
 
 class SearchResultsViewController: UITableViewController
 {
+    private lazy var heartIcon: UIImage = {
+        return UIImage(systemName: "heart")!
+    }()
+    
+    private lazy var heartFilledIcon: UIImage = {
+        return UIImage(systemName: "heart.fill")!
+    }()
+    
     private lazy var initialMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -165,7 +173,7 @@ class SearchResultsViewController: UITableViewController
             let margin: CGFloat = 30
             if isInPortraitMode
             {
-                cellHeight = ((tableView.frame.width / 2.4) - 1) * 1.5
+                cellHeight = ((tableView.frame.width / 2.4) - 1) * 1
             }
             else
             {
@@ -244,6 +252,26 @@ class SearchResultsViewController: UITableViewController
             cell.contentConfiguration = config
             cell.backgroundColor = .clear
             cell.selectionStyle = .none
+            var menuButtonConfig = UIButton.Configuration.plain()
+            menuButtonConfig.baseForegroundColor = .systemGray
+            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+            menuButtonConfig.buttonSize = .medium
+            let menuButton = UIButton(configuration: menuButtonConfig)
+            menuButton.tag = item
+            menuButton.sizeToFit()
+            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
+                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+            }
+            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
+                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
+            }
+            let showAlbumMenuItem = UIAction(title: "Show Album", image: UIImage(systemName: "music.note.list")) { [unowned self] menuItem in
+                onShowAlbumMenuItemTap(tag: item)
+            }
+            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem, showAlbumMenuItem])
+            menuButton.menu = songMenu
+            menuButton.showsMenuAsPrimaryAction = true
+            cell.accessoryView = menuButton
             return cell
         }
         else
@@ -336,18 +364,80 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
         if isInPortraitMode
         {
             let cellWidth = (tableView.bounds.width / 2.4) - 1
-            return .init(width: cellWidth, height: cellWidth * 1.5)
+            return .init(width: cellWidth, height: cellWidth * 1.3)
         }
         else
         {
             let cellWidth = (tableView.bounds.width / 2.6) - 1
-            return .init(width: cellWidth, height: cellWidth * 1.5)
+            return .init(width: cellWidth, height: cellWidth * 1.3)
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 30
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
-        return .init(top: 10, left: 0, bottom: 20, right: 0)
+        let item = indexPath.item
+        if searchMode == 0
+        {
+            return nil
+        }
+        else if searchMode == 1
+        {
+            let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
+                let addAlbumToFavAction = UIAction(title: "Add Album to Favourites", image: heartIcon) { [unowned self] menuItem in
+                    onAlbumFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+                }
+                return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [addAlbumToFavAction])
+            })
+            return config
+        }
+        else
+        {
+           return nil
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    {
+        if searchMode == 0
+        {
+            return nil
+        }
+        else if searchMode == 1
+        {
+            let indexPath = configuration.identifier as! IndexPath
+            let cell = collectionView.cellForItem(at: indexPath) as! PosterDetailCVCell
+            let previewParameters = UIPreviewParameters()
+            previewParameters.backgroundColor = .clear
+            return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
+        }
+        else
+        {
+            return nil
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    {
+        if searchMode == 0
+        {
+            return nil
+        }
+        else if searchMode == 1
+        {
+            let indexPath = configuration.identifier as! IndexPath
+            let cell = collectionView.cellForItem(at: indexPath) as! PosterDetailCVCell
+            let previewParamters = UIPreviewParameters()
+            previewParamters.backgroundColor = .clear
+            return UITargetedPreview(view: cell.contentView, parameters: previewParamters)
+        }
+        else
+        {
+            return nil
+        }
     }
 }
 
@@ -485,5 +575,34 @@ extension SearchResultsViewController: UISearchBarDelegate
         updateSearchResults(forQuery: searchBar.text)
         tableView.reloadData()
         collectionView.reloadData()
+    }
+}
+
+extension SearchResultsViewController
+{
+    func onSongFavouriteMenuItemTap(menuItem: UIAction, tag: Int)
+    {
+        
+    }
+    
+    func onSongUnfavouriteMenuItemTap(menu: UIMenu, tag: Int)
+    {
+        
+    }
+    
+    func onSongAddToPlaylistMenuItemTap(menuItem: UIAction, tag: Int)
+    {
+        
+    }
+    
+    func onAlbumFavouriteMenuItemTap(menuItem: UIAction, tag: Int)
+    {
+        
+    }
+    
+    func onShowAlbumMenuItemTap(tag: Int)
+    {
+        let album = DataProcessor.shared.getAlbumThat(containsSong: filteredSongs[tag].title!)!
+        delegate?.onAlbumSelection(selectedAlbum: album)
     }
 }

@@ -20,6 +20,11 @@ class DataProcessor
         return DataManager.shared.availableAlbums.first(where: { $0.name! == albumName })
     }
     
+    func getAlbumThat(containsSong songName: String) -> Album?
+    {
+        return DataManager.shared.availableAlbums.first(where: { $0.songs!.contains(where: { $0.title! == songName }) })
+    }
+    
     func getArtist(named artistName: String) -> Artist?
     {
         return DataManager.shared.availableArtists.first(where: { $0.name! == artistName })
