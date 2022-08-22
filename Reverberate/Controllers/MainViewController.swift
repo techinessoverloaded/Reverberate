@@ -11,9 +11,29 @@ import MediaPlayer
 
 class MainViewController: UITabBarController
 {
-    private lazy var homeVC = HomeViewController(style: .insetGrouped)
+    private lazy var homeVC = HomeViewController(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex , _ -> NSCollectionLayoutSection? in
+        
+        //Item
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+        
+        //Group
+        let groupSize: NSCollectionLayoutSize!
+        let group: NSCollectionLayoutGroup!
+        groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(220))
+        group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
+        
+        //Section
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 15
+        section.orthogonalScrollingBehavior = .continuous
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
+        return section
+        
+    }))
 
-    private lazy var searchVC = SearchViewController(style: .insetGrouped)
+    private lazy var searchVC = SearchViewController(collectionViewLayout: UICollectionViewFlowLayout())
     
     private lazy var libraryVC = LibraryViewController(style: .plain)
     
@@ -32,6 +52,8 @@ class MainViewController: UITabBarController
     private var avAudioPlayer: AVAudioPlayer! = GlobalVariables.shared.avAudioPlayer
     
     private var miniPlayerTimer: CADisplayLink!
+    
+    private var hasSetupMPCommandCenter: Bool = false
     
     override func loadView()
     {
@@ -121,10 +143,10 @@ class MainViewController: UITabBarController
         })
     }
     
-    func handleMPNotificationActions()
+    func setupMPCommandCenter()
     {
         let commandCenter = MPRemoteCommandCenter.shared()
-        
+    
         commandCenter.playCommand.addTarget
         { [unowned self] event in
             avAudioPlayer.play()
@@ -177,6 +199,18 @@ class MainViewController: UITabBarController
             avAudioPlayer.currentTime = changeEvent.positionTime
             return .success
         }
+        
+        commandCenter.nextTrackCommand.addTarget {
+            [unowned self] _ in
+            onNextSongRequest(playlist: GlobalVariables.shared.currentPlaylist!, currentSong: GlobalVariables.shared.currentSong!)
+            return .success
+        }
+        
+        commandCenter.previousTrackCommand.addTarget {
+            [unowned self] _ in
+            onPreviousSongRequest(playlist: GlobalVariables.shared.currentPlaylist!, currentSong: GlobalVariables.shared.currentSong!)
+            return .success
+        }
     }
     
     func setupNowPlayingNotification()
@@ -193,6 +227,23 @@ class MainViewController: UITabBarController
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = avAudioPlayer.duration
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = avAudioPlayer.rate
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        let commandCenter = MPRemoteCommandCenter.shared()
+        let playlist = GlobalVariables.shared.currentPlaylist
+        let song = GlobalVariables.shared.currentSong!
+        if playlist != nil
+        {
+            commandCenter.nextTrackCommand.isEnabled = isNextSongAvailable(playlist: playlist!, currentSong: song)
+            commandCenter.previousTrackCommand.isEnabled = isPreviousSongAvailable(playlist: playlist!, currentSong: song)
+            commandCenter.skipForwardCommand.isEnabled = false
+            commandCenter.skipBackwardCommand.isEnabled = false
+        }
+        else
+        {
+            commandCenter.skipForwardCommand.isEnabled = true
+            commandCenter.skipBackwardCommand.isEnabled = true
+            commandCenter.nextTrackCommand.isEnabled = false
+            commandCenter.previousTrackCommand.isEnabled = false
+        }
     }
 }
 
@@ -214,16 +265,6 @@ extension MainViewController: MiniPlayerDelegate
         miniPlayerTimer.isPaused = true
         setupNowPlayingNotification()
         NotificationCenter.default.post(name: NSNotification.Name.playerPausedNotification, object: nil)
-    }
-    
-    func onMiniPlayerPreviousButtonTap()
-    {
-        
-    }
-    
-    func onMiniPlayerNextButtonTap()
-    {
-        
     }
     
     func onPlayerExpansionRequest()
@@ -287,14 +328,20 @@ extension MainViewController: PlayerDelegate
     func isNextSongAvailable(playlist: Playlist, currentSong: Song) -> Bool
     {
         let songs = playlist.songs!
-        let index = songs.firstIndex(of: currentSong)!
+        guard let index = songs.firstIndex(of: currentSong) else
+        {
+            return false
+        }
         return songs.index(after: index) != songs.endIndex
     }
     
     func isPreviousSongAvailable(playlist: Playlist, currentSong: Song) -> Bool
     {
         let songs = playlist.songs!
-        let index = songs.firstIndex(of: currentSong)!
+        guard let index = songs.firstIndex(of: currentSong) else
+        {
+            return false
+        }
         return songs.index(before: index) >= songs.startIndex
     }
     
@@ -423,7 +470,11 @@ extension MainViewController
         miniPlayerView.setPlaying(shouldPlaySong: true)
         miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
-        handleMPNotificationActions()
+        if !hasSetupMPCommandCenter
+        {
+            setupMPCommandCenter()
+            hasSetupMPCommandCenter = true
+        }
     }
     
     @objc func onPlaylistChange()

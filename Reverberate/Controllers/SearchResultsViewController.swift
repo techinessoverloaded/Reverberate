@@ -6,7 +6,7 @@
 //
 import UIKit
 
-class SearchResultsViewController: UITableViewController
+class SearchResultsViewController: UICollectionViewController
 {
     private lazy var heartIcon: UIImage = {
         return UIImage(systemName: "heart")!
@@ -60,11 +60,6 @@ class SearchResultsViewController: UITableViewController
         return bView
     }()
     
-    private lazy var collectionView: UICollectionView = {
-        let cView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        return cView
-    }()
-    
     private var searchMode: Int = 0
     
     private lazy var filteredSongs: [Song] = []
@@ -93,21 +88,15 @@ class SearchResultsViewController: UITableViewController
         super.viewDidLoad()
         emptyMessageLabel.attributedText = initialMessage
         view.backgroundColor = .clear
-        tableView.backgroundColor = .clear
-        tableView.backgroundView = backgroundView
-        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.keyboardDismissMode = .onDrag
-        tableView.contentInsetAdjustmentBehavior = .scrollableAxes
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
+        collectionView.backgroundColor = .clear
+        collectionView.backgroundView = backgroundView
+        collectionView.keyboardDismissMode = .onDrag
+        collectionView.contentInsetAdjustmentBehavior = .always
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 75, right: 20)
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = .clear
-        collectionView.isScrollEnabled = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        configureTableViewAccordingToSearchMode()
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "cell")
+        //configureCollectionViewAccordingToSearchMode()
     }
 
     override func viewDidAppear(_ animated: Bool)
@@ -118,30 +107,191 @@ class SearchResultsViewController: UITableViewController
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate {
             [unowned self] _ in
-            self.tableView.reloadData()
             self.collectionView.reloadData()
         }
     }
     
-    func configureTableViewAccordingToSearchMode()
-    {
-        if searchMode == 0
-        {
-            tableView.separatorStyle = .singleLine
-        }
-        else
-        {
-            tableView.separatorStyle = .none
-        }
-    }
+//    func configureCollectionViewAccordingToSearchMode()
+//    {
+//        if searchMode == 0
+//        {
+//            tableView.separatorStyle = .singleLine
+//        }
+//        else
+//        {
+//            tableView.separatorStyle = .none
+//        }
+//    }
     
     // MARK: - Table view data source
-    override func numberOfSections(in tableView: UITableView) -> Int
+//    override func numberOfSections(in tableView: UITableView) -> Int
+//    {
+//        return 1
+//    }
+//
+//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+//    {
+//        if searchMode == 0
+//        {
+//            return filteredSongs.count
+//        }
+//        else if searchMode == 1
+//        {
+//            return 1
+//        }
+//        else if searchMode == 2
+//        {
+//            return 1
+//        }
+//        else
+//        {
+//            return 0
+//        }
+//    }
+//
+//    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+//    {
+//        if searchMode == 0
+//        {
+//            return 90
+//        }
+//        else
+//        {
+//            var cellHeight: CGFloat = .zero
+//            let margin: CGFloat = 30
+//            if isInPortraitMode
+//            {
+//                cellHeight = ((tableView.frame.width / 2.4) - 1) * 1
+//            }
+//            else
+//            {
+//                cellHeight = ((tableView.frame.width / 2.6) - 1) * 1.5
+//            }
+//            if searchMode == 1
+//            {
+//                return CGFloat(filteredAlbums.count) * (cellHeight + margin)
+//            }
+//            else
+//            {
+//                return CGFloat(filteredArtists.count) * (cellHeight + margin)
+//            }
+//        }
+//    }
+//
+//    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
+//    {
+//        if searchMode == 0
+//        {
+//            if filteredSongs.isEmpty
+//            {
+//                return nil
+//            }
+//            else
+//            {
+//                return "Song Result(s)"
+//            }
+//        }
+//        else if searchMode == 1
+//        {
+//            if filteredAlbums.isEmpty
+//            {
+//                return nil
+//            }
+//            else
+//            {
+//                return "Album Result(s)"
+//            }
+//        }
+//        else if searchMode == 2
+//        {
+//            if filteredArtists.isEmpty
+//            {
+//                return nil
+//            }
+//            else
+//            {
+//                return "Artist Result(s)"
+//            }
+//        }
+//        else
+//        {
+//            return nil
+//        }
+//    }
+//
+//    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+//    {
+//        if searchMode == 0
+//        {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+//            var config = cell.defaultContentConfiguration()
+//            let item = indexPath.item
+//            let song = filteredSongs[item]
+//            config.text = song.title!
+//            config.secondaryText = song.getArtistNamesAsString(artistType: nil)
+//            config.imageProperties.cornerRadius = 10
+//            config.image = song.coverArt!
+//            config.textProperties.adjustsFontForContentSizeCategory = true
+//            config.textProperties.allowsDefaultTighteningForTruncation = true
+//            config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+//            config.secondaryTextProperties.color = .secondaryLabel
+//            config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
+//            config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
+//            cell.contentConfiguration = config
+//            cell.backgroundColor = .clear
+//            cell.selectionStyle = .none
+//            var menuButtonConfig = UIButton.Configuration.plain()
+//            menuButtonConfig.baseForegroundColor = .systemGray
+//            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+//            menuButtonConfig.buttonSize = .medium
+//            let menuButton = UIButton(configuration: menuButtonConfig)
+//            menuButton.tag = item
+//            menuButton.sizeToFit()
+//            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
+//                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+//            }
+//            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
+//                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
+//            }
+//            let showAlbumMenuItem = UIAction(title: "Show Album", image: UIImage(systemName: "music.note.list")) { [unowned self] menuItem in
+//                onShowAlbumMenuItemTap(tag: item)
+//            }
+//            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem, showAlbumMenuItem])
+//            menuButton.menu = songMenu
+//            menuButton.showsMenuAsPrimaryAction = true
+//            cell.accessoryView = menuButton
+//            return cell
+//        }
+//        else
+//        {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
+//            cell.addSubViewToContentView(collectionView)
+//            return cell
+//        }
+//    }
+//
+//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+//    {
+//        if searchMode == 0
+//        {
+//            searchBarRef?.resignFirstResponder()
+//            let item = indexPath.item
+//            if GlobalVariables.shared.currentSong != filteredSongs[item]
+//            {
+//                GlobalVariables.shared.currentSong = filteredSongs[item]
+//            }
+//        }
+//    }
+}
+
+extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
+{
+    override func numberOfSections(in collectionView: UICollectionView) -> Int
     {
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         if searchMode == 0
         {
@@ -149,94 +299,21 @@ class SearchResultsViewController: UITableViewController
         }
         else if searchMode == 1
         {
-            return 1
-        }
-        else if searchMode == 2
-        {
-            return 1
+            return filteredAlbums.count
         }
         else
         {
-            return 0
+            return filteredArtists.count
         }
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
+        let item = indexPath.item
         if searchMode == 0
         {
-            return 90
-        }
-        else
-        {
-            var cellHeight: CGFloat = .zero
-            let margin: CGFloat = 30
-            if isInPortraitMode
-            {
-                cellHeight = ((tableView.frame.width / 2.4) - 1) * 1
-            }
-            else
-            {
-                cellHeight = ((tableView.frame.width / 2.6) - 1) * 1.5
-            }
-            if searchMode == 1
-            {
-                return CGFloat(filteredAlbums.count) * (cellHeight + margin)
-            }
-            else
-            {
-                return CGFloat(filteredArtists.count) * (cellHeight + margin)
-            }
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
-    {
-        if searchMode == 0
-        {
-            if filteredSongs.isEmpty
-            {
-                return nil
-            }
-            else
-            {
-                return "Song Result(s)"
-            }
-        }
-        else if searchMode == 1
-        {
-            if filteredAlbums.isEmpty
-            {
-                return nil
-            }
-            else
-            {
-                return "Album Result(s)"
-            }
-        }
-        else if searchMode == 2
-        {
-            if filteredArtists.isEmpty
-            {
-                return nil
-            }
-            else
-            {
-                return "Artist Result(s)"
-            }
-        }
-        else
-        {
-            return nil
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        if searchMode == 0
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            var config = cell.defaultContentConfiguration()
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! UICollectionViewListCell
+            var config = UIListContentConfiguration.subtitleCell()
             let item = indexPath.item
             let song = filteredSongs[item]
             config.text = song.title!
@@ -250,8 +327,7 @@ class SearchResultsViewController: UITableViewController
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             cell.contentConfiguration = config
-            cell.backgroundColor = .clear
-            cell.selectionStyle = .none
+            cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
             var menuButtonConfig = UIButton.Configuration.plain()
             menuButtonConfig.baseForegroundColor = .systemGray
             menuButtonConfig.image = UIImage(systemName: "ellipsis")!
@@ -271,82 +347,28 @@ class SearchResultsViewController: UITableViewController
             let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem, showAlbumMenuItem])
             menuButton.menu = songMenu
             menuButton.showsMenuAsPrimaryAction = true
-            cell.accessoryView = menuButton
+            cell.accessories = [UICellAccessory.customView(configuration: .init(customView: menuButton, placement: .trailing(displayed: .always, at: { accessories in
+                return 0
+            })))]
             return cell
         }
-        else
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-            cell.addSubViewToContentView(collectionView)
-            return cell
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-    {
-        if searchMode == 0
-        {
-            searchBarRef?.resignFirstResponder()
-            let item = indexPath.item
-            if GlobalVariables.shared.currentSong != filteredSongs[item]
-            {
-                GlobalVariables.shared.currentSong = filteredSongs[item]
-            }
-        }
-    }
-}
-
-extension SearchResultsViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
-{
-    func numberOfSections(in collectionView: UICollectionView) -> Int
-    {
-        if searchMode == 0
-        {
-            return 0
-        }
-        else
-        {
-            return 1
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
-    {
-        if searchMode == 1
-        {
-            return filteredAlbums.count
-        }
-        else if searchMode == 2
-        {
-            return filteredArtists.count
-        }
-        else
-        {
-            return 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
-        let item = indexPath.item
-        if searchMode == 1
+        else if searchMode == 1
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterDetailCVCell.identifier, for: indexPath) as! PosterDetailCVCell
             let album = filteredAlbums[item]
             cell.configureCell(poster: album.coverArt!, title: album.name!, subtitle: album.songs![0].getArtistNamesAsString(artistType: .musicDirector))
             return cell
         }
-        else if searchMode == 2
+        else
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ArtistCVCell.identifier, for: indexPath) as! ArtistCVCell
             let artist = filteredArtists[item]
             cell.configureCell(artistPicture: artist.photo!, artistName: artist.name!)
             return cell
         }
-        return UICollectionViewCell()
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         let item = indexPath.item
         if searchMode == 1
@@ -361,15 +383,22 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        if isInPortraitMode
+        if searchMode == 0
         {
-            let cellWidth = (tableView.bounds.width / 2.4) - 1
-            return .init(width: cellWidth, height: cellWidth * 1.3)
+            return CGSize(width: collectionView.bounds.width - 20, height: 70)
         }
         else
         {
-            let cellWidth = (tableView.bounds.width / 2.6) - 1
-            return .init(width: cellWidth, height: cellWidth * 1.3)
+            if isInPortraitMode
+            {
+                let cellWidth = (collectionView.bounds.width / 2.4) - 1
+                return .init(width: cellWidth, height: cellWidth * 1.3)
+            }
+            else
+            {
+                let cellWidth = (collectionView.bounds.width / 2.6) - 1
+                return .init(width: cellWidth, height: cellWidth * 1.3)
+            }
         }
     }
 
@@ -377,7 +406,7 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
         return 30
     }
     
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
         let item = indexPath.item
         if searchMode == 0
@@ -400,7 +429,7 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    override func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
         if searchMode == 0
         {
@@ -420,7 +449,7 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    override func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
         if searchMode == 0
         {
@@ -450,7 +479,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
             filteredSongs = []
             filteredArtists = []
             filteredAlbums = []
-            tableView.reloadData()
             collectionView.reloadData()
             emptyMessageLabel.isHidden = false
             emptyMessageLabel.attributedText = initialMessage
@@ -465,7 +493,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                     if result.isEmpty
                     {
                         filteredSongs = []
-                        tableView.reloadData()
                         emptyMessageLabel.isHidden = false
                         emptyMessageLabel.attributedText = noResultsMessage
                     }
@@ -473,14 +500,14 @@ extension SearchResultsViewController: UISearchResultsUpdating
                     {
                         filteredSongs = result
                         print("\(filteredSongs.count) songs were filtered")
-                        tableView.reloadData()
+                        collectionView.reloadData()
                         emptyMessageLabel.isHidden = true
                     }
                 }
                 else
                 {
                     filteredSongs = []
-                    tableView.reloadData()
+                    collectionView.reloadData()
                     emptyMessageLabel.isHidden = false
                     emptyMessageLabel.attributedText = noResultsMessage
                 }
@@ -494,7 +521,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                     {
                         filteredAlbums = []
                         collectionView.reloadData()
-                        tableView.reloadData()
                         emptyMessageLabel.isHidden = false
                         emptyMessageLabel.attributedText = noResultsMessage
                     }
@@ -502,7 +528,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                     {
                         filteredAlbums = result
                         print("\(filteredAlbums.count) albums were filtered")
-                        tableView.reloadData()
                         collectionView.reloadData()
                         emptyMessageLabel.isHidden = true
                     }
@@ -511,7 +536,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                 {
                     filteredAlbums = []
                     collectionView.reloadData()
-                    tableView.reloadData()
                     emptyMessageLabel.isHidden = false
                     emptyMessageLabel.attributedText = noResultsMessage
                 }
@@ -525,7 +549,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                     {
                         filteredArtists = []
                         collectionView.reloadData()
-                        tableView.reloadData()
                         emptyMessageLabel.isHidden = false
                         emptyMessageLabel.attributedText = noResultsMessage
                     }
@@ -533,7 +556,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                     {
                         filteredArtists = result
                         print("\(filteredArtists.count) artists were filtered")
-                        tableView.reloadData()
                         collectionView.reloadData()
                         emptyMessageLabel.isHidden = true
                     }
@@ -542,7 +564,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                 {
                     filteredArtists = []
                     collectionView.reloadData()
-                    tableView.reloadData()
                     emptyMessageLabel.isHidden = false
                     emptyMessageLabel.attributedText = noResultsMessage
                 }
@@ -553,7 +574,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
             filteredSongs = []
             filteredArtists = []
             filteredAlbums = []
-            tableView.reloadData()
             collectionView.reloadData()
             emptyMessageLabel.isHidden = false
             emptyMessageLabel.attributedText = initialMessage
@@ -571,9 +591,7 @@ extension SearchResultsViewController: UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
     {
         self.searchMode = selectedScope
-        configureTableViewAccordingToSearchMode()
         updateSearchResults(forQuery: searchBar.text)
-        tableView.reloadData()
         collectionView.reloadData()
     }
 }

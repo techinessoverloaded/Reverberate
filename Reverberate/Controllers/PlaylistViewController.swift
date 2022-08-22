@@ -179,6 +179,7 @@ class PlaylistViewController: UITableViewController
         ])
         headerView.backgroundColor = .clear
         tableView.tableHeaderView = headerView
+        clearsSelectionOnViewWillAppear = false
         defaultPosterHeight = headerView.bounds.height * 0.6
         setPlaylistDetails()
         playlistFavouriteButton.addTarget(self, action: #selector(onArtistFavouriteButtonTap(_:)), for: .touchUpInside)
@@ -286,6 +287,16 @@ class PlaylistViewController: UITableViewController
         config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
         cell.contentConfiguration = config
+        cell.configurationUpdateHandler = { cell, state in
+            guard var updatedConfig = cell.contentConfiguration?.updated(for: state) as? UIListContentConfiguration else
+            {
+                return
+            }
+            updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
+               return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
+            }
+            cell.contentConfiguration = updatedConfig
+        }
         var menuButtonConfig = UIButton.Configuration.plain()
         menuButtonConfig.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
         menuButtonConfig.image = UIImage(systemName: "ellipsis")!
@@ -304,6 +315,7 @@ class PlaylistViewController: UITableViewController
         menuButton.showsMenuAsPrimaryAction = true
         cell.accessoryView = menuButton
         cell.backgroundColor = .clear
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -329,6 +341,21 @@ class PlaylistViewController: UITableViewController
             delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
         }
         onPlayNotificationReceipt()
+    }
+    
+    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    {
+        let item = indexPath.item
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
+            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
+                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+            }
+            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
+                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
+            }
+            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem])
+            return songMenu
+        })
     }
 }
 

@@ -6,15 +6,12 @@
 //
 import UIKit
 
-class HomeViewController: UITableViewController
+class HomeViewController: UICollectionViewController
 {
-    private lazy var collectionView: UICollectionView = {
-        let cView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: {
-            sectionIndex , _ -> NSCollectionLayoutSection? in
-            self.createSectionLayout(section: sectionIndex)
-        }))
-        return cView
-    }()
+    static var compositionalLayout: UICollectionViewCompositionalLayout = UICollectionViewCompositionalLayout(sectionProvider: {
+        sectionIndex , _ -> NSCollectionLayoutSection? in
+        createSectionLayout(section: sectionIndex)
+    })
     
     private lazy var songs : [Category : [Song]] = {
         var result: [Category: [Song]] = [:]
@@ -25,23 +22,27 @@ class HomeViewController: UITableViewController
         return result
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print(view.bounds.width)
+        print(collectionView.bounds.width)
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+        //collectionView.contentInsetAdjustmentBehavior = .always
+//        collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 70, right: 20)
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
-        tableView.separatorStyle = .none
-        collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.backgroundColor = .clear
-        collectionView.isScrollEnabled = false
+        collectionView.bounces = true
+//        collectionView.alwaysBounceHorizontal = true
     }
     
-    private func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
+    static func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
     {
         //Item
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
@@ -49,33 +50,8 @@ class HomeViewController: UITableViewController
         //Group
         let groupSize: NSCollectionLayoutSize!
         let group: NSCollectionLayoutGroup!
-        if isInPortraitMode
-        {
-            if isIpad
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.35), heightDimension: .absolute(420))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-            else
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(220))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-        }
-        else
-        {
-            if isIpad
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.7), heightDimension: .absolute(520))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-            else
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.7), heightDimension: .absolute(380))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-        }
-        
+        groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(220))
+        group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
         
         //Section
@@ -85,77 +61,21 @@ class HomeViewController: UITableViewController
         section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
         return section
     }
-    
-    
-    // MARK: - Table view data source and delegate
-    override func numberOfSections(in tableView: UITableView) -> Int
-    {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-    {
-        if indexPath.section == 0
-        {
-            var cellHeight: CGFloat = 0
-            if isInPortraitMode
-            {
-                if isIpad
-                {
-                    cellHeight = 420
-                }
-                else
-                {
-                    cellHeight = 220
-                }
-            }
-            else
-            {
-                if isIpad
-                {
-                    cellHeight = 520
-                }
-                else
-                {
-                    cellHeight = 380
-                }
-            }
-            let headerHeight: CGFloat = 60
-            let margin: CGFloat = 0
-            return CGFloat(songs.count) * (cellHeight + headerHeight + margin)
-        }
-        else
-        {
-            return .zero
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-        cell.addSubViewToContentView(collectionView)
-        return cell
-    }
 }
 
-extension HomeViewController: UICollectionViewDataSource
+extension HomeViewController
 {
-    func numberOfSections(in collectionView: UICollectionView) -> Int
+    override func numberOfSections(in collectionView: UICollectionView) -> Int
     {
         return songs.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         return songs[Category(rawValue: section)!]!.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         if kind == UICollectionView.elementKindSectionHeader
         {
@@ -172,7 +92,7 @@ extension HomeViewController: UICollectionViewDataSource
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterDetailCVCell.identifier, for: indexPath) as! PosterDetailCVCell
         let section = indexPath.section
@@ -183,11 +103,8 @@ extension HomeViewController: UICollectionViewDataSource
         cell.configureCell(poster: categoricalSongs[item].coverArt!, title: categoricalSongs[item].title!, subtitle: artistNames)
         return cell
     }
-}
-
-extension HomeViewController: UICollectionViewDelegate
-{
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         collectionView.deselectItem(at: indexPath, animated: true)
         let section = indexPath.section
