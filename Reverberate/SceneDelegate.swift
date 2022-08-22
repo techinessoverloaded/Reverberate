@@ -66,11 +66,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         {
             if let _ = userDefaults.string(forKey: GlobalConstants.currentUserId)
             {
-                window!.rootViewController = MainViewController()
+                let mainVc = MainViewController()
+                window!.rootViewController = mainVc
+                GlobalVariables.shared.mainTabController = mainVc
             }
             else
             {
-                window!.rootViewController = MainViewController() //LoginViewController(style: .insetGrouped)
+                let mainVc = MainViewController()
+                window!.rootViewController = mainVc
+                GlobalVariables.shared.mainTabController = mainVc
+                //LoginViewController(style: .insetGrouped)
             }
         }
         restoreTheme()

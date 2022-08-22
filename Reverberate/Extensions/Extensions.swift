@@ -386,7 +386,9 @@ extension UILabel
 extension NSNotification.Name
 {
     static let currentSongSetNotification = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
-    static let currentPlaylistSetNotification = NSNotification.Name("cUrReNtPlAyLiStSeTnOtIfIcAtIoN")
+    static let currentPlaylistSetNotification = NSNotification.Name("cUrReNt_PlAyLiSt_SeT_nOtIfIcAtIoN")
+    static let playerPausedNotification = NSNotification.Name("pLaYeR_pAuSeD_nOtIfIcAtIoN")
+    static let playerPlayNotification = NSNotification.Name("pLaYeR_pLaY_nOtIfIcAtIoN")
 }
 
 

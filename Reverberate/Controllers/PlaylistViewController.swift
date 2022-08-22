@@ -126,6 +126,8 @@ class PlaylistViewController: UITableViewController
     
     var playlist: Playlist!
     
+    weak var delegate: PlaylistDelegate?
+    
     private var defaultOffset: CGFloat = 0.0
     
     private var defaultPosterHeight: CGFloat = 0.0
@@ -155,7 +157,7 @@ class PlaylistViewController: UITableViewController
         NSLayoutConstraint.activate([
             posterView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
             posterView.topAnchor.constraint(equalTo: headerView.topAnchor),
-            posterView.heightAnchor.constraint(equalTo: headerView.heightAnchor, multiplier: 0.7),
+            posterView.heightAnchor.constraint(equalTo: headerView.heightAnchor, multiplier: 0.65),
             posterView.widthAnchor.constraint(equalTo: posterView.heightAnchor),
             titleView.topAnchor.constraint(equalTo: posterView.bottomAnchor, constant: 10),
             titleView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
@@ -189,12 +191,23 @@ class PlaylistViewController: UITableViewController
         super.viewWillAppear(animated)
         self.definesPresentationContext = true
         self.navigationController?.navigationBar.tintColor = .systemBlue
+        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         defaultOffset = tableView.contentOffset.y
         print("Default Offset: \(defaultOffset)")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool)
+    {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -229,6 +242,13 @@ class PlaylistViewController: UITableViewController
             title = playlist.name!
             navigationItem.title = nil
             titleView.text = title
+        }
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            if GlobalVariables.shared.avAudioPlayer!.isPlaying
+            {
+                onPlayNotificationReceipt()
+            }
         }
     }
 
@@ -287,22 +307,29 @@ class PlaylistViewController: UITableViewController
         return cell
     }
     
-//    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
-//    {
-//        let contextMenuConfig = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [unowned self] _ in
-//            let likeSong = UIAction(title: "Like Song", image: heartIcon, identifier: nil, discoverabilityTitle: nil, attributes: .hidden, state: .off) { _ in
-//                print("Tapped Like")
-//            }
-//            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [likeSong])
-//        }
-//
-//        return contextMenuConfig
-//    }
-}
-
-extension PlaylistViewController: UISearchBarDelegate
-{
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        if GlobalVariables.shared.currentPlaylist != nil
+        {
+            let currentSong = GlobalVariables.shared.currentSong!
+            let song = playlist.songs![indexPath.item]
+            if currentSong == song
+            {
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            }
+        }
+    }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let item = indexPath.item
+        let song = playlist.songs![item]
+        if GlobalVariables.shared.currentSong != song
+        {
+            delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+        }
+        onPlayNotificationReceipt()
+    }
 }
 
 extension PlaylistViewController
@@ -333,17 +360,52 @@ extension PlaylistViewController
 
 extension PlaylistViewController
 {
+    @objc func onSongChange()
+    {
+        let currentSong = GlobalVariables.shared.currentSong!
+        guard let item = playlist.songs!.firstIndex(of: currentSong) else
+        {
+            return
+        }
+        let indexPath = IndexPath(item: item, section: 0)
+        guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
+        {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            return
+        }
+    }
+    
+    @objc func onPlayNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Pause"
+            playButton.configuration!.image = pauseIcon
+        }
+    }
+    
+    @objc func onPausedNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
+        }
+    }
+    
     @objc func onPlayButtonTap(_ sender: UIButton)
     {
         if sender.configuration!.title == "Play"
         {
             print("Gonna Play")
+            delegate?.onPlaylistPlayRequest(playlist: playlist)
             sender.configuration!.title = "Pause"
             sender.configuration!.image = pauseIcon
         }
         else
         {
             print("Gonna Pause")
+            delegate?.onPlaylistPauseRequest(playlist: playlist)
             sender.configuration!.title = "Play"
             sender.configuration!.image = playIcon
         }
@@ -415,7 +477,8 @@ extension PlaylistViewController
 }
 
 extension PlaylistViewController : UISearchControllerDelegate {
-    func willPresentSearchController(_ searchController: UISearchController) {
+    func willPresentSearchController(_ searchController: UISearchController)
+    {
         
     }
 }

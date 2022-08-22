@@ -51,6 +51,7 @@
 		DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* MainViewController.swift */; };
 		DA4556D028740B2000804CB8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556CF28740B2000804CB8 /* Extensions.swift */; };
 		DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556D128740CD200804CB8 /* GlobalConstants.swift */; };
+		DA4AC3ED28B35E9800F0B611 /* PlaylistControlsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */; };
 		DA562A902891507E0017EEF2 /* halamathitelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */; };
 		DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */; };
 		DA562A922891507E0017EEF2 /* beastmodetelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */; };
@@ -82,7 +83,7 @@
 		DA668C932877076B001EE1C9 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C922877076B001EE1C9 /* SearchViewController.swift */; };
 		DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C9428770794001EE1C9 /* LibraryViewController.swift */; };
 		DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C96287707C4001EE1C9 /* ProfileViewController.swift */; };
-		DA67E0642898E57A00593251 /* PlaylistDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67E0632898E57A00593251 /* PlaylistDataSource.swift */; };
+		DA67E0642898E57A00593251 /* PlaylistDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67E0632898E57A00593251 /* PlaylistDelegate.swift */; };
 		DA67E06628994D3A00593251 /* ArtistDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67E06528994D3A00593251 /* ArtistDelegate.swift */; };
 		DA67F43528890F6000062985 /* HomeVCCompositionalLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F43428890F6000062985 /* HomeVCCompositionalLayout.swift */; };
 		DA67F4392889182F00062985 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F4382889182F00062985 /* Category.swift */; };
@@ -156,6 +157,7 @@
 		DA4556C728740A7000804CB8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DA4556CF28740B2000804CB8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		DA4556D128740CD200804CB8 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
+		DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistControlsDelegate.swift; sourceTree = "<group>"; };
 		DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = halamathitelugu.mp3; sourceTree = "<group>"; };
 		DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhanatelugu.mp3; sourceTree = "<group>"; };
 		DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beastmodetelugu.mp3; sourceTree = "<group>"; };
@@ -187,7 +189,7 @@
 		DA668C922877076B001EE1C9 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DA668C9428770794001EE1C9 /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
 		DA668C96287707C4001EE1C9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		DA67E0632898E57A00593251 /* PlaylistDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDataSource.swift; sourceTree = "<group>"; };
+		DA67E0632898E57A00593251 /* PlaylistDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDelegate.swift; sourceTree = "<group>"; };
 		DA67E06528994D3A00593251 /* ArtistDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistDelegate.swift; sourceTree = "<group>"; };
 		DA67F43428890F6000062985 /* HomeVCCompositionalLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVCCompositionalLayout.swift; sourceTree = "<group>"; };
 		DA67F4382889182F00062985 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
@@ -471,9 +473,10 @@
 				DA67F4462889527C00062985 /* MiniPlayerDelegate.swift */,
 				DA67F4482889797400062985 /* PlayerDelegate.swift */,
 				DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */,
-				DA67E0632898E57A00593251 /* PlaylistDataSource.swift */,
+				DA67E0632898E57A00593251 /* PlaylistDelegate.swift */,
 				DA67E06528994D3A00593251 /* ArtistDelegate.swift */,
 				DA36C87C28AB5CDE00F18694 /* LibraryTabViewDelegate.swift */,
+				DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */,
 			);
 			path = Abstract;
 			sourceTree = "<group>";
@@ -788,7 +791,7 @@
 				DA6C8388288046F600339937 /* InitialViewController.swift in Sources */,
 				DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */,
 				DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */,
-				DA67E0642898E57A00593251 /* PlaylistDataSource.swift in Sources */,
+				DA67E0642898E57A00593251 /* PlaylistDelegate.swift in Sources */,
 				DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */,
 				DA58B5572877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift in Sources */,
 				DA045C1D289D3CAF00F47ABA /* User+CoreDataClass.swift in Sources */,
@@ -812,6 +815,7 @@
 				DA7B1BB728A3E26A009CDBC6 /* SessionManager.swift in Sources */,
 				DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */,
 				DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */,
+				DA4AC3ED28B35E9800F0B611 /* PlaylistControlsDelegate.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
 				DAFC0AE22893D81200EECE4B /* SearchResultDelegate.swift in Sources */,
 				DA28A349287414E900E36382 /* SignupViewController.swift in Sources */,

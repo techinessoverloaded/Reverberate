@@ -180,6 +180,18 @@ class MiniPlayerView: UIView
         songTitleView.textColor = .label.withAlphaComponent(0.8)
         playOrPauseButton.isEnabled = true
         totalSongDuration = song.duration!
+        updatePlaylistButtons()
+    }
+    
+    func updatePlaylistButtons()
+    {
+        guard let playlist = GlobalVariables.shared.currentPlaylist else
+        {
+            return
+        }
+        let song = GlobalVariables.shared.currentSong!
+        nextButton.isEnabled = delegate?.isNextSongAvailable(playlist: playlist, currentSong: song) ?? false
+        previousButton.isEnabled = delegate?.isPreviousSongAvailable(playlist: playlist, currentSong: song) ?? false
     }
     
     func setPlaying(shouldPlaySong: Bool)
@@ -223,13 +235,15 @@ extension MiniPlayerView
     @objc func onPreviousButtonTap(_ sender: UIButton)
     {
         print("Previous")
-        delegate?.onMiniPlayerPreviousButtonTap()
+        delegate?.onPreviousSongRequest(playlist: GlobalVariables.shared.currentPlaylist!, currentSong: GlobalVariables.shared.currentSong!)
+        setDetails()
     }
     
     @objc func onNextButtonTap(_ sender: UIButton)
     {
         print("Next")
-        delegate?.onMiniPlayerNextButtonTap()
+        delegate?.onNextSongRequest(playlist: GlobalVariables.shared.currentPlaylist!, currentSong: GlobalVariables.shared.currentSong!)
+        setDetails()
     }
     
     @objc func onMiniPlayerViewTap(_ sender: UIView)

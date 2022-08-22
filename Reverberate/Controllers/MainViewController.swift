@@ -87,12 +87,14 @@ class MainViewController: UITabBarController
         super.viewDidAppear(animated)
         print("Main View Controller")
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
     }
     
     override func viewDidDisappear(_ animated: Bool)
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
     }
     
@@ -135,6 +137,7 @@ class MainViewController: UITabBarController
             {
                 miniPlayerView.setPlaying(shouldPlaySong: true)
             }
+            NotificationCenter.default.post(name: NSNotification.Name.playerPlayNotification, object: nil)
             return .success
         }
         
@@ -150,6 +153,7 @@ class MainViewController: UITabBarController
             {
                 miniPlayerView.setPlaying(shouldPlaySong: false)
             }
+            NotificationCenter.default.post(name: NSNotification.Name.playerPausedNotification, object: nil)
             return .success
         }
         
@@ -200,6 +204,7 @@ extension MainViewController: MiniPlayerDelegate
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
+        NotificationCenter.default.post(name: NSNotification.Name.playerPlayNotification, object: nil)
     }
     
     func onMiniPlayerPauseButtonTap()
@@ -208,6 +213,7 @@ extension MainViewController: MiniPlayerDelegate
         try! AVAudioSession.sharedInstance().setActive(false)
         miniPlayerTimer.isPaused = true
         setupNowPlayingNotification()
+        NotificationCenter.default.post(name: NSNotification.Name.playerPausedNotification, object: nil)
     }
     
     func onMiniPlayerPreviousButtonTap()
@@ -228,7 +234,7 @@ extension MainViewController: MiniPlayerDelegate
 
 extension MainViewController: PlayerDelegate
 {
-    func onShuffle()
+    func onShuffleRequest()
     {
         
     }
@@ -254,6 +260,7 @@ extension MainViewController: PlayerDelegate
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
         setupNowPlayingNotification()
+        NotificationCenter.default.post(name: NSNotification.Name.playerPlayNotification, object: nil)
     }
     
     func onPauseButtonTap()
@@ -262,6 +269,7 @@ extension MainViewController: PlayerDelegate
         try! AVAudioSession.sharedInstance().setActive(false)
         miniPlayerView.setPlaying(shouldPlaySong: false)
         setupNowPlayingNotification()
+        NotificationCenter.default.post(name: NSNotification.Name.playerPausedNotification, object: nil)
     }
     
     func onRewindButtonTap()
@@ -276,14 +284,49 @@ extension MainViewController: PlayerDelegate
         setupNowPlayingNotification()
     }
     
-    func onNextButtonTap()
+    func isNextSongAvailable(playlist: Playlist, currentSong: Song) -> Bool
     {
-        
+        let songs = playlist.songs!
+        let index = songs.firstIndex(of: currentSong)!
+        return songs.index(after: index) != songs.endIndex
     }
     
-    func onPreviousButtonTap()
+    func isPreviousSongAvailable(playlist: Playlist, currentSong: Song) -> Bool
     {
-        
+        let songs = playlist.songs!
+        let index = songs.firstIndex(of: currentSong)!
+        return songs.index(before: index) >= songs.startIndex
+    }
+    
+    func onNextSongRequest(playlist: Playlist, currentSong: Song)
+    {
+        if !isNextSongAvailable(playlist: playlist, currentSong: currentSong)
+        {
+            return
+        }
+        let songs = playlist.songs!
+        let index = songs.firstIndex(of: currentSong)!
+        GlobalVariables.shared.currentSong = songs[index + 1]
+    }
+    
+    func onPreviousSongRequest(playlist: Playlist, currentSong: Song)
+    {
+        if !isPreviousSongAvailable(playlist: playlist, currentSong: currentSong)
+        {
+            return
+        }
+        let songs = playlist.songs!
+        let index = songs.firstIndex(of: currentSong)!
+        GlobalVariables.shared.currentSong = songs[index - 1]
+    }
+    
+    func onSongChangeRequest(playlist: Playlist, newSong: Song)
+    {
+        if GlobalVariables.shared.currentPlaylist != playlist
+        {
+            GlobalVariables.shared.currentPlaylist = playlist
+        }
+        GlobalVariables.shared.currentSong = newSong
     }
     
     func onSongSeekRequest(songPosition value: Double)
@@ -294,11 +337,6 @@ extension MainViewController: PlayerDelegate
         {
             miniPlayerView.updateSongDurationView(newValue: Float(value))
         }
-    }
-    
-    func onShuffleButtonTap()
-    {
-        
     }
     
     func onPlayerShrinkRequest()
@@ -387,6 +425,12 @@ extension MainViewController
         setupNowPlayingNotification()
         handleMPNotificationActions()
     }
+    
+    @objc func onPlaylistChange()
+    {
+        let playlist = GlobalVariables.shared.currentPlaylist!
+        GlobalVariables.shared.currentSong = playlist.songs!.first!
+    }
 }
 
 extension MainViewController: AVAudioPlayerDelegate
@@ -423,5 +467,40 @@ extension MainViewController: AVAudioPlayerDelegate
             playerController?.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
         }
         setupNowPlayingNotification()
+    }
+}
+
+extension MainViewController: PlaylistDelegate
+{
+    func onPlaylistSongChangeRequest(playlist: Playlist, newSong: Song)
+    {
+        onSongChangeRequest(playlist: playlist, newSong: newSong)
+    }
+    
+    func onPlaylistPauseRequest(playlist: Playlist)
+    {
+        onPauseButtonTap()
+    }
+    
+    func onPlaylistPlayRequest(playlist: Playlist)
+    {
+        if GlobalVariables.shared.currentPlaylist != playlist
+        {
+            GlobalVariables.shared.currentPlaylist = playlist
+        }
+        onPlayButtonTap()
+    }
+    
+    func onPlaylistShuffleRequest(playlist: Playlist)
+    {
+        let playlist = GlobalVariables.shared.currentPlaylist!
+        let song = GlobalVariables.shared.currentSong!
+        let index = playlist.songs!.firstIndex(of: song)!
+        playlist.songs!.shuffle()
+        let updatedSong = playlist.songs![index]
+        if song != updatedSong
+        {
+            GlobalVariables.shared.currentSong = updatedSong
+        }
     }
 }

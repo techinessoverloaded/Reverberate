@@ -62,7 +62,7 @@ class PlayerViewController: UITableViewController
         return pRecognizer
     }()
     
-    private lazy var albumTitleView: MarqueeLabel = {
+    private lazy var playlistTitleView: MarqueeLabel = {
         let atView = MarqueeLabel(useAutoLayout: true)
         atView.textColor = .label.withAlphaComponent(0.8)
         atView.font = .preferredFont(forTextStyle: .title1, weight: .bold)
@@ -243,6 +243,8 @@ class PlayerViewController: UITableViewController
     
     weak var delegate: PlayerDelegate?
     
+    private var playlist: Playlist?
+    
     override func loadView()
     {
         super.loadView()
@@ -311,8 +313,6 @@ class PlayerViewController: UITableViewController
         songSlider.addTarget(self, action: #selector(onSongSliderDragBegin(_:)), for: .touchDown)
         favouriteButton.addTarget(self, action: #selector(onFavouriteButtonTap(_:)), for: .touchUpInside)
         addToPlaylistsButton.addTarget(self, action: #selector(onAddToPlaylistsButtonTap(_:)), for: .touchUpInside)
-        songSlider.minimumValue = 0.0
-        songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
         setDetails()
         updateTime()
         caDisplayLinkTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
@@ -363,15 +363,40 @@ class PlayerViewController: UITableViewController
     
     func setDetails()
     {
-        let song = GlobalVariables.shared.currentSong!
-        albumTitleView.text = song.albumName!
-        posterView.image = song.coverArt!
-        songTitleView.text = song.title!
-        songArtistsView.text = song.getArtistNamesAsString(artistType: nil)
-        let songDuration = Float(GlobalVariables.shared.avAudioPlayer.duration)
-        let seconds = String(format: "%02d", Int(songDuration) % 60)
-        let minutes = String(format: "%02d", Int(songDuration) / 60)
-        maximumDurationLabel.text = "\(minutes):\(seconds)"
+        if let currentPlaylist = GlobalVariables.shared.currentPlaylist
+        {
+            self.playlist = currentPlaylist
+            print(currentPlaylist)
+            playlistTitleView.text = currentPlaylist.name!
+            let song = GlobalVariables.shared.currentSong!
+            posterView.image = song.coverArt!
+            songTitleView.text = song.title!
+            songArtistsView.text = song.getArtistNamesAsString(artistType: nil)
+            let songDuration = Float(GlobalVariables.shared.avAudioPlayer.duration)
+            let seconds = String(format: "%02d", Int(songDuration) % 60)
+            let minutes = String(format: "%02d", Int(songDuration) / 60)
+            songSlider.minimumValue = 0.0
+            songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
+            maximumDurationLabel.text = "\(minutes):\(seconds)"
+            updatePlaylistButtons()
+        }
+        else
+        {
+            let song = GlobalVariables.shared.currentSong!
+            playlistTitleView.text = song.albumName!
+            posterView.image = song.coverArt!
+            songTitleView.text = song.title!
+            songArtistsView.text = song.getArtistNamesAsString(artistType: nil)
+            songSlider.minimumValue = 0.0
+            songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
+            let songDuration = Float(GlobalVariables.shared.avAudioPlayer.duration)
+            let seconds = String(format: "%02d", Int(songDuration) % 60)
+            let minutes = String(format: "%02d", Int(songDuration) / 60)
+            maximumDurationLabel.text = "\(minutes):\(seconds)"
+            previousButton.isEnabled = false
+            nextButton.isEnabled = false
+            shuffleButton.isEnabled = false
+        }
     }
     
     func updateTime()
@@ -390,16 +415,22 @@ class PlayerViewController: UITableViewController
             loopButton.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
             loopButton.setImage(repeatIcon, for: .normal)
         }
-        else if loopMode == 1
-        {
-            loopButton.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
-            loopButton.setImage(repeatOneIcon, for: .normal)
-        }
         else
         {
             loopButton.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
             loopButton.setImage(repeatIcon, for: .normal)
         }
+    }
+    
+    func updatePlaylistButtons()
+    {
+        guard let playlist = playlist else {
+            return
+        }
+        let song = GlobalVariables.shared.currentSong!
+        previousButton.isEnabled = delegate?.isPreviousSongAvailable(playlist: playlist, currentSong: song) ?? false
+        nextButton.isEnabled = delegate?.isNextSongAvailable(playlist: playlist, currentSong: song) ?? false
+        shuffleButton.isEnabled = true
     }
 }
 
@@ -488,7 +519,7 @@ extension PlayerViewController
         {
             if item == 0
             {
-                cell.addSubViewToContentView(albumTitleView, useAutoLayout: true, useClearBackground: true)
+                cell.addSubViewToContentView(playlistTitleView, useAutoLayout: true, useClearBackground: true)
                 cell.accessoryType = .none
             }
             else if item == 1
@@ -624,19 +655,23 @@ extension PlayerViewController
     @objc func onPreviousButtonTap(_ sender: UIButton)
     {
         print("Previous")
-        delegate?.onPreviousButtonTap()
+        delegate?.onPreviousSongRequest(playlist: playlist!, currentSong: GlobalVariables.shared.currentSong!)
+        setDetails()
+        updatePlaylistButtons()
     }
     
     @objc func onNextButtonTap(_ sender: UIButton)
     {
         print("Next")
-        delegate?.onNextButtonTap()
+        delegate?.onNextSongRequest(playlist: playlist!, currentSong: GlobalVariables.shared.currentSong!)
+        setDetails()
+        updatePlaylistButtons()
     }
     
     @objc func onShuffleButtonTap(_ sender: UIButton)
     {
         print("Shuffle")
-        delegate?.onShuffleButtonTap()
+        delegate?.onShuffleRequest()
     }
     
     @objc func onLoopButtonTap(_ sender: UIButton)

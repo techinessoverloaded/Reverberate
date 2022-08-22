@@ -26,7 +26,15 @@ class GlobalVariables
         }
     }
     
+    var currentPlaylist: Playlist? = nil
+    {
+        didSet
+        {
+            NotificationCenter.default.post(name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
+        }
+    }
+    
     var currentUser: User? = nil
     
-    var currentPlaylist: Playlist?
+    var mainTabController: MainViewController!
 }

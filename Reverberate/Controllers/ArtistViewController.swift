@@ -276,7 +276,6 @@ class ArtistViewController: UITableViewController
         if section == 0
         {
             let song = songs[item]
-            print(song)
             if GlobalVariables.shared.currentSong == song
             {
                 tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)

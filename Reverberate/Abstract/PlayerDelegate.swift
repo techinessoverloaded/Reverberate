@@ -5,7 +5,7 @@
 //  Created by arun-13930 on 21/07/22.
 //
 
-protocol PlayerDelegate: AnyObject
+protocol PlayerDelegate: PlaylistControlsDelegate
 {
     func onPlayButtonTap()
     
@@ -14,12 +14,6 @@ protocol PlayerDelegate: AnyObject
     func onRewindButtonTap()
     
     func onForwardButtonTap()
-    
-    func onNextButtonTap()
-    
-    func onPreviousButtonTap()
-    
-    func onShuffleButtonTap()
     
     func onLoopButtonTap(loopMode: Int)
     

@@ -226,6 +226,7 @@ extension SearchViewController: SearchResultDelegate
         searchController.searchBar.resignFirstResponder()
         let albumVC = PlaylistViewController(style: .grouped)
         albumVC.playlist = selectedAlbum
+        albumVC.delegate = GlobalVariables.shared.mainTabController
         searchController.dismiss(animated: true)
         { [unowned self] in
             self.navigationController?.pushViewController(albumVC, animated: true)
