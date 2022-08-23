@@ -34,7 +34,7 @@ class HeaderCVReusableView: UICollectionReusableView
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            seeAllButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            seeAllButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             seeAllButton.topAnchor.constraint(equalTo: titleLabel.topAnchor)
         ])
     }

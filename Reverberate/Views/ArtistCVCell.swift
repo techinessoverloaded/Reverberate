@@ -24,17 +24,18 @@ class ArtistCVCell: UICollectionViewCell
         apView.layer.cornerCurve = .circular
         apView.layer.cornerRadius = bounds.size.width * 0.5
         apView.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.cgColor
-        apView.layer.borderWidth = 4
+        //apView.layer.borderWidth = 4
         return apView
     }()
     
     private lazy var artistNameView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
-        stView.textColor = .label.withAlphaComponent(0.8)
-        stView.font = .preferredFont(forTextStyle: .title3, weight: .semibold)
+        stView.textColor = .label
+        stView.font = .preferredFont(forTextStyle: .title3, weight: .regular)
         stView.textAlignment = .center
         stView.lineBreakMode = .byTruncatingTail
-        stView.numberOfLines = 3
+        stView.adjustsFontSizeToFitWidth = true
+        stView.numberOfLines = 2
         return stView
     }()
     

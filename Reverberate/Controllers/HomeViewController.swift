@@ -5,6 +5,7 @@
 //  Created by arun-13930 on 07/07/22.
 //
 import UIKit
+import MediaPlayer
 
 class HomeViewController: UICollectionViewController
 {
@@ -33,8 +34,8 @@ class HomeViewController: UICollectionViewController
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        //collectionView.contentInsetAdjustmentBehavior = .always
-//        collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 70, right: 20)
+        collectionView.contentInsetAdjustmentBehavior = .always
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear

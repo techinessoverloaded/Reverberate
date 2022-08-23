@@ -185,13 +185,16 @@ class MiniPlayerView: UIView
     
     func updatePlaylistButtons()
     {
-        guard let playlist = GlobalVariables.shared.currentPlaylist else
+        if GlobalVariables.shared.currentPlaylist != nil
         {
-            return
+            nextButton.isEnabled = true
+            previousButton.isEnabled = true
         }
-        let song = GlobalVariables.shared.currentSong!
-        nextButton.isEnabled = delegate?.isNextSongAvailable(playlist: playlist, currentSong: song) ?? false
-        previousButton.isEnabled = delegate?.isPreviousSongAvailable(playlist: playlist, currentSong: song) ?? false
+        else
+        {
+            nextButton.isEnabled = false
+            previousButton.isEnabled = false
+        }
     }
     
     func setPlaying(shouldPlaySong: Bool)

@@ -14,12 +14,12 @@ class MainViewController: UITabBarController
     private lazy var homeVC = HomeViewController(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex , _ -> NSCollectionLayoutSection? in
         
         //Item
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(520), heightDimension: .absolute(220)))
         
         //Group
         let groupSize: NSCollectionLayoutSize!
         let group: NSCollectionLayoutGroup!
-        groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(220))
+        groupSize = NSCollectionLayoutSize(widthDimension: .absolute(520), heightDimension: .absolute(220))
         group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
         
@@ -27,10 +27,9 @@ class MainViewController: UITabBarController
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 15
         section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 5, trailing: 20)
         section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
         return section
-        
     }))
 
     private lazy var searchVC = SearchViewController(collectionViewLayout: UICollectionViewFlowLayout())
@@ -229,11 +228,10 @@ class MainViewController: UITabBarController
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         let commandCenter = MPRemoteCommandCenter.shared()
         let playlist = GlobalVariables.shared.currentPlaylist
-        let song = GlobalVariables.shared.currentSong!
         if playlist != nil
         {
-            commandCenter.nextTrackCommand.isEnabled = isNextSongAvailable(playlist: playlist!, currentSong: song)
-            commandCenter.previousTrackCommand.isEnabled = isPreviousSongAvailable(playlist: playlist!, currentSong: song)
+            commandCenter.nextTrackCommand.isEnabled = true
+            commandCenter.previousTrackCommand.isEnabled = true
             commandCenter.skipForwardCommand.isEnabled = false
             commandCenter.skipBackwardCommand.isEnabled = false
         }
@@ -277,7 +275,7 @@ extension MainViewController: PlayerDelegate
 {
     func onShuffleRequest()
     {
-        
+        onPlaylistShuffleRequest(playlist: GlobalVariables.shared.currentPlaylist!)
     }
     
     func onLoopButtonTap(loopMode: Int)
@@ -349,22 +347,28 @@ extension MainViewController: PlayerDelegate
     {
         if !isNextSongAvailable(playlist: playlist, currentSong: currentSong)
         {
-            return
+            GlobalVariables.shared.currentSong = playlist.songs!.first!
         }
-        let songs = playlist.songs!
-        let index = songs.firstIndex(of: currentSong)!
-        GlobalVariables.shared.currentSong = songs[index + 1]
+        else
+        {
+            let songs = playlist.songs!
+            let index = songs.firstIndex(of: currentSong)!
+            GlobalVariables.shared.currentSong = songs[index + 1]
+        }
     }
     
     func onPreviousSongRequest(playlist: Playlist, currentSong: Song)
     {
         if !isPreviousSongAvailable(playlist: playlist, currentSong: currentSong)
         {
-            return
+            GlobalVariables.shared.currentSong = playlist.songs!.last!
         }
-        let songs = playlist.songs!
-        let index = songs.firstIndex(of: currentSong)!
-        GlobalVariables.shared.currentSong = songs[index - 1]
+        else
+        {
+            let songs = playlist.songs!
+            let index = songs.firstIndex(of: currentSong)!
+            GlobalVariables.shared.currentSong = songs[index - 1]
+        }
     }
     
     func onSongChangeRequest(playlist: Playlist, newSong: Song)

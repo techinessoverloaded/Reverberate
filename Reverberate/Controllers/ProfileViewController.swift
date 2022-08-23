@@ -500,6 +500,8 @@ extension ProfileViewController
                     languageSelectionVC.delegate = self
                     languageSelectionVC.leftBarButtonType = .cancel
                     languageSelectionVC.rightBarButtonType = .done
+                    languageSelectionVC.preSelectedLanguages = user.preferredLanguages!
+                    languageSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: languageSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
                     navController.isModalInPresentation = true
@@ -512,6 +514,8 @@ extension ProfileViewController
                     genreSelectionVC.delegate = self
                     genreSelectionVC.leftBarButtonType = .cancel
                     genreSelectionVC.rightBarButtonType = .done
+                    genreSelectionVC.preSelectedGenres = user.preferredGenres!
+                    genreSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: genreSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
                     navController.isModalInPresentation = true
@@ -535,6 +539,8 @@ extension ProfileViewController
                     languageSelectionVC.delegate = self
                     languageSelectionVC.leftBarButtonType = .cancel
                     languageSelectionVC.rightBarButtonType = .done
+                    languageSelectionVC.preSelectedLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
+                    languageSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: languageSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
                     navController.isModalInPresentation = true
@@ -547,6 +553,8 @@ extension ProfileViewController
                     genreSelectionVC.delegate = self
                     genreSelectionVC.leftBarButtonType = .cancel
                     genreSelectionVC.rightBarButtonType = .done
+                    genreSelectionVC.preSelectedGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
+                    genreSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: genreSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
                     navController.isModalInPresentation = true
@@ -630,18 +638,6 @@ extension ProfileViewController: LanguageSelectionDelegate
             UserDefaults.standard.set(selectedLanguages, forKey: GlobalConstants.preferredLanguages)
         }
     }
-    
-    func languageCellsDidLoad()
-    {
-        if SessionManager.shared.isUserLoggedIn
-        {
-            languageSelectionVC.setSelectedLanguages(languages: user.preferredLanguages!)
-        }
-        else
-        {
-            languageSelectionVC.setSelectedLanguages(languages: UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
-        }
-    }
 }
 
 extension ProfileViewController: GenreSelectionDelegate
@@ -656,18 +652,6 @@ extension ProfileViewController: GenreSelectionDelegate
         else
         {
             UserDefaults.standard.set(selectedGenres, forKey: GlobalConstants.preferredGenres)
-        }
-    }
-    
-    func genreCellsDidLoad()
-    {
-        if SessionManager.shared.isUserLoggedIn
-        {
-            genreSelectionVC.setSelectedGenres(genres: user.preferredGenres!)
-        }
-        else
-        {
-            genreSelectionVC.setSelectedGenres(genres: UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
         }
     }
 }

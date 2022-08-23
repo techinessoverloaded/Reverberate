@@ -15,9 +15,9 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     
     weak var delegate: GenreSelectionDelegate?
     
-    private var areCellsPreselected: Bool = false
+    var areCellsPreselected: Bool = false
     
-    private var alreadySelectedGenres: [Int16]?
+    var preSelectedGenres: [Int16]!
     
     var leftBarButtonType: UIBarButtonItem.SystemItem?
     
@@ -34,6 +34,11 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         setupNavBar()
         collectionView.register(SelectionCardCVCell.self, forCellWithReuseIdentifier: SelectionCardCVCell.identifier)
         collectionView.allowsMultipleSelection = true
+        clearsSelectionOnViewWillAppear = false
+        if areCellsPreselected
+        {
+            selectedGenres = preSelectedGenres
+        }
     }
     
     func setupNavBar()
@@ -73,40 +78,6 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         }
     }
     
-    func setSelectedGenres(genres: [Int16])
-    {
-        guard !genres.isEmpty else
-        {
-            return
-        }
-        areCellsPreselected = true
-        alreadySelectedGenres = genres
-        for genre in genres
-        {
-            if !selectedGenres.contains(genre)
-            {
-                //selectedGenres.append(genre)
-                for indexPath in collectionView.indexPathsForVisibleItems
-                {
-                    let section = indexPath.section
-                    let item = indexPath.item
-                    if availableGenres[section][item] == genre
-                    {
-                        // Select
-                        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
-                        collectionView(collectionView, didSelectItemAt: indexPath)
-                    }
-                }
-            }
-        }
-    }
-    
-    override func viewDidLayoutSubviews()
-    {
-        super.viewDidLayoutSubviews()
-        delegate?.genreCellsDidLoad()
-    }
-    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int
@@ -122,8 +93,16 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectionCardCVCell.identifier, for: indexPath) as! SelectionCardCVCell
-        let genre = MusicGenre(rawValue: availableGenres[indexPath.section][indexPath.item])
-        return cell.configureCell(title: nil, centerText: genre!.description, backgroundColor: genre!.preferredBackgroundColor)
+        let genre = MusicGenre(rawValue: availableGenres[indexPath.section][indexPath.item])!
+        cell.configureCell(title: nil, centerText: genre.description, backgroundColor: genre.preferredBackgroundColor)
+        if areCellsPreselected
+        {
+            if preSelectedGenres.contains(genre.rawValue)
+            {
+                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+            }
+        }
+        return cell
     }
 
     // MARK: UICollectionViewDelegate
@@ -135,7 +114,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         navigationItem.rightBarButtonItem!.isEnabled = !selectedGenres.isEmpty
         if areCellsPreselected
         {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedGenres.sorted() != alreadySelectedGenres!.sorted()
+            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedGenres.sorted() != preSelectedGenres!.sorted()
         }
     }
     
@@ -146,7 +125,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         navigationItem.rightBarButtonItem!.isEnabled = !selectedGenres.isEmpty
         if areCellsPreselected
         {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedGenres.sorted() != alreadySelectedGenres!.sorted()
+            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedGenres.sorted() != preSelectedGenres!.sorted()
         }
     }
 

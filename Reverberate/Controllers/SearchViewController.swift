@@ -131,16 +131,8 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        if isInPortraitMode
-        {
-            let cellWidth = (collectionView.bounds.width / 2.3) - 1
-            return .init(width: cellWidth, height: cellWidth / 2)
-        }
-        else
-        {
-            let cellWidth = (collectionView.bounds.width / 2.5) - 1
-            return .init(width: cellWidth, height: cellWidth / 2.5)
-        }
+        let cellWidth = (collectionView.bounds.width / 2.3)
+        return .init(width: cellWidth, height: cellWidth / 2.4)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
@@ -166,26 +158,17 @@ extension SearchViewController: SearchResultDelegate
 {
     func onArtistSelection(selectedArtist: Artist)
     {
-        searchController.searchBar.text = nil
-        searchController.searchBar.resignFirstResponder()
         let artistVC = ArtistViewController(style: .grouped)
         artistVC.artist = selectedArtist
-        searchController.dismiss(animated: true) { [unowned self] in
-            self.navigationController?.pushViewController(artistVC, animated: true)
-        }
+        self.navigationController?.pushViewController(artistVC, animated: true)
     }
     
     func onAlbumSelection(selectedAlbum: Album)
     {
-        searchController.searchBar.text = nil
-        searchController.searchBar.resignFirstResponder()
         let albumVC = PlaylistViewController(style: .grouped)
         albumVC.playlist = selectedAlbum
         albumVC.delegate = GlobalVariables.shared.mainTabController
-        searchController.dismiss(animated: true)
-        { [unowned self] in
-            self.navigationController?.pushViewController(albumVC, animated: true)
-        }
+        self.navigationController?.pushViewController(albumVC, animated: true)
     }
 }
 

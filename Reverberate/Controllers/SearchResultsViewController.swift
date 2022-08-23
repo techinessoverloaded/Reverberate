@@ -96,192 +96,7 @@ class SearchResultsViewController: UICollectionViewController
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "cell")
-        //configureCollectionViewAccordingToSearchMode()
     }
-
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate {
-            [unowned self] _ in
-            self.collectionView.reloadData()
-        }
-    }
-    
-//    func configureCollectionViewAccordingToSearchMode()
-//    {
-//        if searchMode == 0
-//        {
-//            tableView.separatorStyle = .singleLine
-//        }
-//        else
-//        {
-//            tableView.separatorStyle = .none
-//        }
-//    }
-    
-    // MARK: - Table view data source
-//    override func numberOfSections(in tableView: UITableView) -> Int
-//    {
-//        return 1
-//    }
-//
-//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-//    {
-//        if searchMode == 0
-//        {
-//            return filteredSongs.count
-//        }
-//        else if searchMode == 1
-//        {
-//            return 1
-//        }
-//        else if searchMode == 2
-//        {
-//            return 1
-//        }
-//        else
-//        {
-//            return 0
-//        }
-//    }
-//
-//    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-//    {
-//        if searchMode == 0
-//        {
-//            return 90
-//        }
-//        else
-//        {
-//            var cellHeight: CGFloat = .zero
-//            let margin: CGFloat = 30
-//            if isInPortraitMode
-//            {
-//                cellHeight = ((tableView.frame.width / 2.4) - 1) * 1
-//            }
-//            else
-//            {
-//                cellHeight = ((tableView.frame.width / 2.6) - 1) * 1.5
-//            }
-//            if searchMode == 1
-//            {
-//                return CGFloat(filteredAlbums.count) * (cellHeight + margin)
-//            }
-//            else
-//            {
-//                return CGFloat(filteredArtists.count) * (cellHeight + margin)
-//            }
-//        }
-//    }
-//
-//    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
-//    {
-//        if searchMode == 0
-//        {
-//            if filteredSongs.isEmpty
-//            {
-//                return nil
-//            }
-//            else
-//            {
-//                return "Song Result(s)"
-//            }
-//        }
-//        else if searchMode == 1
-//        {
-//            if filteredAlbums.isEmpty
-//            {
-//                return nil
-//            }
-//            else
-//            {
-//                return "Album Result(s)"
-//            }
-//        }
-//        else if searchMode == 2
-//        {
-//            if filteredArtists.isEmpty
-//            {
-//                return nil
-//            }
-//            else
-//            {
-//                return "Artist Result(s)"
-//            }
-//        }
-//        else
-//        {
-//            return nil
-//        }
-//    }
-//
-//    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-//    {
-//        if searchMode == 0
-//        {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-//            var config = cell.defaultContentConfiguration()
-//            let item = indexPath.item
-//            let song = filteredSongs[item]
-//            config.text = song.title!
-//            config.secondaryText = song.getArtistNamesAsString(artistType: nil)
-//            config.imageProperties.cornerRadius = 10
-//            config.image = song.coverArt!
-//            config.textProperties.adjustsFontForContentSizeCategory = true
-//            config.textProperties.allowsDefaultTighteningForTruncation = true
-//            config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
-//            config.secondaryTextProperties.color = .secondaryLabel
-//            config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
-//            config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
-//            cell.contentConfiguration = config
-//            cell.backgroundColor = .clear
-//            cell.selectionStyle = .none
-//            var menuButtonConfig = UIButton.Configuration.plain()
-//            menuButtonConfig.baseForegroundColor = .systemGray
-//            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
-//            menuButtonConfig.buttonSize = .medium
-//            let menuButton = UIButton(configuration: menuButtonConfig)
-//            menuButton.tag = item
-//            menuButton.sizeToFit()
-//            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
-//                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
-//            }
-//            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
-//                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
-//            }
-//            let showAlbumMenuItem = UIAction(title: "Show Album", image: UIImage(systemName: "music.note.list")) { [unowned self] menuItem in
-//                onShowAlbumMenuItemTap(tag: item)
-//            }
-//            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem, showAlbumMenuItem])
-//            menuButton.menu = songMenu
-//            menuButton.showsMenuAsPrimaryAction = true
-//            cell.accessoryView = menuButton
-//            return cell
-//        }
-//        else
-//        {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-//            cell.addSubViewToContentView(collectionView)
-//            return cell
-//        }
-//    }
-//
-//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-//    {
-//        if searchMode == 0
-//        {
-//            searchBarRef?.resignFirstResponder()
-//            let item = indexPath.item
-//            if GlobalVariables.shared.currentSong != filteredSongs[item]
-//            {
-//                GlobalVariables.shared.currentSong = filteredSongs[item]
-//            }
-//        }
-//    }
 }
 
 extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
@@ -385,25 +200,31 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
     {
         if searchMode == 0
         {
-            return CGSize(width: collectionView.bounds.width - 20, height: 70)
+            let cellWidth = collectionView.bounds.width
+            return CGSize(width: cellWidth, height: 70)
         }
         else
         {
-            if isInPortraitMode
-            {
-                let cellWidth = (collectionView.bounds.width / 2.4) - 1
-                return .init(width: cellWidth, height: cellWidth * 1.3)
-            }
-            else
-            {
-                let cellWidth = (collectionView.bounds.width / 2.6) - 1
-                return .init(width: cellWidth, height: cellWidth * 1.3)
-            }
+            let cellWidth = (collectionView.bounds.width / 2.4) - 1
+            return searchMode == 1 ? .init(width: cellWidth, height: cellWidth * 1.3) : .init(width: cellWidth, height: cellWidth * 1.35)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
+    {
+        if searchMode == 0
+        {
+            return .init(top: 0, left: 10, bottom: 0, right: 10)
+        }
+        else
+        {
+            return .zero
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 30
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat
+    {
+        return searchMode == 2 ? 20 : 10
     }
     
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
@@ -411,7 +232,19 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         let item = indexPath.item
         if searchMode == 0
         {
-            return nil
+            let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
+                let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
+                    onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+                }
+                let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
+                    onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
+                }
+                let showAlbumMenuItem = UIAction(title: "Show Album", image: UIImage(systemName: "music.note.list")) { [unowned self] menuItem in
+                    onShowAlbumMenuItemTap(tag: item)
+                }
+                return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem, showAlbumMenuItem])
+            })
+            return config
         }
         else if searchMode == 1
         {
@@ -425,48 +258,32 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         }
         else
         {
-           return nil
+            let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
+                let addArtistToFavAction = UIAction(title: "Add Artist to Favourites", image: heartIcon) { _ in //[unowned self] menuItem in
+                    //onArtistFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+                }
+                return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [addArtistToFavAction])
+            })
+            return config
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
-        if searchMode == 0
-        {
-            return nil
-        }
-        else if searchMode == 1
-        {
-            let indexPath = configuration.identifier as! IndexPath
-            let cell = collectionView.cellForItem(at: indexPath) as! PosterDetailCVCell
-            let previewParameters = UIPreviewParameters()
-            previewParameters.backgroundColor = .clear
-            return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
-        }
-        else
-        {
-            return nil
-        }
+        let indexPath = configuration.identifier as! IndexPath
+        let cell = collectionView.cellForItem(at: indexPath)!
+        let previewParameters = UIPreviewParameters()
+        previewParameters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
     }
     
     override func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
-        if searchMode == 0
-        {
-            return nil
-        }
-        else if searchMode == 1
-        {
-            let indexPath = configuration.identifier as! IndexPath
-            let cell = collectionView.cellForItem(at: indexPath) as! PosterDetailCVCell
-            let previewParamters = UIPreviewParameters()
-            previewParamters.backgroundColor = .clear
-            return UITargetedPreview(view: cell.contentView, parameters: previewParamters)
-        }
-        else
-        {
-            return nil
-        }
+        let indexPath = configuration.identifier as! IndexPath
+        let cell = collectionView.cellForItem(at: indexPath)!
+        let previewParamters = UIPreviewParameters()
+        previewParamters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.contentView, parameters: previewParamters)
     }
 }
 
@@ -591,8 +408,6 @@ extension SearchResultsViewController: UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
     {
         self.searchMode = selectedScope
-        updateSearchResults(forQuery: searchBar.text)
-        collectionView.reloadData()
     }
 }
 

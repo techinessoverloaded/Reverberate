@@ -424,13 +424,18 @@ class PlayerViewController: UITableViewController
     
     func updatePlaylistButtons()
     {
-        guard let playlist = playlist else {
-            return
+        if playlist != nil
+        {
+            previousButton.isEnabled = true
+            nextButton.isEnabled = true
+            shuffleButton.isEnabled = true
         }
-        let song = GlobalVariables.shared.currentSong!
-        previousButton.isEnabled = delegate?.isPreviousSongAvailable(playlist: playlist, currentSong: song) ?? false
-        nextButton.isEnabled = delegate?.isNextSongAvailable(playlist: playlist, currentSong: song) ?? false
-        shuffleButton.isEnabled = true
+        else
+        {
+            previousButton.isEnabled = true
+            nextButton.isEnabled = true
+            shuffleButton.isEnabled = true
+        }
     }
 }
 
@@ -576,7 +581,7 @@ extension PlayerViewController
                 navController.modalPresentationStyle = .pageSheet
                 if let sheet = navController.sheetPresentationController
                 {
-                    sheet.detents = [.medium()]
+                    sheet.detents = [.medium(), .large()]
                     sheet.prefersGrabberVisible = true
                 }
                 self.present(navController, animated: true)

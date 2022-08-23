@@ -13,11 +13,11 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     private var selectedLanguages: [Int16] = []
     
+    var preSelectedLanguages: [Int16]!
+    
     weak var delegate: LanguageSelectionDelegate?
     
-    private var areCellsPreselected: Bool = false
-    
-    private var alreadySelectedLanguages: [Int16]?
+    var areCellsPreselected: Bool = false
     
     var leftBarButtonType: UIBarButtonItem.SystemItem?
     
@@ -34,6 +34,11 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         setupNavBar()
         collectionView.register(SelectionCardCVCell.self, forCellWithReuseIdentifier: SelectionCardCVCell.identifier)
         collectionView.allowsMultipleSelection = true
+        clearsSelectionOnViewWillAppear = false
+        if preSelectedLanguages != nil
+        {
+            selectedLanguages = preSelectedLanguages
+        }
     }
     
     func setupNavBar()
@@ -73,51 +78,6 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
-    {
-        super.viewWillTransition(to: size, with: coordinator)
-        collectionView.collectionViewLayout.invalidateLayout()
-    }
-    
-    func setSelectedLanguages(languages: [Int16])
-    {
-        guard !languages.isEmpty else
-        {
-            return
-        }
-        areCellsPreselected = true
-        alreadySelectedLanguages = languages
-        for language in languages
-        {
-            if !selectedLanguages.contains(language)
-            {
-                //selectedLanguages.append(language)
-                for indexPath in collectionView.indexPathsForVisibleItems
-                {
-                    let section = indexPath.section
-                    let item = indexPath.item
-                    if availableLanguages[section][item] == language
-                    {
-                        // Select
-                        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
-                        collectionView(collectionView, didSelectItemAt: indexPath)
-                    }
-                }
-            }
-        }
-    }
-    
-    override func viewWillLayoutSubviews()
-    {
-        super.viewWillLayoutSubviews()
-    }
-    
-    override func viewDidLayoutSubviews()
-    {
-        super.viewDidLayoutSubviews()
-        delegate?.languageCellsDidLoad()
-    }
-    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int
@@ -133,9 +93,17 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectionCardCVCell.identifier, for: indexPath) as! SelectionCardCVCell
-        let language = Language(rawValue: availableLanguages[indexPath.section][indexPath.item])
-        let (title, subtitle) = language!.titleAndScript
-        return cell.configureCell(title: title, centerText: subtitle, backgroundColor: language!.preferredBackgroundColor)
+        let language = Language(rawValue: availableLanguages[indexPath.section][indexPath.item])!
+        let (title, subtitle) = language.titleAndScript
+        cell.configureCell(title: title, centerText: subtitle, backgroundColor: language.preferredBackgroundColor)
+        if areCellsPreselected
+        {
+            if preSelectedLanguages.contains(language.rawValue)
+            {
+                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+            }
+        }
+        return cell
     }
     
     // MARK: UICollectionViewDelegate
@@ -148,7 +116,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         navigationItem.rightBarButtonItem!.isEnabled = !selectedLanguages.isEmpty
         if areCellsPreselected
         {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedLanguages.sorted() != alreadySelectedLanguages!.sorted()
+            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedLanguages.sorted() != preSelectedLanguages.sorted()
         }
     }
     
@@ -160,7 +128,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         navigationItem.rightBarButtonItem!.isEnabled = !selectedLanguages.isEmpty
         if areCellsPreselected
         {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedLanguages.sorted() != alreadySelectedLanguages!.sorted()
+            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedLanguages.sorted() != preSelectedLanguages.sorted()
         }
     }
 }

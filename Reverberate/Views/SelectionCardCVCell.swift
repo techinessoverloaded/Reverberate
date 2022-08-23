@@ -61,12 +61,11 @@ class SelectionCardCVCell: UICollectionViewCell
         ])
     }
     
-    func configureCell(title: String?, centerText: String?, backgroundColor: UIColor?) -> Self
+    func configureCell(title: String?, centerText: String?, backgroundColor: UIColor?)
     {
         titleLabel.text = title
         centerTextLabel.text = centerText
         self.backgroundColor = backgroundColor
-        return self
     }
     
     override var isSelected: Bool
