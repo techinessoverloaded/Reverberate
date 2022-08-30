@@ -37,7 +37,7 @@ class MiniPlayerView: UIView
     private lazy var songTitleView: MarqueeLabel = {
         let stView = MarqueeLabel(useAutoLayout: true)
         stView.textColor = .systemGray
-        stView.font = .preferredFont(forTextStyle: .body, weight: .bold)
+        stView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
         stView.text = "No song"
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
@@ -122,7 +122,6 @@ class MiniPlayerView: UIView
         controlsView.addSubview(playOrPauseButton)
         controlsView.addSubview(previousButton)
         controlsView.addSubview(nextButton)
-        isOpaque = false
         NSLayoutConstraint.activate([
             backgroundView.widthAnchor.constraint(equalTo: widthAnchor),
             backgroundView.heightAnchor.constraint(equalTo: heightAnchor),
@@ -175,11 +174,11 @@ class MiniPlayerView: UIView
             playOrPauseButton.setImage(playIcon, for: .normal)
             return
         }
-        posterView.image = song.coverArt!
+        posterView.image = song.coverArt
         songTitleView.text = song.title!
         songTitleView.textColor = .label.withAlphaComponent(0.8)
         playOrPauseButton.isEnabled = true
-        totalSongDuration = song.duration!
+        totalSongDuration = song.duration
         updatePlaylistButtons()
     }
     

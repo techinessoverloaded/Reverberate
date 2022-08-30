@@ -14,6 +14,11 @@ public class Album: Playlist
     public var releaseDate: Date? = nil
     public var composers: [Artist]? = nil
     
+    public override static var supportsSecureCoding: Bool
+    {
+        return true
+    }
+    
     public override var description: String
     {
         "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt!), releaseDate = \(releaseDate!))"
@@ -56,6 +61,6 @@ public class Album: Playlist
     
     public var language: String
     {
-        return songs!.first!.language!.description
+        return songs!.first!.language.description
     }
 }

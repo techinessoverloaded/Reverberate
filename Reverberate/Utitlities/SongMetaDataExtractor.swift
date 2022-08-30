@@ -13,20 +13,20 @@ struct SongMetadataExtractor
     
     static func extractSongMetadata(withFileName fileName: String, ofLanguage language: Language, ofGenre genre: MusicGenre) -> Song?
     {
-        let url = Bundle.main.url(forResource: fileName.getNameWithoutExtension(), withExtension: fileName.getExtension())
+        let url = Bundle.main.url(forResource: fileName.getNameWithoutExtension(), withExtension: fileName.getExtension()) as NSURL?
         guard let url = url else
         {
             return nil
         }
         let song = Song()
-        let avUrlAsset = AVURLAsset(url: url)
-        var tempPlayer: AVAudioPlayer! = try! AVAudioPlayer(contentsOf: url)
+        let avUrlAsset = AVURLAsset(url: url as URL)
+        var tempPlayer: AVAudioPlayer! = try! AVAudioPlayer(contentsOf: url as URL)
         print(tempPlayer.duration)
-        song.duration = tempPlayer.duration
+        song.duration = Double(tempPlayer.duration)
         print("Song duration in Seconds: \(song.duration ?? 0)")
         tempPlayer = nil
         song.artists = []
-        song.url = url
+        song.fileName = fileName
         song.genre = genre
         song.language = language
         for metadataItem in avUrlAsset.metadata

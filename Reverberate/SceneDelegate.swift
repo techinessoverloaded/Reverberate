@@ -18,18 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
-        DataManager.shared.makeSongsAndAlbumsReady(onCompletion: {
-            [unowned self] startTime in
-            let endTime = DispatchTime.now()
-            let interval = TimeInterval(endTime.uptimeNanoseconds - startTime.uptimeNanoseconds)
-            print("Time Taken: \(interval / 1000000000) seconds")
-            print("Number of Artists: \(DataManager.shared.availableArtists.count)")
-            print("Number of songs contributed by each artist: \n")
-            DataManager.shared.availableArtists.forEach({
-                print("\($0.name!) : \($0.contributedSongs!.count) songs : \($0.artistType!)")
-            })
-            self.setupRootViewController()
-        })
+        setupRootViewController()
         window!.makeKeyAndVisible()
     }
 

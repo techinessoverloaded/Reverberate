@@ -51,6 +51,7 @@
 		DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556C728740A7000804CB8 /* MainViewController.swift */; };
 		DA4556D028740B2000804CB8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556CF28740B2000804CB8 /* Extensions.swift */; };
 		DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556D128740CD200804CB8 /* GlobalConstants.swift */; };
+		DA46499A28BE417700F92C08 /* SongArtistsViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA46499928BE417700F92C08 /* SongArtistsViewDelegate.swift */; };
 		DA4AC3ED28B35E9800F0B611 /* PlaylistControlsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */; };
 		DA562A902891507E0017EEF2 /* halamathitelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */; };
 		DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */; };
@@ -105,7 +106,6 @@
 		DACBA429289CF85A00DDEBDE /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACBA428289CF85A00DDEBDE /* Song.swift */; };
 		DACF29DA28B50A3000141BCB /* MusicLoopMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF29D928B50A3000141BCB /* MusicLoopMode.swift */; };
 		DACF29DC28B50AB300141BCB /* MusicShuffleMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */; };
-		DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */; };
 		DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF64916287553020061C29B /* CustomTableViewCell.swift */; };
 		DAFC0AE02893D59100EECE4B /* ArtistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */; };
 		DAFC0AE22893D81200EECE4B /* SearchResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */; };
@@ -159,6 +159,7 @@
 		DA4556C728740A7000804CB8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DA4556CF28740B2000804CB8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		DA4556D128740CD200804CB8 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
+		DA46499928BE417700F92C08 /* SongArtistsViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongArtistsViewDelegate.swift; sourceTree = "<group>"; };
 		DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistControlsDelegate.swift; sourceTree = "<group>"; };
 		DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = halamathitelugu.mp3; sourceTree = "<group>"; };
 		DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhanatelugu.mp3; sourceTree = "<group>"; };
@@ -213,7 +214,6 @@
 		DACBA428289CF85A00DDEBDE /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		DACF29D928B50A3000141BCB /* MusicLoopMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicLoopMode.swift; sourceTree = "<group>"; };
 		DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicShuffleMode.swift; sourceTree = "<group>"; };
-		DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reverberate_logo_transparent.png; sourceTree = "<group>"; };
 		DAF64916287553020061C29B /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewController.swift; sourceTree = "<group>"; };
 		DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultDelegate.swift; sourceTree = "<group>"; };
@@ -321,7 +321,6 @@
 		DA455691287402C400804CB8 = {
 			isa = PBXGroup;
 			children = (
-				DADCAE01287445E70017A174 /* reverberate_logo_transparent.png */,
 				DA45569C287402C400804CB8 /* Reverberate */,
 				DA45569B287402C400804CB8 /* Products */,
 				DA2F0C1328A3B0BB003F35F1 /* Frameworks */,
@@ -483,6 +482,7 @@
 				DA67E06528994D3A00593251 /* ArtistDelegate.swift */,
 				DA36C87C28AB5CDE00F18694 /* LibraryTabViewDelegate.swift */,
 				DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */,
+				DA46499928BE417700F92C08 /* SongArtistsViewDelegate.swift */,
 			);
 			path = Abstract;
 			sourceTree = "<group>";
@@ -756,7 +756,6 @@
 				DA252E6D28A54D2600791267 /* jollyogymkhana.mp3 in Resources */,
 				DA252E6328A543DA00791267 /* summasurrunu.mp3 in Resources */,
 				DA252E8B28A55B0500791267 /* mothersong.mp3 in Resources */,
-				DADCAE02287445E70017A174 /* reverberate_logo_transparent.png in Resources */,
 				DA252E6128A543C500791267 /* vaadathambi.mp3 in Resources */,
 				DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */,
 				DA252E7028A54EE500791267 /* paramsundari.mp3 in Resources */,
@@ -853,6 +852,7 @@
 				DA5CE96B2887D90A0066AB2E /* PosterDetailCVCell.swift in Sources */,
 				DA668C6E28769AC8001EE1C9 /* InputValidator.swift in Sources */,
 				DA6C838428800F6F00339937 /* LoginDelegate.swift in Sources */,
+				DA46499A28BE417700F92C08 /* SongArtistsViewDelegate.swift in Sources */,
 				DA5CE9692887C8F40066AB2E /* HeaderCVReusableView.swift in Sources */,
 				DA67F4492889797400062985 /* PlayerDelegate.swift in Sources */,
 				DAFC0AE62893ED7500EECE4B /* StretchyHeaderView.swift in Sources */,

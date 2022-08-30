@@ -20,7 +20,7 @@ struct AlbumSegregator
             if !albums.contains(where: { $0.name! == song.albumName! })
             {
                 let newAlbum = Album()
-                newAlbum.coverArt = song.coverArt!
+                newAlbum.coverArt = song.coverArt
                 newAlbum.songs = []
                 newAlbum.songs!.append(song)
                 newAlbum.name = song.albumName!

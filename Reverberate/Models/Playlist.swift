@@ -19,7 +19,10 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable
         case composersKey = "composersKey"
     }
     
-    public static var supportsSecureCoding: Bool = true
+    open class var supportsSecureCoding: Bool
+    {
+        return true
+    }
     
     public var name: String? = nil
     public var songs: [Song]? = nil

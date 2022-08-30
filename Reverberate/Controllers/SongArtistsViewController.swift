@@ -34,6 +34,8 @@ class SongArtistsViewController: UITableViewController
         return result
     }()
     
+    weak var delegate: SongArtistsViewDelegate?
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -206,7 +208,11 @@ extension SongArtistsViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        
+        let section = Int16(indexPath.section)
+        let item = indexPath.item
+        let artist = artists[ArtistType(rawValue: section)!]![item]
+        self.dismiss(animated: true)
+        delegate?.onArtistDetailViewRequest(artist: artist)
     }
 }
 

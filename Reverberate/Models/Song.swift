@@ -16,7 +16,7 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
         case durationKey = "durationKey"
         case titleKey = "titleKey"
         case artistsKey = "artistsKey"
-        case urlKey = "urlKey"
+        case fileNameKey = "fileNameKey"
         case genreKey = "genreKey"
         case languageKey = "languageKey"
     }
@@ -25,16 +25,21 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
     
     public var albumName: String? = nil
     public var coverArt: UIImage? = nil
-    public var duration: Double? = nil
+    public var duration: Double = 0
     public var title: String? = nil
     public var artists: [Artist]? = nil
-    public var url: URL? = nil
-    public var genre: MusicGenre? = nil
-    public var language: Language? = nil
+    public var fileName: String? = nil
+    public var genre: MusicGenre = .none
+    public var language: Language = .none
+    
+    public var url: URL
+    {
+        return Bundle.main.url(forResource: fileName!.getNameWithoutExtension(), withExtension: fileName!.getExtension())!
+    }
     
     public override var description: String
     {
-        "Song(title = \(title!), artists = \(String(describing: artists)), duration = \(duration!), url = \(url!), albumName = \(albumName!), language = \(String(describing: language)), genre = \(genre), coverArt = \(coverArt!)"
+        "Song(title = \(title!), artists = \(String(describing: artists)), duration = \(duration), fileName = \(fileName), url = \(url), albumName = \(albumName!), language = \(String(describing: language)), genre = \(genre), coverArt = \(coverArt)"
     }
     
     public func encode(with coder: NSCoder)
@@ -43,10 +48,10 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
         coder.encode(coverArt, forKey: CoderKeys.coverArtKey.rawValue)
         coder.encode(duration, forKey: CoderKeys.durationKey.rawValue)
         coder.encode(title, forKey: CoderKeys.titleKey.rawValue)
-        //coder.encode(artists, forKey: CoderKeys.artistsKey.rawValue)
-        coder.encode(url, forKey: CoderKeys.urlKey.rawValue)
-        coder.encode(language?.rawValue, forKey: CoderKeys.languageKey.rawValue)
-        coder.encode(genre?.rawValue, forKey: CoderKeys.genreKey.rawValue)
+        coder.encode(artists, forKey: CoderKeys.artistsKey.rawValue)
+        coder.encode(fileName, forKey: CoderKeys.fileNameKey.rawValue)
+        coder.encode(Int64(language.rawValue), forKey: CoderKeys.languageKey.rawValue)
+        coder.encode(Int64(genre.rawValue), forKey: CoderKeys.genreKey.rawValue)
     }
     
     public required convenience init?(coder: NSCoder)
@@ -54,12 +59,12 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
         self.init()
         self.albumName = coder.decodeObject(forKey: CoderKeys.albumNameKey.rawValue) as? String
         self.title = coder.decodeObject(forKey: CoderKeys.titleKey.rawValue) as? String
-        self.coverArt = coder.decodeObject(forKey: CoderKeys.titleKey.rawValue) as? UIImage
+        self.coverArt = coder.decodeObject(forKey: CoderKeys.coverArtKey.rawValue) as? UIImage
         self.duration = coder.decodeDouble(forKey: CoderKeys.durationKey.rawValue)
-        self.url = coder.decodeObject(forKey: CoderKeys.urlKey.rawValue) as? URL
-        self.language = Language(rawValue: Int16(coder.decodeInteger(forKey: CoderKeys.languageKey.rawValue)))
-        self.genre = MusicGenre(rawValue: Int16(coder.decodeInteger(forKey: CoderKeys.genreKey.rawValue)))
-        //self.artists = coder.decodeObject(forKey: CoderKeys.artistsKey.rawValue) as? [ArtistWrapper]
+        self.fileName = coder.decodeObject(forKey: CoderKeys.fileNameKey.rawValue) as? String
+        self.language = Language(rawValue: Int16(coder.decodeInteger(forKey: CoderKeys.languageKey.rawValue)))!
+        self.genre = MusicGenre(rawValue: Int16(coder.decodeInteger(forKey: CoderKeys.genreKey.rawValue)))!
+        self.artists = coder.decodeObject(forKey: CoderKeys.artistsKey.rawValue) as? [Artist]
     }
     
     public override init()

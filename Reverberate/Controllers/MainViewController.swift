@@ -466,7 +466,7 @@ extension MainViewController
     
     @objc func onSongChange()
     {
-        GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url!)
+        GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url as URL)
         GlobalVariables.shared.avAudioPlayer.delegate = self
         avAudioPlayer = GlobalVariables.shared.avAudioPlayer
         avAudioPlayer.play()

@@ -9,7 +9,7 @@ import UIKit
 
 @objc public enum MusicGenre: Int16, CaseIterable, CustomStringConvertible
 {
-    case classical = 0, melody, western, rock, folk
+    case classical = 0, melody, western, rock, folk, none = -1
     
     public var description: String
     {
@@ -25,6 +25,8 @@ import UIKit
             return "Rock"
         case .folk:
             return "Folk"
+        case .none:
+            return "None"
         }
     }
     
@@ -42,6 +44,8 @@ import UIKit
             return .systemPink
         case .western:
             return .systemPurple
+        case .none:
+            return .clear
         }
     }
 }

@@ -134,7 +134,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
             config.text = song.title!
             config.secondaryText = song.getArtistNamesAsString(artistType: nil)
             config.imageProperties.cornerRadius = 10
-            config.image = song.coverArt!
+            config.image = song.coverArt
             config.textProperties.adjustsFontForContentSizeCategory = true
             config.textProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.adjustsFontForContentSizeCategory = true

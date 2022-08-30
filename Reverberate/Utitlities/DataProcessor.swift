@@ -35,7 +35,7 @@ class DataProcessor
         var result: [Song] = []
         for song in DataManager.shared.availableSongs
         {
-            if song.albumName!.lowercased().contains(query) || song.title!.lowercased().contains(query) || song.language!.description.lowercased().contains(query) || song.genre!.description.lowercased().contains(query) || song.artists!.contains(where: { $0.name!.lowercased().contains(query) })
+            if song.albumName!.lowercased().contains(query) || song.title!.lowercased().contains(query) || song.language.description.lowercased().contains(query) || song.genre.description.lowercased().contains(query) || song.artists!.contains(where: { $0.name!.lowercased().contains(query) })
             {
                 result.appendUniquely(song)
             }
@@ -50,8 +50,8 @@ class DataProcessor
         {
             if album.name!.lowercased().contains(query) || album.songs!.contains(where: {
                 $0.title!.lowercased().contains(query) ||
-                $0.language!.description.lowercased().contains(query) ||
-                $0.genre!.description.lowercased().contains(query) ||
+                $0.language.description.lowercased().contains(query) ||
+                $0.genre.description.lowercased().contains(query) ||
                 $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
             {
                 result.appendUniquely(album)
@@ -104,25 +104,25 @@ class DataProcessor
         case .topCharts:
             result.append(contentsOf: DataManager.shared.availableSongs.shuffled())
         case .tamil:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language! == .tamil }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language == .tamil }))
         case .malayalam:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language! == .malayalam }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language == .malayalam }))
         case .kannada:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language! == .kannada }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language == .kannada }))
         case .telugu:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language! == .telugu }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language == .telugu }))
         case .hindi:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language! == .hindi }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.language == .hindi }))
         case .melody:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre! == .melody }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre == .melody }))
         case .western:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre! == .western }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre == .western }))
         case .classical:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre! == .classical }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre == .classical }))
         case .rock:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre! == .rock }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre == .rock }))
         case .folk:
-            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre! == .folk }))
+            result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre == .folk }))
         case .recentlyPlayed:
             result.append(contentsOf: DataManager.shared.availableSongs.shuffled())
         }
@@ -143,25 +143,25 @@ class DataProcessor
         case .topCharts:
             result.append(contentsOf: DataManager.shared.availableAlbums.shuffled())
         case .tamil:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language! == .tamil }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language == .tamil }) })
         case .malayalam:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language! == .malayalam }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language == .malayalam }) })
         case .kannada:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language! == .kannada }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language == .kannada }) })
         case .telugu:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language! == .telugu }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language == .telugu }) })
         case .hindi:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language! == .hindi }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.language == .hindi }) })
         case .melody:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre! == .melody }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre == .melody }) })
         case .western:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre! == .western }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre == .western }) })
         case .classical:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre! == .classical }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre == .classical }) })
         case .rock:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre! == .rock }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre == .rock }) })
         case .folk:
-            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre! == .folk }) })
+            result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre == .folk }) })
         case .recentlyPlayed:
             result.append(contentsOf: DataManager.shared.availableAlbums.shuffled())
         }

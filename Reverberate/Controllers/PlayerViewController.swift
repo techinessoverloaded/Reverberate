@@ -369,7 +369,7 @@ class PlayerViewController: UITableViewController
             print(currentPlaylist)
             playlistTitleView.text = currentPlaylist.name!
             let song = GlobalVariables.shared.currentSong!
-            posterView.image = song.coverArt!
+            posterView.image = song.coverArt
             songTitleView.text = song.title!
             songArtistsView.text = song.getArtistNamesAsString(artistType: nil)
             let songDuration = Float(GlobalVariables.shared.avAudioPlayer.duration)
@@ -384,7 +384,7 @@ class PlayerViewController: UITableViewController
         {
             let song = GlobalVariables.shared.currentSong!
             playlistTitleView.text = song.albumName!
-            posterView.image = song.coverArt!
+            posterView.image = song.coverArt
             songTitleView.text = song.title!
             songArtistsView.text = song.getArtistNamesAsString(artistType: nil)
             songSlider.minimumValue = 0.0
@@ -577,6 +577,7 @@ extension PlayerViewController
             if item == 3
             {
                 let songArtistsController = SongArtistsViewController(style: .insetGrouped)
+                songArtistsController.delegate = self
                 let navController = UINavigationController(rootViewController: songArtistsController)
                 navController.modalPresentationStyle = .pageSheet
                 if let sheet = navController.sheetPresentationController
@@ -745,3 +746,12 @@ extension PlayerViewController: UIGestureRecognizerDelegate
     }
 }
 
+extension PlayerViewController: SongArtistsViewDelegate
+{
+    func onArtistDetailViewRequest(artist: Artist)
+    {
+        let artistVc = ArtistViewController(style: .grouped)
+        artistVc.artist = DataProcessor.shared.getArtist(named: artist.name!)
+        self.navigationController?.pushViewController(artistVc, animated: true)
+    }
+}

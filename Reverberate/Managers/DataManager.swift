@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class DataManager
 {
@@ -17,6 +18,12 @@ class DataManager
     private(set) var availableAlbums: [Album] = []
     
     private(set) var availableArtists: [Artist] = []
+    
+    private lazy var songCacheKey = "songCache"
+    
+    private lazy var albumCacheKey = "albumCache"
+    
+    private lazy var artistCacheKey = "artistCache"
     
     // Prevent Instantiation
     private init() {}
@@ -76,9 +83,76 @@ class DataManager
     func makeSongsAndAlbumsReady(onCompletion completionHandler: ((DispatchTime) -> Void)? = nil)
     {
         let start = DispatchTime.now()
-        availableSongs = getSongs()
-        availableAlbums = AlbumSegregator.segregateAlbums(unsegregatedSongs: availableSongs)
-        availableArtists = getArtists()
+        if let cachedSongs = tryRetrieveDataFromCache(typeOfData: Song.self, fileName: songCacheKey)
+        {
+            print("Songs available in cache")
+            availableSongs = cachedSongs as! [Song]
+        }
+        else
+        {
+            availableSongs = getSongs()
+            persistDataToCache(fileName: songCacheKey)
+        }
+        if let cachedAlbums = tryRetrieveDataFromCache(typeOfData: Album.self, fileName: albumCacheKey)
+        {
+            print("Albums available in cache")
+            availableAlbums = cachedAlbums as! [Album]
+        }
+        else
+        {
+            availableAlbums = AlbumSegregator.segregateAlbums(unsegregatedSongs: availableSongs)
+            persistDataToCache(fileName: albumCacheKey)
+        }
+        if let cachedArtists = tryRetrieveDataFromCache(typeOfData: Artist.self, fileName: artistCacheKey)
+        {
+            print("Artists available in cache")
+            availableArtists = cachedArtists as! [Artist]
+        }
+        else
+        {
+            availableArtists = getArtists()
+            persistDataToCache(fileName: artistCacheKey)
+        }
         completionHandler?(start)
+    }
+    
+    private func getUrlOfDataInCacheDirectory(dataFileName: String) -> URL
+    {
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent(dataFileName)
+    }
+    
+    private func persistDataToCache(fileName: String)
+    {
+        DispatchQueue.global(qos: .background).async
+        { [unowned self] in
+            let dataUrl = getUrlOfDataInCacheDirectory(dataFileName: fileName)
+            let objectToBeWritten: NSArray = fileName == songCacheKey ? NSArray(array: availableSongs) : ( fileName == albumCacheKey ? NSArray(array: availableAlbums) : NSArray(array: availableArtists))
+            let data = try! NSKeyedArchiver.archivedData(withRootObject: objectToBeWritten, requiringSecureCoding: true)
+            do
+            {
+                try data.write(to: dataUrl, options: .noFileProtection)
+            }
+            catch
+            {
+                print(error)
+            }
+        }
+    }
+    
+    private func tryRetrieveDataFromCache<T>(typeOfData type: T, fileName: String) -> NSArray?
+    {
+        let dataUrl = getUrlOfDataInCacheDirectory(dataFileName: fileName)
+        let data = try? Data(contentsOf: dataUrl)
+        guard let data = data else { return nil }
+        let objects = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
+        guard let objects = objects else { return nil }
+        if let rawArray = objects as? NSArray
+        {
+            return rawArray
+        }
+        else
+        {
+            return nil
+        }
     }
 }

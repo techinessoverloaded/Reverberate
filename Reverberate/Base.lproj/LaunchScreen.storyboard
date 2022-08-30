@@ -3,8 +3,8 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -12,24 +12,30 @@
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                    <view key="view" contentMode="scaleToFill" id="wja-13-UVP">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="reverberate_logo_transparent" translatesAutoresizingMaskIntoConstraints="NO" id="hef-HS-mr0">
-                                <rect key="frame" x="-39" y="194.5" width="492" height="507"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dark_gradient_bg" translatesAutoresizingMaskIntoConstraints="NO" id="KVt-cC-fHU">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="reverberate_logo_transparent" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="68h-Dg-l83">
+                                <rect key="frame" x="7" y="248" width="400" height="400"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="hef-HS-mr0" secondAttribute="height" multiplier="164:169" id="UCR-7C-aLU"/>
+                                    <constraint firstAttribute="height" constant="400" id="DCQ-Bn-ey2"/>
+                                    <constraint firstAttribute="width" constant="400" id="Qv6-2b-9S0"/>
                                 </constraints>
-                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="17" scale="medium"/>
                             </imageView>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" name="techinessColor"/>
-                        <color key="tintColor" name="techinessColor"/>
+                        <viewLayoutGuide key="safeArea" id="u57-zi-8Kn"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="hef-HS-mr0" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="0pg-en-v4q"/>
-                            <constraint firstItem="hef-HS-mr0" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="bni-TS-8sa"/>
+                            <constraint firstAttribute="bottom" secondItem="KVt-cC-fHU" secondAttribute="bottom" id="FvG-ba-m1a"/>
+                            <constraint firstItem="68h-Dg-l83" firstAttribute="centerX" secondItem="wja-13-UVP" secondAttribute="centerX" id="SLt-Qa-387"/>
+                            <constraint firstAttribute="trailing" secondItem="KVt-cC-fHU" secondAttribute="trailing" id="YWC-0p-iyG"/>
+                            <constraint firstItem="KVt-cC-fHU" firstAttribute="top" secondItem="wja-13-UVP" secondAttribute="top" id="lpC-Qm-BMZ"/>
+                            <constraint firstItem="KVt-cC-fHU" firstAttribute="leading" secondItem="wja-13-UVP" secondAttribute="leading" id="omO-Bz-77i"/>
+                            <constraint firstItem="68h-Dg-l83" firstAttribute="centerY" secondItem="wja-13-UVP" secondAttribute="centerY" id="pEz-G7-EH4"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -39,9 +45,10 @@
         </scene>
     </scenes>
     <resources>
+        <image name="dark_gradient_bg" width="1440" height="3168"/>
         <image name="reverberate_logo_transparent" width="492" height="507"/>
-        <namedColor name="techinessColor">
-            <color red="0.074509803921568626" green="0.51372549019607838" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>
