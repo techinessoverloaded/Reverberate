@@ -46,6 +46,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             userDefaults.set([], forKey: GlobalConstants.preferredGenres)
         }
         
+        if UserDefaults.standard.value(forKey: GlobalConstants.recentlyPlayedSongNames) != nil
+        {
+            GlobalVariables.shared.recentlyPlayedSongNames = Set(UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as! [String])
+            print(GlobalVariables.shared.recentlyPlayedSongNames)
+        }
+        
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
             window!.rootViewController = InitialViewController(style: .insetGrouped)
@@ -158,8 +164,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        let recentlyPlayedSongNames = GlobalVariables.shared.recentlyPlayedSongNames
+        print(recentlyPlayedSongNames.count)
+        if !recentlyPlayedSongNames.isEmpty
+        {
+            let existingSongNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as? [String]
+            if existingSongNames == nil || existingSongNames!.isEmpty
+            {
+                UserDefaults.standard.set(Array(recentlyPlayedSongNames), forKey: GlobalConstants.recentlyPlayedSongNames)
+            }
+            else
+            {
+                var namesAsArray = Array(recentlyPlayedSongNames)
+                namesAsArray.append(contentsOf: Array(Set(existingSongNames!)))
+                UserDefaults.standard.set(namesAsArray, forKey: GlobalConstants.recentlyPlayedSongNames)
+            }
+        }
     }
-
-
 }
 

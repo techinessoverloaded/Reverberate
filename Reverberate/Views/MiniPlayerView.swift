@@ -38,7 +38,7 @@ class MiniPlayerView: UIView
         let stView = MarqueeLabel(useAutoLayout: true)
         stView.textColor = .systemGray
         stView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
-        stView.text = "No song"
+        stView.text = "Not Playing"
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true
@@ -109,8 +109,27 @@ class MiniPlayerView: UIView
     
     private var totalSongDuration: Double = 0
     
-    weak var delegate: MiniPlayerDelegate?
+    private var controlViewWidthMultiplier: CGFloat
+    {
+        if isIpad
+        {
+            return 1/5
+        }
+        else
+        {
+            if isInPortraitMode
+            {
+                return 1/3
+            }
+            else
+            {
+                return 1/4
+            }
+        }
+    }
     
+    weak var delegate: MiniPlayerDelegate?
+
     override init(frame: CGRect)
     {
         super.init(frame: frame)
@@ -134,14 +153,14 @@ class MiniPlayerView: UIView
             songTitleView.leadingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 10),
             songTitleView.centerYAnchor.constraint(equalTo: centerYAnchor),
             songTitleView.trailingAnchor.constraint(equalTo: controlsView.leadingAnchor, constant: -10),
-            controlsView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.35),
             controlsView.heightAnchor.constraint(equalTo: heightAnchor),
+            controlsView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: controlViewWidthMultiplier),
             controlsView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            previousButton.trailingAnchor.constraint(equalTo: playOrPauseButton.leadingAnchor, constant: -8),
+            previousButton.leadingAnchor.constraint(equalTo: controlsView.leadingAnchor),
             previousButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
             playOrPauseButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
             playOrPauseButton.centerXAnchor.constraint(equalTo: controlsView.centerXAnchor),
-            nextButton.leadingAnchor.constraint(equalTo: playOrPauseButton.trailingAnchor, constant: 8),
+            nextButton.trailingAnchor.constraint(equalTo: controlsView.trailingAnchor),
             nextButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),
             songDurationView.widthAnchor.constraint(equalTo: widthAnchor),
             songDurationView.heightAnchor.constraint(equalToConstant: 2),
@@ -156,7 +175,6 @@ class MiniPlayerView: UIView
         self.addGestureRecognizer(tapRecognizer)
         swipeGestureRecognizer.addTarget(self, action: #selector(onMiniPlayerViewSwipe(_:)))
         self.addGestureRecognizer(swipeGestureRecognizer)
-        print(playOrPauseButton.isEnabled)
     }
     
     required init(coder: NSCoder)
@@ -168,7 +186,7 @@ class MiniPlayerView: UIView
     {
         guard let song = GlobalVariables.shared.currentSong else {
             songTitleView.textColor = .systemGray
-            songTitleView.text = "No song"
+            songTitleView.text = "Not Playing"
             posterView.image = UIImage(named: "glassmorphic_bg")!
             playOrPauseButton.isEnabled = false
             playOrPauseButton.setImage(playIcon, for: .normal)

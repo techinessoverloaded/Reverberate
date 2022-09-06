@@ -637,6 +637,7 @@ extension ProfileViewController: LanguageSelectionDelegate
         {
             UserDefaults.standard.set(selectedLanguages, forKey: GlobalConstants.preferredLanguages)
         }
+        NotificationCenter.default.post(name: .languageGenreChangeNotification, object: nil)
     }
 }
 
@@ -653,6 +654,7 @@ extension ProfileViewController: GenreSelectionDelegate
         {
             UserDefaults.standard.set(selectedGenres, forKey: GlobalConstants.preferredGenres)
         }
+        NotificationCenter.default.post(name: .languageGenreChangeNotification, object: nil)
     }
 }
 

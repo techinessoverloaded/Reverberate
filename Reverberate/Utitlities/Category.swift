@@ -43,4 +43,42 @@ enum Category: Int, CaseIterable, CustomStringConvertible
             return "Recently Played"
         }
     }
+    
+    static func getCategoryOfLanguage(_ language: Language) -> Self?
+    {
+        switch language
+        {
+        case .tamil:
+            return .tamil
+        case .malayalam:
+            return .malayalam
+        case .telugu:
+            return .telugu
+        case .hindi:
+            return .hindi
+        case .kannada:
+            return .kannada
+        case .none:
+            return nil
+        }
+    }
+    
+    static func getCategoryOfGenre(_ genre: MusicGenre) -> Self?
+    {
+        switch genre
+        {
+        case .classical:
+            return .classical
+        case .melody:
+            return .melody
+        case .western:
+            return .western
+        case .rock:
+            return .rock
+        case .folk:
+            return .folk
+        case .none:
+            return nil
+        }
+    }
 }

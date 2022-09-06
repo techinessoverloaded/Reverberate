@@ -158,7 +158,8 @@ extension LoginViewController: UITextFieldDelegate
                     emailCumPhoneErrorLabel.text = "Required"
                     emailCumPhoneErrorLabel.isHidden = false
                 }
-                else if !InputValidator.validateEmail(email)
+                else
+                if !InputValidator.validateEmail(email)
                 {
                     textField.isInvalid = true
                     emailCumPhoneErrorLabel.text = "Entered Email Address is Invalid !"
@@ -180,7 +181,8 @@ extension LoginViewController: UITextFieldDelegate
                     emailCumPhoneErrorLabel.text = "Required"
                     emailCumPhoneErrorLabel.isHidden = false
                 }
-                else if !InputValidator.validatePhone(phone)
+                else
+                if !InputValidator.validatePhone(phone)
                 {
                     textField.isInvalid = true
                     emailCumPhoneErrorLabel.text = "Entered Phone Number is Invalid !"

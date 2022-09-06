@@ -11,26 +11,7 @@ import MediaPlayer
 
 class MainViewController: UITabBarController
 {
-    private lazy var homeVC = HomeViewController(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex , _ -> NSCollectionLayoutSection? in
-        
-        //Item
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(520), heightDimension: .absolute(220)))
-        
-        //Group
-        let groupSize: NSCollectionLayoutSize!
-        let group: NSCollectionLayoutGroup!
-        groupSize = NSCollectionLayoutSize(widthDimension: .absolute(520), heightDimension: .absolute(220))
-        group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
-        
-        //Section
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 15
-        section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 5, trailing: 20)
-        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
-        return section
-    }))
+    private lazy var homeVC = createHomeVc()
 
     private lazy var searchVC = SearchViewController(collectionViewLayout: UICollectionViewFlowLayout())
     
@@ -58,7 +39,6 @@ class MainViewController: UITabBarController
     {
         super.loadView()
         tabBar.isTranslucent = true
-        homeVC.title = "Home"
         searchVC.title = "Search"
         libraryVC.title = "Your Library"
         profileVC.title = "Your Profile"
@@ -98,6 +78,32 @@ class MainViewController: UITabBarController
         item.selectedImage = UIImage(systemName: self.selectedImageNames[index])
     }
     
+    func createHomeVc() -> HomeViewController
+    {
+        let result = HomeViewController(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex , _ -> NSCollectionLayoutSection? in
+            
+            //Item
+            let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(520), heightDimension: .absolute(220)))
+            
+            //Group
+            let groupSize: NSCollectionLayoutSize!
+            let group: NSCollectionLayoutGroup!
+            groupSize = NSCollectionLayoutSize(widthDimension: .absolute(520), heightDimension: .absolute(220))
+            group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
+            group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
+            
+            //Section
+            let section = NSCollectionLayoutSection(group: group)
+            section.interGroupSpacing = 15
+            section.orthogonalScrollingBehavior = .continuous
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 5, trailing: 20)
+            section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
+            return section
+        }))
+        result.title = "Home"
+        return result
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -106,10 +112,10 @@ class MainViewController: UITabBarController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
-        print("Main View Controller")
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.addObserver(self, selector: #selector(handleLanguageGenreSelectionChange(notification:)), name: .languageGenreChangeNotification, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -117,6 +123,7 @@ class MainViewController: UITabBarController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.removeObserver(self, name: .languageGenreChangeNotification, object: nil)
     }
     
     func showPlayerController(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -127,19 +134,12 @@ class MainViewController: UITabBarController
         playerController.setPlaying(shouldPlaySongFromBeginning: shouldPlaySongFromBeginning, isSongPaused: isSongPaused)
         playerController.setLoopButton(loopMode: avAudioPlayer.numberOfLoops)
         navController.modalPresentationStyle = .overFullScreen
-        navController.modalTransitionStyle = .crossDissolve
+        navController.modalTransitionStyle = .coverVertical
         navController.navigationBar.isTranslucent = true
-        if let sheet = navController.sheetPresentationController
-        {
-            sheet.prefersGrabberVisible = true
-        }
         UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCrossDissolve], animations: { [unowned self] in
             self.miniPlayerView.alpha = 0
-        }, completion: { _ in
-            UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCurlUp], animations: { [unowned self] in
-                self.present(navController, animated: false)
-            }, completion: nil)
-        })
+            self.present(navController, animated: true)
+        }, completion: nil)
     }
     
     func setupMPCommandCenter()
@@ -415,6 +415,11 @@ extension MainViewController
         miniPlayerView.updateSongDurationView(newValue: currentTime)
     }
     
+    @objc func handleLanguageGenreSelectionChange(notification: Notification)
+    {
+        replaceViewController(index: 0, newViewController: UINavigationController(rootViewController: createHomeVc()))
+    }
+    
     @objc func handleAudioSessionInterruptionChange(notification: Notification)
     {
         guard let userInfo = notification.userInfo,
@@ -479,6 +484,7 @@ extension MainViewController
             setupMPCommandCenter()
             hasSetupMPCommandCenter = true
         }
+        GlobalVariables.shared.recentlyPlayedSongNames.insert(GlobalVariables.shared.currentSong!.title!)
     }
     
     @objc func onPlaylistChange()

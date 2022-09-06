@@ -41,7 +41,6 @@ class CustomTableViewCell: UITableViewCell
     override func layoutSubviews()
     {
         super.layoutSubviews()
-        print("layoutSubviews")
         if !useAutoLayout
         {
             subView.frame = contentView.bounds

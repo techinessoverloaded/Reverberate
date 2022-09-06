@@ -18,6 +18,7 @@ class GlobalConstants
     static let currentUserId = "cUrReNt_UsEr_Id"
     static let preferredLanguages = "pReFeRrEd_lAnGuAgEs"
     static let preferredGenres = "PrEfErReD_gEnReS"
+    static let recentlyPlayedSongNames = "rEcEnTlYpLaYeDsOnGnAmEs"
     //Asset color names
     static let techinessColor = "techinessColor"
     static let darkGreenColor = "darkGreenColor"

@@ -233,6 +233,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         if searchMode == 0
         {
             let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
+                let user = GlobalVariables.shared.currentUser!
                 let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
                     onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
                 }

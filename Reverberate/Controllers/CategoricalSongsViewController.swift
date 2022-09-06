@@ -100,7 +100,7 @@ class CategoricalSongsViewController: UITableViewController
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             var menuButtonConfig = UIButton.Configuration.plain()
-            menuButtonConfig.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
+            menuButtonConfig.baseForegroundColor = .systemGray
             menuButtonConfig.image = UIImage(systemName: "ellipsis")!
             menuButtonConfig.buttonSize = .medium
             let menuButton = UIButton(configuration: menuButtonConfig)
@@ -131,7 +131,7 @@ class CategoricalSongsViewController: UITableViewController
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             var menuButtonConfig = UIButton.Configuration.plain()
-            menuButtonConfig.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
+            menuButtonConfig.baseForegroundColor = .systemGray
             menuButtonConfig.image = UIImage(systemName: "ellipsis")!
             menuButtonConfig.buttonSize = .medium
             let menuButton = UIButton(configuration: menuButtonConfig)
@@ -146,6 +146,7 @@ class CategoricalSongsViewController: UITableViewController
             cell.accessoryView = menuButton
         }
         cell.contentConfiguration = config
+        cell.backgroundColor = .clear
         return cell
     }
     
@@ -185,7 +186,10 @@ class CategoricalSongsViewController: UITableViewController
         }
         else
         {
-            tableView.deselectRow(at: indexPath, animated: true)
+            let albumVC = PlaylistViewController(style: .grouped)
+            albumVC.playlist = albums[item]
+            albumVC.delegate = GlobalVariables.shared.mainTabController
+            self.navigationController?.pushViewController(albumVC, animated: true)
         }
     }
 }

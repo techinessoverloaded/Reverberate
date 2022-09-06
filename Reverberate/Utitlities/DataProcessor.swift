@@ -30,6 +30,11 @@ class DataProcessor
         return DataManager.shared.availableArtists.first(where: { $0.name! == artistName })
     }
     
+    func getSong(named songName: String) -> Song?
+    {
+        return DataManager.shared.availableSongs.first(where: { $0.title! == songName })
+    }
+    
     func getSongsThatSatisfy(theQuery query: String) -> [Song]?
     {
         var result: [Song] = []
@@ -124,7 +129,9 @@ class DataProcessor
         case .folk:
             result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre == .folk }))
         case .recentlyPlayed:
-            result.append(contentsOf: DataManager.shared.availableSongs.shuffled())
+            GlobalVariables.shared.recentlyPlayedSongNames.forEach{
+                result.append(getSong(named: $0)!)
+            }
         }
         return limit == -1 ? result : Array(result[0..<min(limit, result.count)])
     }

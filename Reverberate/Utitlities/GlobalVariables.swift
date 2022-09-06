@@ -34,6 +34,8 @@ class GlobalVariables
         }
     }
     
+    var recentlyPlayedSongNames: Set<String> = []
+    
     var currentUser: User? = nil
     
     var mainTabController: MainViewController!

@@ -65,7 +65,7 @@ class PlayerViewController: UITableViewController
     private lazy var playlistTitleView: MarqueeLabel = {
         let atView = MarqueeLabel(useAutoLayout: true)
         atView.textColor = .label.withAlphaComponent(0.8)
-        atView.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+        atView.font = .preferredFont(forTextStyle: .title1, weight: .semibold)
         atView.numberOfLines = 2
         atView.lineBreakMode = .byTruncatingTail
         atView.isUserInteractionEnabled = true
@@ -88,7 +88,7 @@ class PlayerViewController: UITableViewController
     private lazy var songTitleView: MarqueeLabel = {
         let stView = MarqueeLabel(useAutoLayout: true)
         stView.textColor = .label.withAlphaComponent(0.8)
-        stView.font = .preferredFont(forTextStyle: .title2, weight: .bold)
+        stView.font = .preferredFont(forTextStyle: .title2, weight: .semibold)
         stView.numberOfLines = 2
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true
@@ -100,7 +100,7 @@ class PlayerViewController: UITableViewController
     private lazy var songArtistsView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
         stView.textColor = .label.withAlphaComponent(0.8)
-        stView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
+        stView.font = .preferredFont(forTextStyle: .body, weight: .regular)
         stView.numberOfLines = 4
         stView.lineBreakMode = .byTruncatingTail
         stView.lineBreakStrategy = .standard
@@ -289,6 +289,10 @@ class PlayerViewController: UITableViewController
             UIBarButtonItem(customView: addToPlaylistsButton),
             UIBarButtonItem(customView: favouriteButton)
         ]
+        let grabberView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 6))
+        grabberView.layer.cornerRadius = 3
+        grabberView.backgroundColor = .systemFill
+        navigationItem.titleView = grabberView
         addToPlaylistsButton.isEnabled = false
         view.backgroundColor = .clear
         tableView.backgroundColor = .clear
@@ -299,9 +303,7 @@ class PlayerViewController: UITableViewController
         swipeGestureRecognizer.addTarget(self, action: #selector(onPlayerSwipeAction(_:)))
         panGestureRecognizer.addTarget(self, action: #selector(onPlayerPanAction(_:)))
         panGestureRecognizer.delegate = self
-        navigationController?.view.addGestureRecognizer(swipeGestureRecognizer)
-        tableView.addGestureRecognizer(panGestureRecognizer)
-        navigationController?.view.isUserInteractionEnabled = true
+        navigationController?.view.addGestureRecognizer(panGestureRecognizer)
         playOrPauseButton.addTarget(self, action: #selector(onPlayOrPauseButtonTap(_:)), for: .touchUpInside)
         rewindButton.addTarget(self, action: #selector(onRewindButtonTap(_:)), for: .touchUpInside)
         forwardButton.addTarget(self, action: #selector(onForwardButtonTap(_:)), for: .touchUpInside)
@@ -345,6 +347,7 @@ class PlayerViewController: UITableViewController
     override func viewDidDisappear(_ animated: Bool)
     {
         super.viewDidDisappear(animated)
+        navigationController?.view.removeGestureRecognizer(panGestureRecognizer)
         caDisplayLinkTimer.invalidate()
     }
     
@@ -720,21 +723,48 @@ extension PlayerViewController
     
     @objc func onPlayerPanAction(_ recognizer: UIPanGestureRecognizer)
     {
-        if recognizer.state == .began && tableView.contentOffset.y == 0
-        {
-
-        }
-        else if recognizer.state != .ended && recognizer.state != .cancelled && recognizer.state != .failed
-        {
-            let panOffset = recognizer.translation(in: tableView)
-            let eligiblePanOffset = panOffset.y > 300
-            if eligiblePanOffset
+        let touchPoint = recognizer.location(in: view.window)
+        var initialTouchPoint = CGPoint.zero
+        switch recognizer.state {
+            case .began:
+                initialTouchPoint = touchPoint
+            case .changed:
+                if touchPoint.y > initialTouchPoint.y {
+                    UIView.animate(withDuration: 0.05, delay: 0, animations: { [unowned self] in
+                        self.navigationController!.view.frame.origin.y = touchPoint.y - initialTouchPoint.y
+                    })
+                }
+            case .ended, .cancelled:
+                if touchPoint.y - initialTouchPoint.y > 200 {
+                    delegate?.onPlayerShrinkRequest()
+                }
+            else
             {
-                recognizer.isEnabled = false
-                recognizer.isEnabled = true
-                delegate?.onPlayerShrinkRequest()
-            }
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.navigationController!.view.frame = CGRect(x: 0, y: 0, width: self.navigationController!.view.frame.size.width,
+                        height: self.navigationController!.view.frame.size.height)
+                    })
+                }
+        case .failed , .possible:
+            break
+        @unknown default:
+            break
         }
+//        if recognizer.state == .began && tableView.contentOffset.y == 0
+//        {
+//
+//        }
+//        else if recognizer.state != .ended && recognizer.state != .cancelled && recognizer.state != .failed
+//        {
+//            let panOffset = recognizer.translation(in: tableView)
+//            let eligiblePanOffset = panOffset.y > 300
+//            if eligiblePanOffset
+//            {
+//                recognizer.isEnabled = false
+//                recognizer.isEnabled = true
+//                delegate?.onPlayerShrinkRequest()
+//            }
+//        }
     }
 }
 

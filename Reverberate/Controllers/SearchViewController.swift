@@ -40,10 +40,8 @@ class SearchViewController: UICollectionViewController
     {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
-        collectionView.contentInsetAdjustmentBehavior = .always
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 70, right: 20)
         collectionView.register(TitleCardCVCell.self, forCellWithReuseIdentifier: TitleCardCVCell.identifier)
-        //collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.backgroundColor = .clear
         navigationController?.navigationBar.prefersLargeTitles = true

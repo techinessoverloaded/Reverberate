@@ -9,19 +9,7 @@ import MediaPlayer
 
 class HomeViewController: UICollectionViewController
 {
-    static var compositionalLayout: UICollectionViewCompositionalLayout = UICollectionViewCompositionalLayout(sectionProvider: {
-        sectionIndex , _ -> NSCollectionLayoutSection? in
-        createSectionLayout(section: sectionIndex)
-    })
-    
-    private lazy var songs : [Category : [Song]] = {
-        var result: [Category: [Song]] = [:]
-        Category.allCases.forEach
-        {
-            result[$0] = DataProcessor.shared.getSongsOf(category: $0, andLimitNumberOfResultsTo: 10)
-        }
-        return result
-    }()
+    private lazy var songs : [Category : [Song]] = prepareSongs()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -40,27 +28,43 @@ class HomeViewController: UICollectionViewController
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear
         collectionView.bounces = true
-//        collectionView.alwaysBounceHorizontal = true
     }
     
-    static func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
+    func prepareSongs() -> [Category : [Song]]
     {
-        //Item
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-        
-        //Group
-        let groupSize: NSCollectionLayoutSize!
-        let group: NSCollectionLayoutGroup!
-        groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(220))
-        group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
-        
-        //Section
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 15
-        section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
-        return section
+        var result: [Category: [Song]] = [:]
+        result[.recentlyPlayed] = DataProcessor.shared.getSongsOf(category: .recentlyPlayed, andLimitNumberOfResultsTo: 10)
+        result[.starter] = DataProcessor.shared.getSongsOf(category: .starter, andLimitNumberOfResultsTo: 10)
+        result[.topCharts] = DataProcessor.shared.getSongsOf(category: .topCharts, andLimitNumberOfResultsTo: 10)
+        result[.newReleases] = DataProcessor.shared.getSongsOf(category: .newReleases, andLimitNumberOfResultsTo: 10)
+        print(result.keys)
+        if !SessionManager.shared.isUserLoggedIn
+        {
+            let preferredLanguages = UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16]
+            let preferredGenres = UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16]
+            preferredLanguages.forEach {
+                let category = Category.getCategoryOfLanguage(Language(rawValue: $0)!)!
+                result[category] = DataProcessor.shared.getSongsOf(category: category, andLimitNumberOfResultsTo: 10)
+            }
+            preferredGenres.forEach {
+                let category = Category.getCategoryOfGenre(MusicGenre(rawValue: $0)!)!
+                result[category] = DataProcessor.shared.getSongsOf(category: category, andLimitNumberOfResultsTo: 10)
+            }
+        }
+        else
+        {
+            let preferredLanguages = GlobalVariables.shared.currentUser!.preferredLanguages!
+            let preferredGenres = GlobalVariables.shared.currentUser!.preferredGenres!
+            preferredLanguages.forEach {
+                let category = Category.getCategoryOfLanguage(Language(rawValue: $0)!)!
+                result[category] = DataProcessor.shared.getSongsOf(category: category, andLimitNumberOfResultsTo: 10)
+            }
+            preferredGenres.forEach {
+                let category = Category.getCategoryOfGenre(MusicGenre(rawValue: $0)!)!
+                result[category] = DataProcessor.shared.getSongsOf(category: category, andLimitNumberOfResultsTo: 10)
+            }
+        }
+        return result
     }
 }
 
@@ -73,7 +77,8 @@ extension HomeViewController
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        return songs[Category(rawValue: section)!]!.count
+        let keys = Array(songs.keys)
+        return songs[keys[section]]!.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
@@ -82,7 +87,8 @@ extension HomeViewController
         {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderCVReusableView.identifier, for: indexPath) as! HeaderCVReusableView
             let section = indexPath.section
-            let category = Category(rawValue: section)!
+            let keys = Array(songs.keys)
+            let category = keys[section]
             headerView.configure(title: category.description, tagForSeeAllButton: indexPath.section)
             headerView.addTargetToSeeAllButton(target: self, action: #selector(onSeeAllButtonTap(_:)))
             return headerView
@@ -98,7 +104,8 @@ extension HomeViewController
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterDetailCVCell.identifier, for: indexPath) as! PosterDetailCVCell
         let section = indexPath.section
         let item = indexPath.item
-        let category = Category(rawValue: section)!
+        let keys = Array(songs.keys)
+        let category = keys[section]
         let categoricalSongs = songs[category]!
         let artistNames = categoricalSongs[item].getArtistNamesAsString(artistType: nil)
         cell.configureCell(poster: categoricalSongs[item].coverArt!, title: categoricalSongs[item].title!, subtitle: artistNames)
@@ -110,7 +117,8 @@ extension HomeViewController
         collectionView.deselectItem(at: indexPath, animated: true)
         let section = indexPath.section
         let item = indexPath.item
-        let category = Category(rawValue: section)!
+        let keys = Array(songs.keys)
+        let category = keys[section]
         let categoricalSongs = songs[category]!
         if GlobalVariables.shared.currentSong != categoricalSongs[item]
         {
@@ -125,7 +133,8 @@ extension HomeViewController
     @objc func onSeeAllButtonTap(_ sender: UIButton)
     {
         let categoricalVC = CategoricalSongsViewController(style: .grouped)
-        categoricalVC.category = Category(rawValue: sender.tag)
+        let keys = Array(songs.keys)
+        categoricalVC.category = keys[sender.tag]
         navigationController?.pushViewController(categoricalVC, animated: true)
     }
 }
