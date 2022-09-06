@@ -96,6 +96,7 @@ class SearchResultsViewController: UICollectionViewController
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "cell")
+        //c
     }
 }
 
@@ -226,6 +227,8 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
     {
         return searchMode == 2 ? 20 : 10
     }
+    
+    
     
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
