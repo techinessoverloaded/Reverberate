@@ -365,11 +365,11 @@ extension ArtistViewController
         let song = songs[sender.tag]
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
-            if user.favSongs == nil
+            if user.favouriteSongs == nil
             {
-                user.favSongs = []
+                user.favouriteSongs = []
             }
-            user.favSongs!.appendUniquely(song)
+            user.favouriteSongs!.appendUniquely(song)
             contextSaveAction()
             print(user)
             sender.setImage(heartFilledIcon, for: .normal)
@@ -377,7 +377,7 @@ extension ArtistViewController
         }
         else
         {
-            user.favSongs!.removeUniquely(song)
+            user.favouriteSongs!.removeUniquely(song)
             contextSaveAction()
             print(user)
             sender.setImage(heartIcon, for: .normal)

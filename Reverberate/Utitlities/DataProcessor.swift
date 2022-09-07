@@ -174,4 +174,20 @@ class DataProcessor
         }
         return result
     }
+    
+    func getSortedSongsThatSatisfy(theQuery query: String) -> [Alphabet : [Song]]
+    {
+        let unsortedSongs = getSongsThatSatisfy(theQuery: query.lowercased())
+        guard let unsortedSongs = unsortedSongs else
+        {
+            return [:]
+        }
+        var result: [Alphabet : [Song]] = [:]
+        for alphabet in Alphabet.allCases
+        {
+            let letter = alphabet.asString
+            result[alphabet] = unsortedSongs.filter({ $0.title!.hasPrefix(letter) }).sorted()
+        }
+        return result
+    }
 }

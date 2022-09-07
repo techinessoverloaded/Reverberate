@@ -96,7 +96,6 @@ class SearchResultsViewController: UICollectionViewController
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "cell")
-        //c
     }
 }
 
@@ -376,7 +375,6 @@ extension SearchResultsViewController: UISearchResultsUpdating
                     else
                     {
                         filteredArtists = result
-                        print("\(filteredArtists.count) artists were filtered")
                         collectionView.reloadData()
                         emptyMessageLabel.isHidden = true
                     }

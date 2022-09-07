@@ -15,7 +15,7 @@ class MainViewController: UITabBarController
 
     private lazy var searchVC = SearchViewController(collectionViewLayout: UICollectionViewFlowLayout())
     
-    private lazy var libraryVC = LibraryViewController(style: .plain)
+    private lazy var libraryVC = LibraryViewController(style: .insetGrouped)
     
     private lazy var profileVC = ProfileViewController(style: .insetGrouped)
     
@@ -40,7 +40,7 @@ class MainViewController: UITabBarController
         super.loadView()
         tabBar.isTranslucent = true
         searchVC.title = "Search"
-        libraryVC.title = "Your Library"
+        libraryVC.title = "Library"
         profileVC.title = "Your Profile"
         setViewControllers([
             UINavigationController(rootViewController: homeVC),
