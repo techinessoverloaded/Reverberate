@@ -59,11 +59,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         }
         else
         {
-            if let _ = userDefaults.string(forKey: GlobalConstants.currentUserId)
+            if let userId = userDefaults.string(forKey: GlobalConstants.currentUserId)
             {
                 let mainVc = MainViewController()
                 window!.rootViewController = mainVc
                 GlobalVariables.shared.mainTabController = mainVc
+                GlobalVariables.shared.currentUser = SessionManager.shared.fetchUser(withId: userId)
             }
             else
             {

@@ -29,6 +29,22 @@ class SessionManager
         }
     }
     
+    func fetchUser(withId id: String) -> User?
+    {
+        var allUsers: [User]!
+        do
+        {
+            allUsers = try context.fetch(User.fetchRequest())
+            print(allUsers ?? "nil")
+        }
+        catch
+        {
+            print("An error occurred while fetching users \(error)!")
+            return nil
+        }
+        return allUsers.first(where: { $0.id! == id })
+    }
+    
     func doesUserAlreadyExist(phone: String, email: String) -> Bool
     {
         var allUsers: [User]!
@@ -56,6 +72,9 @@ class SessionManager
         newUser.phone = phone
         newUser.email = email
         newUser.password = password
+        newUser.favouriteSongs = []
+        newUser.favouriteArtists = []
+        newUser.favouritePlaylists = []
         contextSaveAction()
         UserDefaults.standard.set(newUser.id, forKey: GlobalConstants.currentUserId)
         UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)

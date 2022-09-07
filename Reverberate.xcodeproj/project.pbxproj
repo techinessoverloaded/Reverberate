@@ -11,6 +11,7 @@
 		DA12E698288E5AB300D502EC /* ArtistCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E697288E5AB300D502EC /* ArtistCVCell.swift */; };
 		DA12E69A288E937800D502EC /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E699288E937800D502EC /* DataManager.swift */; };
 		DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */; };
+		DA134FFF28C8FE2300ADEA51 /* ContextMenuProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */; };
 		DA1DA6A028A40C3F00721F5C /* kalaavathi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */; };
 		DA1DA6A228A40C7900721F5C /* mamamahesha.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */; };
 		DA252E6128A543C500791267 /* vaadathambi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6028A543C500791267 /* vaadathambi.mp3 */; };
@@ -119,6 +120,7 @@
 		DA12E697288E5AB300D502EC /* ArtistCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistCVCell.swift; sourceTree = "<group>"; };
 		DA12E699288E937800D502EC /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSegregator.swift; sourceTree = "<group>"; };
+		DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuProvider.swift; sourceTree = "<group>"; };
 		DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kalaavathi.mp3; sourceTree = "<group>"; };
 		DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mamamahesha.mp3; sourceTree = "<group>"; };
 		DA252E6028A543C500791267 /* vaadathambi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = vaadathambi.mp3; sourceTree = "<group>"; };
@@ -442,6 +444,7 @@
 				DACF29D928B50A3000141BCB /* MusicLoopMode.swift */,
 				DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */,
 				DA5C90B328C86C1A00BE0DF1 /* Alphabet.swift */,
+				DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */,
 			);
 			path = Utitlities;
 			sourceTree = "<group>";
@@ -855,6 +858,7 @@
 				DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */,
 				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,
 				DA12E696288E559100D502EC /* SongArtistsViewController.swift in Sources */,
+				DA134FFF28C8FE2300ADEA51 /* ContextMenuProvider.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,
 				DA5CE96B2887D90A0066AB2E /* PosterDetailCVCell.swift in Sources */,
 				DA668C6E28769AC8001EE1C9 /* InputValidator.swift in Sources */,

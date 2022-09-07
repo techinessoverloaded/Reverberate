@@ -390,6 +390,7 @@ extension NSNotification.Name
     static let playerPausedNotification = NSNotification.Name("pLaYeRpAuSeDnOtIfIcAtIoN")
     static let playerPlayNotification = NSNotification.Name("pLaYeRpLaYnOtIfIcAtIoN")
     static let languageGenreChangeNotification = NSNotification.Name("lAnGuAgEgEnReChAnGeNoTiFiCaTiOn")
+    static let showAlbumTapNotification = NSNotification.Name("sHoWaLbUmTaPnOtIfIcAtIoN")
 }
 
 

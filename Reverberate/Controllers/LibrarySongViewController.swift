@@ -131,6 +131,18 @@ class LibrarySongViewController: UITableViewController
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
     }
 
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
+        super.viewDidDisappear(animated)
+    }
+    
     func createTableHeaderView() -> UIView
     {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 60))
@@ -158,6 +170,11 @@ class LibrarySongViewController: UITableViewController
 //        ])
 //        navigationItem.rightBarButtonItem = menuBarItem
 //    }
+    
+    func createMenu(song: Song) -> UIMenu
+    {
+        return ContextMenuProvider.shared.getSongMenu(song: song)
+    }
     
     override func viewWillAppear(_ animated: Bool)
     {
@@ -228,9 +245,20 @@ class LibrarySongViewController: UITableViewController
         let menuButton = UIButton(configuration: menuButtonConfig)
         menuButton.tag = item
         menuButton.sizeToFit()
+        menuButton.menu = createMenu(song: song)
         cell.accessoryView = menuButton
         cell.backgroundColor = .clear
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return createMenu(song: song)
+        })
     }
 }
 
@@ -291,6 +319,23 @@ extension LibrarySongViewController
     }
     
     @objc func onShuffleButtonTap(_ sender: UIButton)
+    {
+        
+    }
+    
+    @objc func onShowAlbumNotification(_ notification: NSNotification)
+    {
+        if let song = notification.userInfo?["song"] as? Song
+        {
+            let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)
+            let albumVc = PlaylistViewController(style: .grouped)
+            albumVc.delegate = GlobalVariables.shared.mainTabController
+            albumVc.playlist = album
+            self.navigationController?.pushViewController(albumVc, animated: true)
+        }
+    }
+    
+    @objc func onShowAlbumMenuItemTap(indexPath: IndexPath)
     {
         
     }
