@@ -13,9 +13,9 @@ class SectionHeaderCV: UICollectionReusableView
     
     private lazy var titleLabel: UILabel = {
         let tLabel = UILabel(useAutoLayout: true)
-        tLabel.font = .preferredFont(forTextStyle: .body, weight: .semibold)
         tLabel.textAlignment = .left
-        tLabel.textColor = .label
+        tLabel.font = .preferredFont(forTextStyle: .subheadline, weight: .semibold)
+        tLabel.textColor = .secondaryLabel
         return tLabel
     }()
     
@@ -24,8 +24,8 @@ class SectionHeaderCV: UICollectionReusableView
         super.init(frame: frame)
         addSubview(titleLabel)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
     

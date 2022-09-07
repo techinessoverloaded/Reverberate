@@ -190,4 +190,36 @@ class DataProcessor
         }
         return result
     }
+    
+    func getSortedAlbumsThatSatisfy(theQuery query: String) -> [Alphabet : [Album]]
+    {
+        let unsortedAlbums = getAlbumsThatSatisfy(theQuery: query.lowercased())
+        guard let unsortedAlbums = unsortedAlbums else
+        {
+            return [:]
+        }
+        var result: [Alphabet : [Album]] = [:]
+        for alphabet in Alphabet.allCases
+        {
+            let letter = alphabet.asString
+            result[alphabet] = unsortedAlbums.filter({ $0.name!.hasPrefix(letter) }).sorted()
+        }
+        return result
+    }
+    
+    func getSortedArtistsThatSatisfy(theQuery query: String) -> [Alphabet : [Artist]]
+    {
+        let unsortedArtists = getArtistsThatSatisfy(theQuery: query.lowercased())
+        guard let unsortedArtists = unsortedArtists else
+        {
+            return [:]
+        }
+        var result: [Alphabet : [Artist]] = [:]
+        for alphabet in Alphabet.allCases
+        {
+            let letter = alphabet.asString
+            result[alphabet] = unsortedArtists.filter({ $0.name!.hasPrefix(letter) }).sorted()
+        }
+        return result
+    }
 }

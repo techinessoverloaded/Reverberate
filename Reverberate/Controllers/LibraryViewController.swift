@@ -133,6 +133,14 @@ class LibraryViewController: UITableViewController
             {
                 navigationController?.pushViewController(LibrarySongViewController(style: .plain), animated: true)
             }
+            else if item == 1
+            {
+                navigationController?.pushViewController(LibraryAlbumViewController(collectionViewLayout: UICollectionViewFlowLayout()), animated: true)
+            }
+            else
+            {
+                
+            }
         }
         else
         {

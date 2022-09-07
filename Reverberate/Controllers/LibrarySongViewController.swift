@@ -234,25 +234,6 @@ class LibrarySongViewController: UITableViewController
     }
 }
 
-extension LibrarySongViewController: UICollectionViewDelegateFlowLayout
-{
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
-        let cellWidth = collectionView.bounds.width//(collectionView.bounds.width / 2.3)
-        return .init(width: cellWidth, height: 70)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
-    {
-        return .init(top: 10, left: 20, bottom: 10, right: 20)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
-    {
-        return CGSize(width: collectionView.bounds.width, height: 40)
-    }
-}
-
 extension LibrarySongViewController: UISearchResultsUpdating
 {
     func updateSearchResults(for searchController: UISearchController)
