@@ -139,7 +139,7 @@ class LibraryViewController: UITableViewController
             }
             else
             {
-                
+                navigationController?.pushViewController(LibraryArtistViewController(collectionViewLayout: UICollectionViewFlowLayout()), animated: true)
             }
         }
         else

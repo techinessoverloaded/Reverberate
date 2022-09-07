@@ -227,8 +227,6 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         return searchMode == 2 ? 20 : 10
     }
     
-    
-    
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
         let item = indexPath.item
