@@ -9,6 +9,8 @@ import UIKit
 
 class LibraryArtistViewController: UICollectionViewController
 {
+    private let requesterId: Int = 2
+    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -99,6 +101,11 @@ class LibraryArtistViewController: UICollectionViewController
         })
     }
     
+    private func createMenu(artist: Artist) -> UIMenu
+    {
+        return ContextMenuProvider.shared.getArtistMenu(artist: artist, requesterId: requesterId)
+    }
+    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int
@@ -172,6 +179,16 @@ class LibraryArtistViewController: UICollectionViewController
         artistVC.artist = artist
         self.navigationController?.pushViewController(artistVC, animated: true)
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item] : sortedArtists[Alphabet(rawValue: section)!]![item]
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return createMenu(artist: artist)
+        })
+    }
 }
 
 extension LibraryArtistViewController: UICollectionViewDelegateFlowLayout
@@ -238,3 +255,10 @@ extension LibraryArtistViewController: UISearchControllerDelegate
     }
 }
 
+extension LibraryArtistViewController
+{
+    @objc func onPreviewTap(_ sender: UITapGestureRecognizer)
+    {
+        
+    }
+}

@@ -9,6 +9,8 @@ import UIKit
 
 class LibrarySongViewController: UITableViewController
 {
+    private let requesterId: Int = 0
+    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -143,7 +145,7 @@ class LibrarySongViewController: UITableViewController
         super.viewDidDisappear(animated)
     }
     
-    func createTableHeaderView() -> UIView
+    private func createTableHeaderView() -> UIView
     {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 60))
         headerView.addSubview(playButton)
@@ -171,9 +173,9 @@ class LibrarySongViewController: UITableViewController
 //        navigationItem.rightBarButtonItem = menuBarItem
 //    }
     
-    func createMenu(song: Song) -> UIMenu
+    private func createMenu(song: Song) -> UIMenu
     {
-        return ContextMenuProvider.shared.getSongMenu(song: song)
+        return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: requesterId)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -246,6 +248,7 @@ class LibrarySongViewController: UITableViewController
         menuButton.tag = item
         menuButton.sizeToFit()
         menuButton.menu = createMenu(song: song)
+        menuButton.showsMenuAsPrimaryAction = true
         cell.accessoryView = menuButton
         cell.backgroundColor = .clear
         return cell
@@ -325,18 +328,18 @@ extension LibrarySongViewController
     
     @objc func onShowAlbumNotification(_ notification: NSNotification)
     {
-        if let song = notification.userInfo?["song"] as? Song
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
         {
-            let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)
-            let albumVc = PlaylistViewController(style: .grouped)
-            albumVc.delegate = GlobalVariables.shared.mainTabController
-            albumVc.playlist = album
-            self.navigationController?.pushViewController(albumVc, animated: true)
+            return
         }
-    }
-    
-    @objc func onShowAlbumMenuItemTap(indexPath: IndexPath)
-    {
-        
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)
+        let albumVc = PlaylistViewController(style: .grouped)
+        albumVc.delegate = GlobalVariables.shared.mainTabController
+        albumVc.playlist = album
+        self.navigationController?.pushViewController(albumVc, animated: true)
     }
 }

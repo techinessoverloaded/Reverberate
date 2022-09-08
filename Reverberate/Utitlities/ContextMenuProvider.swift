@@ -10,6 +10,7 @@ import UIKit
 
 class ContextMenuProvider
 {
+    //Singleton Instance
     public static let shared = ContextMenuProvider()
     
     private lazy var heartIcon: UIImage = {
@@ -20,53 +21,209 @@ class ContextMenuProvider
         return UIImage(systemName: "heart.fill")!
     }()
     
+    private lazy var albumIcon: UIImage = {
+        return UIImage(systemName: "square.stack")!
+    }()
+    
+    private lazy var addToPlaylistIcon: UIImage = {
+        return UIImage(systemName: "text.badge.plus")!
+    }()
+    
     //Prevent Instantiation
     private init() {}
     
-    deinit
+    private func getAddSongToFavMenuItem(song: Song, requesterId: Int) -> UIAction
     {
-        print("Deinitializing ContextMenuProvider")
+        return UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] _ in
+            onAddSongToFavouritesMenuItemTap(song: song, receiverId: requesterId)
+        }
     }
     
-    func getSongMenu(song: Song) -> UIMenu
+    private func getRemoveSongFromFavMenuItem(song: Song, requesterId: Int) -> UIAction
     {
-        let addSongToFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] action in
-            //onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+        return UIAction(title: "Remove Song from Favourites", image: heartFilledIcon) { [unowned self] _ in
+            onRemoveSongFromFavouritesMenuItemTap(song: song, receiverId: requesterId)
         }
-        let removeSongFromFavMenuItem = UIAction(title: "Remove Song from Favourites", image: heartFilledIcon) { [unowned self] menuItem in
-            //onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+    }
+    
+    private func getAddSongToPlaylistFavMenuItem(song: Song, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Add Song to Playlist", image: addToPlaylistIcon) { [unowned self] _ in
+            onAddSongToPlaylistMenuItemTap(song: song, receiverId: requesterId)
         }
-        
-        let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
-            //onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
+    }
+    
+    private func getShowAlbumMenuItem(song: Song, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Show Album", image: albumIcon) { [unowned self] _ in
+            onShowAlbumMenuItemTap(song: song, receiverId: requesterId)
         }
-        let showAlbumMenuItem = UIAction(title: "Show Album", image: UIImage(systemName: "music.note.list")) { [unowned self] menuItem in
-            onShowAlbumMenuItemTap(song: song)
-        }
-        let songDeferredMenuItem = UIDeferredMenuElement.uncached({ completion in
-            DispatchQueue.main.async {
+    }
+    
+    private func getAddOrRemoveSongDeferredMenuItem(song: Song, requesterId: Int) -> UIDeferredMenuElement
+    {
+        return UIDeferredMenuElement.uncached({ completion in
+            DispatchQueue.main.async { [unowned self] in
                 if GlobalVariables.shared.currentUser!.favouriteSongs!.contains(song)
                 {
-                    completion([removeSongFromFavMenuItem])
+                    completion([getRemoveSongFromFavMenuItem(song: song, requesterId: requesterId)])
                 }
                 else
                 {
-                    completion([addSongToFavMenuItem])
+                    completion([getAddSongToFavMenuItem(song: song, requesterId: requesterId)])
                 }
             }
         })
+    }
+    
+    private func getAddAlbumToFavouritesMenuItem(album: Album, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Add Album to Favourites", image: heartIcon) { [unowned self] _ in
+            onAddAlbumToFavouritesMenuItemTap(album: album, receiverId: requesterId)
+        }
+    }
+    
+    private func getRemoveAlbumFromFavouritesMenuItem(album: Album, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Remove Album from Favourites", image: heartFilledIcon) { [unowned self] _ in
+            onRemoveAlbumFromFavouritesMenuItemTap(album: album, receiverId: requesterId)
+        }
+    }
+    
+    private func getAddArtistToFavouritesMenuItem(artist: Artist, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Add Artist to Favourites", image: heartIcon) { [unowned self] _ in
+            onAddArtistToFavouritesMenuItemTap(artist: artist, receiverId: requesterId)
+        }
+    }
+    
+    private func getRemoveArtistFromFavouritesMenuItem(artist: Artist, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Remove Artist from Favourites", image: heartFilledIcon) { [unowned self] _ in
+            onRemoveArtistFromFavouritesMenuItemTap(artist: artist, receiverId: requesterId)
+        }
+    }
+    
+    private func getAddOrRemoveAlbumDeferredMenuItem(album: Album, requesterId: Int) -> UIDeferredMenuElement
+    {
+        return UIDeferredMenuElement.uncached({ completion in
+            DispatchQueue.main.async { [unowned self] in
+                if GlobalVariables.shared.currentUser!.favouritePlaylists!.contains(album)
+                {
+                    completion([getRemoveAlbumFromFavouritesMenuItem(album: album, requesterId: requesterId)])
+                }
+                else
+                {
+                    completion([getAddAlbumToFavouritesMenuItem(album: album, requesterId: requesterId)])
+                }
+            }
+        })
+    }
+    
+    private func getAddOrRemoveArtistDeferredMenuItem(artist: Artist, requesterId: Int) -> UIDeferredMenuElement
+    {
+        return UIDeferredMenuElement.uncached({ completion in
+            DispatchQueue.main.async { [unowned self] in
+                if GlobalVariables.shared.currentUser!.favouriteArtists!.contains(artist)
+                {
+                    completion([getRemoveArtistFromFavouritesMenuItem(artist: artist, requesterId: requesterId)])
+                }
+                else
+                {
+                    completion([getAddArtistToFavouritesMenuItem(artist: artist, requesterId: requesterId)])
+                }
+            }
+        })
+    }
+    
+    private func getLoginForMoreOptionsMenuItem(requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Login to get more option(s)", image: UIImage(systemName: "person.crop.circle.fill")!,handler: { [unowned self] _ in
+            onLoginRequestMenuItemTap(receiverId: requesterId)
+        })
+    }
+    
+    func getSongMenu(song: Song, requesterId: Int) -> UIMenu
+    {
         return SessionManager.shared.isUserLoggedIn ? UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
-            songDeferredMenuItem, addToPlaylistMenuItem, showAlbumMenuItem
+            getAddOrRemoveSongDeferredMenuItem(song: song, requesterId: requesterId),
+            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId),
+            getShowAlbumMenuItem(song: song, requesterId: requesterId)
         ]) : UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
-            showAlbumMenuItem
+            getShowAlbumMenuItem(song: song, requesterId: requesterId),
+            getLoginForMoreOptionsMenuItem(requesterId: requesterId)
+        ])
+    }
+    
+    func getAlbumMenu(album: Album, requesterId: Int) -> UIMenu
+    {
+        return SessionManager.shared.isUserLoggedIn ? UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getAddOrRemoveAlbumDeferredMenuItem(album: album, requesterId: requesterId)
+        ]) : UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getLoginForMoreOptionsMenuItem(requesterId: requesterId)
+        ])
+    }
+    
+    func getArtistMenu(artist: Artist, requesterId: Int) -> UIMenu
+    {
+        return SessionManager.shared.isUserLoggedIn ? UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getAddOrRemoveArtistDeferredMenuItem(artist: artist, requesterId: requesterId)
+        ]) : UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getLoginForMoreOptionsMenuItem(requesterId: requesterId)
         ])
     }
 }
 
 extension ContextMenuProvider
 {
-    @objc private func onShowAlbumMenuItemTap(song: Song)
+    @objc private func onAddSongToFavouritesMenuItemTap(song: Song, receiverId: Int)
     {
-        NotificationCenter.default.post(name: .showAlbumTapNotification, object: nil, userInfo: ["song" : song])
+        NotificationCenter.default.post(name: .addSongToFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
+    }
+    
+    @objc private func onRemoveSongFromFavouritesMenuItemTap(song: Song, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .removeSongFromFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
+    }
+    
+    @objc private func onAddSongToPlaylistMenuItemTap(song: Song, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .addSongToPlaylistNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
+    }
+    
+    
+    @objc private func onRemoveSongFromPlaylistMenuItemTap(song: Song, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .removeSongFromPlaylistNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
+    }
+    
+    @objc private func onAddAlbumToFavouritesMenuItemTap(album: Album, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .addAlbumToFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"album" : album])
+    }
+    
+    @objc private func onRemoveAlbumFromFavouritesMenuItemTap(album: Album, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .removeAlbumFromFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"album" : album])
+    }
+    
+    @objc private func onAddArtistToFavouritesMenuItemTap(artist: Artist, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .addArtistToFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"artist" : artist])
+    }
+    
+    @objc private func onRemoveArtistFromFavouritesMenuItemTap(artist: Artist, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .removeArtistFromFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"artist" : artist])
+    }
+    
+    @objc private func onShowAlbumMenuItemTap(song: Song, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .showAlbumTapNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
+    }
+    
+    @objc private func onLoginRequestMenuItemTap(receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .signInRequestNotification, object: nil, userInfo: ["receiverId" : receiverId])
     }
 }

@@ -11,6 +11,8 @@ import MediaPlayer
 
 class MainViewController: UITabBarController
 {
+    private let requesterId: Int = 3
+    
     private lazy var homeVC = createHomeVc()
 
     private lazy var searchVC = SearchViewController(collectionViewLayout: UICollectionViewFlowLayout())
@@ -25,6 +27,10 @@ class MainViewController: UITabBarController
     
     private lazy var miniPlayerView: MiniPlayerView = {
         return MiniPlayerView(useAutoLayout: true)
+    }()
+    
+    private lazy var songContextMenuInteraction: UIContextMenuInteraction = {
+        return UIContextMenuInteraction(delegate: self)
     }()
     
     private var playerController: PlayerViewController!
@@ -65,6 +71,7 @@ class MainViewController: UITabBarController
             miniPlayerView.heightAnchor.constraint(equalToConstant: 70)
         ])
         miniPlayerView.delegate = self
+        miniPlayerView.addInteraction(songContextMenuInteraction)
         miniPlayerTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
         miniPlayerTimer.add(to: .main, forMode: .common)
         miniPlayerTimer.isPaused = true
@@ -116,6 +123,7 @@ class MainViewController: UITabBarController
         NotificationCenter.default.addObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         NotificationCenter.default.addObserver(self, selector: #selector(handleLanguageGenreSelectionChange(notification:)), name: .languageGenreChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -124,6 +132,8 @@ class MainViewController: UITabBarController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         NotificationCenter.default.removeObserver(self, name: .languageGenreChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
+        super.viewDidDisappear(animated)
     }
     
     func showPlayerController(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -492,6 +502,25 @@ extension MainViewController
         let playlist = GlobalVariables.shared.currentPlaylist!
         GlobalVariables.shared.currentSong = playlist.songs!.first!
     }
+    
+    @objc func onShowAlbumNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            print("receiverId is invalid")
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            print("song is invalid")
+            return
+        }
+        let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)
+        let albumVc = PlaylistViewController(style: .grouped)
+        albumVc.delegate = GlobalVariables.shared.mainTabController
+        albumVc.playlist = album
+        (selectedViewController as! UINavigationController).pushViewController(albumVc, animated: true)
+    }
 }
 
 extension MainViewController: AVAudioPlayerDelegate
@@ -563,5 +592,70 @@ extension MainViewController: PlaylistDelegate
         {
             GlobalVariables.shared.currentSong = updatedSong
         }
+    }
+}
+
+extension MainViewController: UIContextMenuInteractionDelegate
+{
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
+    {
+        guard let song = GlobalVariables.shared.currentSong else
+        {
+            return nil
+        }
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+           return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: requesterId)
+        })
+    }
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    {
+        guard let song = GlobalVariables.shared.currentSong else
+        {
+            return nil
+        }
+        var config = UIListContentConfiguration.cell()
+        config.text = song.title!
+        config.secondaryText = song.getArtistNamesAsString(artistType: nil)
+        config.imageProperties.cornerRadius = 10
+        config.image = song.coverArt
+        config.textProperties.adjustsFontForContentSizeCategory = true
+        config.textProperties.allowsDefaultTighteningForTruncation = true
+        config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+        config.secondaryTextProperties.color = .secondaryLabel
+        config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
+        config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
+        let contentView = config.makeContentView()
+        print(miniPlayerView.center)
+        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 70)
+        contentView.layer.cornerRadius = 10
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .systemFill
+        return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(translationX: miniPlayerView.center.x, y: miniPlayerView.center.y)))
+    }
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    {
+        guard let song = GlobalVariables.shared.currentSong else
+        {
+            return nil
+        }
+        var config = UIListContentConfiguration.cell()
+        config.text = song.title!
+        config.secondaryText = song.getArtistNamesAsString(artistType: nil)
+        config.imageProperties.cornerRadius = 10
+        config.image = song.coverArt
+        config.textProperties.adjustsFontForContentSizeCategory = true
+        config.textProperties.allowsDefaultTighteningForTruncation = true
+        config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+        config.secondaryTextProperties.color = .secondaryLabel
+        config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
+        config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
+        let contentView = config.makeContentView()
+        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 70)
+        contentView.layer.cornerRadius = 10
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .systemFill
+        return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(scaleX: 0, y: 0)))
     }
 }

@@ -133,6 +133,7 @@ class SessionManager
     {
         UserDefaults.standard.set(user.id, forKey: GlobalConstants.currentUserId)
         GlobalVariables.shared.currentUser = user
+        NotificationCenter.default.post(name: .userLoggedInNotification, object: nil, userInfo: nil)
     }
     
 }

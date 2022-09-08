@@ -9,6 +9,8 @@ import UIKit
 
 class LibraryAlbumViewController: UICollectionViewController
 {
+    private let requesterId: Int = 1
+    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -99,6 +101,11 @@ class LibraryAlbumViewController: UICollectionViewController
         })
     }
     
+    private func createMenu(album: Album) -> UIMenu
+    {
+        return ContextMenuProvider.shared.getAlbumMenu(album: album, requesterId: requesterId)
+    }
+    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int
@@ -173,6 +180,16 @@ class LibraryAlbumViewController: UICollectionViewController
         albumVC.delegate = GlobalVariables.shared.mainTabController
         self.navigationController?.pushViewController(albumVC, animated: true)
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return createMenu(album: album)
+        })
+    }
 }
 
 extension LibraryAlbumViewController: UICollectionViewDelegateFlowLayout
@@ -180,7 +197,7 @@ extension LibraryAlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
         let cellWidth = (collectionView.bounds.width / 2.4)
-        return .init(width: cellWidth, height: 1.2 * cellWidth)
+        return .init(width: cellWidth, height: 1.3 * cellWidth)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets

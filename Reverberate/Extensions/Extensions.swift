@@ -391,6 +391,16 @@ extension NSNotification.Name
     static let playerPlayNotification = NSNotification.Name("pLaYeRpLaYnOtIfIcAtIoN")
     static let languageGenreChangeNotification = NSNotification.Name("lAnGuAgEgEnReChAnGeNoTiFiCaTiOn")
     static let showAlbumTapNotification = NSNotification.Name("sHoWaLbUmTaPnOtIfIcAtIoN")
+    static let addSongToFavouritesNotification = NSNotification.Name("aDdSoNgToFaVoUrItEsNoTiFiCaTiOn")
+    static let removeSongFromFavouritesNotification = NSNotification.Name("ReMoVeSoNgFrOmFaVoUrItEsNoTiFiCaTiOn")
+    static let addSongToPlaylistNotification = NSNotification.Name("aDdSoNgToPlAyLiStNoTiFiCaTiOn")
+    static let removeSongFromPlaylistNotification = NSNotification.Name("rEmOvEsOnGfRoMpLaYlIsTnOtIfIcAtIoN")
+    static let addAlbumToFavouritesNotification = NSNotification.Name("aDdAlBuMtOfAvOuRiTeSnOtIfIcAtIoN")
+    static let removeAlbumFromFavouritesNotification = NSNotification.Name("rEmOvEaLbUmFrOmFaVoUrItEsNoTiFiCaTiOn")
+    static let addArtistToFavouritesNotification = NSNotification.Name("AdDaRtIsTtOfAvOuRiTeSnOtIfIcAtIoN")
+    static let removeArtistFromFavouritesNotification = NSNotification.Name("ReMoVeArTiStFrOmFaVoUrItEsNoTiFiCaTiOn")
+    static let userLoggedInNotification = NSNotification.Name("uSeRlOgGeDiNnOtIfIcAtIoN")
+    static let signInRequestNotification = NSNotification.Name("sIgNiNrEqUeStNoTiFiCaTiOn")
 }
 
 
