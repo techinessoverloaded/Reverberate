@@ -130,7 +130,10 @@ class LibrarySongViewController: UITableViewController
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        setupFilterMenu()
+        if SessionManager.shared.isUserLoggedIn
+        {
+            setupFilterMenu()
+        }
         tableView.tableHeaderView = tableHeaderView
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
@@ -213,6 +216,10 @@ class LibrarySongViewController: UITableViewController
             UIDeferredMenuElement.uncached({ completion in
                 DispatchQueue.main.async { [unowned self] in
                     let allSongsMenuItem = UIAction(title: "All Songs", image: UIImage(systemName: "music.note")!, handler: { [unowned self] _ in
+                        if !viewOnlyFavSongs
+                        {
+                            return
+                        }
                         title = "All Songs"
                         searchController.searchBar.placeholder = "Find in Songs"
                         allSongs = DataManager.shared.availableSongs
@@ -222,6 +229,10 @@ class LibrarySongViewController: UITableViewController
                         tableView.reloadData()
                     })
                     let favouriteSongsMenuItem = UIAction(title: "Favourite Songs", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
+                        if viewOnlyFavSongs
+                        {
+                            return
+                        }
                         title = "Favourite Songs"
                         searchController.searchBar.placeholder = "Find in Favourite Songs"
                         allSongs = allSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
@@ -370,7 +381,7 @@ extension LibrarySongViewController: UISearchControllerDelegate
     
     func willDismissSearchController(_ searchController: UISearchController)
     {
-        emptyMessageLabel.isHidden = viewOnlyFavSongs ? (allSongs.isEmpty ? false : true) : false
+        emptyMessageLabel.isHidden = viewOnlyFavSongs ? (allSongs.isEmpty ? false : true) : true
         tableView.tableHeaderView = tableHeaderView
     }
     
@@ -447,6 +458,8 @@ extension LibrarySongViewController
         {
             allSongs = DataManager.shared.availableSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
             sortedSongs = sortSongs()
+            emptyMessageLabel.attributedText = noFavouritesMessage
+            emptyMessageLabel.isHidden = !allSongs.isEmpty
             tableView.reloadData()
         }
     }

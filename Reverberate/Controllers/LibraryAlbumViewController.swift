@@ -133,6 +133,17 @@ class LibraryAlbumViewController: UICollectionViewController
         super.viewDidDisappear(animated)
     }
     
+    private func sortAlbums() -> [Alphabet: [Album]]
+    {
+        var result: [Alphabet : [Album]] = [ : ]
+        for alphabet in Alphabet.allCases
+        {
+            let startingLetter = alphabet.asString
+            result[alphabet] = allAlbums.filter({ $0.name!.hasPrefix(startingLetter)}).sorted()
+        }
+        return result
+    }
+    
     private func createMenu(album: Album) -> UIMenu
     {
         return ContextMenuProvider.shared.getAlbumMenu(album: album, requesterId: requesterId)
