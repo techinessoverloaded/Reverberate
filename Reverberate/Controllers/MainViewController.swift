@@ -626,7 +626,6 @@ extension MainViewController: UIContextMenuInteractionDelegate
         config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
         let contentView = config.makeContentView()
-        print(miniPlayerView.center)
         contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 70)
         contentView.layer.cornerRadius = 10
         let parameters = UIPreviewParameters()
@@ -634,28 +633,28 @@ extension MainViewController: UIContextMenuInteractionDelegate
         return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(translationX: miniPlayerView.center.x, y: miniPlayerView.center.y)))
     }
     
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
-    {
-        guard let song = GlobalVariables.shared.currentSong else
-        {
-            return nil
-        }
-        var config = UIListContentConfiguration.cell()
-        config.text = song.title!
-        config.secondaryText = song.getArtistNamesAsString(artistType: nil)
-        config.imageProperties.cornerRadius = 10
-        config.image = song.coverArt
-        config.textProperties.adjustsFontForContentSizeCategory = true
-        config.textProperties.allowsDefaultTighteningForTruncation = true
-        config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
-        config.secondaryTextProperties.color = .secondaryLabel
-        config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
-        config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
-        let contentView = config.makeContentView()
-        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 70)
-        contentView.layer.cornerRadius = 10
-        let parameters = UIPreviewParameters()
-        parameters.backgroundColor = .systemFill
-        return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(scaleX: 0, y: 0)))
-    }
+//    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+//    {
+//        guard let song = GlobalVariables.shared.currentSong else
+//        {
+//            return nil
+//        }
+//        var config = UIListContentConfiguration.cell()
+//        config.text = song.title!
+//        config.secondaryText = song.getArtistNamesAsString(artistType: nil)
+//        config.imageProperties.cornerRadius = 10
+//        config.image = song.coverArt
+//        config.textProperties.adjustsFontForContentSizeCategory = true
+//        config.textProperties.allowsDefaultTighteningForTruncation = true
+//        config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+//        config.secondaryTextProperties.color = .secondaryLabel
+//        config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
+//        config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
+//        let contentView = config.makeContentView()
+//        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 70)
+//        contentView.layer.cornerRadius = 10
+//        let parameters = UIPreviewParameters()
+//        parameters.backgroundColor = .systemFill
+//        return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(scaleX: 0, y: 0)))
+//    }
 }

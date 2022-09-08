@@ -2,9 +2,9 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="User" representedClassName=".User" syncable="YES">
         <attribute name="email" optional="YES" attributeType="String"/>
-        <attribute name="favouriteArtists" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Artist]"/>
-        <attribute name="favouritePlaylists" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName=".[Playlist]"/>
-        <attribute name="favouriteSongs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName=".[Song]"/>
+        <attribute name="favouriteArtists" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Artist]"/>
+        <attribute name="favouritePlaylists" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Playlist]"/>
+        <attribute name="favouriteSongs" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Song]"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="password" optional="YES" attributeType="String"/>

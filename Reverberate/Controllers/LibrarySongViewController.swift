@@ -11,6 +11,10 @@ class LibrarySongViewController: UITableViewController
 {
     private let requesterId: Int = 0
     
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -24,6 +28,22 @@ class LibrarySongViewController: UITableViewController
         ]
         var mutableAttrString = NSMutableAttributedString(string: "Couldn't find any result\n\n", attributes: largeTextAttributes)
         mutableAttrString.append(NSMutableAttributedString(string: "Try searching again using a different spelling or keyword.", attributes: smallerTextAttributes))
+        return mutableAttrString
+    }()
+    
+    private lazy var noFavouritesMessage: NSAttributedString = {
+        let largeTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 19, weight: .bold),
+            NSAttributedString.Key.foregroundColor : UIColor.label
+        ]
+        let smallerTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .body),
+            NSAttributedString.Key.foregroundColor : UIColor.secondaryLabel
+        ]
+        var mutableAttrString = NSMutableAttributedString(string: "No Favourites were found\n\n", attributes: largeTextAttributes)
+        mutableAttrString.append(NSMutableAttributedString(string: "Try adding some songs to Favourites.", attributes: smallerTextAttributes))
         return mutableAttrString
     }()
     
@@ -80,17 +100,11 @@ class LibrarySongViewController: UITableViewController
         return sButton
     }()
     
-    private lazy var allSongs = DataManager.shared.availableSongs
+    private var viewOnlyFavSongs: Bool = false
     
-    private lazy var sortedSongs: [Alphabet : [Song]] = {
-        var result: [Alphabet : [Song]] = [ : ]
-        for alphabet in Alphabet.allCases
-        {
-            let startingLetter = alphabet.asString
-            result[alphabet] = allSongs.filter({ $0.title!.hasPrefix(startingLetter)}).sorted()
-        }
-        return result
-    }()
+    private lazy var allSongs: [Song] = DataManager.shared.availableSongs
+    
+    private lazy var sortedSongs: [Alphabet : [Song]] = sortSongs()
     
     private lazy var tableHeaderView: UIView = createTableHeaderView()
     
@@ -116,7 +130,7 @@ class LibrarySongViewController: UITableViewController
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        //setupSortMenu()
+        setupFilterMenu()
         tableView.tableHeaderView = tableHeaderView
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
@@ -137,12 +151,43 @@ class LibrarySongViewController: UITableViewController
     {
         super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
     {
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
+        }
         super.viewDidDisappear(animated)
+    }
+    
+    private func sortSongs() -> [Alphabet: [Song]]
+    {
+        var result: [Alphabet : [Song]] = [ : ]
+        for alphabet in Alphabet.allCases
+        {
+            let startingLetter = alphabet.asString
+            result[alphabet] = allSongs.filter({ $0.title!.hasPrefix(startingLetter)}).sorted()
+        }
+        return result
     }
     
     private func createTableHeaderView() -> UIView
@@ -161,17 +206,55 @@ class LibrarySongViewController: UITableViewController
         return headerView
     }
     
-    
-//    func setupSortMenu()
-//    {
-//        let menuBarItem = UIBarButtonItem(title: "Sort", style: .plain, target: nil, action: nil)
-//        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
-//            UIAction(title: "Title", image: nil, state: .on, handler: { _ in
-//
-//            })
-//        ])
-//        navigationItem.rightBarButtonItem = menuBarItem
-//    }
+    func setupFilterMenu()
+    {
+        let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
+        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            UIDeferredMenuElement.uncached({ completion in
+                DispatchQueue.main.async { [unowned self] in
+                    let allSongsMenuItem = UIAction(title: "All Songs", image: UIImage(systemName: "music.note")!, handler: { [unowned self] _ in
+                        title = "All Songs"
+                        searchController.searchBar.placeholder = "Find in Songs"
+                        allSongs = DataManager.shared.availableSongs
+                        sortedSongs = sortSongs()
+                        viewOnlyFavSongs = false
+                        emptyMessageLabel.isHidden = true
+                        tableView.reloadData()
+                    })
+                    let favouriteSongsMenuItem = UIAction(title: "Favourite Songs", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
+                        title = "Favourite Songs"
+                        searchController.searchBar.placeholder = "Find in Favourite Songs"
+                        allSongs = allSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
+                        sortedSongs = sortSongs()
+                        viewOnlyFavSongs = true
+                        if allSongs.isEmpty
+                        {
+                            emptyMessageLabel.attributedText = noFavouritesMessage
+                            emptyMessageLabel.isHidden = false
+                        }
+                        else
+                        {
+                            emptyMessageLabel.isHidden = true
+                        }
+                        tableView.reloadData()
+                    })
+                    if viewOnlyFavSongs
+                    {
+                        favouriteSongsMenuItem.state = .on
+                        allSongsMenuItem.state = .off
+                        completion([allSongsMenuItem,favouriteSongsMenuItem])
+                    }
+                    else
+                    {
+                        favouriteSongsMenuItem.state = .off
+                        allSongsMenuItem.state = .on
+                        completion([allSongsMenuItem,favouriteSongsMenuItem])
+                    }
+                }
+            })
+        ])
+        navigationItem.rightBarButtonItem = menuBarItem
+    }
     
     private func createMenu(song: Song) -> UIMenu
     {
@@ -271,7 +354,8 @@ extension LibrarySongViewController: UISearchResultsUpdating
     {
         guard let query = searchController.searchBar.text, !query.isEmpty else
         { return }
-        filteredSongs = DataProcessor.shared.getSortedSongsThatSatisfy(theQuery: query)
+        filteredSongs = DataProcessor.shared.getSortedSongsThatSatisfy(theQuery: query, songSource: viewOnlyFavSongs ? allSongs : nil)
+        emptyMessageLabel.attributedText = viewOnlyFavSongs ? (allSongs.isEmpty ? noFavouritesMessage : noResultsMessage) : noResultsMessage
         emptyMessageLabel.isHidden = !filteredSongs.isEmpty
         tableView.reloadData()
     }
@@ -284,14 +368,9 @@ extension LibrarySongViewController: UISearchControllerDelegate
         tableView.tableHeaderView = nil
     }
     
-    func didPresentSearchController(_ searchController: UISearchController)
-    {
-        tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
-    }
-    
     func willDismissSearchController(_ searchController: UISearchController)
     {
-        emptyMessageLabel.isHidden = true
+        emptyMessageLabel.isHidden = viewOnlyFavSongs ? (allSongs.isEmpty ? false : true) : false
         tableView.tableHeaderView = tableHeaderView
     }
     
@@ -324,6 +403,52 @@ extension LibrarySongViewController
     @objc func onShuffleButtonTap(_ sender: UIButton)
     {
         
+    }
+    
+    @objc func onLoginRequestNotification(_ notification: NSNotification)
+    {
+        
+    }
+    
+    @objc func onAddSongToPlaylistNotification(_ notification: NSNotification)
+    {
+        
+    }
+    
+    @objc func onAddSongToFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteSongs!.appendUniquely(song)
+        contextSaveAction()
+        print(GlobalVariables.shared.currentUser!.id!)
+        print(UserDefaults.standard.string(forKey: GlobalConstants.currentUserId)!)
+    }
+    
+    @objc func onRemoveSongFromFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteSongs!.removeUniquely(song)
+        contextSaveAction()
+        if viewOnlyFavSongs
+        {
+            allSongs = DataManager.shared.availableSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
+            sortedSongs = sortSongs()
+            tableView.reloadData()
+        }
     }
     
     @objc func onShowAlbumNotification(_ notification: NSNotification)

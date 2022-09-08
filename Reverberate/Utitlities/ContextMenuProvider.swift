@@ -64,7 +64,7 @@ class ContextMenuProvider
     {
         return UIDeferredMenuElement.uncached({ completion in
             DispatchQueue.main.async { [unowned self] in
-                if GlobalVariables.shared.currentUser!.favouriteSongs!.contains(song)
+                if GlobalVariables.shared.currentUser!.isFavouriteSong(song)
                 {
                     completion([getRemoveSongFromFavMenuItem(song: song, requesterId: requesterId)])
                 }
@@ -108,7 +108,7 @@ class ContextMenuProvider
     {
         return UIDeferredMenuElement.uncached({ completion in
             DispatchQueue.main.async { [unowned self] in
-                if GlobalVariables.shared.currentUser!.favouritePlaylists!.contains(album)
+                if GlobalVariables.shared.currentUser!.isFavouritePlaylist(album)
                 {
                     completion([getRemoveAlbumFromFavouritesMenuItem(album: album, requesterId: requesterId)])
                 }
@@ -124,7 +124,7 @@ class ContextMenuProvider
     {
         return UIDeferredMenuElement.uncached({ completion in
             DispatchQueue.main.async { [unowned self] in
-                if GlobalVariables.shared.currentUser!.favouriteArtists!.contains(artist)
+                if GlobalVariables.shared.currentUser!.isFavouriteArtist(artist)
                 {
                     completion([getRemoveArtistFromFavouritesMenuItem(artist: artist, requesterId: requesterId)])
                 }
@@ -224,6 +224,6 @@ extension ContextMenuProvider
     
     @objc private func onLoginRequestMenuItemTap(receiverId: Int)
     {
-        NotificationCenter.default.post(name: .signInRequestNotification, object: nil, userInfo: ["receiverId" : receiverId])
+        NotificationCenter.default.post(name: .loginRequestNotification, object: nil, userInfo: ["receiverId" : receiverId])
     }
 }

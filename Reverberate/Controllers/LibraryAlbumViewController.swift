@@ -11,6 +11,10 @@ class LibraryAlbumViewController: UICollectionViewController
 {
     private let requesterId: Int = 1
     
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -99,6 +103,34 @@ class LibraryAlbumViewController: UICollectionViewController
         coordinator.animate(alongsideTransition: { [unowned self] _ in
             self.collectionViewLayout.invalidateLayout()
         })
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.removeObserver(self, name: .addAlbumToFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
+        }
+        super.viewDidDisappear(animated)
     }
     
     private func createMenu(album: Album) -> UIMenu
@@ -253,5 +285,41 @@ extension LibraryAlbumViewController: UISearchControllerDelegate
     {
         filteredAlbums = [:]
         collectionView.reloadData()
+    }
+}
+
+extension LibraryAlbumViewController
+{
+    @objc func onAddAlbumToFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let album = notification.userInfo?["album"] as? Album else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouritePlaylists!.appendUniquely(album)
+        contextSaveAction()
+    }
+    
+    @objc func onRemoveAlbumFromFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let album = notification.userInfo?["album"] as? Album else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouritePlaylists!.removeUniquely(album)
+        contextSaveAction()
+    }
+    
+    @objc func onLoginRequestNotification(_ notification: NSNotification)
+    {
+        
     }
 }

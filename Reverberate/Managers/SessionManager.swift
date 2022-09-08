@@ -31,6 +31,7 @@ class SessionManager
     
     func fetchUser(withId id: String) -> User?
     {
+        print("fetchUser called")
         var allUsers: [User]!
         do
         {
@@ -42,7 +43,9 @@ class SessionManager
             print("An error occurred while fetching users \(error)!")
             return nil
         }
-        return allUsers.first(where: { $0.id! == id })
+        let foundUser = allUsers.first(where: { $0.id! == id })
+        print(foundUser)
+        return foundUser
     }
     
     func doesUserAlreadyExist(phone: String, email: String) -> Bool

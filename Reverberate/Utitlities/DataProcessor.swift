@@ -35,10 +35,11 @@ class DataProcessor
         return DataManager.shared.availableSongs.first(where: { $0.title! == songName })
     }
     
-    func getSongsThatSatisfy(theQuery query: String) -> [Song]?
+    func getSongsThatSatisfy(theQuery query: String, songSource: [Song]? = nil) -> [Song]?
     {
         var result: [Song] = []
-        for song in DataManager.shared.availableSongs
+        let songs = songSource != nil ? songSource! : DataManager.shared.availableSongs
+        for song in songs
         {
             if song.albumName!.lowercased().contains(query) || song.title!.lowercased().contains(query) || song.language.description.lowercased().contains(query) || song.genre.description.lowercased().contains(query) || song.artists!.contains(where: { $0.name!.lowercased().contains(query) })
             {
@@ -175,9 +176,9 @@ class DataProcessor
         return result
     }
     
-    func getSortedSongsThatSatisfy(theQuery query: String) -> [Alphabet : [Song]]
+    func getSortedSongsThatSatisfy(theQuery query: String, songSource: [Song]? = nil) -> [Alphabet : [Song]]
     {
-        let unsortedSongs = getSongsThatSatisfy(theQuery: query.lowercased())
+        let unsortedSongs = getSongsThatSatisfy(theQuery: query.lowercased(), songSource: songSource)
         guard let unsortedSongs = unsortedSongs else
         {
             return [:]

@@ -400,7 +400,7 @@ extension NSNotification.Name
     static let addArtistToFavouritesNotification = NSNotification.Name("AdDaRtIsTtOfAvOuRiTeSnOtIfIcAtIoN")
     static let removeArtistFromFavouritesNotification = NSNotification.Name("ReMoVeArTiStFrOmFaVoUrItEsNoTiFiCaTiOn")
     static let userLoggedInNotification = NSNotification.Name("uSeRlOgGeDiNnOtIfIcAtIoN")
-    static let signInRequestNotification = NSNotification.Name("sIgNiNrEqUeStNoTiFiCaTiOn")
+    static let loginRequestNotification = NSNotification.Name("LoGiNREqUeStNoTiFiCaTiOn")
 }
 
 
@@ -538,4 +538,9 @@ extension UIScrollView
     {
         return contentOffset.y > max(0.0, contentSize.height - bounds.height + adjustedContentInset.bottom)
     }
+}
+
+extension NSValueTransformerName
+{
+    static let customTransformer = NSValueTransformerName(rawValue: "customTransformer")
 }

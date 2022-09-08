@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
             let interval = TimeInterval(endTime.uptimeNanoseconds - startTime.uptimeNanoseconds)
             print("Time Taken: \(interval / 1000000000) seconds")
         })
+        ValueTransformer.setValueTransformer(CustomDataTransformer(), forName: .customTransformer)
         return true
     }
     

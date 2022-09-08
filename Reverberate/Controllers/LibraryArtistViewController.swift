@@ -11,6 +11,10 @@ class LibraryArtistViewController: UICollectionViewController
 {
     private let requesterId: Int = 2
     
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -95,6 +99,34 @@ class LibraryArtistViewController: UICollectionViewController
         // Do any additional setup after loading the view.
     }
 
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
+        }
+        super.viewDidDisappear(animated)
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { [unowned self] _ in
             self.collectionViewLayout.invalidateLayout()
@@ -185,7 +217,7 @@ class LibraryArtistViewController: UICollectionViewController
         let section = indexPath.section
         let item = indexPath.item
         let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item] : sortedArtists[Alphabet(rawValue: section)!]![item]
-        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(artist: artist)
         })
     }
@@ -257,7 +289,35 @@ extension LibraryArtistViewController: UISearchControllerDelegate
 
 extension LibraryArtistViewController
 {
-    @objc func onPreviewTap(_ sender: UITapGestureRecognizer)
+    @objc func onAddArtistToFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let artist = notification.userInfo?["artist"] as? Artist else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteArtists!.appendUniquely(artist)
+        contextSaveAction()
+    }
+    
+    @objc func onRemoveArtistFromFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let artist = notification.userInfo?["artist"] as? Artist else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
+        contextSaveAction()
+    }
+    
+    @objc func onLoginRequestNotification(_ notification: NSNotification)
     {
         
     }

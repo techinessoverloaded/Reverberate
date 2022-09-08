@@ -65,9 +65,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
                 window!.rootViewController = mainVc
                 GlobalVariables.shared.mainTabController = mainVc
                 GlobalVariables.shared.currentUser = SessionManager.shared.fetchUser(withId: userId)
+                print("userId exists")
             }
             else
             {
+                print("userId doesn't exist")
                 let mainVc = MainViewController()
                 window!.rootViewController = mainVc
                 GlobalVariables.shared.mainTabController = mainVc

@@ -9,6 +9,8 @@ import MediaPlayer
 
 class HomeViewController: UICollectionViewController
 {
+    private let requesterId: Int = 5
+    
     private lazy var songs : [Category : [Song]] = prepareSongs()
     
     override func viewWillAppear(_ animated: Bool) {
@@ -30,7 +32,24 @@ class HomeViewController: UICollectionViewController
         collectionView.bounces = true
     }
     
-    func prepareSongs() -> [Category : [Song]]
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
+        super.viewDidDisappear(animated)
+    }
+    
+    private func createMenu(song: Song) -> UIMenu
+    {
+        return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: requesterId)
+    }
+    
+    private func prepareSongs() -> [Category : [Song]]
     {
         var result: [Category: [Song]] = [:]
         result[.recentlyPlayed] = DataProcessor.shared.getSongsOf(category: .recentlyPlayed, andLimitNumberOfResultsTo: 10)
@@ -107,8 +126,9 @@ extension HomeViewController
         let keys = Array(songs.keys)
         let category = keys[section]
         let categoricalSongs = songs[category]!
-        let artistNames = categoricalSongs[item].getArtistNamesAsString(artistType: nil)
-        cell.configureCell(poster: categoricalSongs[item].coverArt!, title: categoricalSongs[item].title!, subtitle: artistNames)
+        let song = categoricalSongs[item]
+        let artistNames = song.getArtistNamesAsString(artistType: nil)
+        cell.configureCell(poster: song.coverArt!, title: song.title!, subtitle: artistNames)
         return cell
     }
     
@@ -126,6 +146,19 @@ extension HomeViewController
             GlobalVariables.shared.currentSong = categoricalSongs[item]
         }
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        let keys = Array(songs.keys)
+        let category = keys[section]
+        let categoricalSongs = songs[category]!
+        let song = categoricalSongs[item]
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return createMenu(song: song)
+        })
+    }
 }
 
 extension HomeViewController
@@ -136,5 +169,24 @@ extension HomeViewController
         let keys = Array(songs.keys)
         categoricalVC.category = keys[sender.tag]
         navigationController?.pushViewController(categoricalVC, animated: true)
+    }
+    
+    @objc func onShowAlbumNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            print("receiverId is invalid")
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            print("song is invalid")
+            return
+        }
+        let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)
+        let albumVc = PlaylistViewController(style: .grouped)
+        albumVc.delegate = GlobalVariables.shared.mainTabController
+        albumVc.playlist = album
+        self.navigationController?.pushViewController(albumVc, animated: true)
     }
 }
