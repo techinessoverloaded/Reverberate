@@ -400,6 +400,7 @@ extension NSNotification.Name
     static let addArtistToFavouritesNotification = NSNotification.Name("AdDaRtIsTtOfAvOuRiTeSnOtIfIcAtIoN")
     static let removeArtistFromFavouritesNotification = NSNotification.Name("ReMoVeArTiStFrOmFaVoUrItEsNoTiFiCaTiOn")
     static let userLoggedInNotification = NSNotification.Name("uSeRlOgGeDiNnOtIfIcAtIoN")
+    static let userLoggedOutNotification = NSNotification.Name("uSeRlOgGeDoUtNoTiFiCaTiOn")
     static let loginRequestNotification = NSNotification.Name("LoGiNREqUeStNoTiFiCaTiOn")
 }
 

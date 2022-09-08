@@ -38,10 +38,9 @@ class HomeViewController: UICollectionViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
-        super.viewDidDisappear(animated)
     }
     
     private func createMenu(song: Song) -> UIMenu
@@ -144,6 +143,15 @@ extension HomeViewController
         {
             print(categoricalSongs[item])
             GlobalVariables.shared.currentSong = categoricalSongs[item]
+            let indexPathOfRecentlyPlayed = collectionView.indexPathsForVisibleItems.first(where: {
+                let ipCategory = keys[$0.section]
+                return ipCategory == .recentlyPlayed
+            })
+            guard let indexPathOfRecentlyPlayed = indexPathOfRecentlyPlayed else
+            {
+                return
+            }
+            collectionView.reloadSections(IndexSet(integer: indexPathOfRecentlyPlayed.section))
         }
     }
     

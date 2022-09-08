@@ -596,10 +596,8 @@ extension ProfileViewController
     {
         let alert: UIAlertController = UIAlertController(title: "Logout Confirmation", message: "Do you want to logout for sure ?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
-            print("Logging out")
-            UserDefaults.standard.set(nil, forKey: GlobalConstants.currentUserId)
+            SessionManager.shared.logoutUser()
             DispatchQueue.main.async {
-                UserDefaults.standard.set(true, forKey: GlobalConstants.isFirstTime)
                 (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(InitialViewController(style: .insetGrouped))
 //                let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
 //                let newProfileVC = ProfileViewController(style: .insetGrouped)

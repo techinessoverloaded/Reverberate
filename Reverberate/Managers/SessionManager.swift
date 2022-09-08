@@ -139,4 +139,11 @@ class SessionManager
         NotificationCenter.default.post(name: .userLoggedInNotification, object: nil, userInfo: nil)
     }
     
+    func logoutUser()
+    {
+        UserDefaults.standard.set(nil, forKey: GlobalConstants.currentUserId)
+        UserDefaults.standard.set(true, forKey: GlobalConstants.isFirstTime)
+        NotificationCenter.default.post(name: .userLoggedOutNotification, object: nil)
+    }
+    
 }

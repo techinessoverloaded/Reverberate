@@ -209,7 +209,7 @@ class LibrarySongViewController: UITableViewController
         return headerView
     }
     
-    func setupFilterMenu()
+    private func setupFilterMenu()
     {
         let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
         menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
@@ -460,7 +460,14 @@ extension LibrarySongViewController
             sortedSongs = sortSongs()
             emptyMessageLabel.attributedText = noFavouritesMessage
             emptyMessageLabel.isHidden = !allSongs.isEmpty
-            tableView.reloadData()
+            if isFiltering
+            {
+                updateSearchResults(for: searchController)
+            }
+            else
+            {
+                tableView.reloadData()
+            }
         }
     }
     

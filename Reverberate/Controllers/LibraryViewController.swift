@@ -9,22 +9,23 @@ import UIKit
 
 class LibraryViewController: UITableViewController
 {
-    private let reverberateLibTitleLabel: UILabel = {
-        let uiLabel = UILabel()
-        uiLabel.textAlignment = .left
-        uiLabel.font = .preferredFont(forTextStyle: .footnote)
-        uiLabel.textColor = .secondaryLabel
-        uiLabel.text = " REVERBERATE LIBRARY"
-        return uiLabel
-    }()
+    private var userMessage: String
+    {
+        get
+        {
+            return SessionManager.shared.isUserLoggedIn ? "Find your favourite Songs, Albums, Artists, Playlists and Reverberate's Whole Collection" : "Find Reverberate's Whole Collection of Songs, Albums, Artists and Playlists"
+        }
+    }
     
-    private let yourLibTitleLabel: UILabel = {
-        let upLabel = UILabel()
-        upLabel.textAlignment = .left
-        upLabel.font = .preferredFont(forTextStyle: .footnote)
-        upLabel.textColor = .secondaryLabel
-        upLabel.text = " YOUR LIBRARY"
-        return upLabel
+    private lazy var userMessageLabel: UILabel =
+    {
+        let umLabel = UILabel(useAutoLayout: true)
+        umLabel.text = userMessage
+        umLabel.font = .preferredFont(forTextStyle: .body, weight: .regular)
+        umLabel.textColor = .secondaryLabel
+        umLabel.textAlignment = .left
+        umLabel.numberOfLines = 3
+        return umLabel
     }()
     
     override func viewDidLoad()
@@ -35,27 +36,42 @@ class LibraryViewController: UITableViewController
         navigationItem.largeTitleDisplayMode = .always
 //        navigationItem.searchController = searchController
 //        navigationItem.hidesSearchBarWhenScrolling = false
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 60))
+        headerView.backgroundColor = .clear
+        headerView.addSubview(userMessageLabel)
+        NSLayoutConstraint.activate([
+            userMessageLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
+            userMessageLabel.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -20),
+            userMessageLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
+        ])
+        tableView.tableHeaderView = headerView
         tableView.sectionHeaderTopPadding = 0
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 70, right: 0)
     }
     
-    override func viewDidLayoutSubviews()
+    override func viewDidAppear(_ animated: Bool)
     {
-        super.viewDidLayoutSubviews()
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification(_:)), name: .userLoggedInNotification, object: nil)
+    }
+    
+    deinit
+    {
+        NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
     }
     
     // MARK: - Table view data source and delegate
     
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        return 2
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return 3
+        return SessionManager.shared.isUserLoggedIn ? 4 : 3
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
@@ -63,95 +79,72 @@ class LibraryViewController: UITableViewController
         return UITableView.automaticDimension
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
-    {
-        return 30
-    }
-    
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-    {
-        return section == 0 ? reverberateLibTitleLabel : yourLibTitleLabel
-    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let section = indexPath.section
         let item = indexPath.item
-        if section == 0
+        var cellConfig = cell.defaultContentConfiguration()
+        if item == 0
         {
-            var cellConfig = cell.defaultContentConfiguration()
-            if item == 0
-            {
-                cellConfig.text = "All Songs"
-                cellConfig.image = UIImage(systemName: "music.note")!
-            }
-            else if item == 1
-            {
-                cellConfig.text = "All Albums"
-                cellConfig.image = UIImage(systemName: "square.stack")!
-            }
-            else
-            {
-                cellConfig.text = "All Artists"
-                cellConfig.image = UIImage(systemName: "music.mic")!
-            }
-            cell.contentConfiguration = cellConfig
+            cellConfig.text = "All Songs"
+            cellConfig.image = UIImage(systemName: "music.note")!
+        }
+        else if item == 1
+        {
+            cellConfig.text = "All Albums"
+            cellConfig.image = UIImage(systemName: "square.stack")!
+        }
+        else if item == 2
+        {
+            cellConfig.text = "All Artists"
+            cellConfig.image = UIImage(systemName: "music.mic")!
         }
         else
         {
-            var cellConfig = cell.defaultContentConfiguration()
-            if item == 0
+            if SessionManager.shared.isUserLoggedIn
             {
-                cellConfig.text = "Your Favourite Songs"
-                cellConfig.image = UIImage(systemName: "music.note")!
-            }
-            else if item == 1
-            {
-                cellConfig.text = "Your Favourite Playlists"
+                cellConfig.text = "Favourite Playlists"
                 cellConfig.image = UIImage(systemName: "music.note.list")!
             }
-            else
-            {
-                cellConfig.text = "Your Favourite Artists"
-                cellConfig.image = UIImage(systemName: "music.mic")!
-            }
-            cell.contentConfiguration = cellConfig
         }
+        cell.contentConfiguration = cellConfig
         cell.accessoryType = .disclosureIndicator
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        let section = indexPath.section
         let item = indexPath.item
         tableView.deselectRow(at: indexPath, animated: true)
-        if section == 0
+        if item == 0
         {
-            if item == 0
-            {
-                navigationController?.pushViewController(LibrarySongViewController(style: .plain), animated: true)
-            }
-            else if item == 1
-            {
-                navigationController?.pushViewController(LibraryAlbumViewController(collectionViewLayout: UICollectionViewFlowLayout()), animated: true)
-            }
-            else
-            {
-                navigationController?.pushViewController(LibraryArtistViewController(collectionViewLayout: UICollectionViewFlowLayout()), animated: true)
-            }
+            navigationController?.pushViewController(LibrarySongViewController(style: .plain), animated: true)
+        }
+        else if item == 1
+        {
+            navigationController?.pushViewController(LibraryAlbumViewController(collectionViewLayout: UICollectionViewFlowLayout()), animated: true)
+        }
+        else if item == 2
+        {
+            navigationController?.pushViewController(LibraryArtistViewController(collectionViewLayout: UICollectionViewFlowLayout()), animated: true)
         }
         else
         {
-            
+            if SessionManager.shared.isUserLoggedIn
+            {
+                
+            }
         }
     }
 }
 
 extension LibraryViewController
 {
-    
+    @objc func onUserLoginNotification(_ notification: NSNotification)
+    {
+        print("Logged in")
+        tableView.reloadData()
+    }
 }
 
 extension LibraryViewController: UISearchControllerDelegate

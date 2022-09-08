@@ -31,6 +31,22 @@ class LibraryAlbumViewController: UICollectionViewController
         return mutableAttrString
     }()
     
+    private lazy var noFavouritesMessage: NSAttributedString = {
+        let largeTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 19, weight: .bold),
+            NSAttributedString.Key.foregroundColor : UIColor.label
+        ]
+        let smallerTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .body),
+            NSAttributedString.Key.foregroundColor : UIColor.secondaryLabel
+        ]
+        var mutableAttrString = NSMutableAttributedString(string: "No Favourites were found\n\n", attributes: largeTextAttributes)
+        mutableAttrString.append(NSMutableAttributedString(string: "Try adding some albums to Favourites.", attributes: smallerTextAttributes))
+        return mutableAttrString
+    }()
+    
     private lazy var backgroundView: UIView = UIView()
     
     private lazy var emptyMessageLabel: UILabel = {
@@ -53,15 +69,9 @@ class LibraryAlbumViewController: UICollectionViewController
     
     private lazy var allAlbums = DataManager.shared.availableAlbums
     
-    private lazy var sortedAlbums: [Alphabet : [Album]] = {
-        var result: [Alphabet : [Album]] = [ : ]
-        for alphabet in Alphabet.allCases
-        {
-            let startingLetter = alphabet.asString
-            result[alphabet] = allAlbums.filter({ $0.name!.hasPrefix(startingLetter)}).sorted()
-        }
-        return result
-    }()
+    private var viewOnlyFavAlbums: Bool = false
+    
+    private lazy var sortedAlbums: [Alphabet : [Album]] = sortAlbums()
     
     private var filteredAlbums: [Alphabet : [Album]] = [:]
     
@@ -83,6 +93,10 @@ class LibraryAlbumViewController: UICollectionViewController
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+        if SessionManager.shared.isUserLoggedIn
+        {
+            setupFilterMenu()
+        }
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(SectionHeaderCV.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeaderCV.identifier)
         (collectionViewLayout as! UICollectionViewFlowLayout).sectionHeadersPinToVisibleBounds = true
@@ -142,6 +156,64 @@ class LibraryAlbumViewController: UICollectionViewController
             result[alphabet] = allAlbums.filter({ $0.name!.hasPrefix(startingLetter)}).sorted()
         }
         return result
+    }
+    
+    private func setupFilterMenu()
+    {
+        let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
+        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            UIDeferredMenuElement.uncached({ completion in
+                DispatchQueue.main.async { [unowned self] in
+                    let allAlbumsMenuItem = UIAction(title: "All Albums", image: UIImage(systemName: "square.stack")!, handler: { [unowned self] _ in
+                        if !viewOnlyFavAlbums
+                        {
+                            return
+                        }
+                        title = "All Albums"
+                        searchController.searchBar.placeholder = "Find in Albums"
+                        allAlbums = DataManager.shared.availableAlbums
+                        sortedAlbums = sortAlbums()
+                        viewOnlyFavAlbums = false
+                        emptyMessageLabel.isHidden = true
+                        collectionView.reloadData()
+                    })
+                    let favouriteAlbumsMenuItem = UIAction(title: "Favourite Albums", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
+                        if viewOnlyFavAlbums
+                        {
+                            return
+                        }
+                        title = "Favourite Albums"
+                        searchController.searchBar.placeholder = "Find in Favourite Albums"
+                        allAlbums = allAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouritePlaylist($0) })
+                        sortedAlbums = sortAlbums()
+                        viewOnlyFavAlbums = true
+                        if allAlbums.isEmpty
+                        {
+                            emptyMessageLabel.attributedText = noFavouritesMessage
+                            emptyMessageLabel.isHidden = false
+                        }
+                        else
+                        {
+                            emptyMessageLabel.isHidden = true
+                        }
+                        collectionView.reloadData()
+                    })
+                    if viewOnlyFavAlbums
+                    {
+                        favouriteAlbumsMenuItem.state = .on
+                        allAlbumsMenuItem.state = .off
+                        completion([allAlbumsMenuItem, favouriteAlbumsMenuItem])
+                    }
+                    else
+                    {
+                        favouriteAlbumsMenuItem.state = .off
+                        allAlbumsMenuItem.state = .on
+                        completion([allAlbumsMenuItem,favouriteAlbumsMenuItem])
+                    }
+                }
+            })
+        ])
+        navigationItem.rightBarButtonItem = menuBarItem
     }
     
     private func createMenu(album: Album) -> UIMenu
@@ -274,22 +346,18 @@ extension LibraryAlbumViewController: UISearchResultsUpdating
     {
         guard let query = searchController.searchBar.text, !query.isEmpty else
         { return }
-        filteredAlbums = DataProcessor.shared.getSortedAlbumsThatSatisfy(theQuery: query)
+        filteredAlbums = DataProcessor.shared.getSortedAlbumsThatSatisfy(theQuery: query, albumSource: viewOnlyFavAlbums ? allAlbums : nil)
+        emptyMessageLabel.attributedText = viewOnlyFavAlbums ? (allAlbums.isEmpty ? noFavouritesMessage : noResultsMessage) : noResultsMessage
         emptyMessageLabel.isHidden = !filteredAlbums.isEmpty
         collectionView.reloadData()
     }
 }
 
 extension LibraryAlbumViewController: UISearchControllerDelegate
-{
-    func didPresentSearchController(_ searchController: UISearchController)
-    {
-        collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .bottom, animated: true)
-    }
-    
+{    
     func willDismissSearchController(_ searchController: UISearchController)
     {
-        emptyMessageLabel.isHidden = true
+        emptyMessageLabel.isHidden = viewOnlyFavAlbums ? (allAlbums.isEmpty ? false : true) : true
     }
     
     func didDismissSearchController(_ searchController: UISearchController)
@@ -327,6 +395,21 @@ extension LibraryAlbumViewController
         }
         GlobalVariables.shared.currentUser!.favouritePlaylists!.removeUniquely(album)
         contextSaveAction()
+        if viewOnlyFavAlbums
+        {
+            allAlbums = DataManager.shared.availableAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouritePlaylist($0) })
+            sortedAlbums = sortAlbums()
+            emptyMessageLabel.attributedText = noFavouritesMessage
+            emptyMessageLabel.isHidden = !allAlbums.isEmpty
+            if isFiltering
+            {
+                updateSearchResults(for: searchController)
+            }
+            else
+            {
+                collectionView.reloadData()
+            }
+        }
     }
     
     @objc func onLoginRequestNotification(_ notification: NSNotification)

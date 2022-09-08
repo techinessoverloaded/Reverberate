@@ -31,6 +31,22 @@ class LibraryArtistViewController: UICollectionViewController
         return mutableAttrString
     }()
     
+    private lazy var noFavouritesMessage: NSAttributedString = {
+        let largeTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 19, weight: .bold),
+            NSAttributedString.Key.foregroundColor : UIColor.label
+        ]
+        let smallerTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .body),
+            NSAttributedString.Key.foregroundColor : UIColor.secondaryLabel
+        ]
+        var mutableAttrString = NSMutableAttributedString(string: "No Favourites were found\n\n", attributes: largeTextAttributes)
+        mutableAttrString.append(NSMutableAttributedString(string: "Try adding some artists to Favourites.", attributes: smallerTextAttributes))
+        return mutableAttrString
+    }()
+    
     private lazy var backgroundView: UIView = UIView()
     
     private lazy var emptyMessageLabel: UILabel = {
@@ -53,17 +69,11 @@ class LibraryArtistViewController: UICollectionViewController
     
     private lazy var allArtists = DataManager.shared.availableArtists
     
-    private lazy var sortedArtists: [Alphabet : [Artist]] = {
-        var result: [Alphabet : [Artist]] = [ : ]
-        for alphabet in Alphabet.allCases
-        {
-            let startingLetter = alphabet.asString
-            result[alphabet] = allArtists.filter({ $0.name!.hasPrefix(startingLetter)}).sorted()
-        }
-        return result
-    }()
+    private lazy var sortedArtists: [Alphabet : [Artist]] = sortArtists()
     
     private var filteredArtists: [Alphabet : [Artist]] = [:]
+    
+    private var viewOnlyFavArtists: Bool = false
     
     private var isSearchBarEmpty: Bool
     {
@@ -83,6 +93,10 @@ class LibraryArtistViewController: UICollectionViewController
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+        if SessionManager.shared.isUserLoggedIn
+        {
+            setupFilterMenu()
+        }
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(SectionHeaderCV.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeaderCV.identifier)
         (collectionViewLayout as! UICollectionViewFlowLayout).sectionHeadersPinToVisibleBounds = true
@@ -131,6 +145,75 @@ class LibraryArtistViewController: UICollectionViewController
         coordinator.animate(alongsideTransition: { [unowned self] _ in
             self.collectionViewLayout.invalidateLayout()
         })
+    }
+    
+    private func sortArtists() -> [Alphabet: [Artist]]
+    {
+        var result: [Alphabet : [Artist]] = [ : ]
+        for alphabet in Alphabet.allCases
+        {
+            let startingLetter = alphabet.asString
+            result[alphabet] = allArtists.filter({ $0.name!.hasPrefix(startingLetter)}).sorted()
+        }
+        return result
+    }
+    
+    private func setupFilterMenu()
+    {
+        let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
+        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            UIDeferredMenuElement.uncached({ completion in
+                DispatchQueue.main.async { [unowned self] in
+                    let allArtistsMenuItem = UIAction(title: "All Artists", image: UIImage(systemName: "music.mic")!, handler: { [unowned self] _ in
+                        if !viewOnlyFavArtists
+                        {
+                            return
+                        }
+                        title = "All Artists"
+                        searchController.searchBar.placeholder = "Find in Artists"
+                        allArtists = DataManager.shared.availableArtists
+                        sortedArtists = sortArtists()
+                        viewOnlyFavArtists = false
+                        emptyMessageLabel.isHidden = true
+                        collectionView.reloadData()
+                    })
+                    let favouriteArtistsMenuItem = UIAction(title: "Favourite Artists", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
+                        if viewOnlyFavArtists
+                        {
+                            return
+                        }
+                        title = "Favourite Artists"
+                        searchController.searchBar.placeholder = "Find in Favourite Artists"
+                        allArtists = allArtists.filter({ GlobalVariables.shared.currentUser!.isFavouriteArtist($0) })
+                        sortedArtists = sortArtists()
+                        viewOnlyFavArtists = true
+                        if allArtists.isEmpty
+                        {
+                            emptyMessageLabel.attributedText = noFavouritesMessage
+                            emptyMessageLabel.isHidden = false
+                        }
+                        else
+                        {
+                            emptyMessageLabel.isHidden = true
+                        }
+                        collectionView.reloadData()
+                    })
+                    if viewOnlyFavArtists
+                    {
+                        favouriteArtistsMenuItem.state = .on
+                        allArtistsMenuItem.state = .off
+                        completion([allArtistsMenuItem, favouriteArtistsMenuItem])
+                    }
+                    else
+                    {
+                        favouriteArtistsMenuItem.state = .off
+                        allArtistsMenuItem.state = .on
+                        completion([allArtistsMenuItem,favouriteArtistsMenuItem])
+                    }
+                }
+            })
+        ])
+        navigationItem.rightBarButtonItem = menuBarItem
     }
     
     private func createMenu(artist: Artist) -> UIMenu
@@ -262,22 +345,18 @@ extension LibraryArtistViewController: UISearchResultsUpdating
     {
         guard let query = searchController.searchBar.text, !query.isEmpty else
         { return }
-        filteredArtists = DataProcessor.shared.getSortedArtistsThatSatisfy(theQuery: query)
+        filteredArtists = DataProcessor.shared.getSortedArtistsThatSatisfy(theQuery: query, artistSource: viewOnlyFavArtists ? allArtists : nil)
+        emptyMessageLabel.attributedText = viewOnlyFavArtists ? (allArtists.isEmpty ? noFavouritesMessage : noResultsMessage) : noResultsMessage
         emptyMessageLabel.isHidden = !filteredArtists.isEmpty
         collectionView.reloadData()
     }
 }
 
 extension LibraryArtistViewController: UISearchControllerDelegate
-{
-    func didPresentSearchController(_ searchController: UISearchController)
-    {
-        collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .bottom, animated: true)
-    }
-    
+{    
     func willDismissSearchController(_ searchController: UISearchController)
     {
-        emptyMessageLabel.isHidden = true
+        emptyMessageLabel.isHidden = viewOnlyFavArtists ? (allArtists.isEmpty ? false : true) : true
     }
     
     func didDismissSearchController(_ searchController: UISearchController)
@@ -315,6 +394,21 @@ extension LibraryArtistViewController
         }
         GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
         contextSaveAction()
+        if viewOnlyFavArtists
+        {
+            allArtists = DataManager.shared.availableArtists.filter({ GlobalVariables.shared.currentUser!.isFavouriteArtist($0) })
+            sortedArtists = sortArtists()
+            emptyMessageLabel.attributedText = noFavouritesMessage
+            emptyMessageLabel.isHidden = !allArtists.isEmpty
+            if isFiltering
+            {
+                updateSearchResults(for: searchController)
+            }
+            else
+            {
+                collectionView.reloadData()
+            }
+        }
     }
     
     @objc func onLoginRequestNotification(_ notification: NSNotification)

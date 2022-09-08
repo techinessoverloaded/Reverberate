@@ -49,10 +49,11 @@ class DataProcessor
         return result.isEmpty ? nil : result.sorted()
     }
     
-    func getAlbumsThatSatisfy(theQuery query: String) -> [Album]?
+    func getAlbumsThatSatisfy(theQuery query: String, albumSource: [Album]? = nil) -> [Album]?
     {
         var result: [Album] = []
-        for album in DataManager.shared.availableAlbums
+        let albums = albumSource != nil ? albumSource! : DataManager.shared.availableAlbums
+        for album in albums
         {
             if album.name!.lowercased().contains(query) || album.songs!.contains(where: {
                 $0.title!.lowercased().contains(query) ||
@@ -66,10 +67,11 @@ class DataProcessor
         return result.isEmpty ? nil : result.sorted()
     }
     
-    func getArtistsThatSatisfy(theQuery query: String) -> [Artist]?
+    func getArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [Artist]?
     {
         var result: [Artist] = []
-        for artist in DataManager.shared.availableArtists
+        let artists = artistSource != nil ? artistSource! : DataManager.shared.availableArtists
+        for artist in artists
         {
             if artist.name!.lowercased().contains(query) || artist.artistType!.description.contains(query)
             {
@@ -192,9 +194,9 @@ class DataProcessor
         return result
     }
     
-    func getSortedAlbumsThatSatisfy(theQuery query: String) -> [Alphabet : [Album]]
+    func getSortedAlbumsThatSatisfy(theQuery query: String, albumSource: [Album]? = nil) -> [Alphabet : [Album]]
     {
-        let unsortedAlbums = getAlbumsThatSatisfy(theQuery: query.lowercased())
+        let unsortedAlbums = getAlbumsThatSatisfy(theQuery: query.lowercased(), albumSource: albumSource)
         guard let unsortedAlbums = unsortedAlbums else
         {
             return [:]
@@ -208,9 +210,9 @@ class DataProcessor
         return result
     }
     
-    func getSortedArtistsThatSatisfy(theQuery query: String) -> [Alphabet : [Artist]]
+    func getSortedArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [Alphabet : [Artist]]
     {
-        let unsortedArtists = getArtistsThatSatisfy(theQuery: query.lowercased())
+        let unsortedArtists = getArtistsThatSatisfy(theQuery: query.lowercased(), artistSource: artistSource)
         guard let unsortedArtists = unsortedArtists else
         {
             return [:]
