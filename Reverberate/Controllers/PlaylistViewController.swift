@@ -276,7 +276,7 @@ class PlaylistViewController: UITableViewController
                 backgroundView.addSubview(emptyMessageLabel)
                 NSLayoutConstraint.activate([
                     emptyMessageLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-                    emptyMessageLabel.topAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 100),
+                    emptyMessageLabel.topAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 150),
                     emptyMessageLabel.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.8)
                 ])
                 emptyMessageLabel.attributedText = noSongsMessage
