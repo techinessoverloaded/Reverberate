@@ -7,7 +7,7 @@
 import UIKit
 import Foundation
 
-public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
+public class Song: NSObject, Identifiable, Comparable, NSSecureCoding, NSCopying
 {
     enum CoderKeys: String
     {
@@ -116,4 +116,18 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding
             }
             return artistNameArray.sorted().joined(separator: ", ")
         }
+    
+    public func copy(with zone: NSZone? = nil) -> Any
+    {
+        let songCopy = Song()
+        songCopy.albumName = self.albumName
+        songCopy.title = self.title
+        songCopy.coverArt = self.coverArt
+        songCopy.duration = self.duration
+        songCopy.fileName = self.fileName
+        songCopy.genre = self.genre
+        songCopy.language = self.language
+        songCopy.artists = self.artists?.map({ $0.copy() as! Artist })
+        return songCopy
+    }
 }

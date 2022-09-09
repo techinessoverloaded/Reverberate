@@ -56,7 +56,6 @@ class LibrarySongViewController: UITableViewController
     }()
     
      private lazy var searchController: UISearchController = {
-         let libraryResultsVC = LibraryResultsViewController(style: .insetGrouped)
         let sController = UISearchController(searchResultsController: nil)
         sController.searchResultsUpdater = self
         sController.delegate = self
@@ -111,6 +110,8 @@ class LibrarySongViewController: UITableViewController
     private lazy var backgroundView: UIView = UIView()
     
     private var filteredSongs: [Alphabet : [Song]] = [:]
+    
+    private var songToBeAddedToPlaylist: Song? = nil
     
     private var isSearchBarEmpty: Bool
     {
@@ -423,7 +424,19 @@ extension LibrarySongViewController
     
     @objc func onAddSongToPlaylistNotification(_ notification: NSNotification)
     {
-        
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        songToBeAddedToPlaylist = song
+        let playlistSelectionVc = PlaylistSelectionViewController(style: .plain)
+        playlistSelectionVc.delegate = self
+        let playlistVcNavigationVc = UINavigationController(rootViewController: playlistSelectionVc)
+        self.present(playlistVcNavigationVc, animated: true)
     }
     
     @objc func onAddSongToFavouritesNotification(_ notification: NSNotification)
@@ -486,5 +499,29 @@ extension LibrarySongViewController
         albumVc.delegate = GlobalVariables.shared.mainTabController
         albumVc.playlist = album
         self.navigationController?.pushViewController(albumVc, animated: true)
+    }
+}
+
+extension LibrarySongViewController: PlaylistSelectionDelegate
+{
+    func onPlaylistSelection(selectedPlaylist: Playlist)
+    {
+        guard let songToBeAdded = songToBeAddedToPlaylist else { return }
+        if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })
+        {
+            let alert = UIAlertController(title: "Song exists already in Playlist", message: "The chosen song is present already in Playlist", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
+            self.present(alert, animated: true)
+        }
+        else
+        {
+            selectedPlaylist.songs!.append(songToBeAdded)
+            contextSaveAction()
+            print(GlobalVariables.shared.currentUser!.favouritePlaylists!)
+            let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
+            self.present(alert, animated: true)
+        }
+        songToBeAddedToPlaylist = nil
     }
 }

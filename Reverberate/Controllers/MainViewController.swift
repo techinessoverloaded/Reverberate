@@ -507,12 +507,10 @@ extension MainViewController
     {
         guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
         {
-            print("receiverId is invalid")
             return
         }
         guard let song = notification.userInfo?["song"] as? Song else
         {
-            print("song is invalid")
             return
         }
         let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)

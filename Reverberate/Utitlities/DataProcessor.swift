@@ -67,6 +67,24 @@ class DataProcessor
         return result.isEmpty ? nil : result.sorted()
     }
     
+    func getPlaylistsThatSatisfy(theQuery query: String) -> [Playlist]?
+    {
+        var result: [Playlist] = []
+        let playlists = GlobalVariables.shared.currentUser!.favouritePlaylists!
+        for playlist in playlists
+        {
+            if playlist.name!.lowercased().contains(query) || playlist.songs!.contains(where: {
+                $0.title!.lowercased().contains(query) ||
+                $0.language.description.lowercased().contains(query) ||
+                $0.genre.description.lowercased().contains(query) ||
+                $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
+            {
+                result.appendUniquely(playlist)
+            }
+        }
+        return result.isEmpty ? nil : result.sorted()
+    }
+    
     func getArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [Artist]?
     {
         var result: [Artist] = []
@@ -206,6 +224,22 @@ class DataProcessor
         {
             let letter = alphabet.asString
             result[alphabet] = unsortedAlbums.filter({ $0.name!.hasPrefix(letter) }).sorted()
+        }
+        return result
+    }
+    
+    func getSortedPlaylistsThatSatisfy(theQuery query: String) -> [Alphabet : [Playlist]]
+    {
+        let unsortedPlaylists = getPlaylistsThatSatisfy(theQuery: query.lowercased())
+        guard let unsortedPlaylists = unsortedPlaylists else
+        {
+            return [:]
+        }
+        var result: [Alphabet : [Playlist]] = [:]
+        for alphabet in Alphabet.allCases
+        {
+            let letter = alphabet.asString
+            result[alphabet] = unsortedPlaylists.filter({ $0.name!.hasPrefix(letter) }).sorted()
         }
         return result
     }

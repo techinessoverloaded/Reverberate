@@ -14,7 +14,7 @@ public class Album: Playlist
     public var releaseDate: Date? = nil
     public var composers: [Artist]? = nil
     
-    public override static var supportsSecureCoding: Bool
+    public override class var supportsSecureCoding: Bool
     {
         return true
     }

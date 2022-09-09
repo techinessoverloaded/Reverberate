@@ -44,7 +44,7 @@ class SessionManager
             return nil
         }
         let foundUser = allUsers.first(where: { $0.id! == id })
-        print(foundUser)
+        print(foundUser?.favouritePlaylists)
         return foundUser
     }
     
@@ -78,6 +78,10 @@ class SessionManager
         newUser.favouriteSongs = []
         newUser.favouriteArtists = []
         newUser.favouritePlaylists = []
+        let defaultPlaylist = Playlist()
+        defaultPlaylist.name = "Default Playlist"
+        defaultPlaylist.songs = []
+        newUser.favouritePlaylists?.append(defaultPlaylist)
         contextSaveAction()
         UserDefaults.standard.set(newUser.id, forKey: GlobalConstants.currentUserId)
         UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)

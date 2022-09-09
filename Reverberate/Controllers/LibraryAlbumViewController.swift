@@ -58,7 +58,6 @@ class LibraryAlbumViewController: UICollectionViewController
     }()
     
      private lazy var searchController: UISearchController = {
-         let libraryResultsVC = LibraryResultsViewController(style: .insetGrouped)
         let sController = UISearchController(searchResultsController: nil)
         sController.searchResultsUpdater = self
         sController.delegate = self
@@ -109,7 +108,6 @@ class LibraryAlbumViewController: UICollectionViewController
         ])
         emptyMessageLabel.attributedText = noResultsMessage
         collectionView.backgroundView = backgroundView
-        emptyMessageLabel.attributedText = noResultsMessage
         // Do any additional setup after loading the view.
     }
 

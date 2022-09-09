@@ -103,7 +103,7 @@ class LibraryViewController: UITableViewController
         {
             if SessionManager.shared.isUserLoggedIn
             {
-                cellConfig.text = "Favourite Playlists"
+                cellConfig.text = "Your Playlists"
                 cellConfig.image = UIImage(systemName: "music.note.list")!
             }
         }
@@ -132,7 +132,7 @@ class LibraryViewController: UITableViewController
         {
             if SessionManager.shared.isUserLoggedIn
             {
-                
+                navigationController?.pushViewController(LibraryPlaylistViewController(style: .plain), animated: true)
             }
         }
     }

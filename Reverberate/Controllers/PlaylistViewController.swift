@@ -124,6 +124,32 @@ class PlaylistViewController: UITableViewController
         return sButton
     }()
     
+    private lazy var noSongsMessage: NSAttributedString = {
+        let largeTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 19, weight: .bold),
+            NSAttributedString.Key.foregroundColor : UIColor.label
+        ]
+        let smallerTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .body),
+            NSAttributedString.Key.foregroundColor : UIColor.secondaryLabel
+        ]
+        var mutableAttrString = NSMutableAttributedString(string: "No Songs were added\n\n", attributes: largeTextAttributes)
+        mutableAttrString.append(NSMutableAttributedString(string: "Try adding some Songs to Playlist.", attributes: smallerTextAttributes))
+        return mutableAttrString
+    }()
+    
+    private lazy var backgroundView: UIView = UIView()
+    
+    private lazy var emptyMessageLabel: UILabel = {
+        let emLabel = UILabel(useAutoLayout: true)
+        emLabel.textAlignment = .center
+        emLabel.numberOfLines = 4
+        emLabel.isHidden = true
+        return emLabel
+    }()
+    
     var playlist: Playlist!
     
     weak var delegate: PlaylistDelegate?
@@ -185,6 +211,7 @@ class PlaylistViewController: UITableViewController
         playlistFavouriteButton.addTarget(self, action: #selector(onArtistFavouriteButtonTap(_:)), for: .touchUpInside)
         playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
+        playlistFavouriteButton.isHidden = !(playlist is Album)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -243,6 +270,21 @@ class PlaylistViewController: UITableViewController
             title = playlist.name!
             navigationItem.title = nil
             titleView.text = title
+            if playlist.songs!.isEmpty
+            {
+                let backgroundView = UIView()
+                backgroundView.addSubview(emptyMessageLabel)
+                NSLayoutConstraint.activate([
+                    emptyMessageLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+                    emptyMessageLabel.topAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 100),
+                    emptyMessageLabel.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.8)
+                ])
+                emptyMessageLabel.attributedText = noSongsMessage
+                emptyMessageLabel.isHidden = false
+                tableView.backgroundView = backgroundView
+                playButton.isEnabled = false
+                shuffleButton.isEnabled = false
+            }
         }
         if GlobalVariables.shared.currentPlaylist == playlist
         {

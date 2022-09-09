@@ -136,6 +136,13 @@ class ContextMenuProvider
         })
     }
     
+    private func getRemovePlaylistMenuItem(playlist: Playlist, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Remove Playlist", image: UIImage(systemName: "minus.circle")!) { [unowned self] _ in
+            onRemovePlaylistMenuItemTap(playlist: playlist, receiverId: requesterId)
+        }
+    }
+    
     private func getLoginForMoreOptionsMenuItem(requesterId: Int) -> UIAction
     {
         return UIAction(title: "Login to get more option(s)", image: UIImage(systemName: "person.crop.circle.fill")!,handler: { [unowned self] _ in
@@ -161,6 +168,13 @@ class ContextMenuProvider
             getAddOrRemoveAlbumDeferredMenuItem(album: album, requesterId: requesterId)
         ]) : UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
             getLoginForMoreOptionsMenuItem(requesterId: requesterId)
+        ])
+    }
+    
+    func getPlaylistMenu(playlist: Playlist, requesterId: Int) -> UIMenu
+    {
+        UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getRemovePlaylistMenuItem(playlist: playlist, requesterId: requesterId)
         ])
     }
     
@@ -200,6 +214,11 @@ extension ContextMenuProvider
     @objc private func onAddAlbumToFavouritesMenuItemTap(album: Album, receiverId: Int)
     {
         NotificationCenter.default.post(name: .addAlbumToFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"album" : album])
+    }
+    
+    @objc private func onRemovePlaylistMenuItemTap(playlist: Playlist, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .removePlaylistNotification, object: nil, userInfo: [ "receiverId" : receiverId, "playlist" : playlist ])
     }
     
     @objc private func onRemoveAlbumFromFavouritesMenuItemTap(album: Album, receiverId: Int)

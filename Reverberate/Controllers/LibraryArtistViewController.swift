@@ -58,7 +58,6 @@ class LibraryArtistViewController: UICollectionViewController
     }()
     
      private lazy var searchController: UISearchController = {
-         let libraryResultsVC = LibraryResultsViewController(style: .insetGrouped)
         let sController = UISearchController(searchResultsController: nil)
         sController.searchResultsUpdater = self
         sController.delegate = self
