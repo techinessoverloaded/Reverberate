@@ -108,7 +108,7 @@ class ContextMenuProvider
     {
         return UIDeferredMenuElement.uncached({ completion in
             DispatchQueue.main.async { [unowned self] in
-                if GlobalVariables.shared.currentUser!.isFavouritePlaylist(album)
+                if GlobalVariables.shared.currentUser!.isFavouriteAlbum(album)
                 {
                     completion([getRemoveAlbumFromFavouritesMenuItem(album: album, requesterId: requesterId)])
                 }

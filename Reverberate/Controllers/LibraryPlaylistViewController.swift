@@ -63,7 +63,7 @@ class LibraryPlaylistViewController: UITableViewController
         return sController
     }()
     
-    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.favouritePlaylists!.filter({ !($0 is Album) })
+    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.userPlaylists!
     
     private lazy var sortedPlaylists: [Alphabet : [Playlist]] = sortPlaylists()
     
@@ -118,7 +118,7 @@ class LibraryPlaylistViewController: UITableViewController
     
     private func refetchPlaylists()
     {
-        allPlaylists = GlobalVariables.shared.currentUser!.favouritePlaylists!.filter({ !($0 is Album) })
+        allPlaylists = GlobalVariables.shared.currentUser!.userPlaylists!
         sortedPlaylists = sortPlaylists()
         tableView.reloadData()
         emptyMessageLabel.isHidden = isFiltering ? !filteredPlaylists.isEmpty : !allPlaylists.isEmpty
@@ -130,7 +130,7 @@ class LibraryPlaylistViewController: UITableViewController
         for alphabet in Alphabet.allCases
         {
             let startingLetter = alphabet.asString
-            result[alphabet] = allPlaylists.filter({ $0.name!.hasPrefix(startingLetter)}).sorted()
+            result[alphabet] = allPlaylists.filter({ $0.name!.lowercased().hasPrefix(startingLetter.lowercased())}).sorted()
         }
         return result
     }
@@ -291,6 +291,7 @@ extension LibraryPlaylistViewController
         alert.addTextField()
         let nameField = alert.textFields![0]
         nameField.placeholder = "Name of Playlist"
+        nameField.returnKeyType = .done
         alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [unowned self] _ in
             if nameField.text?.isEmpty ?? true
             {
@@ -298,7 +299,7 @@ extension LibraryPlaylistViewController
                     showCreationError(message: "Failed to create Playlist as no name was provided!")
                 }
             }
-            else if allPlaylists.contains(where: { $0.name!.lowercased() == nameField.text!.lowercased() })
+            else if allPlaylists.contains(where: { $0.name! == nameField.text! })
             {
                 DispatchQueue.main.async { [unowned self] in
                     showCreationError(message: "Failed to create Playlist as a Playlist exists with the same name already!")
@@ -309,7 +310,7 @@ extension LibraryPlaylistViewController
                 let newPlaylist = Playlist()
                 newPlaylist.name = nameField.text!
                 newPlaylist.songs = []
-                GlobalVariables.shared.currentUser!.favouritePlaylists!.append(newPlaylist)
+                GlobalVariables.shared.currentUser!.userPlaylists!.append(newPlaylist)
                 contextSaveAction()
                 DispatchQueue.main.async { [unowned self] in
                     self.refetchPlaylists()
@@ -330,7 +331,7 @@ extension LibraryPlaylistViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouritePlaylists!.removeUniquely(playlist)
+        GlobalVariables.shared.currentUser!.userPlaylists!.removeUniquely(playlist)
         contextSaveAction()
         if isFiltering
         {

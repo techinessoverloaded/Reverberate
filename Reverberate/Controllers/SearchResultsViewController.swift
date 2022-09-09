@@ -463,6 +463,11 @@ extension SearchResultsViewController
         let playlistSelectionVc = PlaylistSelectionViewController(style: .plain)
         playlistSelectionVc.delegate = self
         let playlistVcNavigationVc = UINavigationController(rootViewController: playlistSelectionVc)
+        if let sheet = playlistVcNavigationVc.sheetPresentationController
+        {
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        }
         self.present(playlistVcNavigationVc, animated: true)
     }
     
@@ -524,7 +529,6 @@ extension SearchResultsViewController: PlaylistSelectionDelegate
         {
             selectedPlaylist.songs!.append(songToBeAdded)
             contextSaveAction()
-            print(GlobalVariables.shared.currentUser!.favouritePlaylists!)
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

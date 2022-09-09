@@ -13,7 +13,7 @@ class PlaylistSelectionViewController: UITableViewController
     
     private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
     
-    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.favouritePlaylists!.filter({ !($0 is Album) })
+    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.userPlaylists!
     
     private var selectedPlaylist: Playlist? = nil
     
@@ -45,7 +45,7 @@ class PlaylistSelectionViewController: UITableViewController
     
     private func fetchPlaylists()
     {
-        allPlaylists = GlobalVariables.shared.currentUser!.favouritePlaylists!.filter({ !($0 is Album) })
+        allPlaylists = GlobalVariables.shared.currentUser!.userPlaylists!
         tableView.reloadData()
     }
 
@@ -124,6 +124,7 @@ extension PlaylistSelectionViewController
         alert.addTextField()
         let nameField = alert.textFields![0]
         nameField.placeholder = "Name of Playlist"
+        nameField.returnKeyType = .done
         alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [unowned self] _ in
             if nameField.text?.isEmpty ?? true
             {
@@ -131,7 +132,7 @@ extension PlaylistSelectionViewController
                     showCreationError(message: "Failed to create Playlist as no name was provided!")
                 }
             }
-            else if allPlaylists.contains(where: { $0.name!.lowercased() == nameField.text!.lowercased() })
+            else if allPlaylists.contains(where: { $0.name! == nameField.text! })
             {
                 DispatchQueue.main.async { [unowned self] in
                     showCreationError(message: "Failed to create Playlist as a Playlist exists with the same name already!")
@@ -142,9 +143,9 @@ extension PlaylistSelectionViewController
                 let newPlaylist = Playlist()
                 newPlaylist.name = nameField.text!
                 newPlaylist.songs = []
-                GlobalVariables.shared.currentUser!.favouritePlaylists!.append(newPlaylist)
+                GlobalVariables.shared.currentUser!.userPlaylists!.append(newPlaylist)
                 contextSaveAction()
-                print(GlobalVariables.shared.currentUser!.favouritePlaylists!)
+                print(GlobalVariables.shared.currentUser!.userPlaylists!)
                 DispatchQueue.main.async { [unowned self] in
                     self.fetchPlaylists()
                 }

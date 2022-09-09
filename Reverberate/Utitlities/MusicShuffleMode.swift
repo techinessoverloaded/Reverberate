@@ -7,5 +7,5 @@
 
 enum MusicShuffleMode: Int
 {
-    case off = 0
+    case off = 0, on
 }

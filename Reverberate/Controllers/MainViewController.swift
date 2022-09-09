@@ -41,6 +41,8 @@ class MainViewController: UITabBarController
     
     private var hasSetupMPCommandCenter: Bool = false
     
+    private var _alreadyPlayedSongs: [Song] = []
+    
     override func loadView()
     {
         super.loadView()
@@ -560,6 +562,18 @@ extension MainViewController: AVAudioPlayerDelegate
 
 extension MainViewController: PlaylistDelegate
 {
+    var alreadyPlayedSongs: [Song]
+    {
+        get
+        {
+            return _alreadyPlayedSongs
+        }
+        set
+        {
+            _alreadyPlayedSongs = newValue
+        }
+    }
+    
     func onPlaylistSongChangeRequest(playlist: Playlist, newSong: Song)
     {
         onSongChangeRequest(playlist: playlist, newSong: newSong)
@@ -574,7 +588,7 @@ extension MainViewController: PlaylistDelegate
     {
         if GlobalVariables.shared.currentPlaylist != playlist
         {
-            GlobalVariables.shared.currentPlaylist = playlist
+            GlobalVariables.shared.currentPlaylist = playlist.copy() as! Playlist
         }
         onPlayButtonTap()
     }
@@ -583,13 +597,13 @@ extension MainViewController: PlaylistDelegate
     {
         let playlist = GlobalVariables.shared.currentPlaylist!
         let song = GlobalVariables.shared.currentSong!
-        let index = playlist.songs!.firstIndex(of: song)!
-        playlist.songs!.shuffle()
-        let updatedSong = playlist.songs![index]
-        if song != updatedSong
-        {
-            GlobalVariables.shared.currentSong = updatedSong
-        }
+        let shuffledPlaylist = playlist.copy() as! Playlist
+        shuffledPlaylist.songs!.shuffle()
+        let randomElement = shuffledPlaylist.songs!.randomElement()
+//        if song != updatedSong
+//        {
+//            GlobalVariables.shared.currentSong = updatedSong
+//        }
     }
 }
 

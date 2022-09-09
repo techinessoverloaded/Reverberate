@@ -55,7 +55,7 @@ public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparab
     
     public override func isEqual(_ object: Any?) -> Bool
     {
-        self.name! == (object as! Self).name!
+        self.name! == (object as! Artist).name!
     }
     
     public static func == (lhs: Artist, rhs: Artist) -> Bool
@@ -74,7 +74,7 @@ public class Artist: NSObject, NSSecureCoding, NSCopying, Identifiable, Comparab
         artistCopy.name = self.name
         artistCopy.artistType = self.artistType
         artistCopy.contributedSongs = self.contributedSongs
-        artistCopy.photo = self.photo
+        artistCopy.photo = UIImage(data: self.photo!.jpegData(compressionQuality: 1)!)!
         return artistCopy
     }
     

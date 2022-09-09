@@ -482,6 +482,7 @@ extension PlaylistViewController
     
     @objc func onShuffleButtonTap(_ sender: UIButton)
     {
+        //delegate?.onPlaylistShuffleRequest(playlist: )
         playlist.songs!.shuffle()
         tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
     }

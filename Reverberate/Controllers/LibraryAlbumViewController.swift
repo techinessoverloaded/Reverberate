@@ -182,7 +182,7 @@ class LibraryAlbumViewController: UICollectionViewController
                         }
                         title = "Favourite Albums"
                         searchController.searchBar.placeholder = "Find in Favourite Albums"
-                        allAlbums = allAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouritePlaylist($0) })
+                        allAlbums = allAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouriteAlbum($0) })
                         sortedAlbums = sortAlbums()
                         viewOnlyFavAlbums = true
                         if allAlbums.isEmpty
@@ -377,7 +377,7 @@ extension LibraryAlbumViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouritePlaylists!.appendUniquely(album)
+        GlobalVariables.shared.currentUser!.favouriteAlbums!.appendUniquely(album)
         contextSaveAction()
     }
     
@@ -391,11 +391,11 @@ extension LibraryAlbumViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouritePlaylists!.removeUniquely(album)
+        GlobalVariables.shared.currentUser!.favouriteAlbums!.removeUniquely(album)
         contextSaveAction()
         if viewOnlyFavAlbums
         {
-            allAlbums = DataManager.shared.availableAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouritePlaylist($0) })
+            allAlbums = DataManager.shared.availableAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouriteAlbum($0) })
             sortedAlbums = sortAlbums()
             emptyMessageLabel.attributedText = noFavouritesMessage
             emptyMessageLabel.isHidden = !allAlbums.isEmpty

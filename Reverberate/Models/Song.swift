@@ -79,7 +79,7 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding, NSCopying
     
     public override func isEqual(_ object: Any?) -> Bool
     {
-        return self.title! == (object as! Self).title!
+        return self.title! == (object as! Song).title!
     }
     
     public static func == (lhs: Song, rhs: Song) -> Bool
@@ -122,12 +122,12 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding, NSCopying
         let songCopy = Song()
         songCopy.albumName = self.albumName
         songCopy.title = self.title
-        songCopy.coverArt = self.coverArt
+        songCopy.coverArt = UIImage(data: self.coverArt!.jpegData(compressionQuality: 1)!)!
         songCopy.duration = self.duration
         songCopy.fileName = self.fileName
         songCopy.genre = self.genre
         songCopy.language = self.language
-        songCopy.artists = self.artists?.map({ $0.copy() as! Artist })
+        songCopy.artists = self.artists
         return songCopy
     }
 }

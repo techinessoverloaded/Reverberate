@@ -63,4 +63,15 @@ public class Album: Playlist
     {
         return songs!.first!.language.description
     }
+    
+    public override func copy(with zone: NSZone? = nil) -> Any
+    {
+        let newAlbum = Album()
+        newAlbum.name = self.name
+        newAlbum.coverArt = UIImage(data: self.coverArt!.jpegData(compressionQuality: 1)!)!
+        newAlbum.composers = self.composers
+        newAlbum.songs = self.songs
+        newAlbum.releaseDate = self.releaseDate
+        return newAlbum
+    }
 }

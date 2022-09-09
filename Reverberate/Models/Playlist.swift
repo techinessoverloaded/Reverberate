@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable
+public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCopying
 {
     enum CoderKeys: String
     {
@@ -19,7 +19,7 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable
         case composersKey = "composersKey"
     }
     
-    open class var supportsSecureCoding: Bool
+    public class var supportsSecureCoding: Bool
     {
         return true
     }
@@ -57,11 +57,20 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable
     
     public override func isEqual(_ object: Any?) -> Bool
     {
-        return self.name! == (object as! Self).name!
+        return self.name! == (object as! Playlist).name!
     }
     
     public static func < (lhs: Playlist, rhs: Playlist) -> Bool
     {
         return lhs.name! < rhs.name!
     }
+    
+    public func copy(with zone: NSZone? = nil) -> Any
+    {
+        let newPlaylist = Playlist()
+        newPlaylist.name = self.name
+        newPlaylist.songs = self.songs
+        return newPlaylist
+    }
+    
 }
