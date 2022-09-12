@@ -34,7 +34,15 @@ class GlobalVariables
         }
     }
     
+    var currentShuffledPlaylist: Playlist? = nil
+    
+    var currentLoopMode: MusicLoopMode = .off
+    
+    var currentShuffleMode: MusicShuffleMode = .off
+    
     var recentlyPlayedSongNames: Set<String> = []
+    
+    var alreadyPlayedSongs: [Song] = []
     
     var currentUser: User? = nil
     

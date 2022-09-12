@@ -11,7 +11,7 @@ protocol PlaylistDelegate: AnyObject
     
     func onPlaylistPlayRequest(playlist: Playlist)
     
-    func onPlaylistShuffleRequest(playlist: Playlist)
+    func onPlaylistShuffleRequest(playlist: Playlist, shuffleMode: MusicShuffleMode)
     
     func onPlaylistSongChangeRequest(playlist: Playlist, newSong: Song)
 }

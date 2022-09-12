@@ -41,8 +41,6 @@ class MainViewController: UITabBarController
     
     private var hasSetupMPCommandCenter: Bool = false
     
-    private var _alreadyPlayedSongs: [Song] = []
-    
     override func loadView()
     {
         super.loadView()
@@ -144,7 +142,6 @@ class MainViewController: UITabBarController
         let navController = UINavigationController(rootViewController: playerController)
         playerController.delegate = self
         playerController.setPlaying(shouldPlaySongFromBeginning: shouldPlaySongFromBeginning, isSongPaused: isSongPaused)
-        playerController.setLoopButton(loopMode: avAudioPlayer.numberOfLoops)
         navController.modalPresentationStyle = .overFullScreen
         navController.modalTransitionStyle = .coverVertical
         navController.navigationBar.isTranslucent = true
@@ -285,14 +282,23 @@ extension MainViewController: MiniPlayerDelegate
 
 extension MainViewController: PlayerDelegate
 {
-    func onShuffleRequest()
+    func onShuffleRequest(playlist: Playlist, shuffleMode: MusicShuffleMode)
     {
-        onPlaylistShuffleRequest(playlist: GlobalVariables.shared.currentPlaylist!)
+        onPlaylistShuffleRequest(playlist: playlist, shuffleMode: shuffleMode)
     }
     
-    func onLoopButtonTap(loopMode: Int)
+    func onLoopButtonTap(loopMode: MusicLoopMode)
     {
-        avAudioPlayer.numberOfLoops = loopMode
+        GlobalVariables.shared.currentLoopMode = loopMode
+        switch loopMode
+        {
+        case .off:
+            avAudioPlayer.numberOfLoops = 0
+        case .song:
+            avAudioPlayer.numberOfLoops = -1
+        case .playlist:
+            avAudioPlayer.numberOfLoops = -1
+        }
     }
     
     func onFavouriteButtonTap(shouldMakeAsFavourite: Bool)
@@ -337,59 +343,135 @@ extension MainViewController: PlayerDelegate
     
     func isNextSongAvailable(playlist: Playlist, currentSong: Song) -> Bool
     {
-        let songs = playlist.songs!
-        guard let index = songs.firstIndex(of: currentSong) else
+        let shuffleMode = GlobalVariables.shared.currentShuffleMode
+        if shuffleMode == .on
         {
-            return false
-        }
-        return songs.index(after: index) != songs.endIndex
-    }
-    
-    func isPreviousSongAvailable(playlist: Playlist, currentSong: Song) -> Bool
-    {
-        let songs = playlist.songs!
-        guard let index = songs.firstIndex(of: currentSong) else
-        {
-            return false
-        }
-        return songs.index(before: index) >= songs.startIndex
-    }
-    
-    func onNextSongRequest(playlist: Playlist, currentSong: Song)
-    {
-        if !isNextSongAvailable(playlist: playlist, currentSong: currentSong)
-        {
-            GlobalVariables.shared.currentSong = playlist.songs!.first!
+            let songs = GlobalVariables.shared.currentShuffledPlaylist!.songs!
+            guard let index = songs.firstIndex(of: currentSong) else
+            {
+                return false
+            }
+            return songs.index(after: index) != songs.endIndex
         }
         else
         {
             let songs = playlist.songs!
-            let index = songs.firstIndex(of: currentSong)!
-            GlobalVariables.shared.currentSong = songs[index + 1]
+            guard let index = songs.firstIndex(of: currentSong) else
+            {
+                return false
+            }
+            return songs.index(after: index) != songs.endIndex
+        }
+    }
+    
+    func isPreviousSongAvailable(playlist: Playlist, currentSong: Song) -> Bool
+    {
+        let shuffleMode = GlobalVariables.shared.currentShuffleMode
+        if shuffleMode == .on
+        {
+            let songs = GlobalVariables.shared.currentShuffledPlaylist!.songs!
+            guard let index = songs.firstIndex(of: currentSong) else
+            {
+                return false
+            }
+            return songs.index(before: index) >= songs.startIndex
+        }
+        else
+        {
+            let songs = playlist.songs!
+            guard let index = songs.firstIndex(of: currentSong) else
+            {
+                return false
+            }
+            return songs.index(before: index) >= songs.startIndex
+        }
+    }
+    
+    func onNextSongRequest(playlist: Playlist, currentSong: Song)
+    {
+        let currentShuffleMode = GlobalVariables.shared.currentShuffleMode
+        if currentShuffleMode == .on
+        {
+            let shuffledPlaylist = GlobalVariables.shared.currentShuffledPlaylist!
+            if !isNextSongAvailable(playlist: shuffledPlaylist, currentSong: currentSong)
+            {
+                GlobalVariables.shared.currentSong = shuffledPlaylist.songs!.first!
+            }
+            else
+            {
+                let songs = shuffledPlaylist.songs!
+                let index = songs.firstIndex(of: currentSong)!
+                GlobalVariables.shared.currentSong = songs[index + 1]
+            }
+        }
+        else
+        {
+            if !isNextSongAvailable(playlist: playlist, currentSong: currentSong)
+            {
+                GlobalVariables.shared.currentSong = playlist.songs!.first!
+            }
+            else
+            {
+                let songs = playlist.songs!
+                let index = songs.firstIndex(of: currentSong)!
+                GlobalVariables.shared.currentSong = songs[index + 1]
+            }
         }
     }
     
     func onPreviousSongRequest(playlist: Playlist, currentSong: Song)
     {
-        if !isPreviousSongAvailable(playlist: playlist, currentSong: currentSong)
+        let currentShuffleMode = GlobalVariables.shared.currentShuffleMode
+        if currentShuffleMode == .on
         {
-            GlobalVariables.shared.currentSong = playlist.songs!.last!
+            let shuffledPlaylist = GlobalVariables.shared.currentShuffledPlaylist!
+            if !isPreviousSongAvailable(playlist: shuffledPlaylist, currentSong: currentSong)
+            {
+                GlobalVariables.shared.currentSong = shuffledPlaylist.songs!.last!
+            }
+            else
+            {
+                let songs = shuffledPlaylist.songs!
+                let index = songs.firstIndex(of: currentSong)!
+                GlobalVariables.shared.currentSong = songs[index - 1]
+            }
         }
         else
         {
-            let songs = playlist.songs!
-            let index = songs.firstIndex(of: currentSong)!
-            GlobalVariables.shared.currentSong = songs[index - 1]
+            if !isPreviousSongAvailable(playlist: playlist, currentSong: currentSong)
+            {
+                GlobalVariables.shared.currentSong = playlist.songs!.last!
+            }
+            else
+            {
+                let songs = playlist.songs!
+                let index = songs.firstIndex(of: currentSong)!
+                GlobalVariables.shared.currentSong = songs[index - 1]
+            }
         }
     }
     
     func onSongChangeRequest(playlist: Playlist, newSong: Song)
     {
-        if GlobalVariables.shared.currentPlaylist != playlist
+        let shuffleMode = GlobalVariables.shared.currentShuffleMode
+        if shuffleMode == .on
         {
-            GlobalVariables.shared.currentPlaylist = playlist
+            if GlobalVariables.shared.currentPlaylist != playlist
+            {
+                let shuffledPlaylist = playlist.copy() as! Playlist
+                shuffledPlaylist.songs! = playlist.songs!.shuffled()
+                GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
+                GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
+            }
         }
-        GlobalVariables.shared.currentSong = newSong
+        else
+        {
+            if GlobalVariables.shared.currentPlaylist != playlist
+            {
+                GlobalVariables.shared.currentPlaylist = playlist
+            }
+            GlobalVariables.shared.currentSong = newSong
+        }
     }
     
     func onSongSeekRequest(songPosition value: Double)
@@ -497,12 +579,26 @@ extension MainViewController
             hasSetupMPCommandCenter = true
         }
         GlobalVariables.shared.recentlyPlayedSongNames.insert(GlobalVariables.shared.currentSong!.title!)
+        GlobalVariables.shared.alreadyPlayedSongs.appendUniquely(GlobalVariables.shared.currentSong!)
     }
     
     @objc func onPlaylistChange()
     {
         let playlist = GlobalVariables.shared.currentPlaylist!
-        GlobalVariables.shared.currentSong = playlist.songs!.first!
+        GlobalVariables.shared.alreadyPlayedSongs = []
+        if GlobalVariables.shared.currentShuffleMode == .on
+        {
+            var randomSong = playlist.songs!.randomElement()!
+            while randomSong == GlobalVariables.shared.currentSong!
+            {
+                randomSong = playlist.songs!.randomElement()!
+            }
+            GlobalVariables.shared.currentSong = randomSong
+        }
+        else
+        {
+            GlobalVariables.shared.currentSong = playlist.songs!.first!
+        }
     }
     
     @objc func onShowAlbumNotification(_ notification: NSNotification)
@@ -528,28 +624,49 @@ extension MainViewController: AVAudioPlayerDelegate
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool)
     {
         print(player.numberOfLoops)
+        // Loop is either off or playlist
         if player.numberOfLoops == 0
         {
-            print("Finished Playing")
-            try! AVAudioSession.sharedInstance().setActive(false)
-            miniPlayerView.setPlaying(shouldPlaySong: false)
-            miniPlayerTimer.isPaused = true
-            miniPlayerView.updateSongDurationView(newValue: 0)
-            playerController?.setPlaying(shouldPlaySongFromBeginning: true)
+            let loopMode = GlobalVariables.shared.currentLoopMode
+            print(loopMode)
+            if loopMode == .off
+            {
+                print("No Repeat")
+                let alreadyPlayedSongs = GlobalVariables.shared.alreadyPlayedSongs
+                print("Number of already played songs: \(alreadyPlayedSongs.count)")
+                if let currentPlaylist = GlobalVariables.shared.currentPlaylist
+                {
+                    if alreadyPlayedSongs.count != currentPlaylist.songs!.count
+                    {
+                        onNextSongRequest(playlist: currentPlaylist, currentSong: GlobalVariables.shared.currentSong!)
+                    }
+                    else
+                    {
+                        try! AVAudioSession.sharedInstance().setActive(false)
+                        miniPlayerView.setPlaying(shouldPlaySong: false)
+                        miniPlayerTimer.isPaused = true
+                        miniPlayerView.updateSongDurationView(newValue: 0)
+                        playerController?.setPlaying(shouldPlaySongFromBeginning: true)
+                    }
+                }
+                else
+                {
+                    try! AVAudioSession.sharedInstance().setActive(false)
+                    miniPlayerView.setPlaying(shouldPlaySong: false)
+                    miniPlayerTimer.isPaused = true
+                    miniPlayerView.updateSongDurationView(newValue: 0)
+                    playerController?.setPlaying(shouldPlaySongFromBeginning: true)
+                }
+            }
+            else if loopMode == .playlist
+            {
+                print("Repeat Playlist")
+                onNextSongRequest(playlist: GlobalVariables.shared.currentPlaylist!, currentSong: GlobalVariables.shared.currentSong!)
+            }
         }
-        if player.numberOfLoops == 1
+        else //Loop Mode is single song
         {
-            print("Loop Once in Delegate")
-            player.play()
-            try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-            miniPlayerView.setPlaying(shouldPlaySong: true)
-            miniPlayerTimer.isPaused = false
-            playerController?.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
-            playerController?.setLoopButton(loopMode: 0)
-            player.numberOfLoops = 0
-        }
-        if player.numberOfLoops == -1
-        {
+            print("Repeat single song")
             player.play()
             try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             miniPlayerView.setPlaying(shouldPlaySong: true)
@@ -562,18 +679,6 @@ extension MainViewController: AVAudioPlayerDelegate
 
 extension MainViewController: PlaylistDelegate
 {
-    var alreadyPlayedSongs: [Song]
-    {
-        get
-        {
-            return _alreadyPlayedSongs
-        }
-        set
-        {
-            _alreadyPlayedSongs = newValue
-        }
-    }
-    
     func onPlaylistSongChangeRequest(playlist: Playlist, newSong: Song)
     {
         onSongChangeRequest(playlist: playlist, newSong: newSong)
@@ -588,22 +693,25 @@ extension MainViewController: PlaylistDelegate
     {
         if GlobalVariables.shared.currentPlaylist != playlist
         {
-            GlobalVariables.shared.currentPlaylist = playlist.copy() as! Playlist
+            GlobalVariables.shared.currentPlaylist = playlist
         }
         onPlayButtonTap()
     }
     
-    func onPlaylistShuffleRequest(playlist: Playlist)
+    func onPlaylistShuffleRequest(playlist: Playlist, shuffleMode: MusicShuffleMode)
     {
-        let playlist = GlobalVariables.shared.currentPlaylist!
-        let song = GlobalVariables.shared.currentSong!
-        let shuffledPlaylist = playlist.copy() as! Playlist
-        shuffledPlaylist.songs!.shuffle()
-        let randomElement = shuffledPlaylist.songs!.randomElement()
-//        if song != updatedSong
-//        {
-//            GlobalVariables.shared.currentSong = updatedSong
-//        }
+        GlobalVariables.shared.currentShuffleMode = shuffleMode
+        if shuffleMode == .on
+        {
+            let shuffledPlaylist = playlist.copy() as! Playlist
+            shuffledPlaylist.songs! = playlist.songs!.shuffled()
+            GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
+            GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
+        }
+        else
+        {
+            GlobalVariables.shared.currentPlaylist = playlist
+        }
     }
 }
 

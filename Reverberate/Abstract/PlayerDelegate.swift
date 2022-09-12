@@ -15,7 +15,7 @@ protocol PlayerDelegate: PlaylistControlsDelegate
     
     func onForwardButtonTap()
     
-    func onLoopButtonTap(loopMode: Int)
+    func onLoopButtonTap(loopMode: MusicLoopMode)
     
     func onSongSeekRequest(songPosition value: Double)
     

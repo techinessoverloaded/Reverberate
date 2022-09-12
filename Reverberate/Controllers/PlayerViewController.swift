@@ -346,12 +346,15 @@ class PlayerViewController: UITableViewController
     
     override func viewDidDisappear(_ animated: Bool)
     {
-        super.viewDidDisappear(animated)
         navigationController?.view.removeGestureRecognizer(panGestureRecognizer)
         caDisplayLinkTimer.invalidate()
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        super.viewDidDisappear(animated)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool)
+    {
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: .currentSongSetNotification, object: nil)
         self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
     }
     
@@ -381,7 +384,6 @@ class PlayerViewController: UITableViewController
             songSlider.minimumValue = 0.0
             songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
             maximumDurationLabel.text = "\(minutes):\(seconds)"
-            updatePlaylistButtons()
         }
         else
         {
@@ -400,6 +402,38 @@ class PlayerViewController: UITableViewController
             nextButton.isEnabled = false
             shuffleButton.isEnabled = false
         }
+        updateLoopMode()
+        updateShuffleMode()
+        updatePlaylistButtons()
+    }
+    
+    func updateShuffleMode()
+    {
+        let shuffleMode = GlobalVariables.shared.currentShuffleMode
+        switch shuffleMode
+        {
+        case .off:
+            shuffleButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+        case .on:
+            shuffleButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+        }
+    }
+    
+    func updateLoopMode()
+    {
+        let loopMode = GlobalVariables.shared.currentLoopMode
+        switch loopMode
+        {
+        case .off:
+            loopButton.setImage(repeatIcon, for: .normal)
+            loopButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+        case .song:
+            loopButton.setImage(repeatOneIcon, for: .normal)
+            loopButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+        case .playlist:
+            loopButton.setImage(repeatIcon, for: .normal)
+            loopButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+        }
     }
     
     func updateTime()
@@ -409,20 +443,6 @@ class PlayerViewController: UITableViewController
         let seconds = String(format: "%02d", Int(currentTime) % 60)
         let minutes = String(format: "%02d", Int(currentTime) / 60)
         minimumDurationLabel.text = "\(minutes):\(seconds)"
-    }
-    
-    func setLoopButton(loopMode: Int)
-    {
-        if loopMode == 0
-        {
-            loopButton.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
-            loopButton.setImage(repeatIcon, for: .normal)
-        }
-        else
-        {
-            loopButton.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
-            loopButton.setImage(repeatIcon, for: .normal)
-        }
     }
     
     func updatePlaylistButtons()
@@ -665,37 +685,54 @@ extension PlayerViewController
     {
         print("Previous")
         delegate?.onPreviousSongRequest(playlist: playlist!, currentSong: GlobalVariables.shared.currentSong!)
-        setDetails()
-        updatePlaylistButtons()
     }
     
     @objc func onNextButtonTap(_ sender: UIButton)
     {
         print("Next")
         delegate?.onNextSongRequest(playlist: playlist!, currentSong: GlobalVariables.shared.currentSong!)
-        setDetails()
-        updatePlaylistButtons()
     }
     
     @objc func onShuffleButtonTap(_ sender: UIButton)
     {
-        print("Shuffle")
-        delegate?.onShuffleRequest()
-    }
-    
-    @objc func onLoopButtonTap(_ sender: UIButton)
-    {
         if sender.configuration?.baseForegroundColor == .label.withAlphaComponent(0.8)
         {
-            print("Loop")
-            delegate?.onLoopButtonTap(loopMode: -1)
+            print("Shuffle")
+            delegate?.onShuffleRequest(playlist: GlobalVariables.shared.currentPlaylist!, shuffleMode: .on)
             sender.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
         }
         else
         {
-            print("No Loop")
-            delegate?.onLoopButtonTap(loopMode: 0)
+            print("No Shuffle")
+            delegate?.onShuffleRequest(playlist: GlobalVariables.shared.currentPlaylist!, shuffleMode: .off)
             sender.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
+        }
+    }
+    
+    @objc func onLoopButtonTap(_ sender: UIButton)
+    {
+        if sender.image(for: .normal)!.jpegData(compressionQuality: 1)! == repeatIcon.jpegData(compressionQuality: 1)!
+        {
+            if sender.configuration!.baseForegroundColor == .label.withAlphaComponent(0.8)
+            {
+                print("Loop Song")
+                delegate?.onLoopButtonTap(loopMode: .song)
+                sender.setImage(repeatOneIcon, for: .normal)
+                sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            }
+            else
+            {
+                print("No Loop")
+                delegate?.onLoopButtonTap(loopMode: .off)
+                sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+            }
+        }
+        else
+        {
+            print("Loop Playlist")
+            delegate?.onLoopButtonTap(loopMode: .playlist)
+            sender.setImage(repeatIcon, for: .normal)
+            sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
         }
     }
     
@@ -719,6 +756,11 @@ extension PlayerViewController
     {
         print("Player swipe action")
         delegate?.onPlayerShrinkRequest()
+    }
+    
+    @objc func onSongChange(_ notification: NSNotification)
+    {
+        setDetails()
     }
     
     @objc func onPlayerPanAction(_ recognizer: UIPanGestureRecognizer)

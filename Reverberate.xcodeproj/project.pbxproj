@@ -107,7 +107,6 @@
 		DA946009289249C100FEB486 /* ullamurugudhaiya.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */; };
 		DAA0F17328CB0FEA0077C98B /* PlaylistSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0F17228CB0FEA0077C98B /* PlaylistSelectionViewController.swift */; };
 		DAA0F17528CB16080077C98B /* PlaylistSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0F17428CB16080077C98B /* PlaylistSelectionDelegate.swift */; };
-		DAA0F17728CB5AC60077C98B /* PlaylistActionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0F17628CB5AC60077C98B /* PlaylistActionProvider.swift */; };
 		DAA0F17928CB6AFC0077C98B /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0F17828CB6AFC0077C98B /* User+CoreDataProperties.swift */; };
 		DABA1435289791D700DAAF13 /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA1434289791D700DAAF13 /* PlaylistViewController.swift */; };
 		DACBA429289CF85A00DDEBDE /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACBA428289CF85A00DDEBDE /* Song.swift */; };
@@ -222,7 +221,6 @@
 		DA946008289249C100FEB486 /* ullamurugudhaiya.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ullamurugudhaiya.mp3; sourceTree = "<group>"; };
 		DAA0F17228CB0FEA0077C98B /* PlaylistSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSelectionViewController.swift; sourceTree = "<group>"; };
 		DAA0F17428CB16080077C98B /* PlaylistSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSelectionDelegate.swift; sourceTree = "<group>"; };
-		DAA0F17628CB5AC60077C98B /* PlaylistActionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistActionProvider.swift; sourceTree = "<group>"; };
 		DAA0F17828CB6AFC0077C98B /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DABA1434289791D700DAAF13 /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		DACBA428289CF85A00DDEBDE /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
@@ -455,7 +453,6 @@
 				DA5C90B328C86C1A00BE0DF1 /* Alphabet.swift */,
 				DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */,
 				DA16C18A28C9EDF10083AB52 /* CustomDataTransformer.swift */,
-				DAA0F17628CB5AC60077C98B /* PlaylistActionProvider.swift */,
 			);
 			path = Utitlities;
 			sourceTree = "<group>";
@@ -872,7 +869,6 @@
 				DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */,
 				DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */,
 				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,
-				DAA0F17728CB5AC60077C98B /* PlaylistActionProvider.swift in Sources */,
 				DA12E696288E559100D502EC /* SongArtistsViewController.swift in Sources */,
 				DA134FFF28C8FE2300ADEA51 /* ContextMenuProvider.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,
