@@ -9,6 +9,8 @@ import UIKit
 
 class PlayerViewController: UITableViewController
 {
+    private let requesterId: Int = 10
+    
     private lazy var playIcon: UIImage = {
         return UIImage(systemName: "play.fill")!
     }()
@@ -191,11 +193,6 @@ class PlayerViewController: UITableViewController
         let nButton = UIButton(configuration: config)
         nButton.enableAutoLayout()
         nButton.isEnabled = false
-        nButton.menu = UIMenu(title: "Upcoming Songs", image: nil, identifier: nil, options: .displayInline, children: [
-            UIAction(title: "Sample", image: nil,handler: {
-                _ in
-            })
-        ])
         return nButton
     }()
     
@@ -298,7 +295,6 @@ class PlayerViewController: UITableViewController
         grabberView.layer.cornerRadius = 3
         grabberView.backgroundColor = .systemFill
         navigationItem.titleView = grabberView
-        addToPlaylistsButton.isEnabled = false
         view.backgroundColor = .clear
         tableView.backgroundColor = .clear
         tableView.backgroundView = backgroundView
@@ -354,12 +350,16 @@ class PlayerViewController: UITableViewController
         navigationController?.view.removeGestureRecognizer(panGestureRecognizer)
         caDisplayLinkTimer.invalidate()
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .previousSongClickedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .upcomingSongClickedNotification, object: nil)
         super.viewDidDisappear(animated)
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: .currentSongSetNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
         self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
     }
     
@@ -389,6 +389,8 @@ class PlayerViewController: UITableViewController
             songSlider.minimumValue = 0.0
             songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
             maximumDurationLabel.text = "\(minutes):\(seconds)"
+            previousButton.menu = ContextMenuProvider.shared.getPreviousSongsMenu(playlist: currentPlaylist, requesterId: requesterId)
+            nextButton.menu = ContextMenuProvider.shared.getUpcomingSongsMenu(playlist: currentPlaylist, requesterId: requesterId)
         }
         else
         {
@@ -406,10 +408,27 @@ class PlayerViewController: UITableViewController
             previousButton.isEnabled = false
             nextButton.isEnabled = false
             shuffleButton.isEnabled = false
+            previousButton.menu = nil
+            nextButton.menu = nil
         }
         updateLoopMode()
         updateShuffleMode()
         updatePlaylistButtons()
+        updateFavouriteButton()
+    }
+    
+    func updateFavouriteButton()
+    {
+        if GlobalVariables.shared.currentUser!.isFavouriteSong(GlobalVariables.shared.currentSong!)
+        {
+            favouriteButton.setImage(heartFilledIcon, for: .normal)
+            favouriteButton.configuration!.baseForegroundColor = .systemPink
+        }
+        else
+        {
+            favouriteButton.setImage(heartIcon, for: .normal)
+            favouriteButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+        }
     }
     
     func updateShuffleMode()
@@ -621,6 +640,32 @@ extension PlayerViewController
 
 extension PlayerViewController
 {
+    @objc func onPreviousSongClickNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        delegate?.onSongChangeRequest(playlist: GlobalVariables.shared.currentPlaylist!, newSong: song)
+    }
+    
+    @objc func onUpcomingSongClickNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        delegate?.onSongChangeRequest(playlist: GlobalVariables.shared.currentPlaylist!, newSong: song)
+    }
+    
     @objc func onTimerFire(_ timer: CADisplayLink)
     {
         updateTime()
@@ -630,13 +675,15 @@ extension PlayerViewController
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
-            delegate?.onFavouriteButtonTap(shouldMakeAsFavourite: true)
+            GlobalVariables.shared.currentUser!.favouriteSongs!.appendUniquely(GlobalVariables.shared.currentSong!)
+            GlobalConstants.contextSaveAction()
             sender.setImage(heartFilledIcon, for: .normal)
             sender.configuration!.baseForegroundColor = .systemPink
         }
         else
         {
-            delegate?.onFavouriteButtonTap(shouldMakeAsFavourite: false)
+            GlobalVariables.shared.currentUser!.favouriteSongs!.removeUniquely(GlobalVariables.shared.currentSong!)
+            GlobalConstants.contextSaveAction()
             sender.setImage(heartIcon, for: .normal)
             sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
         }
@@ -644,16 +691,17 @@ extension PlayerViewController
     
     @objc func onAddToPlaylistsButtonTap(_ sender: UIButton)
     {
-        if sender.configuration!.baseForegroundColor == .label.withAlphaComponent(0.8)
+        let playlistSelectionVc = PlaylistSelectionViewController(style: .plain)
+        playlistSelectionVc.delegate = self
+        playlistSelectionVc.isTranslucent = true
+        let playlistVcNavigationVc = UINavigationController(rootViewController: playlistSelectionVc)
+        if let sheet = playlistVcNavigationVc.sheetPresentationController
         {
-            delegate?.onAddToPlaylistsButtonTap(shouldAddToPlaylists: true)
-            sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            print("sheet")
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
         }
-        else
-        {
-            delegate?.onAddToPlaylistsButtonTap(shouldAddToPlaylists: false)
-            sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
-        }
+        self.present(playlistVcNavigationVc, animated: true)
     }
     
     @objc func onPlayOrPauseButtonTap(_ sender: UIButton)
@@ -712,6 +760,7 @@ extension PlayerViewController
             delegate?.onShuffleRequest(playlist: GlobalVariables.shared.currentPlaylist!, shuffleMode: .off)
             sender.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
         }
+        setDetails()
     }
     
     @objc func onLoopButtonTap(_ sender: UIButton)
@@ -830,5 +879,31 @@ extension PlayerViewController: SongArtistsViewDelegate
         let artistVc = ArtistViewController(style: .grouped)
         artistVc.artist = DataProcessor.shared.getArtist(named: artist.name!)
         self.navigationController?.pushViewController(artistVc, animated: true)
+    }
+}
+extension PlayerViewController: PlaylistSelectionDelegate
+{
+    func onPlaylistSelection(selectedPlaylist: inout Playlist)
+    {
+        guard let songToBeAdded = GlobalVariables.shared.currentSong else { return }
+        if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })
+        {
+            let alert = UIAlertController(title: "Song exists already in Playlist", message: "The chosen song is present already in Playlist", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
+            self.present(alert, animated: true)
+        }
+        else
+        {
+//            print("Address before addition of songs \(address(of: &selectedPlaylist.songs!))")
+//            var songs = selectedPlaylist.songs!
+//            songs.append(songToBeAdded.copy() as! Song)
+//            selectedPlaylist.songs = songs
+//            contextSaveAction()
+//            print("Address after addition of songs \(address(of: &selectedPlaylist.songs!))")
+            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
+            let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
+            self.present(alert, animated: true)
+        }
     }
 }

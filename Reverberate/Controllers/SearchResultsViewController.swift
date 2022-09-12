@@ -516,7 +516,7 @@ extension SearchResultsViewController
 
 extension SearchResultsViewController: PlaylistSelectionDelegate
 {
-    func onPlaylistSelection(selectedPlaylist: Playlist)
+    func onPlaylistSelection(selectedPlaylist: inout Playlist)
     {
         guard let songToBeAdded = songToBeAddedToPlaylist else { return }
         if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })

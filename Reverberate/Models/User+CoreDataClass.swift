@@ -31,4 +31,16 @@ public class User: NSManagedObject
     {
         return favouriteArtists!.contains(artist)
     }
+    
+    public func add(song: Song, toPlaylistNamed playlistName: String)
+    {
+        var playlists = userPlaylists!
+        let requiredPlaylist = playlists.first(where: { $0.name! == playlistName })!
+        let indexOfRequiredPlaylist = playlists.firstIndex(of: requiredPlaylist)!
+        requiredPlaylist.songs!.appendUniquely(song)
+        playlists.replaceSubrange(indexOfRequiredPlaylist...indexOfRequiredPlaylist, with: [requiredPlaylist])
+        userPlaylists = playlists
+        GlobalConstants.contextSaveAction()
+        print(userPlaylists!)
+    }
 }

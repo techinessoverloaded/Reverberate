@@ -141,6 +141,11 @@ extension UIViewController
             return UIDevice.current.userInterfaceIdiom == .pad
         }
     }
+    
+    func address(of pointer: UnsafeRawPointer) -> Int
+    {
+        return Int(bitPattern: pointer)
+    }
 }
 
 extension UIImageView
@@ -403,6 +408,8 @@ extension NSNotification.Name
     static let userLoggedOutNotification = NSNotification.Name("uSeRlOgGeDoUtNoTiFiCaTiOn")
     static let loginRequestNotification = NSNotification.Name("LoGiNREqUeStNoTiFiCaTiOn")
     static let removePlaylistNotification = NSNotification.Name("removePlaylistNotification")
+    static let upcomingSongClickedNotification = NSNotification.Name("upcomingSongClickedNotification")
+    static let previousSongClickedNotification = NSNotification.Name("previousSongClickedNotification")
 }
 
 

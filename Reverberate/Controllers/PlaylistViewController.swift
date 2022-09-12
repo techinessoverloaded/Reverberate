@@ -9,6 +9,8 @@ import UIKit
 
 class PlaylistViewController: UITableViewController
 {
+    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
+    
     private lazy var playIcon: UIImage = {
         return UIImage(systemName: "play.fill")!
     }()
@@ -87,7 +89,7 @@ class PlaylistViewController: UITableViewController
         return pTapRecognizer
     }()
     
-    private lazy var playlistFavouriteButton: UIButton = {
+    private lazy var albumFavouriteButton: UIButton = {
         let favButton = UIButton(type: .system)
         favButton.setImage(heartIcon, for: .normal)
         favButton.tintColor = .label
@@ -177,7 +179,7 @@ class PlaylistViewController: UITableViewController
         headerView.addSubview(titleView)
         headerView.addSubview(artistView)
         headerView.addSubview(detailsView)
-        headerView.addSubview(playlistFavouriteButton)
+        headerView.addSubview(albumFavouriteButton)
         headerView.addSubview(playButton)
         headerView.addSubview(shuffleButton)
         NSLayoutConstraint.activate([
@@ -200,18 +202,18 @@ class PlaylistViewController: UITableViewController
             shuffleButton.leadingAnchor.constraint(equalTo: headerView.centerXAnchor, constant: 10),
             shuffleButton.topAnchor.constraint(equalTo: detailsView.bottomAnchor, constant: 10),
             shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
-            playlistFavouriteButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor),
-            playlistFavouriteButton.trailingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 0)
+            albumFavouriteButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor),
+            albumFavouriteButton.trailingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 0)
         ])
         headerView.backgroundColor = .clear
         tableView.tableHeaderView = headerView
         clearsSelectionOnViewWillAppear = false
         defaultPosterHeight = headerView.bounds.height * 0.6
         setPlaylistDetails()
-        playlistFavouriteButton.addTarget(self, action: #selector(onArtistFavouriteButtonTap(_:)), for: .touchUpInside)
+        albumFavouriteButton.addTarget(self, action: #selector(onAlbumFavouriteButtonTap(_:)), for: .touchUpInside)
         playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
-        playlistFavouriteButton.isHidden = !(playlist is Album)
+        albumFavouriteButton.isHidden = !(playlist is Album)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -249,6 +251,11 @@ class PlaylistViewController: UITableViewController
         super.viewDidLayoutSubviews()
     }
     
+    private func getSongMenu(song: Song) -> UIMenu
+    {
+        return (playlist is Album) ? ContextMenuProvider.shared.getAlbumSongMenu(song: song, requesterId: requesterId) : ContextMenuProvider.shared.getPlaylistSongMenu(song: song, requesterId: requesterId)
+    }
+    
     func setPlaylistDetails()
     {
         if playlist is Album
@@ -264,6 +271,16 @@ class PlaylistViewController: UITableViewController
             artistView.addGestureRecognizer(artistTapRecognizer)
             posterTapRecognizer.addTarget(self, action: #selector(onPosterDoubleTap(_:)))
             posterView.addGestureRecognizer(posterTapRecognizer)
+            if GlobalVariables.shared.currentUser!.isFavouriteAlbum(album)
+            {
+                albumFavouriteButton.setImage(heartFilledIcon, for: .normal)
+                albumFavouriteButton.tintColor = .systemPink
+            }
+            else
+            {
+                albumFavouriteButton.setImage(heartIcon, for: .normal)
+                albumFavouriteButton.tintColor = .label
+            }
         }
         else
         {
@@ -295,6 +312,7 @@ class PlaylistViewController: UITableViewController
         }
     }
 
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int
@@ -340,20 +358,13 @@ class PlaylistViewController: UITableViewController
             cell.contentConfiguration = updatedConfig
         }
         var menuButtonConfig = UIButton.Configuration.plain()
-        menuButtonConfig.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
+        menuButtonConfig.baseForegroundColor = .systemGray
         menuButtonConfig.image = UIImage(systemName: "ellipsis")!
         menuButtonConfig.buttonSize = .medium
         let menuButton = UIButton(configuration: menuButtonConfig)
         menuButton.tag = item
         menuButton.sizeToFit()
-        let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
-            onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
-        }
-        let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
-            onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
-        }
-        let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem])
-        menuButton.menu = songMenu
+        menuButton.menu = getSongMenu(song: song)
         menuButton.showsMenuAsPrimaryAction = true
         cell.accessoryView = menuButton
         cell.backgroundColor = .clear
@@ -363,7 +374,7 @@ class PlaylistViewController: UITableViewController
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
     {
-        if GlobalVariables.shared.currentPlaylist != nil
+        if GlobalVariables.shared.currentPlaylist == playlist
         {
             let currentSong = GlobalVariables.shared.currentSong!
             let song = playlist.songs![indexPath.item]
@@ -388,15 +399,9 @@ class PlaylistViewController: UITableViewController
     override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
         let item = indexPath.item
-        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
-            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
-                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
-            }
-            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
-                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
-            }
-            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem])
-            return songMenu
+        let song = playlist.songs![item]
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return getSongMenu(song: song)
         })
     }
 }
@@ -431,6 +436,10 @@ extension PlaylistViewController
 {
     @objc func onSongChange()
     {
+        guard GlobalVariables.shared.currentPlaylist == playlist else
+        {
+            return
+        }
         let currentSong = GlobalVariables.shared.currentSong!
         guard let item = playlist.songs!.firstIndex(of: currentSong) else
         {
@@ -482,9 +491,9 @@ extension PlaylistViewController
     
     @objc func onShuffleButtonTap(_ sender: UIButton)
     {
-        //delegate?.onPlaylistShuffleRequest(playlist: )
-        playlist.songs!.shuffle()
-        tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+        delegate?.onPlaylistShuffleRequest(playlist: playlist, shuffleMode: .on)
+        playButton.configuration!.image = pauseIcon
+        playButton.configuration!.title = "Pause"
     }
     
     func onSongAddToPlaylistMenuItemTap(menuItem: UIAction, tag: Int)
@@ -492,15 +501,13 @@ extension PlaylistViewController
         print("\(playlist.songs![tag].title!)'s Menu Item was clicked")
     }
     
-    func onSongFavouriteMenuItemTap(menuItem: UIAction, tag: Int)
-    {
-        
-    }
     
-    @objc func onArtistFavouriteButtonTap(_ sender: UIButton)
+    @objc func onAlbumFavouriteButtonTap(_ sender: UIButton)
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
+            GlobalVariables.shared.currentUser!.favouriteAlbums!.appendUniquely(playlist as! Album)
+            GlobalConstants.contextSaveAction()
             sender.setImage(heartFilledIcon, for: .normal)
             UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                 sender.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
@@ -517,6 +524,8 @@ extension PlaylistViewController
         }
         else
         {
+            GlobalVariables.shared.currentUser!.favouriteAlbums!.removeUniquely(playlist as! Album)
+            GlobalConstants.contextSaveAction()
             UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                 sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
             }, completion: { _ in
@@ -542,7 +551,7 @@ extension PlaylistViewController
     
     @objc func onPosterDoubleTap(_ sender: UITapGestureRecognizer)
     {
-        playlistFavouriteButton.sendActions(for: .touchUpInside)
+        albumFavouriteButton.sendActions(for: .touchUpInside)
     }
 }
 

@@ -15,11 +15,18 @@ class PlaylistSelectionViewController: UITableViewController
     
     private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.userPlaylists!
     
+    private lazy var backgroundView: UIVisualEffectView = {
+        let bView = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
+        return bView
+    }()
+    
     private var selectedPlaylist: Playlist? = nil
     
     private var doneButton: UIBarButtonItem!
     
     private var addButton: UIBarButtonItem!
+    
+    var isTranslucent: Bool = false
     
     weak var delegate: PlaylistSelectionDelegate?
     
@@ -36,6 +43,12 @@ class PlaylistSelectionViewController: UITableViewController
             addButton
         ]
         doneButton.isEnabled = selectedPlaylist != nil
+        if isTranslucent
+        {
+            tableView.backgroundColor = .clear
+            view.backgroundColor = .clear
+            tableView.backgroundView = backgroundView
+        }
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -90,6 +103,7 @@ class PlaylistSelectionViewController: UITableViewController
         config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
         cell.contentConfiguration = config
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
         return cell
     }
     
@@ -158,7 +172,12 @@ extension PlaylistSelectionViewController
     @objc func onDoneButtonTap()
     {
         self.dismiss(animated: true, completion: { [unowned self] in
-            delegate?.onPlaylistSelection(selectedPlaylist: selectedPlaylist!)
+            for var playlist in GlobalVariables.shared.currentUser!.userPlaylists!
+            {
+                print("Address of Existing Playlist \(playlist.name!):  \(address(of: &playlist))")
+            }
+            print("Address of Selected Playlist: \(address(of: &selectedPlaylist!))")
+            delegate?.onPlaylistSelection(selectedPlaylist: &selectedPlaylist!)
         })
     }
 }

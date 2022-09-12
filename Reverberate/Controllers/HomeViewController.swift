@@ -13,6 +13,8 @@ class HomeViewController: UICollectionViewController
     
     private lazy var songs : [Category : [Song]] = prepareSongs()
     
+    private var playlists: [Category: Playlist] = [:]
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print(view.bounds.width)
@@ -82,6 +84,12 @@ class HomeViewController: UICollectionViewController
                 result[category] = DataProcessor.shared.getSongsOf(category: category, andLimitNumberOfResultsTo: 10)
             }
         }
+        result.forEach {
+            let playlist = Playlist()
+            playlist.name = $0.key.description
+            playlist.songs = $0.value
+            playlists[$0.key] = playlist
+        }
         return result
     }
 }
@@ -142,6 +150,7 @@ extension HomeViewController
         if GlobalVariables.shared.currentSong != categoricalSongs[item]
         {
             print(categoricalSongs[item])
+            GlobalVariables.shared.currentPlaylist = playlists[category]!
             GlobalVariables.shared.currentSong = categoricalSongs[item]
             let indexPathOfRecentlyPlayed = collectionView.indexPathsForVisibleItems.first(where: {
                 let ipCategory = keys[$0.section]
@@ -175,7 +184,9 @@ extension HomeViewController
     {
         let categoricalVC = CategoricalSongsViewController(style: .grouped)
         let keys = Array(songs.keys)
-        categoricalVC.category = keys[sender.tag]
+        let category = keys[sender.tag]
+        categoricalVC.category = category
+        categoricalVC.delegate = GlobalVariables.shared.mainTabController
         navigationController?.pushViewController(categoricalVC, animated: true)
     }
     

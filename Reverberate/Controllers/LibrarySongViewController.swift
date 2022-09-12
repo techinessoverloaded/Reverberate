@@ -510,7 +510,7 @@ extension LibrarySongViewController
 
 extension LibrarySongViewController: PlaylistSelectionDelegate
 {
-    func onPlaylistSelection(selectedPlaylist: Playlist)
+    func onPlaylistSelection(selectedPlaylist: inout Playlist)
     {
         guard let songToBeAdded = songToBeAddedToPlaylist else { return }
         if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })
@@ -521,8 +521,13 @@ extension LibrarySongViewController: PlaylistSelectionDelegate
         }
         else
         {
-            selectedPlaylist.songs!.append(songToBeAdded.copy() as! Song)
-            contextSaveAction()
+//            print("Address before addition of songs \(address(of: &selectedPlaylist.songs!))")
+//            var songs = selectedPlaylist.songs!
+//            songs.append(songToBeAdded.copy() as! Song)
+//            selectedPlaylist.songs = songs
+//            contextSaveAction()
+//            print("Address after addition of songs \(address(of: &selectedPlaylist.songs!))")
+            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

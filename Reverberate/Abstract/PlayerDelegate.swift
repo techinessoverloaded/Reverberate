@@ -20,8 +20,4 @@ protocol PlayerDelegate: PlaylistControlsDelegate
     func onSongSeekRequest(songPosition value: Double)
     
     func onPlayerShrinkRequest()
-    
-    func onFavouriteButtonTap(shouldMakeAsFavourite: Bool)
-    
-    func onAddToPlaylistsButtonTap(shouldAddToPlaylists: Bool)
 }

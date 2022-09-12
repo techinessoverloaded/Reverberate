@@ -53,6 +53,13 @@ class ContextMenuProvider
         }
     }
     
+    private func getRemoveSongFromPlaylistMenuItem(song: Song, requesterId: Int) -> UIAction
+    {
+        return UIAction(title: "Remove Song From Current Playlist", image: addToPlaylistIcon) { [unowned self] _ in
+            onRemoveSongFromPlaylistMenuItemTap(song: song, receiverId: requesterId)
+        }
+    }
+    
     private func getShowAlbumMenuItem(song: Song, requesterId: Int) -> UIAction
     {
         return UIAction(title: "Show Album", image: albumIcon) { [unowned self] _ in
@@ -162,6 +169,26 @@ class ContextMenuProvider
         ])
     }
     
+    func getAlbumSongMenu(song: Song, requesterId: Int) -> UIMenu
+    {
+        return SessionManager.shared.isUserLoggedIn ? UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getAddOrRemoveSongDeferredMenuItem(song: song, requesterId: requesterId),
+            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId)
+        ]) : UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getLoginForMoreOptionsMenuItem(requesterId: requesterId)
+        ])
+    }
+    
+    func getPlaylistSongMenu(song: Song, requesterId: Int) -> UIMenu
+    {
+        return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+            getAddOrRemoveSongDeferredMenuItem(song: song, requesterId: requesterId),
+            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId),
+            getRemoveSongFromPlaylistMenuItem(song: song, requesterId: requesterId),
+            getShowAlbumMenuItem(song: song, requesterId: requesterId)
+        ])
+    }
+    
     func getAlbumMenu(album: Album, requesterId: Int) -> UIMenu
     {
         return SessionManager.shared.isUserLoggedIn ? UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
@@ -186,10 +213,100 @@ class ContextMenuProvider
             getLoginForMoreOptionsMenuItem(requesterId: requesterId)
         ])
     }
+    
+    func getPreviousSongsMenu(playlist: Playlist, requesterId: Int) -> UIMenu
+    {
+        let currentSong = GlobalVariables.shared.currentSong!
+        let indexOfSong = playlist.songs!.firstIndex(of: currentSong)!
+        let previousIndex = playlist.songs!.index(before: indexOfSong)
+        let startIndex = playlist.songs!.startIndex
+        guard previousIndex >= startIndex else
+        {
+            let noSongsFoundAction = UIAction(title: "Tapping Previous Button will play the last Song.", image: nil,attributes: .disabled, handler: { _ in })
+            return UIMenu(title: "No Previous Song", image: nil, identifier: nil, options: .displayInline, children: [
+                noSongsFoundAction
+            ])
+        }
+        let numberOfElements = previousIndex - startIndex + 1
+        var previousSongs = Array(playlist.songs![startIndex...previousIndex])
+        if numberOfElements > 5
+        {
+            previousSongs = Array(previousSongs[0..<5])
+        }
+        if !previousSongs.isEmpty
+        {
+            var menuElements: [UIAction] = []
+            for song in previousSongs
+            {
+                let songAction = UIAction(title: song.title!, image: nil, handler: { [unowned self] _ in
+                    onPreviousSongClick(song: song, receiverId: requesterId)
+                })
+                menuElements.append(songAction)
+            }
+            return UIMenu(title: "Previous Songs (5)", image: nil, identifier: nil, options: .displayInline, children: menuElements)
+        }
+        else
+        {
+            let noSongsFoundAction = UIAction(title: "Tapping Previous Button will play the last Song.", image: nil,attributes: .disabled, handler: { _ in })
+            return UIMenu(title: "No Previous Song", image: nil, identifier: nil, options: .displayInline, children: [
+                noSongsFoundAction
+            ])
+        }
+    }
+    
+    func getUpcomingSongsMenu(playlist: Playlist, requesterId: Int) -> UIMenu
+    {
+        let currentSong = GlobalVariables.shared.currentSong!
+        let indexOfSong = playlist.songs!.firstIndex(of: currentSong)!
+        let nextIndex = playlist.songs!.index(after: indexOfSong)
+        let endIndex = playlist.songs!.endIndex
+        guard nextIndex <= endIndex - 1 else
+        {
+            let noSongsFoundAction = UIAction(title: "Tapping Next Button will play the first Song.", image: nil,attributes: .disabled, handler: { _ in })
+            return UIMenu(title: "No Upcoming Song", image: nil, identifier: nil, options: .displayInline, children: [
+                noSongsFoundAction
+            ])
+        }
+        let numberOfElements = endIndex - nextIndex
+        var upcomingSongs = Array(playlist.songs![nextIndex..<endIndex])
+        if numberOfElements > 5
+        {
+            upcomingSongs = Array(upcomingSongs[0..<5])
+        }
+        if !upcomingSongs.isEmpty
+        {
+            var menuElements: [UIAction] = []
+            for song in upcomingSongs
+            {
+                let songAction = UIAction(title: song.title!, image: nil, handler: { [unowned self] _ in
+                    onUpcomingSongClick(song: song, receiverId: requesterId)
+                })
+                menuElements.append(songAction)
+            }
+            return UIMenu(title: "Upcoming Songs (5)", image: nil, identifier: nil, options: .displayInline, children: menuElements)
+        }
+        else
+        {
+            let noSongsFoundAction = UIAction(title: "Tapping Next Button will play the first Song.", image: nil,attributes: .disabled, handler: { _ in })
+            return UIMenu(title: "No Upcoming Song", image: nil, identifier: nil, options: .displayInline, children: [
+                noSongsFoundAction
+            ])
+        }
+    }
 }
 
 extension ContextMenuProvider
 {
+    @objc private func onPreviousSongClick(song: Song, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .previousSongClickedNotification, object: nil, userInfo: ["receiverId" : receiverId, "song" : song])
+    }
+    
+    @objc private func onUpcomingSongClick(song: Song, receiverId: Int)
+    {
+        NotificationCenter.default.post(name: .upcomingSongClickedNotification, object: nil, userInfo: ["receiverId" : receiverId, "song" : song])
+    }
+    
     @objc private func onAddSongToFavouritesMenuItemTap(song: Song, receiverId: Int)
     {
         NotificationCenter.default.post(name: .addSongToFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])

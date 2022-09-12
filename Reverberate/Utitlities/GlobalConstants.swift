@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import UIKit
+import CoreData
 
 class GlobalConstants
 {
@@ -85,4 +87,8 @@ class GlobalConstants
             .folk: []
         ],
     ]
+    
+    static let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    static let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
 }

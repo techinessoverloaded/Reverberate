@@ -27,18 +27,44 @@ class CategoricalSongsViewController: UITableViewController
     
     var category: Category!
     
+    private lazy var playlist: Playlist = {
+        let categoricalPlaylist = Playlist()
+        categoricalPlaylist.name = category.description
+        categoricalPlaylist.songs = songs
+        return categoricalPlaylist
+    }()
+    
+    weak var delegate: PlaylistDelegate?
+    
     private lazy var songs: [Song] = DataProcessor.shared.getSongsOf(category: category)
     
     private lazy var albums: [Album] = DataProcessor.shared.getAlbumsOf(category: category)
     
     private lazy var playButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .white
-        config.buttonSize = .medium
-        config.image = UIImage(systemName: "play.fill")!
+        var config = UIButton.Configuration.filled()
+        config.image = playIcon
+        config.title = "Play"
+        config.imagePlacement = .leading
         config.imagePadding = 10
+        config.buttonSize = .large
+        config.baseBackgroundColor = UIColor(named: GlobalConstants.techinessColor)!
         let pButton = UIButton(configuration: config)
+        pButton.enableAutoLayout()
         return pButton
+    }()
+    
+    private lazy var shuffleButton: UIButton = {
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "shuffle")!
+        config.title = "Shuffle All"
+        config.imagePlacement = .leading
+        config.imagePadding = 10
+        config.buttonSize = .large
+        config.baseBackgroundColor = .secondarySystemFill
+        config.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
+        let sButton = UIButton(configuration: config)
+        sButton.enableAutoLayout()
+        return sButton
     }()
 
     override func viewDidLoad()
@@ -47,12 +73,40 @@ class CategoricalSongsViewController: UITableViewController
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.title = category.description
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: playButton)
-        playButton.addTarget(self, action: #selector(onShufflePlayButtonTap(_:)), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
+        shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 60))
+        headerView.addSubview(playButton)
+        headerView.addSubview(shuffleButton)
+        NSLayoutConstraint.activate([
+            playButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
+            playButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            playButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.42),
+            shuffleButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -20),
+            shuffleButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.42),
+        ])
+        tableView.tableHeaderView = headerView
     }
 
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        super.viewDidDisappear(animated)
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int
@@ -99,23 +153,34 @@ class CategoricalSongsViewController: UITableViewController
             config.secondaryTextProperties.color = .secondaryLabel
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
-            var menuButtonConfig = UIButton.Configuration.plain()
-            menuButtonConfig.baseForegroundColor = .systemGray
-            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
-            menuButtonConfig.buttonSize = .medium
-            let menuButton = UIButton(configuration: menuButtonConfig)
-            menuButton.tag = item
-            menuButton.sizeToFit()
-            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
-                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+            cell.configurationUpdateHandler = { cell, state in
+                guard var updatedConfig = cell.contentConfiguration?.updated(for: state) as? UIListContentConfiguration else
+                {
+                    return
+                }
+                updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
+                   return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
+                }
+                cell.contentConfiguration = updatedConfig
             }
-            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
-                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
-            }
-            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem])
-            menuButton.menu = songMenu
-            menuButton.showsMenuAsPrimaryAction = true
-            cell.accessoryView = menuButton
+            cell.selectionStyle = .none
+//            var menuButtonConfig = UIButton.Configuration.plain()
+//            menuButtonConfig.baseForegroundColor = .systemGray
+//            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+//            menuButtonConfig.buttonSize = .medium
+//            let menuButton = UIButton(configuration: menuButtonConfig)
+//            menuButton.tag = item
+//            menuButton.sizeToFit()
+//            let songFavMenuItem = UIAction(title: "Add Song to Favourites", image: heartIcon) { [unowned self] menuItem in
+//                onSongFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+//            }
+//            let addToPlaylistMenuItem = UIAction(title: "Add Song to Playlist", image: UIImage(systemName: "text.badge.plus")!) { [unowned self] menuItem in
+//                onSongAddToPlaylistMenuItemTap(menuItem: menuItem, tag: item)
+//            }
+//            let songMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [songFavMenuItem, addToPlaylistMenuItem])
+//            menuButton.menu = songMenu
+//            menuButton.showsMenuAsPrimaryAction = true
+//            cell.accessoryView = menuButton
         }
         else
         {
@@ -130,20 +195,20 @@ class CategoricalSongsViewController: UITableViewController
             config.secondaryTextProperties.color = .secondaryLabel
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
-            var menuButtonConfig = UIButton.Configuration.plain()
-            menuButtonConfig.baseForegroundColor = .systemGray
-            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
-            menuButtonConfig.buttonSize = .medium
-            let menuButton = UIButton(configuration: menuButtonConfig)
-            menuButton.tag = item
-            menuButton.sizeToFit()
-            let albumFavMenuItem = UIAction(title: "Add Album to Favourites", image: heartIcon) { [unowned self] menuItem in
-                onAlbumFavouriteMenuItemTap(menuItem: menuItem, tag: item)
-            }
-            let albumMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [albumFavMenuItem])
-            menuButton.menu = albumMenu
-            menuButton.showsMenuAsPrimaryAction = true
-            cell.accessoryView = menuButton
+//            var menuButtonConfig = UIButton.Configuration.plain()
+//            menuButtonConfig.baseForegroundColor = .systemGray
+//            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+//            menuButtonConfig.buttonSize = .medium
+//            let menuButton = UIButton(configuration: menuButtonConfig)
+//            menuButton.tag = item
+//            menuButton.sizeToFit()
+//            let albumFavMenuItem = UIAction(title: "Add Album to Favourites", image: heartIcon) { [unowned self] menuItem in
+//                onAlbumFavouriteMenuItemTap(menuItem: menuItem, tag: item)
+//            }
+//            let albumMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [albumFavMenuItem])
+//            menuButton.menu = albumMenu
+//            menuButton.showsMenuAsPrimaryAction = true
+//            cell.accessoryView = menuButton
         }
         cell.contentConfiguration = config
         cell.backgroundColor = .clear
@@ -157,16 +222,19 @@ class CategoricalSongsViewController: UITableViewController
         if section == 0
         {
             let song = songs[item]
-            if GlobalVariables.shared.currentSong == song
+            if GlobalVariables.shared.currentPlaylist == playlist
             {
-                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-                if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                if GlobalVariables.shared.currentSong == song
                 {
-                    playButton.configuration!.image = pauseIcon
-                }
-                else
-                {
-                    playButton.configuration!.image = playIcon
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                    {
+                        playButton.configuration!.image = pauseIcon
+                    }
+                    else
+                    {
+                        playButton.configuration!.image = playIcon
+                    }
                 }
             }
         }
@@ -181,11 +249,12 @@ class CategoricalSongsViewController: UITableViewController
             let song = songs[item]
             if GlobalVariables.shared.currentSong != song
             {
-                GlobalVariables.shared.currentSong = song
+                delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
             }
         }
         else
         {
+            tableView.deselectRow(at: indexPath, animated: true)
             let albumVC = PlaylistViewController(style: .grouped)
             albumVC.playlist = albums[item]
             albumVC.delegate = GlobalVariables.shared.mainTabController
@@ -196,46 +265,65 @@ class CategoricalSongsViewController: UITableViewController
 
 extension CategoricalSongsViewController
 {
-    @objc func onShufflePlayButtonTap(_ sender: UIButton)
+    @objc func onPlayNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Pause"
+            playButton.configuration!.image = pauseIcon
+        }
+    }
+    
+    @objc func onPausedNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
+        }
+    }
+    
+    @objc func onSongChange()
+    {
+        guard GlobalVariables.shared.currentPlaylist == playlist else
+        {
+            return
+        }
+        let currentSong = GlobalVariables.shared.currentSong!
+        guard let item = playlist.songs!.firstIndex(of: currentSong) else
+        {
+            return
+        }
+        let indexPath = IndexPath(item: item, section: 0)
+        guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
+        {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            return
+        }
+    }
+    
+    @objc func onShuffleButtonTap(_ sender: UIButton)
+    {
+        delegate?.onPlaylistShuffleRequest(playlist: playlist, shuffleMode: .on)
+        playButton.configuration!.image = pauseIcon
+        playButton.configuration!.title = "Pause"
+    }
+    
+    @objc func onPlayButtonTap(_ sender: UIButton)
     {
         if sender.configuration!.image!.pngData() == playIcon.pngData()
         {
             print("Gonna Play")
+            delegate?.onPlaylistPlayRequest(playlist: playlist)
             sender.configuration!.image = pauseIcon
+            sender.configuration!.title = "Pause"
         }
         else
         {
             print("Gonna Pause")
+            delegate?.onPlaylistPauseRequest(playlist: playlist)
             sender.configuration!.image = playIcon
-        }
-    }
-    
-    func onSongFavouriteMenuItemTap(menuItem: UIAction, tag: Int)
-    {
-        
-    }
-    
-    func onSongAddToPlaylistMenuItemTap(menuItem: UIAction, tag: Int)
-    {
-        
-    }
-    
-    func onAlbumFavouriteMenuItemTap(menuItem: UIAction, tag: Int)
-    {
-        
-    }
-    
-    @objc func onAlbumFavouriteButtonTap(_ sender: UIButton)
-    {
-        if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
-        {
-            sender.setImage(heartFilledIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .systemPink
-        }
-        else
-        {
-            sender.setImage(heartIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = tableView.contentOffset.y > 0 ? .label : .white
+            sender.configuration!.title = "Play"
         }
     }
 }

@@ -301,16 +301,6 @@ extension MainViewController: PlayerDelegate
         }
     }
     
-    func onFavouriteButtonTap(shouldMakeAsFavourite: Bool)
-    {
-        
-    }
-    
-    func onAddToPlaylistsButtonTap(shouldAddToPlaylists: Bool)
-    {
-        
-    }
-    
     func onPlayButtonTap()
     {
         avAudioPlayer.play()
@@ -463,6 +453,7 @@ extension MainViewController: PlayerDelegate
                 GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
                 GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
             }
+            GlobalVariables.shared.currentSong = newSong
         }
         else
         {
@@ -589,9 +580,12 @@ extension MainViewController
         if GlobalVariables.shared.currentShuffleMode == .on
         {
             var randomSong = playlist.songs!.randomElement()!
-            while randomSong == GlobalVariables.shared.currentSong!
+            if let currentSong = GlobalVariables.shared.currentSong
             {
-                randomSong = playlist.songs!.randomElement()!
+                while randomSong == currentSong
+                {
+                    randomSong = playlist.songs!.randomElement()!
+                }
             }
             GlobalVariables.shared.currentSong = randomSong
         }

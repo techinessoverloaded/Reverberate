@@ -18,12 +18,12 @@ public class Album: Playlist
     {
         return true
     }
-    
+
     public override var description: String
     {
         "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt!), releaseDate = \(releaseDate!))"
     }
-    
+
     public override func encode(with coder: NSCoder)
     {
         coder.encode(name, forKey: CoderKeys.nameKey.rawValue)
@@ -41,11 +41,6 @@ public class Album: Playlist
         self.coverArt = coder.decodeObject(forKey: CoderKeys.coverArtKey.rawValue) as? UIImage
         self.releaseDate = coder.decodeObject(forKey: CoderKeys.releaseDateKey.rawValue) as? Date
         self.composers = coder.decodeObject(forKey: CoderKeys.composersKey.rawValue) as? [Artist]
-    }
-    
-    public override init()
-    {
-        super.init()
     }
     
     public var composerNames: String
