@@ -191,6 +191,11 @@ class PlayerViewController: UITableViewController
         let nButton = UIButton(configuration: config)
         nButton.enableAutoLayout()
         nButton.isEnabled = false
+        nButton.menu = UIMenu(title: "Upcoming Songs", image: nil, identifier: nil, options: .displayInline, children: [
+            UIAction(title: "Sample", image: nil,handler: {
+                _ in
+            })
+        ])
         return nButton
     }()
     

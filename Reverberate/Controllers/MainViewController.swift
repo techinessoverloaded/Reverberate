@@ -297,7 +297,7 @@ extension MainViewController: PlayerDelegate
         case .song:
             avAudioPlayer.numberOfLoops = -1
         case .playlist:
-            avAudioPlayer.numberOfLoops = -1
+            avAudioPlayer.numberOfLoops = 0
         }
     }
     
@@ -623,31 +623,18 @@ extension MainViewController: AVAudioPlayerDelegate
 {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool)
     {
-        print(player.numberOfLoops)
-        // Loop is either off or playlist
-        if player.numberOfLoops == 0
+        let loopMode = GlobalVariables.shared.currentLoopMode
+        print(loopMode)
+        if loopMode == .off
         {
-            let loopMode = GlobalVariables.shared.currentLoopMode
-            print(loopMode)
-            if loopMode == .off
+            print("No Repeat")
+            let alreadyPlayedSongs = GlobalVariables.shared.alreadyPlayedSongs
+            print("Number of already played songs: \(alreadyPlayedSongs.count)")
+            if let currentPlaylist = GlobalVariables.shared.currentPlaylist
             {
-                print("No Repeat")
-                let alreadyPlayedSongs = GlobalVariables.shared.alreadyPlayedSongs
-                print("Number of already played songs: \(alreadyPlayedSongs.count)")
-                if let currentPlaylist = GlobalVariables.shared.currentPlaylist
+                if alreadyPlayedSongs.count != currentPlaylist.songs!.count
                 {
-                    if alreadyPlayedSongs.count != currentPlaylist.songs!.count
-                    {
-                        onNextSongRequest(playlist: currentPlaylist, currentSong: GlobalVariables.shared.currentSong!)
-                    }
-                    else
-                    {
-                        try! AVAudioSession.sharedInstance().setActive(false)
-                        miniPlayerView.setPlaying(shouldPlaySong: false)
-                        miniPlayerTimer.isPaused = true
-                        miniPlayerView.updateSongDurationView(newValue: 0)
-                        playerController?.setPlaying(shouldPlaySongFromBeginning: true)
-                    }
+                    onNextSongRequest(playlist: currentPlaylist, currentSong: GlobalVariables.shared.currentSong!)
                 }
                 else
                 {
@@ -658,20 +645,24 @@ extension MainViewController: AVAudioPlayerDelegate
                     playerController?.setPlaying(shouldPlaySongFromBeginning: true)
                 }
             }
-            else if loopMode == .playlist
+            else
             {
-                print("Repeat Playlist")
-                onNextSongRequest(playlist: GlobalVariables.shared.currentPlaylist!, currentSong: GlobalVariables.shared.currentSong!)
+                try! AVAudioSession.sharedInstance().setActive(false)
+                miniPlayerView.setPlaying(shouldPlaySong: false)
+                miniPlayerTimer.isPaused = true
+                miniPlayerView.updateSongDurationView(newValue: 0)
+                playerController?.setPlaying(shouldPlaySongFromBeginning: true)
             }
         }
-        else //Loop Mode is single song
+        else if loopMode == .playlist
+        {
+            print("Repeat Playlist")
+            onNextSongRequest(playlist: GlobalVariables.shared.currentPlaylist!, currentSong: GlobalVariables.shared.currentSong!)
+        }
+        else
         {
             print("Repeat single song")
-            player.play()
-            try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-            miniPlayerView.setPlaying(shouldPlaySong: true)
-            miniPlayerTimer.isPaused = false
-            playerController?.setPlaying(shouldPlaySongFromBeginning: true, isSongPaused: false)
+            GlobalVariables.shared.currentSong = GlobalVariables.shared.currentSong!
         }
         setupNowPlayingNotification()
     }
