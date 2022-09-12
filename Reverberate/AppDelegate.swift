@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
             print("Setting category to AVAudioSessionCategoryPlayback failed")
         }
         application.beginReceivingRemoteControlEvents()
+        if let directoryLocation = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).last {             print("Documents Directory: \(directoryLocation)Application Support")         }
         return true
     }
 

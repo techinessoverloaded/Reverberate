@@ -21,7 +21,7 @@ public class Album: Playlist
 
     public override var description: String
     {
-        "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt!), releaseDate = \(releaseDate!))"
+        "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt ?? nil), releaseDate = \(releaseDate ?? nil))"
     }
 
     public override func encode(with coder: NSCoder)
@@ -56,7 +56,7 @@ public class Album: Playlist
     
     public var language: String
     {
-        return songs!.first!.language.description
+        return songs!.first?.language.description ?? "No Language"
     }
     
     public override func copy(with zone: NSZone? = nil) -> Any

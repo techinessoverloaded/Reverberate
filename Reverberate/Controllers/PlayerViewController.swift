@@ -900,7 +900,9 @@ extension PlayerViewController: PlaylistSelectionDelegate
 //            selectedPlaylist.songs = songs
 //            contextSaveAction()
 //            print("Address after addition of songs \(address(of: &selectedPlaylist.songs!))")
-            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
+            selectedPlaylist.songs!.appendUniquely(songToBeAdded)
+            GlobalConstants.contextSaveAction()
+//            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

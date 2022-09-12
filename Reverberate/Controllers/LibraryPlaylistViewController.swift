@@ -108,6 +108,7 @@ class LibraryPlaylistViewController: UITableViewController
     {
         super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
+        print(SessionManager.shared.fetchUser(withId: GlobalVariables.shared.currentUser!.id!)?.userPlaylists!.first!)
     }
     
     override func viewDidDisappear(_ animated: Bool)

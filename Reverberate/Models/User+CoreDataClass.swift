@@ -19,7 +19,7 @@ public class User: NSManagedObject
     
     public func isUserPlaylist(_ playlist: Playlist) -> Bool
     {
-        return userPlaylists!.contains(playlist)
+        return userPlaylists!.contains(playlist as! Album)
     }
     
     public func isFavouriteAlbum(_ album: Album) -> Bool

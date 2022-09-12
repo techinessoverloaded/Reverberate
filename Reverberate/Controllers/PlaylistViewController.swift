@@ -228,6 +228,7 @@ class PlaylistViewController: UITableViewController
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        print(SessionManager.shared.fetchUser(withId: GlobalVariables.shared.currentUser!.id!)?.userPlaylists!.first!)
         defaultOffset = tableView.contentOffset.y
         print("Default Offset: \(defaultOffset)")
     }
@@ -263,7 +264,7 @@ class PlaylistViewController: UITableViewController
             let album = playlist as! Album
             title = album.name!
             navigationItem.title = nil
-            posterView.image = album.coverArt!
+            posterView.image = album.coverArt
             titleView.text = title
             artistView.text = "\(album.composerNames) ›"
             detailsView.text = "\(album.language) · \(album.releaseDate!.getFormattedString())"
