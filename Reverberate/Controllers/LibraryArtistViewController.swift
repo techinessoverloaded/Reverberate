@@ -111,6 +111,7 @@ class LibraryArtistViewController: UICollectionViewController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
@@ -118,14 +119,14 @@ class LibraryArtistViewController: UICollectionViewController
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
+        NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
         }
-        super.viewDidDisappear(animated)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -148,7 +149,7 @@ class LibraryArtistViewController: UICollectionViewController
     private func setupFilterMenu()
     {
         let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
-        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .singleSelection, children: [
             UIDeferredMenuElement.uncached({ completion in
                 DispatchQueue.main.async { [unowned self] in
                     let allArtistsMenuItem = UIAction(title: "All Artists", image: UIImage(systemName: "music.mic")!, handler: { [unowned self] _ in
@@ -356,6 +357,11 @@ extension LibraryArtistViewController: UISearchControllerDelegate
 
 extension LibraryArtistViewController
 {
+    @objc func onUserLoginNotification()
+    {
+        setupFilterMenu()
+    }
+    
     @objc func onAddArtistToFavouritesNotification(_ notification: NSNotification)
     {
         guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else

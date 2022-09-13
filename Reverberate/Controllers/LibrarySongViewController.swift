@@ -97,7 +97,7 @@ class LibrarySongViewController: UITableViewController
     
     var viewOnlyFavSongs: Bool = false
     
-    private lazy var allSongs: [Song] = DataManager.shared.availableSongs
+    private lazy var allSongs: [Song] = viewOnlyFavSongs ? DataManager.shared.availableSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) }) : DataManager.shared.availableSongs
     
     private lazy var sortedSongs: [Alphabet : [Song]] = sortSongs()
     
@@ -135,7 +135,6 @@ class LibrarySongViewController: UITableViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        title = "All Songs"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
@@ -143,6 +142,14 @@ class LibrarySongViewController: UITableViewController
         if SessionManager.shared.isUserLoggedIn
         {
             setupFilterMenu()
+        }
+        if viewOnlyFavSongs
+        {
+            title = "Favourite Songs"
+        }
+        else
+        {
+            title = "All Songs"
         }
         tableView.tableHeaderView = tableHeaderView
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -166,7 +173,7 @@ class LibrarySongViewController: UITableViewController
             }
         }
     }
-
+    
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
@@ -174,6 +181,7 @@ class LibrarySongViewController: UITableViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
@@ -188,6 +196,7 @@ class LibrarySongViewController: UITableViewController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
@@ -231,7 +240,7 @@ class LibrarySongViewController: UITableViewController
     private func setupFilterMenu()
     {
         let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
-        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
+        menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .singleSelection, children: [
             UIDeferredMenuElement.uncached({ completion in
                 DispatchQueue.main.async { [unowned self] in
                     let allSongsMenuItem = UIAction(title: "All Songs", image: UIImage(systemName: "music.note")!, handler: { [unowned self] _ in
@@ -457,6 +466,11 @@ extension LibrarySongViewController: UISearchControllerDelegate
 }
 extension LibrarySongViewController
 {
+    @objc func onUserLoginNotification()
+    {
+        setupFilterMenu()
+    }
+    
     @objc func onPlayNotificationReceipt()
     {
         if GlobalVariables.shared.currentPlaylist == playlist
