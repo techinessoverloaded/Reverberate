@@ -77,12 +77,12 @@ class SessionManager
         newUser.password = password
         newUser.favouriteSongs = []
         newUser.favouriteArtists = []
-        newUser.userPlaylists = []
+        newUser.playlists = []
         newUser.favouriteAlbums = []
         let defaultPlaylist = Playlist()
         defaultPlaylist.name = "Default Playlist"
         defaultPlaylist.songs = []
-        newUser.userPlaylists!.append(defaultPlaylist)
+        newUser.playlists!.append(defaultPlaylist)
         contextSaveAction()
         UserDefaults.standard.set(newUser.id, forKey: GlobalConstants.currentUserId)
         UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)

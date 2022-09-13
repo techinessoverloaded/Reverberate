@@ -9,7 +9,7 @@ import UIKit
 
 class PlaylistSelectionViewController: UITableViewController
 {
-    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.userPlaylists!
+    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists!
     
     private lazy var backgroundView: UIVisualEffectView = {
         let bView = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
@@ -54,7 +54,7 @@ class PlaylistSelectionViewController: UITableViewController
     
     private func fetchPlaylists()
     {
-        allPlaylists = GlobalVariables.shared.currentUser!.userPlaylists!
+        allPlaylists = GlobalVariables.shared.currentUser!.playlists!
         tableView.reloadData()
     }
 
@@ -153,9 +153,9 @@ extension PlaylistSelectionViewController
                 let newPlaylist = Playlist()
                 newPlaylist.name = nameField.text!
                 newPlaylist.songs = []
-                GlobalVariables.shared.currentUser!.userPlaylists!.append(newPlaylist)
+                GlobalVariables.shared.currentUser!.playlists!.append(newPlaylist)
                 GlobalConstants.contextSaveAction()
-                print(GlobalVariables.shared.currentUser!.userPlaylists!)
+                print(GlobalVariables.shared.currentUser!.playlists!)
                 DispatchQueue.main.async { [unowned self] in
                     self.fetchPlaylists()
                 }
@@ -168,7 +168,7 @@ extension PlaylistSelectionViewController
     @objc func onDoneButtonTap()
     {
         self.dismiss(animated: true, completion: { [unowned self] in
-            for var playlist in GlobalVariables.shared.currentUser!.userPlaylists!
+            for var playlist in GlobalVariables.shared.currentUser!.playlists!
             {
                 print("Address of Existing Playlist \(playlist.name!):  \(address(of: &playlist))")
             }

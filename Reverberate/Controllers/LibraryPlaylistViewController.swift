@@ -59,7 +59,7 @@ class LibraryPlaylistViewController: UITableViewController
         return sController
     }()
     
-    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.userPlaylists!
+    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists!
     
     private lazy var sortedPlaylists: [Alphabet : [Playlist]] = sortPlaylists()
     
@@ -114,7 +114,7 @@ class LibraryPlaylistViewController: UITableViewController
     
     private func refetchPlaylists()
     {
-        allPlaylists = GlobalVariables.shared.currentUser!.userPlaylists!
+        allPlaylists = GlobalVariables.shared.currentUser!.playlists!
         sortedPlaylists = sortPlaylists()
         tableView.reloadData()
         emptyMessageLabel.isHidden = isFiltering ? !filteredPlaylists.isEmpty : !allPlaylists.isEmpty
@@ -306,7 +306,7 @@ extension LibraryPlaylistViewController
                 let newPlaylist = Playlist()
                 newPlaylist.name = nameField.text!
                 newPlaylist.songs = []
-                GlobalVariables.shared.currentUser!.userPlaylists!.append(newPlaylist)
+                GlobalVariables.shared.currentUser!.playlists!.append(newPlaylist)
                 GlobalConstants.contextSaveAction()
                 DispatchQueue.main.async { [unowned self] in
                     self.refetchPlaylists()
@@ -327,7 +327,7 @@ extension LibraryPlaylistViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.userPlaylists!.removeUniquely(playlist)
+        GlobalVariables.shared.currentUser!.playlists!.removeUniquely(playlist)
         GlobalConstants.contextSaveAction()
         if isFiltering
         {

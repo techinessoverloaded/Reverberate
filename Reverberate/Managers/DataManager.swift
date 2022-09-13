@@ -144,7 +144,7 @@ class DataManager
         let dataUrl = getUrlOfDataInCacheDirectory(dataFileName: fileName)
         let data = try? Data(contentsOf: dataUrl)
         guard let data = data else { return nil }
-        let objects = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
+        let objects = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Playlist.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
         guard let objects = objects else { return nil }
         if let rawArray = objects as? NSArray
         {

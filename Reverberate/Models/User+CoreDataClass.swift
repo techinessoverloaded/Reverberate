@@ -19,7 +19,7 @@ public class User: NSManagedObject
     
     public func isUserPlaylist(_ playlist: Playlist) -> Bool
     {
-        return userPlaylists!.contains(playlist as! Album)
+        return playlists!.contains(playlist)
     }
     
     public func isFavouriteAlbum(_ album: Album) -> Bool
@@ -34,13 +34,12 @@ public class User: NSManagedObject
     
     public func add(song: Song, toPlaylistNamed playlistName: String)
     {
-        var playlists = userPlaylists!
-        let requiredPlaylist = playlists.first(where: { $0.name! == playlistName })!
-        let indexOfRequiredPlaylist = playlists.firstIndex(of: requiredPlaylist)!
+        var allPlaylists = playlists!
+        let requiredPlaylist = allPlaylists.first(where: { $0.name! == playlistName })!
+        let indexOfRequiredPlaylist = allPlaylists.firstIndex(of: requiredPlaylist)!
         requiredPlaylist.songs!.appendUniquely(song)
-        playlists.replaceSubrange(indexOfRequiredPlaylist...indexOfRequiredPlaylist, with: [requiredPlaylist])
-        userPlaylists = playlists
+        allPlaylists.replaceSubrange(indexOfRequiredPlaylist...indexOfRequiredPlaylist, with: [requiredPlaylist])
+        playlists = allPlaylists
         GlobalConstants.contextSaveAction()
-        print(userPlaylists!)
     }
 }

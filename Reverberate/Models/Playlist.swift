@@ -43,6 +43,7 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
         self.init()
         self.name = coder.decodeObject(forKey: CoderKeys.nameKey.rawValue) as? String
         self.songs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? [Song]
+        print("decoded songs: \(songs)")
     }
     
     public override init()
