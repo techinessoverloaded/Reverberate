@@ -13,7 +13,8 @@ class HomeViewController: UICollectionViewController
     
     private var playlists: [Category: Playlist] = [:]
 
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool)
+    {
         super.viewWillAppear(animated)
         print(view.bounds.width)
         print(collectionView.bounds.width)
@@ -30,6 +31,17 @@ class HomeViewController: UICollectionViewController
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear
         collectionView.bounces = true
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
+    }
+    
+    deinit
+    {
+        NotificationCenter.default.removeObserver(self, name: .recentlyPlayedListChangedNotification, object: nil)
     }
     
     private func createMenu(song: Song) -> UIMenu
@@ -167,6 +179,18 @@ extension HomeViewController
 
 extension HomeViewController
 {
+    @objc func onRecentlyPlayedListChange()
+    {
+        let keys = Array(songs.keys)
+        let indexPaths = collectionView.indexPathsForVisibleItems
+        songs[.recentlyPlayed] = DataProcessor.shared.getSongsOf(category: .recentlyPlayed, andLimitNumberOfResultsTo: 10)
+        guard let section = indexPaths.first(where: { keys[$0.section] == .recentlyPlayed })?.section else
+        {
+            return
+        }
+        collectionView.reloadSections(IndexSet(integer: section))
+    }
+    
     @objc func onSeeAllButtonTap(_ sender: UIButton)
     {
         let categoricalVC = CategoricalSongsViewController(style: .grouped)

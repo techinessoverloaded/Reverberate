@@ -191,7 +191,9 @@ class DataProcessor
         case .folk:
             result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre == .folk }) })
         case .recentlyPlayed:
-            result.append(contentsOf: DataManager.shared.availableAlbums.shuffled())
+            GlobalVariables.shared.recentlyPlayedAlbumNames.forEach{
+                result.append(getAlbum(named: $0)!)
+            }
         }
         return result
     }

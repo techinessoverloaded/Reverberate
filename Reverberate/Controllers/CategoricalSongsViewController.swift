@@ -104,6 +104,10 @@ class CategoricalSongsViewController: UITableViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        if category == .recentlyPlayed
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
+        }
     }
     
     deinit
@@ -111,6 +115,10 @@ class CategoricalSongsViewController: UITableViewController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        if category == .recentlyPlayed
+        {
+            NotificationCenter.default.removeObserver(self, name: .recentlyPlayedListChangedNotification, object: nil)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -298,6 +306,13 @@ class CategoricalSongsViewController: UITableViewController
 
 extension CategoricalSongsViewController
 {
+    @objc func onRecentlyPlayedListChange()
+    {
+        songs = DataProcessor.shared.getSongsOf(category: .recentlyPlayed)
+        albums = DataProcessor.shared.getAlbumsOf(category: .recentlyPlayed)
+        tableView.reloadSections(IndexSet(integersIn: 0...1), with: .automatic)
+    }
+    
     @objc func onPlayNotificationReceipt()
     {
         if GlobalVariables.shared.currentPlaylist == playlist

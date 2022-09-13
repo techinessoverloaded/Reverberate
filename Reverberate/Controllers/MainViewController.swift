@@ -788,8 +788,9 @@ extension MainViewController
             setupMPCommandCenter()
             hasSetupMPCommandCenter = true
         }
-        GlobalVariables.shared.recentlyPlayedSongNames.insert(GlobalVariables.shared.currentSong!.title!)
-        GlobalVariables.shared.alreadyPlayedSongs.appendUniquely(GlobalVariables.shared.currentSong!)
+        GlobalVariables.shared.recentlyPlayedSongNames.appendUniquely(GlobalVariables.shared.currentSong!.title!)
+        let song = GlobalVariables.shared.currentSong!
+        SessionManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
     }
     
     @objc func onPlaylistChange()

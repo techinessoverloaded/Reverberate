@@ -387,7 +387,7 @@ class LibrarySongViewController: UITableViewController
         {
             if GlobalVariables.shared.currentSong == song
             {
-                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                 if GlobalVariables.shared.avAudioPlayer!.isPlaying
                 {
                     onPlayNotificationReceipt()
@@ -499,7 +499,7 @@ extension LibrarySongViewController
         let indexPath = IndexPath(item: item, section: section)
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             return
         }
     }

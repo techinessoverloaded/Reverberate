@@ -14,17 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 {
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool
     {
-//        DataManager.shared.makeSongsAndAlbumsReady(onCompletion: {
-//            startTime in
-//            let endTime = DispatchTime.now()
-//            let interval = TimeInterval(endTime.uptimeNanoseconds - startTime.uptimeNanoseconds)
-//            print("Time Taken: \(interval / 1000000000) seconds")
-//            print("Number of Artists: \(DataManager.shared.availableArtists.count)")
-//            print("Number of songs contributed by each artist: \n")
-//            DataManager.shared.availableArtists.forEach({
-//                print("\($0.name!) : \($0.contributedSongs!.count) songs : \($0.artistType!)")
-//            })
-//        })
         DataManager.shared.makeSongsAndAlbumsReady(onCompletion: {
             startTime in
             let endTime = DispatchTime.now()

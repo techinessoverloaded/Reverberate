@@ -40,8 +40,8 @@ class SongArtistsViewController: UITableViewController
     {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(onCloseButtonTap(_:)))
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "Contributing Artists"
         navigationController?.navigationBar.largeTitleTextAttributes = [
             NSAttributedString.Key.foregroundColor : UIColor.label.withAlphaComponent(0.8),
@@ -50,6 +50,7 @@ class SongArtistsViewController: UITableViewController
         view.backgroundColor = .clear
         tableView.backgroundColor = .clear
         tableView.backgroundView = backgroundView
+        tableView.sectionHeaderTopPadding = 0
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         collectionView.backgroundColor = .clear
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)

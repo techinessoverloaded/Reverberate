@@ -46,11 +46,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             userDefaults.set([], forKey: GlobalConstants.preferredGenres)
         }
         
-        if UserDefaults.standard.value(forKey: GlobalConstants.recentlyPlayedSongNames) != nil
+        if userDefaults.value(forKey: GlobalConstants.recentlyPlayedSongNames) == nil
         {
-            GlobalVariables.shared.recentlyPlayedSongNames = Set(UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as! [String])
-            print(GlobalVariables.shared.recentlyPlayedSongNames)
+            userDefaults.set([], forKey: GlobalConstants.recentlyPlayedSongNames)
         }
+        
+        if userDefaults.value(forKey: GlobalConstants.recentlyPlayedAlbumNames) == nil
+        {
+            userDefaults.set([], forKey: GlobalConstants.recentlyPlayedAlbumNames)
+        }
+        
+        SessionManager.shared.retrieveRecentlyPlayedItems()
         
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
@@ -87,6 +93,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             return
         }
         unwrappedWindow.rootViewController = newVC
+        if newVC is MainViewController
+        {
+            GlobalVariables.shared.mainTabController = newVC as! MainViewController
+        }
         if animationOption == 0
         {
             UIView.transition(with: unwrappedWindow,
@@ -167,22 +177,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-        let recentlyPlayedSongNames = GlobalVariables.shared.recentlyPlayedSongNames
-        print(recentlyPlayedSongNames.count)
-        if !recentlyPlayedSongNames.isEmpty
-        {
-            let existingSongNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as? [String]
-            if existingSongNames == nil || existingSongNames!.isEmpty
-            {
-                UserDefaults.standard.set(Array(recentlyPlayedSongNames), forKey: GlobalConstants.recentlyPlayedSongNames)
-            }
-            else
-            {
-                var namesAsArray = Array(recentlyPlayedSongNames)
-                namesAsArray.append(contentsOf: Array(Set(existingSongNames!)))
-                UserDefaults.standard.set(namesAsArray, forKey: GlobalConstants.recentlyPlayedSongNames)
-            }
-        }
     }
 }
 

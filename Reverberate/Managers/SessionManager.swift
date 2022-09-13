@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import UIKit
+import AVKit
 
 class SessionManager
 {
@@ -147,7 +148,33 @@ class SessionManager
     {
         UserDefaults.standard.set(nil, forKey: GlobalConstants.currentUserId)
         UserDefaults.standard.set(true, forKey: GlobalConstants.isFirstTime)
+        try! AVAudioSession.sharedInstance().setActive(false)
+        if GlobalVariables.shared.avAudioPlayer != nil
+        {
+            GlobalVariables.shared.avAudioPlayer.stop()
+        }
         NotificationCenter.default.post(name: .userLoggedOutNotification, object: nil)
     }
     
+    func persistRecentlyPlayedItems(songName: String, albumName: String)
+    {
+        GlobalVariables.shared.recentlyPlayedSongNames.appendUniquely(songName)
+        GlobalVariables.shared.recentlyPlayedAlbumNames.appendUniquely(albumName)
+        var existingSongNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as! [String]
+        existingSongNames.appendUniquely(songName)
+        UserDefaults.standard.set(existingSongNames, forKey: GlobalConstants.recentlyPlayedSongNames)
+        var existingAlbumNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedAlbumNames) as! [String]
+        existingAlbumNames.appendUniquely(albumName)
+        UserDefaults.standard.set(existingAlbumNames, forKey: GlobalConstants.recentlyPlayedAlbumNames)
+        NotificationCenter.default.post(name: .recentlyPlayedListChangedNotification, object: nil)
+    }
+    
+    func retrieveRecentlyPlayedItems()
+    {
+        let existingSongNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as! [String]
+        let existingAlbumNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedAlbumNames) as! [String]
+        GlobalVariables.shared.recentlyPlayedSongNames = existingSongNames
+        GlobalVariables.shared.recentlyPlayedAlbumNames = existingAlbumNames
+        NotificationCenter.default.post(name: .recentlyPlayedListChangedNotification, object: nil)
+    }
 }

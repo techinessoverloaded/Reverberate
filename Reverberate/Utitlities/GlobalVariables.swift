@@ -40,9 +40,9 @@ class GlobalVariables
     
     var currentShuffleMode: MusicShuffleMode = .off
     
-    var recentlyPlayedSongNames: Set<String> = []
+    var recentlyPlayedSongNames: [String] = []
     
-    var recentlyPlayedAlbumNames: Set<String> = []
+    var recentlyPlayedAlbumNames: [String] = []
     
     var alreadyPlayedSongs: [Song] = []
     
