@@ -60,6 +60,13 @@ class ArtistViewController: UITableViewController
     
     private lazy var songs = Array(artist.contributedSongs!)
 
+    private lazy var playlist: Playlist = {
+        let artistPlaylist = Playlist()
+        artistPlaylist.name = artist.name!
+        artistPlaylist.songs = songs
+        return artistPlaylist
+    }()
+    
     private lazy var albums = DataProcessor.shared.getAlbumsInvolving(artist: artist.name!)
     
     private lazy var minimumVisibleSongsCount: Int = min(songs.count, 5)
