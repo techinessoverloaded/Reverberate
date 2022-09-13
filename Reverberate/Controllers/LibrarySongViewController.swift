@@ -11,10 +11,6 @@ class LibrarySongViewController: UITableViewController
 {
     private let requesterId: Int = 0
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -113,6 +109,17 @@ class LibrarySongViewController: UITableViewController
     
     private var songToBeAddedToPlaylist: Song? = nil
     
+    private var playlist: Playlist
+    {
+        get
+        {
+            let songPlaylist = Playlist()
+            songPlaylist.name = title
+            songPlaylist.songs = sortedSongs.values.flatMap({ $0 }).sorted()
+            return songPlaylist
+        }
+    }
+    
     private var isSearchBarEmpty: Bool
     {
        return searchController.searchBar.text?.isEmpty ?? true
@@ -122,6 +129,8 @@ class LibrarySongViewController: UITableViewController
     {
        return searchController.isActive && !isSearchBarEmpty
     }
+    
+    weak var delegate: PlaylistDelegate?
     
     override func viewDidLoad()
     {
@@ -149,37 +158,46 @@ class LibrarySongViewController: UITableViewController
         tableView.backgroundView = backgroundView
         playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            if GlobalVariables.shared.avAudioPlayer!.isPlaying
+            {
+                onPlayNotificationReceipt()
+            }
+        }
     }
 
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
         }
-        else
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
-        }
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
         }
-        else
-        {
-            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
-        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
         super.viewDidDisappear(animated)
     }
     
@@ -334,6 +352,16 @@ class LibrarySongViewController: UITableViewController
         config.secondaryTextProperties.color = .secondaryLabel
         config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
+        cell.configurationUpdateHandler = { cell, state in
+            guard var updatedConfig = cell.contentConfiguration?.updated(for: state) as? UIListContentConfiguration else
+            {
+                return
+            }
+            updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
+               return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
+            }
+            cell.contentConfiguration = updatedConfig
+        }
         cell.contentConfiguration = config
         var menuButtonConfig = UIButton.Configuration.plain()
         menuButtonConfig.baseForegroundColor = .systemGray
@@ -344,9 +372,44 @@ class LibrarySongViewController: UITableViewController
         menuButton.sizeToFit()
         menuButton.menu = createMenu(song: song)
         menuButton.showsMenuAsPrimaryAction = true
+        cell.selectionStyle = .none
         cell.accessoryView = menuButton
         cell.backgroundColor = .clear
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            if GlobalVariables.shared.currentSong == song
+            {
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                {
+                    onPlayNotificationReceipt()
+                }
+                else
+                {
+                    onPausedNotificationReceipt()
+                }
+            }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let section = indexPath.section
+        let item = indexPath.item
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        if GlobalVariables.shared.currentSong != song
+        {
+            delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+        }
+        onPlayNotificationReceipt()
     }
     
     override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
@@ -394,19 +457,67 @@ extension LibrarySongViewController: UISearchControllerDelegate
 }
 extension LibrarySongViewController
 {
+    @objc func onPlayNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Pause"
+            playButton.configuration!.image = pauseIcon
+        }
+    }
+    
+    @objc func onPausedNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
+        }
+    }
+    
+    @objc func onSongChange()
+    {
+        guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
+        {
+            return
+        }
+        guard currentPlaylist == playlist else
+        {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
+            return
+        }
+        let currentSong = GlobalVariables.shared.currentSong!
+        let alphabet = Alphabet.getAlphabetFromLetter(currentSong.title!.first!)
+        let section = alphabet.rawValue
+        guard let item = sortedSongs[alphabet]!.firstIndex(of: currentSong) else
+        {
+            return
+        }
+        print("current song found")
+        let indexPath = IndexPath(item: item, section: section)
+        guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
+        {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+            return
+        }
+    }
+
+    
     @objc func onPlayButtonTap(_ sender: UIButton)
     {
         if sender.configuration!.title == "Play"
         {
             print("Gonna Play")
-//           delegate?.onPlaylistPlayRequest(playlist: playlist)
+            delegate?.onPlaylistPlayRequest(playlist: playlist)
             sender.configuration!.title = "Pause"
             sender.configuration!.image = pauseIcon
         }
         else
         {
             print("Gonna Pause")
-//            delegate?.onPlaylistPauseRequest(playlist: playlist)
+            delegate?.onPlaylistPauseRequest(playlist: playlist)
             sender.configuration!.title = "Play"
             sender.configuration!.image = playIcon
         }
@@ -414,12 +525,9 @@ extension LibrarySongViewController
     
     @objc func onShuffleButtonTap(_ sender: UIButton)
     {
-        
-    }
-    
-    @objc func onLoginRequestNotification(_ notification: NSNotification)
-    {
-        
+        delegate?.onPlaylistShuffleRequest(playlist: playlist, shuffleMode: .on)
+        playButton.configuration!.image = pauseIcon
+        playButton.configuration!.title = "Pause"
     }
     
     @objc func onAddSongToPlaylistNotification(_ notification: NSNotification)
@@ -456,7 +564,7 @@ extension LibrarySongViewController
             return
         }
         GlobalVariables.shared.currentUser!.favouriteSongs!.appendUniquely(song)
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
         print(GlobalVariables.shared.currentUser!.id!)
         print(UserDefaults.standard.string(forKey: GlobalConstants.currentUserId)!)
     }
@@ -472,7 +580,7 @@ extension LibrarySongViewController
             return
         }
         GlobalVariables.shared.currentUser!.favouriteSongs!.removeUniquely(song)
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
         if viewOnlyFavSongs
         {
             allSongs = DataManager.shared.availableSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
@@ -521,12 +629,6 @@ extension LibrarySongViewController: PlaylistSelectionDelegate
         }
         else
         {
-//            print("Address before addition of songs \(address(of: &selectedPlaylist.songs!))")
-//            var songs = selectedPlaylist.songs!
-//            songs.append(songToBeAdded.copy() as! Song)
-//            selectedPlaylist.songs = songs
-//            contextSaveAction()
-//            print("Address after addition of songs \(address(of: &selectedPlaylist.songs!))")
             GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))

@@ -658,8 +658,7 @@ extension ProfileViewController: LoginDelegate
         let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
         let newProfileVC = ProfileViewController(style: .insetGrouped)
         newProfileVC.title = "Your Profile"
-        let navController = UINavigationController(rootViewController: newProfileVC)
-        mainVC.replaceViewController(index: 3, newViewController: navController)
+        mainVC.replaceViewController(index: 3, newViewController: newProfileVC)
         loginController.dismiss(animated: true)
     }
     
@@ -696,12 +695,11 @@ extension ProfileViewController: SignupDelegate
         let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
         let newProfileVC = ProfileViewController(style: .insetGrouped)
             newProfileVC.title = "Your Profile"
-        let navController = UINavigationController(rootViewController: newProfileVC)
         getUserReference()
         user.preferredLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
         user.preferredGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
         contextSaveAction()
-        mainVC.replaceViewController(index: 3, newViewController: navController)
+        mainVC.replaceViewController(index: 3, newViewController: newProfileVC)
         signupController.dismiss(animated: true)
     }
     

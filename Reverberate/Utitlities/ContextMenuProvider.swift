@@ -46,10 +46,10 @@ class ContextMenuProvider
         }
     }
     
-    private func getAddSongToPlaylistFavMenuItem(song: Song, requesterId: Int) -> UIAction
+    private func getAddSongToPlaylistFavMenuItem(song: Song, requesterId: Int, requiresTranslucentSelectionScreen: Bool = false) -> UIAction
     {
         return UIAction(title: "Add Song to Playlist", image: addToPlaylistIcon) { [unowned self] _ in
-            onAddSongToPlaylistMenuItemTap(song: song, receiverId: requesterId)
+            onAddSongToPlaylistMenuItemTap(song: song, receiverId: requesterId, requiresTranslucentSelectionScreen: requiresTranslucentSelectionScreen)
         }
     }
     
@@ -152,16 +152,16 @@ class ContextMenuProvider
     
     private func getLoginForMoreOptionsMenuItem(requesterId: Int) -> UIAction
     {
-        return UIAction(title: "Login to get more option(s)", image: UIImage(systemName: "person.crop.circle.fill")!,handler: { [unowned self] _ in
+        return UIAction(title: "Login to get more option(s)", image: UIImage(systemName: "person.crop.circle.fill")!, handler: { [unowned self] _ in
             onLoginRequestMenuItemTap(receiverId: requesterId)
         })
     }
     
-    func getSongMenu(song: Song, requesterId: Int) -> UIMenu
+    func getSongMenu(song: Song, requesterId: Int, requiresTranslucentSelectionScreen: Bool = false) -> UIMenu
     {
         return SessionManager.shared.isUserLoggedIn ? UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
             getAddOrRemoveSongDeferredMenuItem(song: song, requesterId: requesterId),
-            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId),
+            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId, requiresTranslucentSelectionScreen: requiresTranslucentSelectionScreen),
             getShowAlbumMenuItem(song: song, requesterId: requesterId)
         ]) : UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
             getShowAlbumMenuItem(song: song, requesterId: requesterId),
@@ -169,21 +169,21 @@ class ContextMenuProvider
         ])
     }
     
-    func getAlbumSongMenu(song: Song, requesterId: Int) -> UIMenu
+    func getAlbumSongMenu(song: Song, requesterId: Int, requiresTranslucentSelectionScreen: Bool = false) -> UIMenu
     {
         return SessionManager.shared.isUserLoggedIn ? UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
             getAddOrRemoveSongDeferredMenuItem(song: song, requesterId: requesterId),
-            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId)
+            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId, requiresTranslucentSelectionScreen: requiresTranslucentSelectionScreen)
         ]) : UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
             getLoginForMoreOptionsMenuItem(requesterId: requesterId)
         ])
     }
     
-    func getPlaylistSongMenu(song: Song, requesterId: Int) -> UIMenu
+    func getPlaylistSongMenu(song: Song, requesterId: Int, requiresTranslucentSelectionScreen: Bool = false) -> UIMenu
     {
         return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
             getAddOrRemoveSongDeferredMenuItem(song: song, requesterId: requesterId),
-            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId),
+            getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId, requiresTranslucentSelectionScreen: requiresTranslucentSelectionScreen),
             getRemoveSongFromPlaylistMenuItem(song: song, requesterId: requesterId),
             getShowAlbumMenuItem(song: song, requesterId: requesterId)
         ])
@@ -317,9 +317,9 @@ extension ContextMenuProvider
         NotificationCenter.default.post(name: .removeSongFromFavouritesNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
     }
     
-    @objc private func onAddSongToPlaylistMenuItemTap(song: Song, receiverId: Int)
+    @objc private func onAddSongToPlaylistMenuItemTap(song: Song, receiverId: Int, requiresTranslucentSelectionScreen: Bool = false)
     {
-        NotificationCenter.default.post(name: .addSongToPlaylistNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
+        NotificationCenter.default.post(name: .addSongToPlaylistNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song, "isTranslucent" : requiresTranslucentSelectionScreen])
     }
     
     

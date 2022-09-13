@@ -118,7 +118,9 @@ class LibraryViewController: UITableViewController
         tableView.deselectRow(at: indexPath, animated: true)
         if item == 0
         {
-            navigationController?.pushViewController(LibrarySongViewController(style: .plain), animated: true)
+            let librarySongVc = LibrarySongViewController(style: .plain)
+            librarySongVc.delegate = GlobalVariables.shared.mainTabController
+            navigationController?.pushViewController(librarySongVc, animated: true)
         }
         else if item == 1
         {

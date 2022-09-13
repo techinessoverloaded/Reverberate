@@ -9,8 +9,6 @@ import UIKit
 
 class PlaylistViewController: UITableViewController
 {
-    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
-    
     private lazy var playIcon: UIImage = {
         return UIImage(systemName: "play.fill")!
     }()
@@ -221,20 +219,19 @@ class PlaylistViewController: UITableViewController
         super.viewWillAppear(animated)
         self.definesPresentationContext = true
         self.navigationController?.navigationBar.tintColor = .systemBlue
-        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
         defaultOffset = tableView.contentOffset.y
+        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
-    override func viewWillDisappear(_ animated: Bool)
+    deinit
     {
-        super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
@@ -253,7 +250,7 @@ class PlaylistViewController: UITableViewController
     
     private func getSongMenu(song: Song) -> UIMenu
     {
-        return (playlist is Album) ? ContextMenuProvider.shared.getAlbumSongMenu(song: song, requesterId: requesterId) : ContextMenuProvider.shared.getPlaylistSongMenu(song: song, requesterId: requesterId)
+        return (playlist is Album) ? ContextMenuProvider.shared.getAlbumSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId) : ContextMenuProvider.shared.getPlaylistSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId)
     }
     
     func setPlaylistDetails()
@@ -384,7 +381,7 @@ class PlaylistViewController: UITableViewController
             let song = playlist.songs![indexPath.item]
             if currentSong == song
             {
-                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
             }
         }
     }
@@ -440,8 +437,15 @@ extension PlaylistViewController
 {
     @objc func onSongChange()
     {
-        guard GlobalVariables.shared.currentPlaylist == playlist else
+        guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
         {
+            return
+        }
+        guard currentPlaylist == playlist else
+        {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         let currentSong = GlobalVariables.shared.currentSong!
@@ -452,7 +456,7 @@ extension PlaylistViewController
         let indexPath = IndexPath(item: item, section: 0)
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
             return
         }
     }

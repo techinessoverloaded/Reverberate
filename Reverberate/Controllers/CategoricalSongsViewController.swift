@@ -9,8 +9,6 @@ import UIKit
 
 class CategoricalSongsViewController: UITableViewController
 {
-    private var requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
-    
     private lazy var playIcon: UIImage = {
         return UIImage(systemName: "play.fill")!
     }()
@@ -108,22 +106,26 @@ class CategoricalSongsViewController: UITableViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
         super.viewDidDisappear(animated)
     }
     
     private func getSongMenu(song: Song) -> UIMenu
     {
-        return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: requesterId)
+        return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId)
     }
     
     private func getAlbumMenu(album: Album) -> UIMenu
     {
-        return ContextMenuProvider.shared.getAlbumMenu(album: album, requesterId: requesterId)
+        return ContextMenuProvider.shared.getAlbumMenu(album: album, requesterId: GlobalVariables.shared.mainTabController.requesterId)
     }
     
     // MARK: - Table view data source
@@ -236,14 +238,14 @@ class CategoricalSongsViewController: UITableViewController
             {
                 if GlobalVariables.shared.currentSong == song
                 {
-                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
                     if GlobalVariables.shared.avAudioPlayer!.isPlaying
                     {
-                        playButton.configuration!.image = pauseIcon
+                        onPlayNotificationReceipt()
                     }
                     else
                     {
-                        playButton.configuration!.image = playIcon
+                        onPausedNotificationReceipt()
                     }
                 }
             }
@@ -316,8 +318,15 @@ extension CategoricalSongsViewController
     
     @objc func onSongChange()
     {
-        guard GlobalVariables.shared.currentPlaylist == playlist else
+        guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
         {
+            return
+        }
+        guard currentPlaylist == playlist else
+        {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         let currentSong = GlobalVariables.shared.currentSong!
@@ -328,7 +337,7 @@ extension CategoricalSongsViewController
         let indexPath = IndexPath(item: item, section: 0)
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
             return
         }
     }

@@ -11,7 +11,7 @@ import MediaPlayer
 
 class MainViewController: UITabBarController
 {
-    private let requesterId: Int = 3
+    let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
     
     private lazy var homeVC = createHomeVc()
 
@@ -40,6 +40,8 @@ class MainViewController: UITabBarController
     private var miniPlayerTimer: CADisplayLink!
     
     private var hasSetupMPCommandCenter: Bool = false
+    
+    private var songToBeAddedToPlaylist: Song? = nil
     
     override func loadView()
     {
@@ -79,7 +81,26 @@ class MainViewController: UITabBarController
     
     func replaceViewController(index: Int, newViewController: UIViewController)
     {
-    self.viewControllers!.replaceSubrange(index...index, with: [newViewController])
+        if index == 0
+        {
+            homeVC = newViewController as! HomeViewController
+            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: homeVC)])
+        }
+        else if index == 1
+        {
+            searchVC = newViewController as! SearchViewController
+            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: searchVC)])
+        }
+        else if index == 2
+        {
+            libraryVC = newViewController as! LibraryViewController
+            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: libraryVC)])
+        }
+        else
+        {
+            profileVC = newViewController as! ProfileViewController
+            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: profileVC)])
+        }
         let item = self.tabBar.items![index]
         item.image = UIImage(systemName: self.imageNames[index])
         item.selectedImage = UIImage(systemName: self.selectedImageNames[index])
@@ -114,26 +135,48 @@ class MainViewController: UITabBarController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         NotificationCenter.default.addObserver(self, selector: #selector(handleLanguageGenreSelectionChange(notification:)), name: .languageGenreChangeNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
+        }
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         NotificationCenter.default.removeObserver(self, name: .languageGenreChangeNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
-        super.viewDidDisappear(animated)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
+        }
+        else
+        {
+            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
+        }
     }
     
     func showPlayerController(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -154,7 +197,6 @@ class MainViewController: UITabBarController
     func setupMPCommandCenter()
     {
         let commandCenter = MPRemoteCommandCenter.shared()
-    
         commandCenter.playCommand.addTarget
         { [unowned self] event in
             avAudioPlayer.play()
@@ -251,6 +293,12 @@ class MainViewController: UITabBarController
             commandCenter.nextTrackCommand.isEnabled = false
             commandCenter.previousTrackCommand.isEnabled = false
         }
+    }
+    
+    func showLoginController()
+    {
+        selectedIndex = 3
+        profileVC.showLoginViewController()
     }
 }
 
@@ -502,6 +550,117 @@ extension MainViewController: PlayerDelegate
 
 extension MainViewController
 {
+    @objc func onAddSongToPlaylistNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        guard let isTranslucent = notification.userInfo?["isTranslucent"] as? Bool else
+        {
+            return
+        }
+        songToBeAddedToPlaylist = song
+        let playlistSelectionVc = PlaylistSelectionViewController(style: .plain)
+        playlistSelectionVc.delegate = self
+        playlistSelectionVc.isTranslucent = isTranslucent
+        let playlistVcNavigationVc = UINavigationController(rootViewController: playlistSelectionVc)
+        if let sheet = playlistVcNavigationVc.sheetPresentationController
+        {
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        }
+        self.present(playlistVcNavigationVc, animated: true)
+    }
+    
+    @objc func onAddSongToFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteSongs!.appendUniquely(song)
+        GlobalConstants.contextSaveAction()
+    }
+    
+    @objc func onRemoveSongFromFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteSongs!.removeUniquely(song)
+        GlobalConstants.contextSaveAction()
+    }
+    
+    @objc func onAddAlbumToFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let album = notification.userInfo?["album"] as? Album else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteAlbums!.appendUniquely(album)
+        GlobalConstants.contextSaveAction()
+    }
+    
+    @objc func onRemoveAlbumFromFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let album = notification.userInfo?["album"] as? Album else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteAlbums!.removeUniquely(album)
+        GlobalConstants.contextSaveAction()
+    }
+    
+    @objc func onAddArtistToFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let artist = notification.userInfo?["artist"] as? Artist else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteArtists!.appendUniquely(artist)
+        GlobalConstants.contextSaveAction()
+    }
+    
+    @objc func onRemoveArtistFromFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let artist = notification.userInfo?["artist"] as? Artist else
+        {
+            return
+        }
+        GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
+        GlobalConstants.contextSaveAction()
+    }
+    
     @objc func onTimerFire(_ sender: Timer)
     {
         let currentTime = Float(avAudioPlayer.currentTime)
@@ -510,7 +669,7 @@ extension MainViewController
     
     @objc func handleLanguageGenreSelectionChange(notification: Notification)
     {
-        replaceViewController(index: 0, newViewController: UINavigationController(rootViewController: createHomeVc()))
+        replaceViewController(index: 0, newViewController: createHomeVc())
     }
     
     @objc func handleAudioSessionInterruptionChange(notification: Notification)
@@ -618,6 +777,11 @@ extension MainViewController
         albumVc.delegate = GlobalVariables.shared.mainTabController
         albumVc.playlist = album
         (selectedViewController as! UINavigationController).pushViewController(albumVc, animated: true)
+    }
+    
+    @objc func onLoginRequestNotification(_ notification: NSNotification)
+    {
+        showLoginController()
     }
 }
 
@@ -745,29 +909,27 @@ extension MainViewController: UIContextMenuInteractionDelegate
         parameters.backgroundColor = .systemFill
         return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(translationX: miniPlayerView.center.x, y: miniPlayerView.center.y)))
     }
-    
-//    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
-//    {
-//        guard let song = GlobalVariables.shared.currentSong else
-//        {
-//            return nil
-//        }
-//        var config = UIListContentConfiguration.cell()
-//        config.text = song.title!
-//        config.secondaryText = song.getArtistNamesAsString(artistType: nil)
-//        config.imageProperties.cornerRadius = 10
-//        config.image = song.coverArt
-//        config.textProperties.adjustsFontForContentSizeCategory = true
-//        config.textProperties.allowsDefaultTighteningForTruncation = true
-//        config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
-//        config.secondaryTextProperties.color = .secondaryLabel
-//        config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
-//        config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
-//        let contentView = config.makeContentView()
-//        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 70)
-//        contentView.layer.cornerRadius = 10
-//        let parameters = UIPreviewParameters()
-//        parameters.backgroundColor = .systemFill
-//        return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(scaleX: 0, y: 0)))
-//    }
+}
+
+extension MainViewController: PlaylistSelectionDelegate
+{
+    func onPlaylistSelection(selectedPlaylist: inout Playlist)
+    {
+        guard let songToBeAdded = songToBeAddedToPlaylist else { return }
+        if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })
+        {
+            let alert = UIAlertController(title: "Song exists already in Playlist", message: "The chosen song is present already in Playlist", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
+            selectedViewController!.present(alert, animated: true)
+        }
+        else
+        {
+            selectedPlaylist.songs!.append(songToBeAdded)
+            GlobalConstants.contextSaveAction()
+            let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
+            selectedViewController!.present(alert, animated: true)
+        }
+        songToBeAddedToPlaylist = nil
+    }
 }

@@ -11,10 +11,6 @@ class LibraryArtistViewController: UICollectionViewController
 {
     private let requesterId: Int = 2
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -120,10 +116,6 @@ class LibraryArtistViewController: UICollectionViewController
             NotificationCenter.default.addObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
         }
-        else
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
-        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -132,10 +124,6 @@ class LibraryArtistViewController: UICollectionViewController
         {
             NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
-        }
-        else
-        {
-            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
         }
         super.viewDidDisappear(animated)
     }
@@ -379,7 +367,7 @@ extension LibraryArtistViewController
             return
         }
         GlobalVariables.shared.currentUser!.favouriteArtists!.appendUniquely(artist)
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
     }
     
     @objc func onRemoveArtistFromFavouritesNotification(_ notification: NSNotification)
@@ -393,7 +381,7 @@ extension LibraryArtistViewController
             return
         }
         GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
         if viewOnlyFavArtists
         {
             allArtists = DataManager.shared.availableArtists.filter({ GlobalVariables.shared.currentUser!.isFavouriteArtist($0) })
@@ -409,10 +397,5 @@ extension LibraryArtistViewController
                 collectionView.reloadData()
             }
         }
-    }
-    
-    @objc func onLoginRequestNotification(_ notification: NSNotification)
-    {
-        
     }
 }

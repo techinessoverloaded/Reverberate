@@ -9,10 +9,6 @@ import UIKit
 
 class PlaylistSelectionViewController: UITableViewController
 {
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.userPlaylists!
     
     private lazy var backgroundView: UIVisualEffectView = {
@@ -158,7 +154,7 @@ extension PlaylistSelectionViewController
                 newPlaylist.name = nameField.text!
                 newPlaylist.songs = []
                 GlobalVariables.shared.currentUser!.userPlaylists!.append(newPlaylist)
-                contextSaveAction()
+                GlobalConstants.contextSaveAction()
                 print(GlobalVariables.shared.currentUser!.userPlaylists!)
                 DispatchQueue.main.async { [unowned self] in
                     self.fetchPlaylists()

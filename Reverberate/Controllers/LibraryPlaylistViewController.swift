@@ -11,10 +11,6 @@ class LibraryPlaylistViewController: UITableViewController
 {
     private let requesterId: Int = 7
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -108,7 +104,6 @@ class LibraryPlaylistViewController: UITableViewController
     {
         super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
-        print(SessionManager.shared.fetchUser(withId: GlobalVariables.shared.currentUser!.id!)?.userPlaylists!.first!)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -312,7 +307,7 @@ extension LibraryPlaylistViewController
                 newPlaylist.name = nameField.text!
                 newPlaylist.songs = []
                 GlobalVariables.shared.currentUser!.userPlaylists!.append(newPlaylist)
-                contextSaveAction()
+                GlobalConstants.contextSaveAction()
                 DispatchQueue.main.async { [unowned self] in
                     self.refetchPlaylists()
                 }
@@ -333,7 +328,7 @@ extension LibraryPlaylistViewController
             return
         }
         GlobalVariables.shared.currentUser!.userPlaylists!.removeUniquely(playlist)
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
         if isFiltering
         {
             updateSearchResults(for: searchController)

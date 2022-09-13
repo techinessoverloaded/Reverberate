@@ -11,10 +11,6 @@ class LibraryAlbumViewController: UICollectionViewController
 {
     private let requesterId: Int = 1
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =
         [
@@ -125,10 +121,6 @@ class LibraryAlbumViewController: UICollectionViewController
             NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
         }
-        else
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
-        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -137,10 +129,6 @@ class LibraryAlbumViewController: UICollectionViewController
         {
             NotificationCenter.default.removeObserver(self, name: .addAlbumToFavouritesNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
-        }
-        else
-        {
-            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
         }
         super.viewDidDisappear(animated)
     }
@@ -378,7 +366,7 @@ extension LibraryAlbumViewController
             return
         }
         GlobalVariables.shared.currentUser!.favouriteAlbums!.appendUniquely(album)
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
     }
     
     @objc func onRemoveAlbumFromFavouritesNotification(_ notification: NSNotification)
@@ -392,7 +380,7 @@ extension LibraryAlbumViewController
             return
         }
         GlobalVariables.shared.currentUser!.favouriteAlbums!.removeUniquely(album)
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
         if viewOnlyFavAlbums
         {
             allAlbums = DataManager.shared.availableAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouriteAlbum($0) })
@@ -408,10 +396,5 @@ extension LibraryAlbumViewController
                 collectionView.reloadData()
             }
         }
-    }
-    
-    @objc func onLoginRequestNotification(_ notification: NSNotification)
-    {
-        
     }
 }

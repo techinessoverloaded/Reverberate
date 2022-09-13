@@ -9,12 +9,10 @@ import MediaPlayer
 
 class HomeViewController: UICollectionViewController
 {
-    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
-    
     private lazy var songs : [Category : [Song]] = prepareSongs()
     
     private var playlists: [Category: Playlist] = [:]
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print(view.bounds.width)
@@ -32,17 +30,11 @@ class HomeViewController: UICollectionViewController
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear
         collectionView.bounces = true
-        NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
-    }
-    
-    deinit
-    {
-        NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
     }
     
     private func createMenu(song: Song) -> UIMenu
     {
-        return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: requesterId)
+        return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId)
     }
     
     private func prepareSongs() -> [Category : [Song]]
@@ -183,22 +175,5 @@ extension HomeViewController
         categoricalVC.category = category
         categoricalVC.delegate = GlobalVariables.shared.mainTabController
         navigationController?.pushViewController(categoricalVC, animated: true)
-    }
-    
-    @objc func onShowAlbumNotification(_ notification: NSNotification)
-    {
-        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
-        {
-            return
-        }
-        guard let song = notification.userInfo?["song"] as? Song else
-        {
-            return
-        }
-        let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)
-        let albumVc = PlaylistViewController(style: .grouped)
-        albumVc.delegate = GlobalVariables.shared.mainTabController
-        albumVc.playlist = album
-        self.navigationController?.pushViewController(albumVc, animated: true)
     }
 }
