@@ -42,6 +42,8 @@ class GlobalVariables
     
     var recentlyPlayedSongNames: Set<String> = []
     
+    var recentlyPlayedAlbumNames: Set<String> = []
+    
     var alreadyPlayedSongs: [Song] = []
     
     var currentUser: User? = nil

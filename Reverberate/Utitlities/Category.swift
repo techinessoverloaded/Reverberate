@@ -44,6 +44,43 @@ enum Category: Int, CaseIterable, CustomStringConvertible
         }
     }
     
+    static func getCategoryFromDescription(_ text: String) -> Category?
+    {
+        switch text
+        {
+        case "New Releases":
+            return .newReleases
+        case "To get you started":
+            return .starter
+        case "Top Charts":
+            return .topCharts
+        case "Tamil":
+            return .tamil
+        case "Malayalam":
+            return .malayalam
+        case "Kannada":
+            return .kannada
+        case "Telugu":
+            return .telugu
+        case "Hindi":
+            return .hindi
+        case "Melody":
+            return .melody
+        case "Western":
+            return .western
+        case "Classical":
+            return .classical
+        case "Rock":
+            return .rock
+        case "Folk":
+            return .folk
+        case "Recently Played":
+            return .recentlyPlayed
+        default:
+            return nil
+        }
+    }
+    
     static func getCategoryOfLanguage(_ language: Language) -> Self?
     {
         switch language

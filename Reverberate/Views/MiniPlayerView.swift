@@ -87,7 +87,7 @@ class MiniPlayerView: UIView
     
     private lazy var songDurationView: UIProgressView = {
         let sdView = UIProgressView(progressViewStyle: .bar)
-        sdView.progressTintColor = UIColor(named: GlobalConstants.techinessColor)!
+        sdView.progressTintColor = .label.withAlphaComponent(0.8)
         sdView.trackTintColor = .separator
         sdView.enableAutoLayout()
         return sdView

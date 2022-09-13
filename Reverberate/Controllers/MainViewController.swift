@@ -334,8 +334,60 @@ extension MainViewController: PlayerDelegate
     {
         let artistVc = ArtistViewController(style: .grouped)
         artistVc.artist = DataProcessor.shared.getArtist(named: artist.name!)
-        artistVc.delegate = GlobalVariables.shared.mainTabController
+        artistVc.delegate = self
         (selectedViewController as! UINavigationController).pushViewController(artistVc, animated: true)
+    }
+    
+    func onPlaylistDetailViewRequest(playlist: Playlist)
+    {
+        onPlayerShrinkRequest()
+        let playlistName = playlist.name!
+        if playlist is Album
+        {
+            let albumVc = PlaylistViewController(style: .grouped)
+            albumVc.delegate = self
+            albumVc.playlist = playlist as! Album
+            (selectedViewController as! UINavigationController).pushViewController(albumVc, animated: true)
+        }
+        else
+        {
+            if Category.allCases.map({ $0.description }).contains(playlistName)
+            {
+                let categoricalVC = CategoricalSongsViewController(style: .grouped)
+                let category = Category.getCategoryFromDescription(playlistName)!
+                categoricalVC.category = category
+                categoricalVC.delegate = self
+                (selectedViewController as! UINavigationController).pushViewController(categoricalVC, animated: true)
+            }
+            else if DataManager.shared.availableArtists.map({ $0.name! }).contains(playlistName)
+            {
+                let artistVc = ArtistViewController(style: .grouped)
+                artistVc.artist = DataProcessor.shared.getArtist(named: playlistName)
+                artistVc.delegate = self
+                (selectedViewController as! UINavigationController).pushViewController(artistVc, animated: true)
+            }
+            else if playlistName == "All Songs"
+            {
+                let librarySongVc = LibrarySongViewController(style: .plain)
+                librarySongVc.delegate = self
+                librarySongVc.viewOnlyFavSongs = false
+                (selectedViewController as! UINavigationController).pushViewController(librarySongVc, animated: true)
+            }
+            else if playlistName == "Favourite Songs"
+            {
+                let libraryFavSongVc = LibrarySongViewController(style: .plain)
+                libraryFavSongVc.delegate = self
+                libraryFavSongVc.viewOnlyFavSongs = true
+                (selectedViewController as! UINavigationController).pushViewController(libraryFavSongVc, animated: true)
+            }
+            else
+            {
+                let playlistVc = PlaylistViewController(style: .grouped)
+                playlistVc.playlist = playlist
+                playlistVc.delegate = self
+                (selectedViewController as! UINavigationController).pushViewController(playlistVc, animated: true)
+            }
+        }
     }
     
     func onShuffleRequest(playlist: Playlist, shuffleMode: MusicShuffleMode)
@@ -774,7 +826,7 @@ extension MainViewController
         }
         let album = DataProcessor.shared.getAlbumThat(containsSong: song.title!)
         let albumVc = PlaylistViewController(style: .grouped)
-        albumVc.delegate = GlobalVariables.shared.mainTabController
+        albumVc.delegate = self
         albumVc.playlist = album
         (selectedViewController as! UINavigationController).pushViewController(albumVc, animated: true)
     }

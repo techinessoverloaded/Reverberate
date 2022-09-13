@@ -22,4 +22,6 @@ protocol PlayerDelegate: PlaylistControlsDelegate
     func onPlayerShrinkRequest()
     
     func onArtistDetailViewRequest(artist: Artist)
+    
+    func onPlaylistDetailViewRequest(playlist: Playlist)
 }

@@ -95,7 +95,7 @@ class LibrarySongViewController: UITableViewController
         return sButton
     }()
     
-    private var viewOnlyFavSongs: Bool = false
+    var viewOnlyFavSongs: Bool = false
     
     private lazy var allSongs: [Song] = DataManager.shared.availableSongs
     

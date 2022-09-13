@@ -76,6 +76,17 @@ class PlayerViewController: UITableViewController
         return atView
     }()
     
+    private lazy var playlistDetailView: UILabel = {
+        let pdView = UILabel(useAutoLayout: true)
+        pdView.textColor = UIColor(named: GlobalConstants.techinessColor)!
+        pdView.font = .preferredFont(forTextStyle: .body, weight: .regular)
+        pdView.numberOfLines = 1
+        pdView.lineBreakMode = .byTruncatingTail
+        pdView.isUserInteractionEnabled = true
+        pdView.textAlignment = .center
+        return pdView
+    }()
+    
     private lazy var posterView: UIImageView = {
         let pView = UIImageView(useAutoLayout: true)
         pView.isUserInteractionEnabled = true
@@ -113,9 +124,9 @@ class PlayerViewController: UITableViewController
     
     private lazy var songSlider: UISlider = {
         let sSlider = UISlider(useAutoLayout: true)
-        sSlider.minimumTrackTintColor = UIColor(named: GlobalConstants.techinessColor)!
+        sSlider.minimumTrackTintColor = .label.withAlphaComponent(0.8)
         sSlider.maximumTrackTintColor = .systemGray.withAlphaComponent(0.5)
-        sSlider.thumbTintColor = UIColor(named: GlobalConstants.techinessColor)!
+        sSlider.thumbTintColor = .label.withAlphaComponent(0.8)
         sSlider.isContinuous = false
         return sSlider
     }()
@@ -369,7 +380,7 @@ class PlayerViewController: UITableViewController
         coordinator.animate(alongsideTransition: {
             _ in
         }, completion: { [unowned self] _ in
-            self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
+            self.tableView.scrollToRow(at: IndexPath(item: 7, section: 0), at: .bottom, animated: true)
         })
     }
     
@@ -378,7 +389,14 @@ class PlayerViewController: UITableViewController
         if let currentPlaylist = GlobalVariables.shared.currentPlaylist
         {
             self.playlist = currentPlaylist
-            print(currentPlaylist)
+            if currentPlaylist is Album
+            {
+                playlistDetailView.text = "View Album ›"
+            }
+            else
+            {
+                playlistDetailView.text = "View Playlist ›"
+            }
             playlistTitleView.text = currentPlaylist.name!
             let song = GlobalVariables.shared.currentSong!
             posterView.image = song.coverArt
@@ -395,6 +413,7 @@ class PlayerViewController: UITableViewController
         }
         else
         {
+            playlistDetailView.text = nil
             let song = GlobalVariables.shared.currentSong!
             playlistTitleView.text = song.albumName!
             posterView.image = song.coverArt
@@ -502,7 +521,7 @@ extension PlayerViewController
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-       return 7
+       return 8
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
@@ -513,9 +532,13 @@ extension PlayerViewController
         {
             if item == 0
             {
-                return 70
+                return 60
             }
             else if item == 1
+            {
+                return 40
+            }
+            else if item == 2
             {
                 if isIpad
                 {
@@ -526,19 +549,19 @@ extension PlayerViewController
                     return 250
                 }
             }
-            else if item == 2
+            else if item == 3
             {
                 return 60
             }
-            else if item == 3
+            else if item == 4
             {
                 return 70
             }   
-            else if item == 4
+            else if item == 5
             {
                 return 50
             }
-            else if item == 5
+            else if item == 6
             {
                 return 30
             }
@@ -559,7 +582,11 @@ extension PlayerViewController
         let item = indexPath.item
         if section == 0
         {
-            if item == 3
+            if item == 1
+            {
+                return playlist != nil ? indexPath : nil
+            }
+            else if item == 4
             {
                 return indexPath
             }
@@ -582,26 +609,31 @@ extension PlayerViewController
             }
             else if item == 1
             {
-                cell.addSubViewToContentView(posterView, useAutoLayout: true, useClearBackground: true)
+                cell.addSubViewToContentView(playlistDetailView, useAutoLayout: true, useClearBackground: true)
                 cell.accessoryType = .none
             }
             else if item == 2
             {
-                cell.addSubViewToContentView(songTitleView, useAutoLayout: true, useClearBackground: true)
+                cell.addSubViewToContentView(posterView, useAutoLayout: true, useClearBackground: true)
                 cell.accessoryType = .none
             }
             else if item == 3
+            {
+                cell.addSubViewToContentView(songTitleView, useAutoLayout: true, useClearBackground: true)
+                cell.accessoryType = .none
+            }
+            else if item == 4
             {
                 cell.addSubViewToContentView(songArtistsView, useAutoLayout: true, useClearBackground: true)
                 cell.backgroundColor = .separator
                 cell.accessoryType = .disclosureIndicator
             }
-            else if item == 4
+            else if item == 5
             {
                 cell.addSubViewToContentView(songSlider, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
                 cell.accessoryType = .none
             }
-            else if item == 5
+            else if item == 6
             {
                 cell.addSubViewToContentView(durationView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
                 cell.accessoryType = .none
@@ -611,10 +643,6 @@ extension PlayerViewController
                 cell.addSubViewToContentView(controlsView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
                 cell.accessoryType = .none
             }
-        }
-        else
-        {
-            
         }
         return cell
     }
@@ -627,7 +655,11 @@ extension PlayerViewController
         let item = indexPath.item
         if section == 0
         {
-            if item == 3
+            if item == 1
+            {
+                delegate?.onPlaylistDetailViewRequest(playlist: playlist!)
+            }
+            else if item == 4
             {
                 let songArtistsController = SongArtistsViewController(style: .insetGrouped)
                 songArtistsController.delegate = self
