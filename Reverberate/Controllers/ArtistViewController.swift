@@ -9,6 +9,8 @@ import UIKit
 
 class ArtistViewController: UITableViewController
 {
+    private var requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
+    
     private lazy var playIcon: UIImage = {
         return UIImage(systemName: "play.fill")!
     }()
@@ -25,37 +27,42 @@ class ArtistViewController: UITableViewController
         return UIImage(systemName: "heart.fill")!
     }()
 
-    private lazy var favouriteButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .white
-        config.buttonSize = .medium
-        let favButton = UIButton(configuration: config)
+    private lazy var artistFavouriteButton: UIButton = {
+        let favButton = UIButton(type: .system)
         favButton.setImage(heartIcon, for: .normal)
+        favButton.tintColor = .label
+        favButton.enableAutoLayout()
+        favButton.contentVerticalAlignment = .fill
+        favButton.contentHorizontalAlignment = .fill
+        favButton.isHidden = true
         return favButton
     }()
     
     private lazy var playButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .white
-        config.buttonSize = .medium
-        config.image = UIImage(systemName: "play.fill")!
+        var config = UIButton.Configuration.filled()
+        config.image = playIcon
+        config.title = "Play"
+        config.imagePlacement = .leading
         config.imagePadding = 10
+        config.buttonSize = .large
+        config.baseBackgroundColor = UIColor(named: GlobalConstants.techinessColor)!
         let pButton = UIButton(configuration: config)
+        pButton.enableAutoLayout()
         return pButton
     }()
     
-    private lazy var seeAllSongsButton: UIButton = {
-        let saButton = UIButton(type: .system)
-        saButton.setTitle("See All Songs", for: .normal)
-        saButton.enableAutoLayout()
-        return saButton
-    }()
-    
-    private lazy var seeAllAlbumsButton: UIButton = {
-        let saaButton = UIButton(type: .system)
-        saaButton.setTitle("See All Albums", for: .normal)
-        saaButton.enableAutoLayout()
-        return saaButton
+    private lazy var shuffleButton: UIButton = {
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "shuffle")!
+        config.title = "Shuffle All"
+        config.imagePlacement = .leading
+        config.imagePadding = 10
+        config.buttonSize = .large
+        config.baseBackgroundColor = .secondarySystemFill
+        config.baseForegroundColor = UIColor(named: GlobalConstants.techinessColor)!
+        let sButton = UIButton(configuration: config)
+        sButton.enableAutoLayout()
+        return sButton
     }()
     
     private lazy var songs = Array(artist.contributedSongs!)
@@ -69,63 +76,152 @@ class ArtistViewController: UITableViewController
     
     private lazy var albums = DataProcessor.shared.getAlbumsInvolving(artist: artist.name!)
     
-    private lazy var minimumVisibleSongsCount: Int = min(songs.count, 5)
+    private var headerView: UIView!
     
-    private lazy var minimumVisibleAlbumsCount: Int = min(albums.count, 5)
+    private lazy var tableHeaderHeight: CGFloat = isIpad ? 450 : 350
     
-    private lazy var shouldSeeAllSongs: Bool = false
+    private var defaultOffset: CGFloat = 0.0
     
-    private lazy var shouldSeeAllAlbums: Bool = false
+    private lazy var defaultPosterHeight: CGFloat = headerView.bounds.height * 0.6
     
     var artist: Artist!
     
-    weak var delegate: ArtistDelegate?
+    weak var delegate: PlaylistDelegate?
     
-    private var user: User!
+    private lazy var artistPhotoView: UIImageView = {
+        let pView = UIImageView(useAutoLayout: true)
+        pView.isUserInteractionEnabled = true
+        pView.contentMode = .scaleAspectFill
+        pView.image = UIImage(systemName: "person.crop.circle.fill")!
+        pView.layer.cornerCurve = .circular
+        pView.clipsToBounds = true
+        pView.isUserInteractionEnabled = true
+        return pView
+    }()
     
-    private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private lazy var artistNameView: MarqueeLabel = {
+        let tView = MarqueeLabel(useAutoLayout: true)
+        tView.font = .preferredFont(forTextStyle: .title1, weight: .semibold)
+        tView.textColor = .label
+        tView.textAlignment = .center
+        tView.fadeLength = 10
+        return tView
+    }()
     
-    private lazy var contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    private lazy var artistRoleView: UILabel = {
+        let aView = UILabel(useAutoLayout: true)
+        aView.font = .preferredFont(forTextStyle: .body, weight: .regular)
+        aView.textColor = UIColor(named: GlobalConstants.techinessColor)!
+        aView.textAlignment = .center
+        aView.isUserInteractionEnabled = true
+        aView.adjustsFontSizeToFitWidth = true
+        return aView
+    }()
+    
+    private lazy var posterTapRecognizer: UITapGestureRecognizer = {
+        let pTapRecognizer = UITapGestureRecognizer()
+        pTapRecognizer.numberOfTapsRequired = 2
+        pTapRecognizer.numberOfTouchesRequired = 1
+        return pTapRecognizer
+    }()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        navigationController?.navigationBar.tintColor = .white
-        navigationController?.navigationBar.backgroundColor = .clear
-        //navigationItem.rightBarButtonItem = UIBarButtonItem(customView: favouriteButton)
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: playButton), UIBarButtonItem(customView: favouriteButton)]
-        
         navigationItem.largeTitleDisplayMode = .never
         tableView.backgroundColor = .systemGroupedBackground
-        tableView.contentInsetAdjustmentBehavior = .scrollableAxes
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
-        let headerView = StretchyHeaderView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 260))
-        headerView.setDetails(title: artist.name!, subtitle: artist.getArtistTypesAsString(), photo: artist.photo!)
+        headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableHeaderHeight, height: tableHeaderHeight))
+        headerView.addSubview(artistPhotoView)
+        headerView.addSubview(artistNameView)
+        headerView.addSubview(artistRoleView)
+        headerView.addSubview(artistFavouriteButton)
+        headerView.addSubview(playButton)
+        headerView.addSubview(shuffleButton)
+        NSLayoutConstraint.activate([
+            artistPhotoView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            artistPhotoView.topAnchor.constraint(equalTo: headerView.topAnchor),
+            artistPhotoView.heightAnchor.constraint(equalTo: headerView.heightAnchor, multiplier: 0.6),
+            artistPhotoView.widthAnchor.constraint(equalTo: artistPhotoView.heightAnchor),
+            artistNameView.topAnchor.constraint(equalTo: artistPhotoView.bottomAnchor, constant: 10),
+            artistNameView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            artistNameView.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.6),
+            artistRoleView.topAnchor.constraint(equalTo: artistNameView.bottomAnchor, constant: 2),
+            artistRoleView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            artistRoleView.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.67),
+            playButton.trailingAnchor.constraint(equalTo: headerView.centerXAnchor, constant: -10),
+            playButton.topAnchor.constraint(equalTo: artistRoleView.bottomAnchor, constant: 10),
+            playButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
+            shuffleButton.leadingAnchor.constraint(equalTo: headerView.centerXAnchor, constant: 10),
+            shuffleButton.topAnchor.constraint(equalTo: artistRoleView.bottomAnchor, constant: 10),
+            shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
+            artistFavouriteButton.centerYAnchor.constraint(equalTo: artistNameView.centerYAnchor),
+            artistFavouriteButton.trailingAnchor.constraint(equalTo: artistNameView.trailingAnchor, constant: 10)
+        ])
+        headerView.backgroundColor = .clear
         tableView.tableHeaderView = headerView
         tableView.allowsMultipleSelection = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
-        //tableView.sectionHeaderTopPadding = 0
-        favouriteButton.addTarget(self, action: #selector(onFavouriteButtonTap(_:)), for: .touchUpInside)
-        playButton.addTarget(self, action: #selector(onShufflePlayButtonTap(_:)), for: .touchUpInside)
-        seeAllSongsButton.addTarget(self, action: #selector(onSeeAllSongsButtonTap(_:)), for: .touchUpInside)
-        seeAllAlbumsButton.addTarget(self, action: #selector(onSeeAllAlbumsButtonTap(_:)), for: .touchUpInside)
-//        playButtonHeaderView.addSubview(playButton)
-//        NSLayoutConstraint.activate([
-//            playButton.heightAnchor.constraint(equalTo: playButtonHeaderView.heightAnchor),
-//            playButton.widthAnchor.constraint(equalTo: playButtonHeaderView.widthAnchor, multiplier: 1),
-//            playButton.topAnchor.constraint(equalTo: playButtonHeaderView.topAnchor),
-//            playButton.centerXAnchor.constraint(equalTo: playButtonHeaderView.centerXAnchor)
-//        ])
-//        songs.append(contentsOf: Array(artist.contributedSongs!))
-        fetchUser()
+        artistFavouriteButton.addTarget(self, action: #selector(onArtistFavouriteButtonTap(_:)), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
+        shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
+        setDetails()
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            if GlobalVariables.shared.avAudioPlayer!.isPlaying
+            {
+                onPlayNotificationReceipt()
+            }
+        }
     }
     
-    func fetchUser()
+    override func viewDidAppear(_ animated: Bool)
     {
-        user = try! context.fetch(User.fetchRequest()).first {
-            $0.id == UserDefaults.standard.string(forKey: GlobalConstants.currentUserId)
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        defaultOffset = tableView.contentOffset.y
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        super.viewDidDisappear(animated)
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
+        artistPhotoView.layer.cornerRadius = artistPhotoView.bounds.height * 0.5
+    }
+    
+    private func setDetails()
+    {
+        artistFavouriteButton.isHidden = !(SessionManager.shared.isUserLoggedIn)
+        artistPhotoView.image = artist.photo!
+        artistNameView.text = artist.name!
+        title = artist.name!
+        navigationItem.title = nil
+        artistRoleView.text = artist.getArtistTypesAsString()
+        if SessionManager.shared.isUserLoggedIn
+        {
+            posterTapRecognizer.addTarget(self, action: #selector(onPosterDoubleTap(_:)))
+            artistPhotoView.addGestureRecognizer(posterTapRecognizer)
         }
+    }
+    
+    private func getSongMenu(song: Song) -> UIMenu
+    {
+        return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: requesterId)
+    }
+    
+    private func getAlbumMenu(album: Album) -> UIMenu
+    {
+        return ContextMenuProvider.shared.getAlbumMenu(album: album, requesterId: requesterId)
     }
     
     // MARK: - Table view data source
@@ -137,66 +233,12 @@ class ArtistViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return section == 0 ? (shouldSeeAllSongs ? songs.count : minimumVisibleSongsCount) : (shouldSeeAllAlbums ? albums.count : minimumVisibleAlbumsCount)
+        return section == 0 ? songs.count : albums.count
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-//        let item = indexPath.item
-//        let section = indexPath.section
         return 90
-    }
-    
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-//    {
-//        if section == 0
-//        {
-//            return playButtonHeaderView
-//        }
-//        else
-//        {
-//            return nil
-//        }
-//    }
-    
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
-    {
-        if section == 0
-        {
-            if songs.count == minimumVisibleSongsCount
-            {
-                return nil
-            }
-            else
-            {
-                let footerView = UITableViewHeaderFooterView()
-                footerView.backgroundColor = .clear
-                footerView.contentView.addSubview(seeAllSongsButton)
-                NSLayoutConstraint.activate([
-                    seeAllSongsButton.heightAnchor.constraint(equalTo: footerView.contentView.heightAnchor),
-                    seeAllSongsButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor)
-                ])
-                return footerView
-            }
-        }
-        else
-        {
-            if albums.count == minimumVisibleAlbumsCount
-            {
-                return nil
-            }
-            else
-            {
-                let footerView = UITableViewHeaderFooterView()
-                footerView.backgroundColor = .clear
-                footerView.contentView.addSubview(seeAllAlbumsButton)
-                NSLayoutConstraint.activate([
-                    seeAllAlbumsButton.heightAnchor.constraint(equalTo: footerView.contentView.heightAnchor),
-                    seeAllAlbumsButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor)
-                ])
-                return footerView
-            }
-        }
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
@@ -236,15 +278,28 @@ class ArtistViewController: UITableViewController
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             cell.contentConfiguration = config
-            var favBtnconfig = UIButton.Configuration.plain()
-            favBtnconfig.baseForegroundColor = .label
-            favBtnconfig.buttonSize = .medium
-            let favButton = UIButton(configuration: favBtnconfig)
-            favButton.setImage(heartIcon, for: .normal)
-            favButton.sizeToFit()
-            favButton.tag = item
-            favButton.addTarget(self, action: #selector(onSongFavouriteButtonTap(_:)), for: .touchUpInside)
-            cell.accessoryView = favButton
+            cell.configurationUpdateHandler = { cell, state in
+                guard var updatedConfig = cell.contentConfiguration?.updated(for: state) as? UIListContentConfiguration else
+                {
+                    return
+                }
+                updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
+                   return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
+                }
+                cell.contentConfiguration = updatedConfig
+            }
+            var menuButtonConfig = UIButton.Configuration.plain()
+            menuButtonConfig.baseForegroundColor = .systemGray
+            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+            menuButtonConfig.buttonSize = .medium
+            let menuButton = UIButton(configuration: menuButtonConfig)
+            menuButton.tag = item
+            menuButton.sizeToFit()
+            menuButton.menu = getSongMenu(song: song)
+            menuButton.showsMenuAsPrimaryAction = true
+            cell.accessoryView = menuButton
+            cell.backgroundColor = .clear
+            cell.selectionStyle = .none
             return cell
         }
         else
@@ -262,16 +317,18 @@ class ArtistViewController: UITableViewController
             config.secondaryTextProperties.color = .secondaryLabel
             config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
+            var menuButtonConfig = UIButton.Configuration.plain()
+            menuButtonConfig.baseForegroundColor = .systemGray
+            menuButtonConfig.image = UIImage(systemName: "ellipsis")!
+            menuButtonConfig.buttonSize = .medium
+            let menuButton = UIButton(configuration: menuButtonConfig)
+            menuButton.tag = item
+            menuButton.sizeToFit()
+            menuButton.menu = getAlbumMenu(album: album)
+            menuButton.showsMenuAsPrimaryAction = true
+            cell.accessoryView = menuButton
             cell.contentConfiguration = config
-            var favBtnconfig = UIButton.Configuration.plain()
-            favBtnconfig.baseForegroundColor = .label
-            favBtnconfig.buttonSize = .medium
-            let favButton = UIButton(configuration: favBtnconfig)
-            favButton.setImage(heartIcon, for: .normal)
-            favButton.sizeToFit()
-            favButton.tag = item
-            favButton.addTarget(self, action: #selector(onAlbumFavouriteButtonTap(_:)), for: .touchUpInside)
-            cell.accessoryView = favButton
+            cell.backgroundColor = .clear
             return cell
         }
     }
@@ -283,16 +340,19 @@ class ArtistViewController: UITableViewController
         if section == 0
         {
             let song = songs[item]
-            if GlobalVariables.shared.currentSong == song
+            if GlobalVariables.shared.currentPlaylist == playlist
             {
-                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-                if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                if GlobalVariables.shared.currentSong == song
                 {
-                    playButton.configuration!.image = pauseIcon
-                }
-                else
-                {
-                    playButton.configuration!.image = playIcon
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                    {
+                        onPlayNotificationReceipt()
+                    }
+                    else
+                    {
+                        onPausedNotificationReceipt()
+                    }
                 }
             }
         }
@@ -308,23 +368,38 @@ class ArtistViewController: UITableViewController
             if GlobalVariables.shared.currentSong != song
             {
                 GlobalVariables.shared.currentSong = song
-                let cell = tableView.cellForRow(at: indexPath)
-                cell?.backgroundColor = .systemFill
             }
+            onPlayNotificationReceipt()
         }
         else
         {
+            tableView.deselectRow(at: indexPath, animated: true)
             let album = albums[item]
             let albumVc = PlaylistViewController(style: .grouped)
             albumVc.playlist = album
+            albumVc.delegate = GlobalVariables.shared.mainTabController
             self.navigationController?.pushViewController(albumVc, animated: true)
         }
     }
     
-    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath)
+    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
-        let cell = tableView.cellForRow(at: indexPath)
-        cell?.backgroundColor = .secondarySystemGroupedBackground
+        let section = indexPath.section
+        let item = indexPath.item
+        if section == 0
+        {
+            let song = songs[item]
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+                return getSongMenu(song: song)
+            })
+        }
+        else
+        {
+            let album = albums[item]
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+                return getAlbumMenu(album: album)
+            })
+        }
     }
 }
 
@@ -332,136 +407,133 @@ extension ArtistViewController
 {
     override func scrollViewDidScroll(_ scrollView: UIScrollView)
     {
-        let headerView = tableView.tableHeaderView as! StretchyHeaderView
-        headerView.scrollViewDidScroll(scrollView: tableView)
-        UIView.animate(withDuration: 0.1, delay: 0, options: .transitionCrossDissolve, animations: {
-            [unowned self] in
-            headerView.changeAlphaOfSubviews(newAlphaValue: 1-(tableView.contentOffset.y / headerView.bounds.height))
-            print("Alpha : \(1-(tableView.contentOffset.y / headerView.bounds.height))")
-            print(self.tableView.contentOffset.y)
-            self.navigationItem.title = tableView.contentOffset.y >= 0 ? artist.name! : nil
-            self.navigationController?.navigationBar.tintColor = tableView.contentOffset.y >= 0 ? .systemBlue : .white
-            if favouriteButton.image(for: .normal)!.pngData() == heartIcon.pngData()
-            {
-                favouriteButton.configuration!.baseForegroundColor = tableView.contentOffset.y >= 0 ? .label : .white
-            }
-            playButton.configuration!.baseForegroundColor = tableView.contentOffset.y >= 0 ? .label : .white
-        }, completion: nil)
+        let finalSize = CGFloat(1.0 / defaultPosterHeight)
+        let offset = tableView.contentOffset.y
+        let titleOffset = defaultOffset + defaultPosterHeight + 10 + artistNameView.frame.height
+        print("Offset: \(offset)")
+        let scale = min(max(1.0 - offset / defaultPosterHeight, finalSize), 1.0)
+        let newAlphaValue = 1.0 - (offset / tableHeaderHeight)
+        UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCrossDissolve], animations: { [unowned self] in
+            artistNameView.alpha = newAlphaValue
+            artistPhotoView.alpha = newAlphaValue
+            artistRoleView.alpha = newAlphaValue
+            playButton.alpha = offset >= defaultOffset + tableHeaderHeight ? 0.0 : 1.0
+            shuffleButton.alpha = offset >= defaultOffset + tableHeaderHeight ? 0.0 : 1.0
+            self.navigationItem.title = offset >= titleOffset ? title : nil
+        }, completion: { _ in
+            UIView.animate(withDuration: 0.1, delay: 0, options: [], animations: { [unowned self] in
+                artistPhotoView.transform = CGAffineTransform(scaleX: scale, y: scale)
+                }, completion: nil)
+        })
     }
 }
 
 extension ArtistViewController
 {
-    @objc func onShufflePlayButtonTap(_ sender: UIButton)
+    @objc func onPlayNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Pause"
+            playButton.configuration!.image = pauseIcon
+        }
+    }
+    
+    @objc func onPausedNotificationReceipt()
+    {
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
+        }
+    }
+    
+    @objc func onSongChange()
+    {
+        guard GlobalVariables.shared.currentPlaylist == playlist else
+        {
+            return
+        }
+        let currentSong = GlobalVariables.shared.currentSong!
+        guard let item = playlist.songs!.firstIndex(of: currentSong) else
+        {
+            return
+        }
+        let indexPath = IndexPath(item: item, section: 0)
+        guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
+        {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            return
+        }
+    }
+    
+    @objc func onShuffleButtonTap(_ sender: UIButton)
+    {
+        delegate?.onPlaylistShuffleRequest(playlist: playlist, shuffleMode: .on)
+        playButton.configuration!.image = pauseIcon
+        playButton.configuration!.title = "Pause"
+    }
+    
+    @objc func onPlayButtonTap(_ sender: UIButton)
     {
         if sender.configuration!.image!.pngData() == playIcon.pngData()
         {
             print("Gonna Play")
+            delegate?.onPlaylistPlayRequest(playlist: playlist)
             sender.configuration!.image = pauseIcon
+            sender.configuration!.title = "Pause"
         }
         else
         {
             print("Gonna Pause")
+            delegate?.onPlaylistPauseRequest(playlist: playlist)
             sender.configuration!.image = playIcon
+            sender.configuration!.title = "Play"
         }
     }
-    
-    @objc func onSongFavouriteButtonTap(_ sender: UIButton)
-    {
-        print("Request to favourite song at: \(sender.tag)")
-        let song = songs[sender.tag]
-        if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
-        {
-            if user.favouriteSongs == nil
-            {
-                user.favouriteSongs = []
-            }
-            user.favouriteSongs!.appendUniquely(song)
-            contextSaveAction()
-            print(user)
-            sender.setImage(heartFilledIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .systemPink
-        }
-        else
-        {
-            user.favouriteSongs!.removeUniquely(song)
-            contextSaveAction()
-            print(user)
-            sender.setImage(heartIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .label
-        }
-    }
-    
-    @objc func onAlbumFavouriteButtonTap(_ sender: UIButton)
-    {
-        print("Request to favourite album at: \(sender.tag)")
-        if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
-        {
-            sender.setImage(heartFilledIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .systemPink
-        }
-        else
-        {
-            sender.setImage(heartIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .label
-        }
-    }
-    
-    @objc func onSeeAllSongsButtonTap(_ sender: UIButton)
-    {
-        if sender.title(for: .normal)! == "See All Songs"
-        {
-            shouldSeeAllSongs = true
-            tableView.reloadSections(IndexSet(integer: 0), with: .top, onCompletion: {
-                [unowned self] in
-                self.tableView.scrollToRow(at: IndexPath(item: songs.endIndex - 1, section: 0), at: .bottom, animated: true)
-                sender.setTitle("See Less Songs", for: .normal)
-            })
-        }
-        else
-        {
-            shouldSeeAllSongs = false
-            tableView.reloadSections(IndexSet(integer: 0), with: .top, onCompletion: { [unowned self] in
-                self.tableView.scrollToRow(at: IndexPath(item: minimumVisibleSongsCount - 1, section: 0), at: .bottom, animated: true)
-                sender.setTitle("See All Songs", for: .normal)
-            })
-        }
-    }
-    
-    @objc func onSeeAllAlbumsButtonTap(_ sender: UIButton)
-    {
-        if sender.title(for: .normal)! == "See All Albums"
-        {
-            shouldSeeAllAlbums = true
-            tableView.reloadSections(IndexSet(integer: 1), with: .top, onCompletion: { [unowned self] in
-                self.tableView.scrollToRow(at: IndexPath(item: albums.endIndex - 1, section: 1), at: .bottom, animated: true)
-                sender.setTitle("See Less Albums", for: .normal)
-            })
-        }
-        else
-        {
-            shouldSeeAllAlbums = false
-            tableView.reloadSections(IndexSet(integer: 1), with: .top, onCompletion:
-            { [unowned self] in
-                self.tableView.scrollToRow(at: IndexPath(item: minimumVisibleAlbumsCount - 1, section: 1), at: .bottom, animated: true)
-                sender.setTitle("See All Albums", for: .normal)
-            })
-        }
-    }
-    
-    @objc func onFavouriteButtonTap(_ sender: UIButton)
+        
+    @objc func onArtistFavouriteButtonTap(_ sender: UIButton)
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
-            delegate?.onFavouriteButtonTap(artist: artist, shouldMakeAsFavourite: true)
+            GlobalVariables.shared.currentUser!.favouriteArtists!.appendUniquely(artist)
+            GlobalConstants.contextSaveAction()
             sender.setImage(heartFilledIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = .systemPink
+            UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+                sender.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+                    sender.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+                }, completion: { _ in
+                    UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+                        sender.transform = CGAffineTransform(scaleX: 1, y: 1)
+                    }, completion: nil)
+                })
+            })
+            sender.tintColor = .systemPink
         }
         else
         {
-            delegate?.onFavouriteButtonTap(artist: artist, shouldMakeAsFavourite: false)
-            sender.setImage(heartIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = tableView.contentOffset.y > 0 ? .label : .white
+            GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
+            GlobalConstants.contextSaveAction()
+            UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+                sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
+                    sender.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+                }, completion: { _ in
+                    UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: { [unowned self] in
+                        sender.transform = CGAffineTransform(scaleX: 1, y: 1)
+                        sender.setImage(heartIcon, for: .normal)
+                        sender.tintColor = .label
+                    }, completion: nil)
+                })
+            })
         }
+    }
+    
+    @objc func onPosterDoubleTap(_ sender: UITapGestureRecognizer)
+    {
+        artistFavouriteButton.sendActions(for: .touchUpInside)
     }
 }

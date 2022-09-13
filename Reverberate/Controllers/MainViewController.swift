@@ -282,6 +282,14 @@ extension MainViewController: MiniPlayerDelegate
 
 extension MainViewController: PlayerDelegate
 {
+    func onArtistDetailViewRequest(artist: Artist)
+    {
+        let artistVc = ArtistViewController(style: .grouped)
+        artistVc.artist = DataProcessor.shared.getArtist(named: artist.name!)
+        artistVc.delegate = GlobalVariables.shared.mainTabController
+        (selectedViewController as! UINavigationController).pushViewController(artistVc, animated: true)
+    }
+    
     func onShuffleRequest(playlist: Playlist, shuffleMode: MusicShuffleMode)
     {
         onPlaylistShuffleRequest(playlist: playlist, shuffleMode: shuffleMode)

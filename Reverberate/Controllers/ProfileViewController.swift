@@ -599,11 +599,6 @@ extension ProfileViewController
             SessionManager.shared.logoutUser()
             DispatchQueue.main.async {
                 (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(InitialViewController(style: .insetGrouped))
-//                let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
-//                let newProfileVC = ProfileViewController(style: .insetGrouped)
-//                newProfileVC.title = "Your Profile"
-//                let navController = UINavigationController(rootViewController: newProfileVC)
-//                mainVC.replaceViewController(index: 3, newViewController: navController)
             }
         })
         alert.addAction(UIAlertAction(title: "No", style: .destructive))

@@ -238,6 +238,7 @@ class PlayerViewController: UITableViewController
         config.buttonSize = .large
         let favButton = UIButton(configuration: config)
         favButton.setImage(heartIcon, for: .normal)
+        favButton.isHidden = true
         return favButton
     }()
     
@@ -419,15 +420,19 @@ class PlayerViewController: UITableViewController
     
     func updateFavouriteButton()
     {
-        if GlobalVariables.shared.currentUser!.isFavouriteSong(GlobalVariables.shared.currentSong!)
+        favouriteButton.isHidden = !(SessionManager.shared.isUserLoggedIn)
+        if SessionManager.shared.isUserLoggedIn
         {
-            favouriteButton.setImage(heartFilledIcon, for: .normal)
-            favouriteButton.configuration!.baseForegroundColor = .systemPink
-        }
-        else
-        {
-            favouriteButton.setImage(heartIcon, for: .normal)
-            favouriteButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+            if GlobalVariables.shared.currentUser!.isFavouriteSong(GlobalVariables.shared.currentSong!)
+            {
+                favouriteButton.setImage(heartFilledIcon, for: .normal)
+                favouriteButton.configuration!.baseForegroundColor = .systemPink
+            }
+            else
+            {
+                favouriteButton.setImage(heartIcon, for: .normal)
+                favouriteButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+            }
         }
     }
     
@@ -471,6 +476,7 @@ class PlayerViewController: UITableViewController
     
     func updatePlaylistButtons()
     {
+        addToPlaylistsButton.isHidden = !(SessionManager.shared.isUserLoggedIn)
         if playlist != nil
         {
             previousButton.isEnabled = true
@@ -876,9 +882,8 @@ extension PlayerViewController: SongArtistsViewDelegate
 {
     func onArtistDetailViewRequest(artist: Artist)
     {
-        let artistVc = ArtistViewController(style: .grouped)
-        artistVc.artist = DataProcessor.shared.getArtist(named: artist.name!)
-        self.navigationController?.pushViewController(artistVc, animated: true)
+        delegate?.onPlayerShrinkRequest()
+        delegate?.onArtistDetailViewRequest(artist: artist)
     }
 }
 extension PlayerViewController: PlaylistSelectionDelegate

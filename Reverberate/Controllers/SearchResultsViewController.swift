@@ -462,6 +462,7 @@ extension SearchResultsViewController
         songToBeAddedToPlaylist = song
         let playlistSelectionVc = PlaylistSelectionViewController(style: .plain)
         playlistSelectionVc.delegate = self
+        playlistSelectionVc.isTranslucent = true
         let playlistVcNavigationVc = UINavigationController(rootViewController: playlistSelectionVc)
         if let sheet = playlistVcNavigationVc.sheetPresentationController
         {

@@ -9,7 +9,7 @@ import MediaPlayer
 
 class HomeViewController: UICollectionViewController
 {
-    private let requesterId: Int = 5
+    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
     
     private lazy var songs : [Category : [Song]] = prepareSongs()
     
@@ -32,11 +32,6 @@ class HomeViewController: UICollectionViewController
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear
         collectionView.bounces = true
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
     }
     

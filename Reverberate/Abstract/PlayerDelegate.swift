@@ -20,4 +20,6 @@ protocol PlayerDelegate: PlaylistControlsDelegate
     func onSongSeekRequest(songPosition value: Double)
     
     func onPlayerShrinkRequest()
+    
+    func onArtistDetailViewRequest(artist: Artist)
 }

@@ -121,6 +121,7 @@ extension SearchViewController
         collectionView.deselectItem(at: indexPath, animated: true)
         let categoricalVC = CategoricalSongsViewController(style: .grouped)
         categoricalVC.category = Category(rawValue: categories[indexPath.section][indexPath.item])
+        categoricalVC.delegate = GlobalVariables.shared.mainTabController
         navigationController?.pushViewController(categoricalVC, animated: true)
     }
 }
@@ -158,6 +159,7 @@ extension SearchViewController: SearchResultDelegate
     {
         let artistVC = ArtistViewController(style: .grouped)
         artistVC.artist = selectedArtist
+        artistVC.delegate = GlobalVariables.shared.mainTabController
         self.navigationController?.pushViewController(artistVC, animated: true)
     }
     

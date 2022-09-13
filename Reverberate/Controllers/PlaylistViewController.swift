@@ -96,6 +96,7 @@ class PlaylistViewController: UITableViewController
         favButton.enableAutoLayout()
         favButton.contentVerticalAlignment = .fill
         favButton.contentHorizontalAlignment = .fill
+        favButton.isHidden = true
         return favButton
     }()
     
@@ -203,7 +204,7 @@ class PlaylistViewController: UITableViewController
             shuffleButton.topAnchor.constraint(equalTo: detailsView.bottomAnchor, constant: 10),
             shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
             albumFavouriteButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor),
-            albumFavouriteButton.trailingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 0)
+            albumFavouriteButton.trailingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 10)
         ])
         headerView.backgroundColor = .clear
         tableView.tableHeaderView = headerView
@@ -213,7 +214,6 @@ class PlaylistViewController: UITableViewController
         albumFavouriteButton.addTarget(self, action: #selector(onAlbumFavouriteButtonTap(_:)), for: .touchUpInside)
         playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
-        albumFavouriteButton.isHidden = !(playlist is Album)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -226,11 +226,10 @@ class PlaylistViewController: UITableViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool)
+    {
         super.viewDidAppear(animated)
-        print(SessionManager.shared.fetchUser(withId: GlobalVariables.shared.currentUser!.id!)?.userPlaylists!.first!)
         defaultOffset = tableView.contentOffset.y
-        print("Default Offset: \(defaultOffset)")
     }
     
     override func viewWillDisappear(_ animated: Bool)
@@ -259,6 +258,7 @@ class PlaylistViewController: UITableViewController
     
     func setPlaylistDetails()
     {
+        albumFavouriteButton.isHidden = !(playlist is Album && SessionManager.shared.isUserLoggedIn)
         if playlist is Album
         {
             let album = playlist as! Album
@@ -268,19 +268,22 @@ class PlaylistViewController: UITableViewController
             titleView.text = title
             artistView.text = "\(album.composerNames) ›"
             detailsView.text = "\(album.language) · \(album.releaseDate!.getFormattedString())"
-            artistTapRecognizer.addTarget(self, action: #selector(onArtistTap(_:)))
-            artistView.addGestureRecognizer(artistTapRecognizer)
-            posterTapRecognizer.addTarget(self, action: #selector(onPosterDoubleTap(_:)))
-            posterView.addGestureRecognizer(posterTapRecognizer)
-            if GlobalVariables.shared.currentUser!.isFavouriteAlbum(album)
+            if SessionManager.shared.isUserLoggedIn
             {
-                albumFavouriteButton.setImage(heartFilledIcon, for: .normal)
-                albumFavouriteButton.tintColor = .systemPink
-            }
-            else
-            {
-                albumFavouriteButton.setImage(heartIcon, for: .normal)
-                albumFavouriteButton.tintColor = .label
+                artistTapRecognizer.addTarget(self, action: #selector(onArtistTap(_:)))
+                artistView.addGestureRecognizer(artistTapRecognizer)
+                posterTapRecognizer.addTarget(self, action: #selector(onPosterDoubleTap(_:)))
+                posterView.addGestureRecognizer(posterTapRecognizer)
+                if GlobalVariables.shared.currentUser!.isFavouriteAlbum(album)
+                {
+                    albumFavouriteButton.setImage(heartFilledIcon, for: .normal)
+                    albumFavouriteButton.tintColor = .systemPink
+                }
+                else
+                {
+                    albumFavouriteButton.setImage(heartIcon, for: .normal)
+                    albumFavouriteButton.tintColor = .label
+                }
             }
         }
         else
@@ -547,6 +550,7 @@ extension PlaylistViewController
     {
         let artistVc = ArtistViewController(style: .grouped)
         artistVc.artist = DataProcessor.shared.getArtist(named: (playlist as! Album).composerNames)
+        artistVc.delegate = GlobalVariables.shared.mainTabController
         self.navigationController?.pushViewController(artistVc, animated: true)
     }
     

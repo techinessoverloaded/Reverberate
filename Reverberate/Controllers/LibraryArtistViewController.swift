@@ -291,6 +291,7 @@ class LibraryArtistViewController: UICollectionViewController
         let artistVC = ArtistViewController(style: .grouped)
         let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item] : sortedArtists[Alphabet(rawValue: section)!]![item]
         artistVC.artist = artist
+        artistVC.delegate = GlobalVariables.shared.mainTabController
         self.navigationController?.pushViewController(artistVC, animated: true)
     }
     
