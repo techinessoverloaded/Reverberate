@@ -70,7 +70,7 @@ class DataProcessor
     func getPlaylistsThatSatisfy(theQuery query: String) -> [Playlist]?
     {
         var result: [Playlist] = []
-        let playlists = GlobalVariables.shared.currentUser!.playlists!
+        let playlists = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
         for playlist in playlists
         {
             if playlist.name!.lowercased().contains(query) || playlist.songs!.contains(where: {

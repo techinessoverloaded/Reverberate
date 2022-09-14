@@ -68,7 +68,7 @@ class PlayerViewController: UITableViewController
         let atView = MarqueeLabel(useAutoLayout: true)
         atView.textColor = .label.withAlphaComponent(0.8)
         atView.font = .preferredFont(forTextStyle: .title1, weight: .semibold)
-        atView.numberOfLines = 2
+        atView.numberOfLines = 0
         atView.lineBreakMode = .byTruncatingTail
         atView.isUserInteractionEnabled = true
         atView.textAlignment = .center
@@ -80,7 +80,7 @@ class PlayerViewController: UITableViewController
         let pdView = UILabel(useAutoLayout: true)
         pdView.textColor = UIColor(named: GlobalConstants.techinessColor)!
         pdView.font = .preferredFont(forTextStyle: .body, weight: .regular)
-        pdView.numberOfLines = 1
+        pdView.numberOfLines = 0
         pdView.lineBreakMode = .byTruncatingTail
         pdView.isUserInteractionEnabled = true
         pdView.textAlignment = .center
@@ -102,7 +102,7 @@ class PlayerViewController: UITableViewController
         let stView = MarqueeLabel(useAutoLayout: true)
         stView.textColor = .label.withAlphaComponent(0.8)
         stView.font = .preferredFont(forTextStyle: .title2, weight: .semibold)
-        stView.numberOfLines = 2
+        stView.numberOfLines = 0
         stView.lineBreakMode = .byTruncatingTail
         stView.isUserInteractionEnabled = true
         stView.textAlignment = .center
@@ -114,7 +114,7 @@ class PlayerViewController: UITableViewController
         let stView = UILabel(useAutoLayout: true)
         stView.textColor = .label.withAlphaComponent(0.8)
         stView.font = .preferredFont(forTextStyle: .body, weight: .regular)
-        stView.numberOfLines = 4
+        stView.numberOfLines = 0
         stView.lineBreakMode = .byTruncatingTail
         stView.lineBreakStrategy = .standard
         stView.isUserInteractionEnabled = true
@@ -532,11 +532,11 @@ extension PlayerViewController
         {
             if item == 0
             {
-                return 60
+                return UITableView.automaticDimension //60
             }
             else if item == 1
             {
-                return 40
+                return UITableView.automaticDimension //40
             }
             else if item == 2
             {
@@ -551,7 +551,7 @@ extension PlayerViewController
             }
             else if item == 3
             {
-                return 60
+                return UITableView.automaticDimension//60
             }
             else if item == 4
             {
@@ -713,15 +713,13 @@ extension PlayerViewController
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
-            GlobalVariables.shared.currentUser!.favouriteSongs!.appendUniquely(GlobalVariables.shared.currentSong!)
-            GlobalConstants.contextSaveAction()
+            GlobalVariables.shared.currentUser!.addToFavouriteSongs(GlobalVariables.shared.currentSong!)
             sender.setImage(heartFilledIcon, for: .normal)
             sender.configuration!.baseForegroundColor = .systemPink
         }
         else
         {
-            GlobalVariables.shared.currentUser!.favouriteSongs!.removeUniquely(GlobalVariables.shared.currentSong!)
-            GlobalConstants.contextSaveAction()
+            GlobalVariables.shared.currentUser!.removeFromFavouriteSongs(GlobalVariables.shared.currentSong!)
             sender.setImage(heartIcon, for: .normal)
             sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
         }
@@ -884,21 +882,6 @@ extension PlayerViewController
         @unknown default:
             break
         }
-//        if recognizer.state == .began && tableView.contentOffset.y == 0
-//        {
-//
-//        }
-//        else if recognizer.state != .ended && recognizer.state != .cancelled && recognizer.state != .failed
-//        {
-//            let panOffset = recognizer.translation(in: tableView)
-//            let eligiblePanOffset = panOffset.y > 300
-//            if eligiblePanOffset
-//            {
-//                recognizer.isEnabled = false
-//                recognizer.isEnabled = true
-//                delegate?.onPlayerShrinkRequest()
-//            }
-//        }
     }
 }
 
@@ -931,15 +914,7 @@ extension PlayerViewController: PlaylistSelectionDelegate
         }
         else
         {
-//            print("Address before addition of songs \(address(of: &selectedPlaylist.songs!))")
-//            var songs = selectedPlaylist.songs!
-//            songs.append(songToBeAdded.copy() as! Song)
-//            selectedPlaylist.songs = songs
-//            contextSaveAction()
-//            print("Address after addition of songs \(address(of: &selectedPlaylist.songs!))")
-            selectedPlaylist.songs!.appendUniquely(songToBeAdded)
-            GlobalConstants.contextSaveAction()
-//            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
+            GlobalVariables.shared.currentUser!.add(song: songToBeAdded, toPlaylistNamed: selectedPlaylist.name!)
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

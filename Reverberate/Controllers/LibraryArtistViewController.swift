@@ -372,8 +372,7 @@ extension LibraryArtistViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteArtists!.appendUniquely(artist)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.addToFavouriteArtists(artist)
     }
     
     @objc func onRemoveArtistFromFavouritesNotification(_ notification: NSNotification)
@@ -386,8 +385,7 @@ extension LibraryArtistViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.removeFromFavouriteArtists(artist)
         if viewOnlyFavArtists
         {
             allArtists = DataManager.shared.availableArtists.filter({ GlobalVariables.shared.currentUser!.isFavouriteArtist($0) })

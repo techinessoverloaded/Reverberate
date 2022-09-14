@@ -72,6 +72,7 @@
 		DA5CE99F288815EB0066AB2E /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5CE99E288815EB0066AB2E /* Playlist.swift */; };
 		DA5CE9A1288815FB0066AB2E /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5CE9A0288815FB0066AB2E /* Album.swift */; };
 		DA63B0B9289E7B7A0068775C /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA63B0B8289E7B7A0068775C /* Artist.swift */; };
+		DA65218928D1DF7F000A5C1F /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65218828D1DF7F000A5C1F /* User+CoreDataProperties.swift */; };
 		DA65D3B32886674300173F56 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B22886674300173F56 /* SearchResultsViewController.swift */; };
 		DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B428866D5000173F56 /* GlobalVariables.swift */; };
 		DA65D3B728866FA700173F56 /* CategoricalSongsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA65D3B628866FA700173F56 /* CategoricalSongsViewController.swift */; };
@@ -112,7 +113,6 @@
 		DACF29DA28B50A3000141BCB /* MusicLoopMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF29D928B50A3000141BCB /* MusicLoopMode.swift */; };
 		DACF29DC28B50AB300141BCB /* MusicShuffleMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */; };
 		DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF64916287553020061C29B /* CustomTableViewCell.swift */; };
-		DAFBD1DA28D0BB9D005A2D3C /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFBD1D928D0BB9D005A2D3C /* User+CoreDataProperties.swift */; };
 		DAFC0AE02893D59100EECE4B /* ArtistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */; };
 		DAFC0AE22893D81200EECE4B /* SearchResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */; };
 		DAFC0AE62893ED7500EECE4B /* StretchyHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFC0AE52893ED7500EECE4B /* StretchyHeaderView.swift */; };
@@ -186,6 +186,7 @@
 		DA5CE99E288815EB0066AB2E /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		DA5CE9A0288815FB0066AB2E /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		DA63B0B8289E7B7A0068775C /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
+		DA65218828D1DF7F000A5C1F /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA65D3B22886674300173F56 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		DA65D3B428866D5000173F56 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		DA65D3B628866FA700173F56 /* CategoricalSongsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoricalSongsViewController.swift; sourceTree = "<group>"; };
@@ -226,7 +227,6 @@
 		DACF29D928B50A3000141BCB /* MusicLoopMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicLoopMode.swift; sourceTree = "<group>"; };
 		DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicShuffleMode.swift; sourceTree = "<group>"; };
 		DAF64916287553020061C29B /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
-		DAFBD1D928D0BB9D005A2D3C /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DAFC0ADF2893D59100EECE4B /* ArtistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewController.swift; sourceTree = "<group>"; };
 		DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultDelegate.swift; sourceTree = "<group>"; };
 		DAFC0AE52893ED7500EECE4B /* StretchyHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchyHeaderView.swift; sourceTree = "<group>"; };
@@ -424,7 +424,7 @@
 		DA4556CA28740AE300804CB8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				DAFBD1D928D0BB9D005A2D3C /* User+CoreDataProperties.swift */,
+				DA65218828D1DF7F000A5C1F /* User+CoreDataProperties.swift */,
 				DA16C18628C9EC900083AB52 /* User+CoreDataClass.swift */,
 				DA5CE99E288815EB0066AB2E /* Playlist.swift */,
 				DA5CE9A0288815FB0066AB2E /* Album.swift */,
@@ -857,7 +857,7 @@
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,
 				DA36C87B28AB5A8700F18694 /* LibraryTabView.swift in Sources */,
 				DA5CE96D28880D1D0066AB2E /* ArtistType.swift in Sources */,
-				DAFBD1DA28D0BB9D005A2D3C /* User+CoreDataProperties.swift in Sources */,
+				DA65218928D1DF7F000A5C1F /* User+CoreDataProperties.swift in Sources */,
 				DA67E06628994D3A00593251 /* ArtistDelegate.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
 				DA65D3BD2886C6F200173F56 /* LibrarySongViewController.swift in Sources */,
@@ -1033,7 +1033,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1063,7 +1063,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;

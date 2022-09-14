@@ -68,7 +68,7 @@ class ArtistViewController: UITableViewController
     private lazy var playlist: Playlist = {
         let artistPlaylist = Playlist()
         artistPlaylist.name = artist.name!
-        artistPlaylist.songs = songs
+        artistPlaylist.setSongs(songs)
         return artistPlaylist
     }()
     
@@ -346,7 +346,7 @@ class ArtistViewController: UITableViewController
             {
                 if GlobalVariables.shared.currentSong == song
                 {
-                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                     if GlobalVariables.shared.avAudioPlayer!.isPlaying
                     {
                         onPlayNotificationReceipt()
@@ -471,7 +471,7 @@ extension ArtistViewController
         let indexPath = IndexPath(item: item, section: 0)
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             return
         }
     }
@@ -505,8 +505,7 @@ extension ArtistViewController
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
-            GlobalVariables.shared.currentUser!.favouriteArtists!.appendUniquely(artist)
-            GlobalConstants.contextSaveAction()
+            GlobalVariables.shared.currentUser!.addToFavouriteArtists(artist)
             sender.setImage(heartFilledIcon, for: .normal)
             UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                 sender.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
@@ -523,8 +522,7 @@ extension ArtistViewController
         }
         else
         {
-            GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
-            GlobalConstants.contextSaveAction()
+            GlobalVariables.shared.currentUser!.removeFromFavouriteArtists(artist)
             UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                 sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
             }, completion: { _ in

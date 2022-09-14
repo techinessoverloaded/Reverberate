@@ -10,13 +10,11 @@ import UIKit
 
 public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCopying
 {
-    enum CoderKeys: String
+    private enum CoderKeys: String
     {
-        case nameKey = "nameKey"
-        case songsKey = "songsKey"
-        case coverArtKey = "coverArtKey"
-        case releaseDateKey = "releaseDateKey"
-        case composersKey = "composersKey"
+        case nameKey = "playlistNameKey"
+        case songsKey = "playlistSongsKey"
+        case songNamesKey = "playlistSongNamesKey"
     }
     
     public class var supportsSecureCoding: Bool
@@ -25,7 +23,13 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
     }
     
     public var name: String? = nil
-    public var songs: [Song]? = nil
+    public var rawSongs: NSMutableArray? = []
+    public var songNames: NSArray? = []
+    
+    public var songs: [Song]?
+    {
+        return rawSongs as? [Song]
+    }
     
     public override var description: String
     {
@@ -35,15 +39,16 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
     public func encode(with coder: NSCoder)
     {
         coder.encode(name, forKey: CoderKeys.nameKey.rawValue)
-        coder.encode(songs, forKey: CoderKeys.songsKey.rawValue)
+        coder.encode(rawSongs, forKey: CoderKeys.songsKey.rawValue)
+        coder.encode(songNames, forKey: CoderKeys.songNamesKey.rawValue)
     }
     
     public required convenience init?(coder: NSCoder)
     {
         self.init()
         self.name = coder.decodeObject(forKey: CoderKeys.nameKey.rawValue) as? String
-        self.songs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? [Song]
-        print("decoded songs: \(songs)")
+        self.rawSongs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? NSMutableArray
+        self.songNames = coder.decodeObject(forKey: CoderKeys.songNamesKey.rawValue) as? NSArray
     }
     
     public override init()
@@ -66,11 +71,49 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
         return lhs.name! < rhs.name!
     }
     
+    public func setSongNames(_ names: [String])
+    {
+        songNames = names as NSArray
+    }
+    
+    public func addSongName(_ songName: String)
+    {
+        let mutableSongNames: NSMutableArray = songNames!.mutableCopy() as! NSMutableArray
+        mutableSongNames.add(songName)
+        songNames = mutableSongNames
+    }
+    
+    public func removeSongName(_ songName: String)
+    {
+        let mutableSongNames: NSMutableArray = songNames!.mutableCopy() as! NSMutableArray
+        mutableSongNames.remove(songName)
+        songNames = mutableSongNames
+    }
+
+    public func setSongs(_ songs: [Song])
+    {
+        rawSongs = ((songs as NSArray).mutableCopy() as! NSMutableArray)
+    }
+    
+    public func addSong(_ song: Song)
+    {
+        let mutableSongs: NSMutableArray = rawSongs!.mutableCopy() as! NSMutableArray
+        mutableSongs.add(song)
+        rawSongs = mutableSongs
+    }
+    
+    public func removeSong(_ song: Song)
+    {
+        let mutableSongs: NSMutableArray = rawSongs!.mutableCopy() as! NSMutableArray
+        mutableSongs.remove(song)
+        rawSongs = mutableSongs
+    }
+    
     public func copy(with zone: NSZone? = nil) -> Any
     {
         let newPlaylist = Playlist()
         newPlaylist.name = self.name
-        newPlaylist.songs = self.songs
+        newPlaylist.rawSongs = self.rawSongs
         return newPlaylist
     }
     

@@ -154,7 +154,7 @@ class MiniPlayerView: UIView
             songTitleView.centerYAnchor.constraint(equalTo: centerYAnchor),
             songTitleView.trailingAnchor.constraint(equalTo: controlsView.leadingAnchor, constant: -10),
             controlsView.heightAnchor.constraint(equalTo: heightAnchor),
-            controlsView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: controlViewWidthMultiplier),
+            controlsView.widthAnchor.constraint(equalTo: heightAnchor, multiplier: 2),
             controlsView.trailingAnchor.constraint(equalTo: trailingAnchor),
             previousButton.leadingAnchor.constraint(equalTo: controlsView.leadingAnchor),
             previousButton.centerYAnchor.constraint(equalTo: controlsView.centerYAnchor),

@@ -2,7 +2,7 @@
 //  User+CoreDataProperties.swift
 //  Reverberate
 //
-//  Created by arun-13930 on 13/09/22.
+//  Created by arun-13930 on 14/09/22.
 //
 //
 
@@ -17,17 +17,17 @@ extension User {
     }
 
     @NSManaged public var email: String?
-    @NSManaged public var favouriteAlbums: [Album]?
-    @NSManaged public var favouriteArtists: [Artist]?
-    @NSManaged public var favouriteSongs: [Song]?
+    @NSManaged public var favouriteAlbums: NSArray?
+    @NSManaged public var favouriteArtists: NSArray?
+    @NSManaged public var favouriteSongs: NSArray?
     @NSManaged public var id: String?
     @NSManaged public var name: String?
     @NSManaged public var password: String?
     @NSManaged public var phone: String?
+    @NSManaged public var playlists: NSArray?
     @NSManaged public var preferredGenres: [Int16]?
     @NSManaged public var preferredLanguages: [Int16]?
     @NSManaged public var profilePicture: Data?
-    @NSManaged public var playlists: [Playlist]?
 
 }
 

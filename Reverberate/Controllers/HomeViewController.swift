@@ -13,6 +13,8 @@ class HomeViewController: UICollectionViewController
     
     private var playlists: [Category: Playlist] = [:]
 
+    private var sectionOfRecentlyPlayedSongs: Int!
+    
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
@@ -86,7 +88,7 @@ class HomeViewController: UICollectionViewController
         result.forEach {
             let playlist = Playlist()
             playlist.name = $0.key.description
-            playlist.songs = $0.value
+            playlist.setSongs($0.value)
             playlists[$0.key] = playlist
         }
         return result
@@ -131,6 +133,10 @@ extension HomeViewController
         let item = indexPath.item
         let keys = Array(songs.keys)
         let category = keys[section]
+        if category == .recentlyPlayed
+        {
+            sectionOfRecentlyPlayedSongs = section
+        }
         let categoricalSongs = songs[category]!
         let song = categoricalSongs[item]
         let artistNames = song.getArtistNamesAsString(artistType: nil)
@@ -184,7 +190,7 @@ extension HomeViewController
         let keys = Array(songs.keys)
         let indexPaths = collectionView.indexPathsForVisibleItems
         songs[.recentlyPlayed] = DataProcessor.shared.getSongsOf(category: .recentlyPlayed, andLimitNumberOfResultsTo: 10)
-        guard let section = indexPaths.first(where: { keys[$0.section] == .recentlyPlayed })?.section else
+        guard let section = sectionOfRecentlyPlayedSongs else
         {
             return
         }
@@ -199,5 +205,18 @@ extension HomeViewController
         categoricalVC.category = category
         categoricalVC.delegate = GlobalVariables.shared.mainTabController
         navigationController?.pushViewController(categoricalVC, animated: true)
+    }
+}
+
+extension HomeViewController
+{
+    override func scrollViewDidScroll(_ scrollView: UIScrollView)
+    {
+        let recentlyPlayedSongs = DataProcessor.shared.getSongsOf(category: .recentlyPlayed, andLimitNumberOfResultsTo: 10)
+        if songs[.recentlyPlayed]!.count < recentlyPlayedSongs.count
+        {
+            print("needs reload")
+            onRecentlyPlayedListChange()
+        }
     }
 }

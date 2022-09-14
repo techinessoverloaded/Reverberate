@@ -68,9 +68,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             if let userId = userDefaults.string(forKey: GlobalConstants.currentUserId)
             {
                 let mainVc = MainViewController()
-                window!.rootViewController = mainVc
                 GlobalVariables.shared.mainTabController = mainVc
                 GlobalVariables.shared.currentUser = SessionManager.shared.fetchUser(withId: userId)
+                window!.rootViewController = mainVc
                 print("userId exists")
             }
             else

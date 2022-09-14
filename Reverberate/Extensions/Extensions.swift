@@ -552,5 +552,5 @@ extension UIScrollView
 
 extension NSValueTransformerName
 {
-    static let customTransformer = NSValueTransformerName(rawValue: "customTransformer")
+    static let customTransformer = NSValueTransformerName(rawValue: "CustomDataTransformer")
 }

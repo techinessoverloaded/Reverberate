@@ -371,8 +371,7 @@ extension LibraryAlbumViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteAlbums!.appendUniquely(album)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.addToFavouriteAlbums(album)
     }
     
     @objc func onRemoveAlbumFromFavouritesNotification(_ notification: NSNotification)
@@ -385,8 +384,7 @@ extension LibraryAlbumViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteAlbums!.removeUniquely(album)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.removeFromFavouriteAlbums(album)
         if viewOnlyFavAlbums
         {
             allAlbums = DataManager.shared.availableAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouriteAlbum($0) })

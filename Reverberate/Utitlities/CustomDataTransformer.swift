@@ -7,13 +7,8 @@
 
 import UIKit
 
-class CustomDataTransformer: NSSecureUnarchiveFromDataTransformer
+class CustomDataTransformer: ValueTransformer
 {
-    override class var allowedTopLevelClasses: [AnyClass]
-    {
-        return [NSArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Playlist.self, Album.self, NSDate.self, NSString.self, NSNumber.self]
-    }
-    
     override class func allowsReverseTransformation() -> Bool
     {
         return true
@@ -21,6 +16,24 @@ class CustomDataTransformer: NSSecureUnarchiveFromDataTransformer
     
     override class func transformedValueClass() -> AnyClass
     {
-        return NSArray.self
+        return NSData.self
+    }
+    
+    override func transformedValue(_ value: Any?) -> Any?
+    {
+        guard let object = value as? NSArray else
+        {
+            fatalError("object to be written is of type: \(type(of: value))")
+        }
+        return try? NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true)
+    }
+    
+    override func reverseTransformedValue(_ value: Any?) -> Any?
+    {
+        guard let data = value as? Data else
+        {
+            fatalError("value is of type: \(type(of: value))")
+        }
+        return try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, NSMutableArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Playlist.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
     }
 }

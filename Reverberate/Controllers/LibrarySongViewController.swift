@@ -115,7 +115,7 @@ class LibrarySongViewController: UITableViewController
         {
             let songPlaylist = Playlist()
             songPlaylist.name = title
-            songPlaylist.songs = sortedSongs.values.flatMap({ $0 }).sorted()
+            songPlaylist.setSongs( sortedSongs.values.flatMap({ $0 }).sorted())
             return songPlaylist
         }
     }
@@ -577,10 +577,7 @@ extension LibrarySongViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteSongs!.appendUniquely(song)
-        GlobalConstants.contextSaveAction()
-        print(GlobalVariables.shared.currentUser!.id!)
-        print(UserDefaults.standard.string(forKey: GlobalConstants.currentUserId)!)
+        GlobalVariables.shared.currentUser!.addToFavouriteSongs(song)
     }
     
     @objc func onRemoveSongFromFavouritesNotification(_ notification: NSNotification)
@@ -593,8 +590,7 @@ extension LibrarySongViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteSongs!.removeUniquely(song)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.removeFromFavouriteSongs(song)
         if viewOnlyFavSongs
         {
             allSongs = DataManager.shared.availableSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
@@ -643,7 +639,7 @@ extension LibrarySongViewController: PlaylistSelectionDelegate
         }
         else
         {
-            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
+//            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

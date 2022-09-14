@@ -21,8 +21,8 @@ struct AlbumSegregator
             {
                 let newAlbum = Album()
                 newAlbum.coverArt = song.coverArt
-                newAlbum.songs = []
-                newAlbum.songs!.append(song)
+                newAlbum.setSongs([])
+                newAlbum.addSong(song)
                 newAlbum.name = song.albumName!
                 newAlbum.releaseDate = DateFormatter.getDateFromString(dateString: GlobalConstants.albumReleaseDates[newAlbum.name!]!)
                 newAlbum.composers = song.getArtists(ofType: .musicDirector)
@@ -33,7 +33,7 @@ struct AlbumSegregator
                 let existingAlbum = albums.first(where: {
                     $0.name! == song.albumName!
                 })!
-                existingAlbum.songs!.append(song)
+                existingAlbum.addSong(song)
             }
         }
         print("\(albums.count) Albums")

@@ -95,7 +95,7 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding, NSCopying
             }.forEach {
                 result.append($0)
             }
-            return result
+            return result.sorted()
         }
         
         func getArtistNamesAsString(artistType: ArtistType?) -> String

@@ -10,6 +10,15 @@ import UIKit
 
 public class Album: Playlist
 {
+    private enum CoderKeys: String
+    {
+        case nameKey = "nameOfAlbumKey"
+        case songsKey = "albumSongsKey"
+        case coverArtKey = "albumCoverArtKey"
+        case releaseDateKey = "albumReleaseDateKey"
+        case composersKey = "albumComposersKey"
+    }
+    
     public var coverArt: UIImage? = nil
     public var releaseDate: Date? = nil
     public var composers: [Artist]? = nil
@@ -27,7 +36,7 @@ public class Album: Playlist
     public override func encode(with coder: NSCoder)
     {
         coder.encode(name, forKey: CoderKeys.nameKey.rawValue)
-        coder.encode(songs, forKey: CoderKeys.songsKey.rawValue)
+        coder.encode(rawSongs, forKey: CoderKeys.songsKey.rawValue)
         coder.encode(coverArt, forKey: CoderKeys.coverArtKey.rawValue)
         coder.encode(releaseDate, forKey: CoderKeys.releaseDateKey.rawValue)
         coder.encode(composers, forKey: CoderKeys.composersKey.rawValue)
@@ -37,7 +46,7 @@ public class Album: Playlist
     {
         self.init()
         self.name = coder.decodeObject(forKey: CoderKeys.nameKey.rawValue) as? String
-        self.songs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? [Song]
+        self.rawSongs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? NSMutableArray
         self.coverArt = coder.decodeObject(forKey: CoderKeys.coverArtKey.rawValue) as? UIImage
         self.releaseDate = coder.decodeObject(forKey: CoderKeys.releaseDateKey.rawValue) as? Date
         self.composers = coder.decodeObject(forKey: CoderKeys.composersKey.rawValue) as? [Artist]
@@ -56,7 +65,22 @@ public class Album: Playlist
     
     public var language: String
     {
-        return songs!.first?.language.description ?? "No Language"
+        return (songs! as! [Song]).first!.language.description 
+    }
+    
+    public static func == (lhs: Album, rhs: Album) -> Bool
+    {
+        return lhs.name! == rhs.name!
+    }
+    
+    public override func isEqual(_ object: Any?) -> Bool
+    {
+        return self.name! == (object as! Album).name!
+    }
+    
+    public static func < (lhs: Album, rhs: Album) -> Bool
+    {
+        return lhs.name! < rhs.name!
     }
     
     public override func copy(with zone: NSZone? = nil) -> Any
@@ -65,7 +89,7 @@ public class Album: Playlist
         newAlbum.name = self.name
         newAlbum.coverArt = UIImage(data: self.coverArt!.jpegData(compressionQuality: 1)!)!
         newAlbum.composers = self.composers
-        newAlbum.songs = self.songs
+        newAlbum.rawSongs = self.rawSongs
         newAlbum.releaseDate = self.releaseDate
         return newAlbum
     }

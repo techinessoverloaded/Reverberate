@@ -381,7 +381,7 @@ class PlaylistViewController: UITableViewController
             let song = playlist.songs![indexPath.item]
             if currentSong == song
             {
-                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             }
         }
     }
@@ -456,7 +456,7 @@ extension PlaylistViewController
         let indexPath = IndexPath(item: item, section: 0)
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             return
         }
     }
@@ -514,8 +514,7 @@ extension PlaylistViewController
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
         {
-            GlobalVariables.shared.currentUser!.favouriteAlbums!.appendUniquely(playlist as! Album)
-            GlobalConstants.contextSaveAction()
+            GlobalVariables.shared.currentUser!.addToFavouriteAlbums(playlist as! Album)
             sender.setImage(heartFilledIcon, for: .normal)
             UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                 sender.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
@@ -532,8 +531,7 @@ extension PlaylistViewController
         }
         else
         {
-            GlobalVariables.shared.currentUser!.favouriteAlbums!.removeUniquely(playlist as! Album)
-            GlobalConstants.contextSaveAction()
+            GlobalVariables.shared.currentUser!.removeFromFavouriteAlbums(playlist as! Album)
             UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
                 sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
             }, completion: { _ in

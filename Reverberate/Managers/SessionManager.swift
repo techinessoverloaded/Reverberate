@@ -44,7 +44,8 @@ class SessionManager
             print("An error occurred while fetching users \(error)!")
             return nil
         }
-        let foundUser = allUsers.first(where: { $0.id! == id })
+        let indexOfFoundUser = allUsers.firstIndex(where: { $0.id! == id })!
+        let foundUser = allUsers[indexOfFoundUser]
         return foundUser
     }
     
@@ -79,15 +80,14 @@ class SessionManager
         newUser.favouriteArtists = []
         newUser.playlists = []
         newUser.favouriteAlbums = []
+        contextSaveAction()
         let defaultPlaylist = Playlist()
         defaultPlaylist.name = "Default Playlist"
-        defaultPlaylist.songs = []
-        newUser.playlists!.append(defaultPlaylist)
-        contextSaveAction()
+        defaultPlaylist.setSongs( [DataProcessor.shared.getSong(named: "Arabic Kuthu")!])
+        newUser.addToPlaylists(defaultPlaylist)
         UserDefaults.standard.set(newUser.id, forKey: GlobalConstants.currentUserId)
         UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
         GlobalVariables.shared.currentUser = newUser
-        print("User Signed up successfully with id: \(String(describing: newUser.id))")
         return newUser
     }
     

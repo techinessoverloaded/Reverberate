@@ -30,7 +30,7 @@ class CategoricalSongsViewController: UITableViewController
     private lazy var playlist: Playlist = {
         let categoricalPlaylist = Playlist()
         categoricalPlaylist.name = category.description
-        categoricalPlaylist.songs = songs
+        categoricalPlaylist.setSongs(songs)
         return categoricalPlaylist
     }()
     
@@ -246,7 +246,7 @@ class CategoricalSongsViewController: UITableViewController
             {
                 if GlobalVariables.shared.currentSong == song
                 {
-                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                     if GlobalVariables.shared.avAudioPlayer!.isPlaying
                     {
                         onPlayNotificationReceipt()
@@ -352,7 +352,7 @@ extension CategoricalSongsViewController
         let indexPath = IndexPath(item: item, section: 0)
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             return
         }
     }

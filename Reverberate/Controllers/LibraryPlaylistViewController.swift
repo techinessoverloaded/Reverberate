@@ -59,7 +59,7 @@ class LibraryPlaylistViewController: UITableViewController
         return sController
     }()
     
-    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists!
+    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
     
     private lazy var sortedPlaylists: [Alphabet : [Playlist]] = sortPlaylists()
     
@@ -114,7 +114,7 @@ class LibraryPlaylistViewController: UITableViewController
     
     private func refetchPlaylists()
     {
-        allPlaylists = GlobalVariables.shared.currentUser!.playlists!
+        allPlaylists = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
         sortedPlaylists = sortPlaylists()
         tableView.reloadData()
         emptyMessageLabel.isHidden = isFiltering ? !filteredPlaylists.isEmpty : !allPlaylists.isEmpty
@@ -200,7 +200,7 @@ class LibraryPlaylistViewController: UITableViewController
         let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
         var config = cell.defaultContentConfiguration()
         config.text = playlist.name!
-        config.secondaryText = "\(playlist.songs?.count ?? 0) Songs"
+        config.secondaryText = "\(playlist.songNames?.count ?? 0) Songs"
         config.textProperties.adjustsFontForContentSizeCategory = true
         config.textProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
@@ -305,9 +305,8 @@ extension LibraryPlaylistViewController
             {
                 let newPlaylist = Playlist()
                 newPlaylist.name = nameField.text!
-                newPlaylist.songs = []
-                GlobalVariables.shared.currentUser!.playlists!.append(newPlaylist)
-                GlobalConstants.contextSaveAction()
+                newPlaylist.setSongs([])
+                GlobalVariables.shared.currentUser!.addToPlaylists(newPlaylist)
                 DispatchQueue.main.async { [unowned self] in
                     self.refetchPlaylists()
                 }
@@ -327,8 +326,7 @@ extension LibraryPlaylistViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.playlists!.removeUniquely(playlist)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.removeFromPlaylists(playlist)
         if isFiltering
         {
             updateSearchResults(for: searchController)

@@ -559,7 +559,7 @@ extension MainViewController: PlayerDelegate
             if GlobalVariables.shared.currentPlaylist != playlist
             {
                 let shuffledPlaylist = playlist.copy() as! Playlist
-                shuffledPlaylist.songs! = playlist.songs!.shuffled()
+                shuffledPlaylist.setSongs( playlist.songs!.shuffled())
                 GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
                 GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
             }
@@ -641,8 +641,7 @@ extension MainViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteSongs!.appendUniquely(song)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.addToFavouriteSongs(song)
     }
     
     @objc func onRemoveSongFromFavouritesNotification(_ notification: NSNotification)
@@ -655,8 +654,7 @@ extension MainViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteSongs!.removeUniquely(song)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.removeFromFavouriteSongs(song)
     }
     
     @objc func onAddAlbumToFavouritesNotification(_ notification: NSNotification)
@@ -669,8 +667,7 @@ extension MainViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteAlbums!.appendUniquely(album)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.addToFavouriteAlbums(album)
     }
     
     @objc func onRemoveAlbumFromFavouritesNotification(_ notification: NSNotification)
@@ -683,7 +680,7 @@ extension MainViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteAlbums!.removeUniquely(album)
+        GlobalVariables.shared.currentUser!.removeFromFavouriteAlbums(album)
         GlobalConstants.contextSaveAction()
     }
     
@@ -697,8 +694,7 @@ extension MainViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteArtists!.appendUniquely(artist)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.addToFavouriteArtists(artist)
     }
     
     @objc func onRemoveArtistFromFavouritesNotification(_ notification: NSNotification)
@@ -711,8 +707,7 @@ extension MainViewController
         {
             return
         }
-        GlobalVariables.shared.currentUser!.favouriteArtists!.removeUniquely(artist)
-        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.currentUser!.removeFromFavouriteArtists(artist)
     }
     
     @objc func onTimerFire(_ sender: Timer)
@@ -916,7 +911,7 @@ extension MainViewController: PlaylistDelegate
         if shuffleMode == .on
         {
             let shuffledPlaylist = playlist.copy() as! Playlist
-            shuffledPlaylist.songs! = playlist.songs!.shuffled()
+            shuffledPlaylist.setSongs( playlist.songs!.shuffled())
             GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
             GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
         }
@@ -979,8 +974,9 @@ extension MainViewController: PlaylistSelectionDelegate
         }
         else
         {
-            selectedPlaylist.songs!.append(songToBeAdded.copy() as! Song)
-            GlobalConstants.contextSaveAction()
+            GlobalVariables.shared.currentUser!.add(song: songToBeAdded, toPlaylistNamed: selectedPlaylist.name!, completionHandler: {
+                print(SessionManager.shared.fetchUser(withId: GlobalVariables.shared.currentUser!.id!))
+            })
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             selectedViewController!.present(alert, animated: true)
