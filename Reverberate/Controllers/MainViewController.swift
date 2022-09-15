@@ -141,7 +141,6 @@ class MainViewController: UITabBarController
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
-        NotificationCenter.default.addObserver(self, selector: #selector(handleLanguageGenreSelectionChange(notification:)), name: .languageGenreChangeNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
@@ -163,7 +162,6 @@ class MainViewController: UITabBarController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
-        NotificationCenter.default.removeObserver(self, name: .languageGenreChangeNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
@@ -716,11 +714,6 @@ extension MainViewController
         miniPlayerView.updateSongDurationView(newValue: currentTime)
     }
     
-    @objc func handleLanguageGenreSelectionChange(notification: Notification)
-    {
-        replaceViewController(index: 0, newViewController: createHomeVc())
-    }
-    
     @objc func handleAudioSessionInterruptionChange(notification: Notification)
     {
         guard let userInfo = notification.userInfo,
@@ -785,9 +778,8 @@ extension MainViewController
             setupMPCommandCenter()
             hasSetupMPCommandCenter = true
         }
-        GlobalVariables.shared.recentlyPlayedSongNames.appendUniquely(GlobalVariables.shared.currentSong!.title!)
         let song = GlobalVariables.shared.currentSong!
-        SessionManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
+        DataManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
     }
     
     @objc func onPlaylistChange()

@@ -155,4 +155,47 @@ class DataManager
             return nil
         }
     }
+    
+    func persistRecentlyPlayedItems(songName: String, albumName: String)
+    {
+        var songsChanged = false
+        var albumsChanged = false
+        var existingSongNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as! [String]
+        var existingAlbumNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedAlbumNames) as! [String]
+        if !existingSongNames.contains(songName)
+        {
+            GlobalVariables.shared.recentlyPlayedSongNames.appendUniquely(songName)
+            existingSongNames.append(songName)
+            UserDefaults.standard.set(existingSongNames, forKey: GlobalConstants.recentlyPlayedSongNames)
+            songsChanged = true
+        }
+        if !existingAlbumNames.contains(albumName)
+        {
+            GlobalVariables.shared.recentlyPlayedAlbumNames.appendUniquely(albumName)
+            existingAlbumNames.append(albumName)
+            UserDefaults.standard.set(existingAlbumNames, forKey: GlobalConstants.recentlyPlayedAlbumNames)
+            albumsChanged = true
+        }
+        if songsChanged || albumsChanged
+        {
+            NotificationCenter.default.post(name: .recentlyPlayedListChangedNotification, object: nil)
+        }
+    }
+    
+    func retrieveRecentlyPlayedItems()
+    {
+        let existingSongNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as! [String]
+        let existingAlbumNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedAlbumNames) as! [String]
+        GlobalVariables.shared.recentlyPlayedSongNames = existingSongNames
+        GlobalVariables.shared.recentlyPlayedAlbumNames = existingAlbumNames
+        NotificationCenter.default.post(name: .recentlyPlayedListChangedNotification, object: nil)
+    }
+    
+    func clearRecentlyPlayedItems()
+    {
+        GlobalVariables.shared.recentlyPlayedSongNames = []
+        GlobalVariables.shared.recentlyPlayedAlbumNames = []
+        UserDefaults.standard.set([], forKey: GlobalConstants.recentlyPlayedSongNames)
+        UserDefaults.standard.set([], forKey: GlobalConstants.recentlyPlayedAlbumNames)
+    }
 }

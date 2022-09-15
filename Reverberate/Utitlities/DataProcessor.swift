@@ -153,6 +153,8 @@ class DataProcessor
             GlobalVariables.shared.recentlyPlayedSongNames.forEach{
                 result.append(getSong(named: $0)!)
             }
+        case .none:
+            break
         }
         return limit == -1 ? result : Array(result[0..<min(limit, result.count)])
     }
@@ -194,6 +196,8 @@ class DataProcessor
             GlobalVariables.shared.recentlyPlayedAlbumNames.forEach{
                 result.append(getAlbum(named: $0)!)
             }
+        case .none:
+            break
         }
         return result
     }

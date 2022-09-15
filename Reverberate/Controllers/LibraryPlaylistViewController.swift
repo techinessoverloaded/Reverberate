@@ -200,7 +200,7 @@ class LibraryPlaylistViewController: UITableViewController
         let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
         var config = cell.defaultContentConfiguration()
         config.text = playlist.name!
-        config.secondaryText = "\(playlist.songNames?.count ?? 0) Songs"
+        config.secondaryText = "\(playlist.rawSongs?.count ?? 0) Songs"
         config.textProperties.adjustsFontForContentSizeCategory = true
         config.textProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.adjustsFontForContentSizeCategory = true

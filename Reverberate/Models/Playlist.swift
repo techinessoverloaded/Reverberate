@@ -23,7 +23,7 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
     }
     
     public var name: String? = nil
-    public var rawSongs: NSMutableArray? = []
+    public var rawSongs: NSArray? = []
     public var songNames: NSArray? = []
     
     public var songs: [Song]?
@@ -47,7 +47,7 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
     {
         self.init()
         self.name = coder.decodeObject(forKey: CoderKeys.nameKey.rawValue) as? String
-        self.rawSongs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? NSMutableArray
+        self.rawSongs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? NSArray
         self.songNames = coder.decodeObject(forKey: CoderKeys.songNamesKey.rawValue) as? NSArray
     }
     

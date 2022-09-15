@@ -56,7 +56,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             userDefaults.set([], forKey: GlobalConstants.recentlyPlayedAlbumNames)
         }
         
-        SessionManager.shared.retrieveRecentlyPlayedItems()
+        DataManager.shared.retrieveRecentlyPlayedItems()
         
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {

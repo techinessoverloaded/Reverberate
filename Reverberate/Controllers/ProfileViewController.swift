@@ -94,19 +94,10 @@ class ProfileViewController: UITableViewController
     
     private var user: User!
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
-    override func loadView()
-    {
-        super.loadView()
-        configureAccordingToSession()
-    }
-    
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        configureAccordingToSession()
         view.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = 44
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
@@ -153,7 +144,7 @@ class ProfileViewController: UITableViewController
         super.viewWillAppear(animated)
         if SessionManager.shared.isUserLoggedIn
         {
-            NotificationCenter.default.addObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: context)
+            NotificationCenter.default.addObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
         }
     }
     
@@ -162,7 +153,7 @@ class ProfileViewController: UITableViewController
     {
         if SessionManager.shared.isUserLoggedIn
         {
-            NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: context)
+            NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
         }
         super.viewWillDisappear(animated)
     }
@@ -624,7 +615,7 @@ extension ProfileViewController: LanguageSelectionDelegate
         if SessionManager.shared.isUserLoggedIn
         {
             user.preferredLanguages = selectedLanguages
-            contextSaveAction()
+            GlobalConstants.contextSaveAction()
         }
         else
         {
@@ -641,7 +632,7 @@ extension ProfileViewController: GenreSelectionDelegate
         if SessionManager.shared.isUserLoggedIn
         {
             user.preferredGenres = selectedGenres
-            contextSaveAction()
+            GlobalConstants.contextSaveAction()
         }
         else
         {
@@ -692,14 +683,14 @@ extension ProfileViewController: SignupDelegate
 {
     func onSuccessfulSignup()
     {
-        let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
         let newProfileVC = ProfileViewController(style: .insetGrouped)
             newProfileVC.title = "Your Profile"
         getUserReference()
         user.preferredLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
         user.preferredGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
-        contextSaveAction()
-        mainVC.replaceViewController(index: 3, newViewController: newProfileVC)
+        GlobalConstants.contextSaveAction()
+        GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
+        NotificationCenter.default.post(name: .userLoggedInNotification, object: nil)
         signupController.dismiss(animated: true)
     }
     

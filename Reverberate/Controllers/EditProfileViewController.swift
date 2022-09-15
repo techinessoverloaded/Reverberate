@@ -13,8 +13,6 @@ class EditProfileViewController: UITableViewController
 {
     weak var userRef: User!
     
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     private let profilePictureView: UIImageView = {
         let pView = UIImageView(useAutoLayout: true)
         pView.layer.borderWidth = 4
@@ -347,7 +345,7 @@ extension EditProfileViewController
         {
             userRef.profilePicture = profilePictureView.image?.jpegData(compressionQuality: 1)
         }
-        contextSaveAction()
+        GlobalConstants.contextSaveAction()
         self.dismiss(animated: true)
     }
 }

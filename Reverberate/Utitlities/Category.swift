@@ -7,7 +7,7 @@
 
 enum Category: Int, CaseIterable, CustomStringConvertible
 {
-    case starter = 0, newReleases = 1, topCharts = 2, tamil = 3, malayalam = 4, kannada = 5, telugu = 6, hindi = 7, melody = 8, western = 9, classical = 10, rock = 11, folk = 12, recentlyPlayed = 13
+    case recentlyPlayed = 0, starter, newReleases, topCharts , tamil, malayalam, kannada, telugu, hindi, melody, western, classical, rock, folk, none = -1
     
     var description: String
     {
@@ -41,6 +41,8 @@ enum Category: Int, CaseIterable, CustomStringConvertible
             return "Folk"
         case .recentlyPlayed:
             return "Recently Played"
+        case .none:
+            return "None"
         }
     }
     
@@ -77,7 +79,7 @@ enum Category: Int, CaseIterable, CustomStringConvertible
         case "Recently Played":
             return .recentlyPlayed
         default:
-            return nil
+            return Category.none
         }
     }
     
@@ -96,7 +98,7 @@ enum Category: Int, CaseIterable, CustomStringConvertible
         case .kannada:
             return .kannada
         case .none:
-            return nil
+            return Category.none
         }
     }
     
@@ -115,7 +117,7 @@ enum Category: Int, CaseIterable, CustomStringConvertible
         case .folk:
             return .folk
         case .none:
-            return nil
+            return Category.none
         }
     }
 }

@@ -34,8 +34,6 @@ class LibraryViewController: UITableViewController
         view.backgroundColor = .systemGroupedBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-//        navigationItem.searchController = searchController
-//        navigationItem.hidesSearchBarWhenScrolling = false
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 60))
         headerView.backgroundColor = .clear
         headerView.addSubview(userMessageLabel)
@@ -144,7 +142,6 @@ extension LibraryViewController
 {
     @objc func onUserLoginNotification(_ notification: NSNotification)
     {
-        print("Logged in")
         tableView.reloadData()
     }
 }

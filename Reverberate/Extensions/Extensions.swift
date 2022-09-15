@@ -519,6 +519,22 @@ extension Array where Element: Equatable
     }
 }
 
+extension Array where Element == CategoricalSong
+{
+    subscript(_ category: Category) -> [Song]
+    {
+        get
+        {
+            return self.first(where: { $0.category == category })!.songs
+        }
+        set
+        {
+            let index = self.firstIndex(where: { $0.category == category })!
+            self[index].songs = newValue
+        }
+    }
+}
+
 extension Numeric where Self: Comparable
 {
     func constrain(lowerBound: Self, upperBound: Self) -> Self

@@ -639,7 +639,7 @@ extension LibrarySongViewController: PlaylistSelectionDelegate
         }
         else
         {
-//            GlobalVariables.shared.currentUser!.add(song: songToBeAdded.copy() as! Song, toPlaylistNamed: selectedPlaylist.name!)
+            GlobalVariables.shared.currentUser!.add(song: songToBeAdded, toPlaylistNamed: selectedPlaylist.name!)
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

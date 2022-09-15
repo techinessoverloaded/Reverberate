@@ -27,6 +27,10 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     var rightBarButtonCustomTitle: String?
     
+    var selectAllBarButton: UIBarButtonItem!
+    
+    var rightBarButton: UIBarButtonItem!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -39,13 +43,25 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         {
             selectedLanguages = preSelectedLanguages
         }
+        resetBarButtons()
     }
     
-    func setupNavBar()
+    private func resetBarButtons()
+    {
+        selectAllBarButton.title = selectedLanguages.isEmpty ? "Select All" : (selectedLanguages.count < availableLanguages.flatMap({ $0 }).count ? "Select All" : "Unselect All")
+        rightBarButton.isEnabled = !selectedLanguages.isEmpty
+        if areCellsPreselected
+        {
+            rightBarButton.isEnabled = rightBarButton.isEnabled && selectedLanguages.sorted() != preSelectedLanguages.sorted()
+        }
+    }
+    
+    private func setupNavBar()
     {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 23, weight: .bold)]
+        selectAllBarButton = UIBarButtonItem(title: "Select All", style: .plain, target: self, action: #selector(onSelectAllButtonTap(_:)))
         if leftBarButtonType != nil
         {
             if leftBarButtonType == .cancel
@@ -64,17 +80,19 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         {
             if rightBarButtonType == .done
             {
-                navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
+                rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
+                navigationItem.rightBarButtonItems = [ rightBarButton, selectAllBarButton]
             }
-            navigationItem.rightBarButtonItem!.isEnabled = false
+            rightBarButton.isEnabled = false
         }
         else if rightBarButtonCustomTitle != nil
         {
+            rightBarButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(onNextButtonTap(_:)))
             if rightBarButtonCustomTitle == "Next"
             {
-                navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(onNextButtonTap(_:)))
+                navigationItem.rightBarButtonItems = [rightBarButton, selectAllBarButton]
             }
-            navigationItem.rightBarButtonItem!.isEnabled = false
+            rightBarButton.isEnabled = false
         }
     }
     
@@ -113,11 +131,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         print("Selection \(indexPath)")
         selectedLanguages.append(availableLanguages[indexPath.section][indexPath.item])
         print(selectedLanguages)
-        navigationItem.rightBarButtonItem!.isEnabled = !selectedLanguages.isEmpty
-        if areCellsPreselected
-        {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedLanguages.sorted() != preSelectedLanguages.sorted()
-        }
+        resetBarButtons()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath)
@@ -125,11 +139,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         print("Deselection \(indexPath)")
         selectedLanguages.remove(at: selectedLanguages.firstIndex(of: availableLanguages[indexPath.section][indexPath.item])!)
         print(selectedLanguages)
-        navigationItem.rightBarButtonItem!.isEnabled = !selectedLanguages.isEmpty
-        if areCellsPreselected
-        {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedLanguages.sorted() != preSelectedLanguages.sorted()
-        }
+        resetBarButtons()
     }
 }
 
@@ -153,6 +163,42 @@ extension LanguageSelectionCollectionViewController: UICollectionViewDelegateFlo
 
 extension LanguageSelectionCollectionViewController
 {
+    @objc func onSelectAllButtonTap(_ sender: UIBarButtonItem)
+    {
+        if sender.title! == "Select All"
+        {
+            for x in 0..<availableLanguages.count
+            {
+                for y in 0..<availableLanguages[x].count
+                {
+                    let indexPath = IndexPath(item: y, section: x)
+                    collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                    let language = availableLanguages[x][y]
+                    if !selectedLanguages.contains(language)
+                    {
+                        selectedLanguages.append(language)
+                        print(selectedLanguages)
+                    }
+                }
+            }
+            resetBarButtons()
+        }
+        else
+        {
+            for x in 0..<availableLanguages.count
+            {
+                for y in 0..<availableLanguages[x].count
+                {
+                    let indexPath = IndexPath(item: y, section: x)
+                    collectionView.deselectItem(at: indexPath, animated: true)
+                    selectedLanguages.removeAll()
+                    print(selectedLanguages)
+                }
+            }
+            resetBarButtons()
+        }
+    }
+    
     @objc func onCancelButtonTap(_ sender: UIBarButtonItem)
     {
         self.dismiss(animated: true)
