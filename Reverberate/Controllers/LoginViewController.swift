@@ -143,7 +143,33 @@ extension LoginViewController: UITextFieldDelegate
 {
     func textFieldDidBeginEditing(_ textField: UITextField)
     {
+        textField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.cgColor
         textField.layer.borderWidth = 2
+        if textField === emailCumPhoneField
+        {
+            emailCumPhoneErrorLabel.isHidden = true
+        }
+        else
+        {
+            passwordErrorLabel.isHidden = true
+        }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
+    {
+        if textField.isInvalid
+        {
+            textField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.cgColor
+            if textField === emailCumPhoneField
+            {
+                emailCumPhoneErrorLabel.isHidden = true
+            }
+            else
+            {
+                passwordErrorLabel.isHidden = true
+            }
+        }
+        return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField)

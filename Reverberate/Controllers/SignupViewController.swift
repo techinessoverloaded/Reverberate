@@ -241,7 +241,57 @@ extension SignupViewController: UITextFieldDelegate
 {
     func textFieldDidBeginEditing(_ textField: UITextField)
     {
+        textField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.cgColor
         textField.layer.borderWidth = 2
+        if textField === nameField
+        {
+            nameErrorLabel.isHidden = true
+        }
+        else if textField === phoneField
+        {
+            phoneErrorLabel.isHidden = true
+        }
+        else if textField === emailField
+        {
+            emailErrorLabel.isHidden = true
+        }
+        else if textField === passwordField
+        {
+            passwordErrorLabel.isHidden = true
+        }
+        else
+        {
+            confirmPasswordErrorLabel.isHidden = true
+        }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
+    {
+        if textField.isInvalid
+        {
+            textField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.cgColor
+            if textField === nameField
+            {
+                nameErrorLabel.isHidden = true
+            }
+            else if textField === phoneField
+            {
+                phoneErrorLabel.isHidden = true
+            }
+            else if textField === emailField
+            {
+                emailErrorLabel.isHidden = true
+            }
+            else if textField === passwordField
+            {
+                passwordErrorLabel.isHidden = true
+            }
+            else
+            {
+                confirmPasswordErrorLabel.isHidden = true
+            }
+        }
+        return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField)
@@ -250,17 +300,19 @@ extension SignupViewController: UITextFieldDelegate
         {
             var name = textField.text ?? ""
             name.trim()
-            if name.isEmpty
+            if !name.isEmpty
             {
-                textField.isInvalid = true
-                nameErrorLabel.text = "Required"
-                nameErrorLabel.isHidden = false
-            }
-            else if !InputValidator.validateName(name)
-            {
-                textField.isInvalid = true
-                nameErrorLabel.text = "Entered Name is Invalid !"
-                nameErrorLabel.isHidden = false
+                if !InputValidator.validateName(name)
+                {
+                    textField.isInvalid = true
+                    nameErrorLabel.text = "Entered Name is Invalid !"
+                    nameErrorLabel.isHidden = false
+                }
+                else
+                {
+                    textField.isInvalid = false
+                    nameErrorLabel.isHidden = true
+                }
             }
             else
             {
@@ -272,17 +324,19 @@ extension SignupViewController: UITextFieldDelegate
         {
             var phone = textField.text ?? ""
             phone.trim()
-            if phone.isEmpty
+            if !phone.isEmpty
             {
-                textField.isInvalid = true
-                phoneErrorLabel.text = "Required"
-                phoneErrorLabel.isHidden = false
-            }
-            else if !InputValidator.validatePhone(phone)
-            {
-                textField.isInvalid = true
-                phoneErrorLabel.text = "Entered Phone Number is Invalid !"
-                phoneErrorLabel.isHidden = false
+                if !InputValidator.validatePhone(phone)
+                {
+                    textField.isInvalid = true
+                    phoneErrorLabel.text = "Entered Phone Number is Invalid !"
+                    phoneErrorLabel.isHidden = false
+                }
+                else
+                {
+                    textField.isInvalid = false
+                    phoneErrorLabel.isHidden = true
+                }
             }
             else
             {
@@ -294,17 +348,19 @@ extension SignupViewController: UITextFieldDelegate
         {
             var email = textField.text ?? ""
             email.trim()
-            if email.isEmpty
+            if !email.isEmpty
             {
-                textField.isInvalid = true
-                emailErrorLabel.text = "Required"
-                emailErrorLabel.isHidden = false
-            }
-            else if !InputValidator.validateEmail(email)
-            {
-                textField.isInvalid = true
-                emailErrorLabel.text = "Entered Email Address is Invalid !"
-                emailErrorLabel.isHidden = false
+                if !InputValidator.validateEmail(email)
+                {
+                    textField.isInvalid = true
+                    emailErrorLabel.text = "Entered Email Address is Invalid !"
+                    emailErrorLabel.isHidden = false
+                }
+                else
+                {
+                    textField.isInvalid = false
+                    emailErrorLabel.isHidden = true
+                }
             }
             else
             {
@@ -316,17 +372,19 @@ extension SignupViewController: UITextFieldDelegate
         {
             var password = textField.text ?? ""
             password.trim()
-            if password.isEmpty
+            if !password.isEmpty
             {
-                textField.isInvalid = true
-                passwordErrorLabel.text = "Required"
-                passwordErrorLabel.isHidden = false
-            }
-            else if !InputValidator.validatePassword(password)
-            {
-                textField.isInvalid = true
-                passwordErrorLabel.text = "Password must contain at least one uppercase, number, and symbol characters and should have a minimum length of 8"
-                passwordErrorLabel.isHidden = false
+                if !InputValidator.validatePassword(password)
+                {
+                    textField.isInvalid = true
+                    passwordErrorLabel.text = "Password must contain at least one uppercase, number, and symbol characters and should have a minimum length of 8"
+                    passwordErrorLabel.isHidden = false
+                }
+                else
+                {
+                    textField.isInvalid = false
+                    passwordErrorLabel.isHidden = true
+                }
             }
             else
             {
@@ -338,17 +396,19 @@ extension SignupViewController: UITextFieldDelegate
         {
             var cnfmPassword = textField.text ?? ""
             cnfmPassword.trim()
-            if cnfmPassword.isEmpty
+            if !cnfmPassword.isEmpty
             {
-                textField.isInvalid = true
-                confirmPasswordErrorLabel.text = "Required"
-                confirmPasswordErrorLabel.isHidden = false
-            }
-            else if !InputValidator.validateConfirmPassword(passwordField.text!, cnfmPassword)
-            {
-                textField.isInvalid = true
-                confirmPasswordErrorLabel.text = "Passwords in both fields don't match !"
-                confirmPasswordErrorLabel.isHidden = false
+                if !InputValidator.validateConfirmPassword(passwordField.text!, cnfmPassword)
+                {
+                    textField.isInvalid = true
+                    confirmPasswordErrorLabel.text = "Passwords in both fields don't match !"
+                    confirmPasswordErrorLabel.isHidden = false
+                }
+                else
+                {
+                    textField.isInvalid = false
+                    confirmPasswordErrorLabel.isHidden = true
+                }
             }
             else
             {
@@ -465,11 +525,56 @@ extension SignupViewController
 {
     @objc func onSignupButtonTap(_ sender: UIButton)
     {
-        textFieldDidEndEditing(nameField)
-        textFieldDidEndEditing(phoneField)
-        textFieldDidEndEditing(emailField)
-        textFieldDidEndEditing(passwordField)
-        textFieldDidEndEditing(confirmPasswordField)
+        if nameField.text?.isEmpty ?? true
+        {
+            nameField.isInvalid = true
+            nameErrorLabel.text = "Required"
+            nameErrorLabel.isHidden = false
+        }
+        else
+        {
+            textFieldDidEndEditing(nameField)
+        }
+        if phoneField.text?.isEmpty ?? true
+        {
+            phoneField.isInvalid = true
+            phoneErrorLabel.text = "Required"
+            phoneErrorLabel.isHidden = false
+        }
+        else
+        {
+            textFieldDidEndEditing(phoneField)
+        }
+        if emailField.text?.isEmpty ?? true
+        {
+            emailField.isInvalid = true
+            emailErrorLabel.text = "Required"
+            emailErrorLabel.isHidden = false
+        }
+        else
+        {
+            textFieldDidEndEditing(emailField)
+        }
+        if passwordField.text?.isEmpty ?? true
+        {
+            passwordField.isInvalid = true
+            passwordErrorLabel.text = "Required"
+            passwordErrorLabel.isHidden = false
+        }
+        else
+        {
+            textFieldDidEndEditing(passwordField)
+        }
+        if confirmPasswordField.text?.isEmpty ?? true
+        {
+            confirmPasswordField.isInvalid = true
+            confirmPasswordErrorLabel.text = "Required"
+            confirmPasswordErrorLabel.isHidden = false
+        }
+        else
+        {
+            textFieldDidEndEditing(confirmPasswordField)
+        }
         if !nameField.isInvalid && !phoneField.isInvalid && !emailField.isInvalid && !passwordField.isInvalid && !confirmPasswordField.isInvalid
         {
             signupButton.configuration?.showsActivityIndicator = true
