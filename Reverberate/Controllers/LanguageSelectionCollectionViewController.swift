@@ -76,6 +76,10 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
                 navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Previous", style: .plain, target: self, action: #selector(onPreviousButtonTap(_:)))
             }
         }
+        else
+        {
+            navigationController?.isModalInPresentation = true
+        }
         if rightBarButtonType != nil
         {
             if rightBarButtonType == .done

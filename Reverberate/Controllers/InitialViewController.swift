@@ -128,7 +128,7 @@ class InitialViewController: UITableViewController
         loginController.delegate = self
         let navController = UINavigationController(rootViewController: loginController)
         navController.modalPresentationStyle = .pageSheet
-        navController.isModalInPresentation = true
+        navController.isModalInPresentation = false
         self.present(navController, animated: true)
     }
     
@@ -139,7 +139,7 @@ class InitialViewController: UITableViewController
         signupController.delegate = self
         let navController = UINavigationController(rootViewController: signupController)
         navController.modalPresentationStyle = .pageSheet
-        navController.isModalInPresentation = true
+        navController.isModalInPresentation = false
         self.present(navController, animated: true)
     }
     
@@ -154,7 +154,7 @@ class InitialViewController: UITableViewController
         }
         let navController = UINavigationController(rootViewController: languageSelectionVC)
         navController.modalPresentationStyle = .pageSheet
-        navController.isModalInPresentation = true
+        navController.isModalInPresentation = false
         self.present(navController, animated: true)
     }
     
@@ -169,7 +169,7 @@ class InitialViewController: UITableViewController
         }
         let navController = UINavigationController(rootViewController: genreSelectionVC)
         navController.modalPresentationStyle = .pageSheet
-        navController.isModalInPresentation = true
+        navController.isModalInPresentation = false
         self.present(navController, animated: true)
     }
     

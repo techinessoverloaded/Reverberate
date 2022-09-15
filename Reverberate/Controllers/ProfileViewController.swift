@@ -186,7 +186,7 @@ class ProfileViewController: UITableViewController
         loginController.delegate = self
         let navController = UINavigationController(rootViewController: loginController)
         navController.modalPresentationStyle = .pageSheet
-        navController.isModalInPresentation = true
+        navController.isModalInPresentation = false
         self.present(navController, animated: true)
     }
     
@@ -197,7 +197,7 @@ class ProfileViewController: UITableViewController
         signupController.delegate = self
         let navController = UINavigationController(rootViewController: signupController)
         navController.modalPresentationStyle = .pageSheet
-        navController.isModalInPresentation = true
+        navController.isModalInPresentation = false
         self.present(navController, animated: true)
     }
 }
@@ -495,7 +495,7 @@ extension ProfileViewController
                     languageSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: languageSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
-                    navController.isModalInPresentation = true
+                    navController.isModalInPresentation = false
                     self.present(navController, animated: true)
                 }
                 else if item == 1
@@ -509,7 +509,7 @@ extension ProfileViewController
                     genreSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: genreSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
-                    navController.isModalInPresentation = true
+                    navController.isModalInPresentation = false
                     self.present(navController, animated: true)
                 }
             }
@@ -534,7 +534,7 @@ extension ProfileViewController
                     languageSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: languageSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
-                    navController.isModalInPresentation = true
+                    navController.isModalInPresentation = false
                     self.present(navController, animated: true)
                 }
                 else if item == 1
@@ -548,7 +548,7 @@ extension ProfileViewController
                     genreSelectionVC.areCellsPreselected = true
                     let navController = UINavigationController(rootViewController: genreSelectionVC)
                     navController.modalPresentationStyle = .pageSheet
-                    navController.isModalInPresentation = true
+                    navController.isModalInPresentation = false
                     self.present(navController, animated: true)
                 }
             }
@@ -579,7 +579,7 @@ extension ProfileViewController
         editProfileController.userRef = user
         let modalNavController = UINavigationController(rootViewController: editProfileController)
         modalNavController.modalPresentationStyle = .pageSheet
-        modalNavController.isModalInPresentation = true
+        modalNavController.isModalInPresentation = false
         self.present(modalNavController, animated: true)
     }
     
