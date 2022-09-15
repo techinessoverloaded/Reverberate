@@ -27,6 +27,10 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     
     var rightBarButtonCustomTitle: String?
     
+    var selectAllBarButton: UIBarButtonItem!
+    
+    var rightBarButton: UIBarButtonItem!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -39,13 +43,25 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         {
             selectedGenres = preSelectedGenres
         }
+        resetBarButtons()
     }
     
-    func setupNavBar()
+    private func resetBarButtons()
+    {
+        selectAllBarButton.title = selectedGenres.isEmpty ? "Select All" : (selectedGenres.count < availableGenres.flatMap({ $0 }).count ? "Select All" : "Unselect All")
+        rightBarButton.isEnabled = !selectedGenres.isEmpty
+        if areCellsPreselected
+        {
+            rightBarButton.isEnabled = rightBarButton.isEnabled && selectedGenres.sorted() != preSelectedGenres.sorted()
+        }
+    }
+    
+    private func setupNavBar()
     {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 23, weight: .bold)]
+        selectAllBarButton = UIBarButtonItem(title: "Select All", style: .plain, target: self, action: #selector(onSelectAllButtonTap(_:)))
         if leftBarButtonType != nil
         {
             if leftBarButtonType == .cancel
@@ -57,6 +73,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         {
             if leftBarButtonCustomTitle == "Previous"
             {
+                
                 navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Previous", style: .plain, target: self, action: #selector(onPreviousButtonTap(_:)))
             }
         }
@@ -64,7 +81,8 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         {
             if rightBarButtonType == .done
             {
-                navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
+                rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
+                navigationItem.rightBarButtonItems = [rightBarButton, selectAllBarButton]
             }
             navigationItem.rightBarButtonItem!.isEnabled = false
         }
@@ -72,7 +90,8 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         {
             if rightBarButtonCustomTitle == "Next"
             {
-                navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(onNextButtonTap(_:)))
+                rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onNextButtonTap(_:)))
+                navigationItem.rightBarButtonItems = [rightBarButton, selectAllBarButton]
             }
             navigationItem.rightBarButtonItem!.isEnabled = false
         }
@@ -111,22 +130,14 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     {
         selectedGenres.append(availableGenres[indexPath.section][indexPath.item])
         print(selectedGenres)
-        navigationItem.rightBarButtonItem!.isEnabled = !selectedGenres.isEmpty
-        if areCellsPreselected
-        {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedGenres.sorted() != preSelectedGenres!.sorted()
-        }
+        resetBarButtons()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath)
     {
         selectedGenres.remove(at: selectedGenres.firstIndex(of: availableGenres[indexPath.section][indexPath.item])!)
         print(selectedGenres)
-        navigationItem.rightBarButtonItem!.isEnabled = !selectedGenres.isEmpty
-        if areCellsPreselected
-        {
-            navigationItem.rightBarButtonItem!.isEnabled = navigationItem.rightBarButtonItem!.isEnabled && selectedGenres.sorted() != preSelectedGenres!.sorted()
-        }
+        resetBarButtons()
     }
 
 }
@@ -147,6 +158,42 @@ extension GenreSelectionCollectionViewController: UICollectionViewDelegateFlowLa
 
 extension GenreSelectionCollectionViewController
 {
+    @objc func onSelectAllButtonTap(_ sender: UIBarButtonItem)
+    {
+        if sender.title! == "Select All"
+        {
+            for x in 0..<availableGenres.count
+            {
+                for y in 0..<availableGenres[x].count
+                {
+                    let indexPath = IndexPath(item: y, section: x)
+                    collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                    let genre = availableGenres[x][y]
+                    if !selectedGenres.contains(genre)
+                    {
+                        selectedGenres.append(genre)
+                        print(selectedGenres)
+                    }
+                }
+            }
+            resetBarButtons()
+        }
+        else
+        {
+            for x in 0..<availableGenres.count
+            {
+                for y in 0..<availableGenres[x].count
+                {
+                    let indexPath = IndexPath(item: y, section: x)
+                    collectionView.deselectItem(at: indexPath, animated: true)
+                    selectedGenres.removeAll()
+                    print(selectedGenres)
+                }
+            }
+            resetBarButtons()
+        }
+    }
+    
     @objc func onCancelButtonTap(_ sender: UIBarButtonItem)
     {
         self.dismiss(animated: true)
