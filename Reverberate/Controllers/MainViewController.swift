@@ -800,10 +800,10 @@ extension MainViewController
     
     @objc func onSongChange()
     {
-        guard GlobalVariables.shared.currentSong != nil else
-        {
-            return
-        }
+//        guard GlobalVariables.shared.currentSong != nil else
+//        {
+//            return
+//        }
         GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url as URL)
         GlobalVariables.shared.avAudioPlayer.delegate = self
         avAudioPlayer = GlobalVariables.shared.avAudioPlayer
@@ -823,10 +823,11 @@ extension MainViewController
     
     @objc func onPlaylistChange()
     {
-        guard let playlist = GlobalVariables.shared.currentPlaylist else
-        {
-            return
-        }
+//        guard let playlist = GlobalVariables.shared.currentPlaylist else
+//        {
+//            return
+//        }
+        let playlist = GlobalVariables.shared.currentPlaylist!
         GlobalVariables.shared.alreadyPlayedSongs = []
         if let song = GlobalVariables.shared.currentSong
         {
