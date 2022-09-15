@@ -27,6 +27,7 @@ class LoginViewController: UITableViewController
         //Changeable Property
         epField.placeholder = "Email Address"
         epField.clearButtonMode = .whileEditing
+        epField.clearsOnBeginEditing = false
         //Changeable Property
         epField.keyboardType = .emailAddress
         epField.returnKeyType = .next
@@ -47,6 +48,7 @@ class LoginViewController: UITableViewController
         passField.placeholder = "Password"
         passField.isSecureTextEntry = true
         passField.clearButtonMode = .whileEditing
+        passField.clearsOnBeginEditing = false
         passField.keyboardType = .default
         passField.returnKeyType = .done
         passField.textContentType = .oneTimeCode
@@ -152,18 +154,19 @@ extension LoginViewController: UITextFieldDelegate
             {
                 var email = textField.text ?? ""
                 email.trim()
-                if email.isEmpty
+                if !email.isEmpty
                 {
-                    textField.isInvalid = true
-                    emailCumPhoneErrorLabel.text = "Required"
-                    emailCumPhoneErrorLabel.isHidden = false
-                }
-                else
-                if !InputValidator.validateEmail(email)
-                {
-                    textField.isInvalid = true
-                    emailCumPhoneErrorLabel.text = "Entered Email Address is Invalid !"
-                    emailCumPhoneErrorLabel.isHidden = false
+                    if !InputValidator.validateEmail(email)
+                    {
+                        textField.isInvalid = true
+                        emailCumPhoneErrorLabel.text = "Entered Email Address is Invalid !"
+                        emailCumPhoneErrorLabel.isHidden = false
+                    }
+                    else
+                    {
+                        textField.isInvalid = false
+                        emailCumPhoneErrorLabel.isHidden = true
+                    }
                 }
                 else
                 {
@@ -175,18 +178,19 @@ extension LoginViewController: UITextFieldDelegate
             {
                 var phone = textField.text ?? ""
                 phone.trim()
-                if phone.isEmpty
+                if !phone.isEmpty
                 {
-                    textField.isInvalid = true
-                    emailCumPhoneErrorLabel.text = "Required"
-                    emailCumPhoneErrorLabel.isHidden = false
-                }
-                else
-                if !InputValidator.validatePhone(phone)
-                {
-                    textField.isInvalid = true
-                    emailCumPhoneErrorLabel.text = "Entered Phone Number is Invalid !"
-                    emailCumPhoneErrorLabel.isHidden = false
+                    if !InputValidator.validatePhone(phone)
+                    {
+                        textField.isInvalid = true
+                        emailCumPhoneErrorLabel.text = "Entered Phone Number is Invalid !"
+                        emailCumPhoneErrorLabel.isHidden = false
+                    }
+                    else
+                    {
+                        textField.isInvalid = false
+                        emailCumPhoneErrorLabel.isHidden = true
+                    }
                 }
                 else
                 {
@@ -197,18 +201,8 @@ extension LoginViewController: UITextFieldDelegate
         }
         else
         {
-            var password = textField.text ?? ""
-            password.trim()
-            if password.isEmpty
-            {
-                textField.isInvalid = true
-                passwordErrorLabel.isHidden = false
-            }
-            else
-            {
-                textField.isInvalid = false
-                passwordErrorLabel.isHidden = true
-            }
+            textField.isInvalid = false
+            passwordErrorLabel.isHidden = true
         }
     }
     
@@ -319,13 +313,28 @@ extension LoginViewController
                 }
             }
         }
+        emailCumPhoneField.isInvalid = false
+        emailCumPhoneErrorLabel.isHidden = true
         emailCumPhoneField.becomeFirstResponder()
     }
     
     @objc func onLoginButtonTap(_ sender: UIButton)
     {
-        textFieldDidEndEditing(emailCumPhoneField)
-        textFieldDidEndEditing(passwordField)
+        if emailCumPhoneField.text?.isEmpty ?? true
+        {
+            emailCumPhoneField.isInvalid = true
+            emailCumPhoneErrorLabel.text = "Required"
+            emailCumPhoneErrorLabel.isHidden = false
+        }
+        else
+        {
+            textFieldDidEndEditing(emailCumPhoneField)
+        }
+        if passwordField.text?.isEmpty ?? true
+        {
+            passwordField.isInvalid = true
+            passwordErrorLabel.isHidden = false
+        }
         if !emailCumPhoneField.isInvalid && !passwordField.isInvalid
         {
             var user: User?

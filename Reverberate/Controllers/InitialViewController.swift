@@ -360,7 +360,6 @@ extension InitialViewController: LoginDelegate
 {
     func onSuccessfulLogin()
     {
-        UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
         loginController.dismiss(animated: true) {
             (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(MainViewController())
         }

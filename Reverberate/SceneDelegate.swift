@@ -95,7 +95,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         unwrappedWindow.rootViewController = newVC
         if newVC is MainViewController
         {
-            GlobalVariables.shared.mainTabController = newVC as! MainViewController
+            GlobalVariables.shared.mainTabController = (newVC as! MainViewController)
         }
         if animationOption == 0
         {

@@ -46,6 +46,13 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         resetBarButtons()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
+    {
+        coordinator.animate(alongsideTransition: { [unowned self] _ in
+            collectionViewLayout.invalidateLayout()
+        })
+    }
+    
     private func resetBarButtons()
     {
         selectAllBarButton.title = selectedLanguages.isEmpty ? "Select All" : (selectedLanguages.count < availableLanguages.flatMap({ $0 }).count ? "Select All" : "Unselect All")
