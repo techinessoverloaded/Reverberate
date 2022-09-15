@@ -103,18 +103,25 @@ class LibraryPlaylistViewController: UITableViewController
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
+        }
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
-        NotificationCenter.default.removeObserver(self, name: .removePlaylistNotification, object: nil)
-        super.viewDidDisappear(animated)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.removeObserver(self, name: .removePlaylistNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .songAddedToPlaylistNotification, object: nil)
+        }
     }
     
     private func refetchPlaylists()
     {
-        allPlaylists = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
+        allPlaylists = GlobalVariables.shared.currentUser!.playlists!
         sortedPlaylists = sortPlaylists()
         tableView.reloadData()
         emptyMessageLabel.isHidden = isFiltering ? !filteredPlaylists.isEmpty : !allPlaylists.isEmpty
@@ -200,7 +207,7 @@ class LibraryPlaylistViewController: UITableViewController
         let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
         var config = cell.defaultContentConfiguration()
         config.text = playlist.name!
-        config.secondaryText = "\(playlist.rawSongs?.count ?? 0) Songs"
+        config.secondaryText = "\(playlist.songs?.count ?? 0) Songs"
         config.textProperties.adjustsFontForContentSizeCategory = true
         config.textProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
@@ -281,6 +288,11 @@ extension LibraryPlaylistViewController: UISearchControllerDelegate
 
 extension LibraryPlaylistViewController
 {
+    @objc func songAddedToPlaylistNotification(_ notification: NSNotification)
+    {
+        refetchPlaylists()
+    }
+    
     @objc func onCreatePlaylistButtonTap()
     {
         let alert = UIAlertController(title: "Create New Playlist", message: "Enter name of the New Playlist", preferredStyle: .alert)
@@ -305,7 +317,7 @@ extension LibraryPlaylistViewController
             {
                 let newPlaylist = Playlist()
                 newPlaylist.name = nameField.text!
-                newPlaylist.setSongs([])
+                newPlaylist.songs = []
                 GlobalVariables.shared.currentUser!.addToPlaylists(newPlaylist)
                 DispatchQueue.main.async { [unowned self] in
                     self.refetchPlaylists()

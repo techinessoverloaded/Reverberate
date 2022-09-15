@@ -97,7 +97,7 @@ class HomeViewController: UICollectionViewController
         result.forEach {
             let playlist = Playlist()
             playlist.name = $0.category.description
-            playlist.setSongs($0.songs)
+            playlist.songs = $0.songs
             playlists[$0.category] = playlist
         }
         return result
@@ -156,8 +156,8 @@ extension HomeViewController
         if GlobalVariables.shared.currentSong != categoricalSongs[item]
         {
             print(categoricalSongs[item])
-            GlobalVariables.shared.currentPlaylist = playlists[category]!
             GlobalVariables.shared.currentSong = categoricalSongs[item]
+            GlobalVariables.shared.currentPlaylist = playlists[category]!
         }
     }
     

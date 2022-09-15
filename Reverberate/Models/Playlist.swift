@@ -14,7 +14,6 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
     {
         case nameKey = "playlistNameKey"
         case songsKey = "playlistSongsKey"
-        case songNamesKey = "playlistSongNamesKey"
     }
     
     public class var supportsSecureCoding: Bool
@@ -23,13 +22,7 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
     }
     
     public var name: String? = nil
-    public var rawSongs: NSArray? = []
-    public var songNames: NSArray? = []
-    
-    public var songs: [Song]?
-    {
-        return rawSongs as? [Song]
-    }
+    public var songs: [Song]? = nil
     
     public override var description: String
     {
@@ -39,16 +32,14 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
     public func encode(with coder: NSCoder)
     {
         coder.encode(name, forKey: CoderKeys.nameKey.rawValue)
-        coder.encode(rawSongs, forKey: CoderKeys.songsKey.rawValue)
-        coder.encode(songNames, forKey: CoderKeys.songNamesKey.rawValue)
+        coder.encode(songs, forKey: CoderKeys.songsKey.rawValue)
     }
     
     public required convenience init?(coder: NSCoder)
     {
         self.init()
         self.name = coder.decodeObject(forKey: CoderKeys.nameKey.rawValue) as? String
-        self.rawSongs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? NSArray
-        self.songNames = coder.decodeObject(forKey: CoderKeys.songNamesKey.rawValue) as? NSArray
+        self.songs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? [Song]
     }
     
     public override init()
@@ -71,49 +62,25 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
         return lhs.name! < rhs.name!
     }
     
-    public func setSongNames(_ names: [String])
-    {
-        songNames = names as NSArray
-    }
-    
-    public func addSongName(_ songName: String)
-    {
-        let mutableSongNames: NSMutableArray = songNames!.mutableCopy() as! NSMutableArray
-        mutableSongNames.add(songName)
-        songNames = mutableSongNames
-    }
-    
-    public func removeSongName(_ songName: String)
-    {
-        let mutableSongNames: NSMutableArray = songNames!.mutableCopy() as! NSMutableArray
-        mutableSongNames.remove(songName)
-        songNames = mutableSongNames
-    }
-
-    public func setSongs(_ songs: [Song])
-    {
-        rawSongs = ((songs as NSArray).mutableCopy() as! NSMutableArray)
-    }
-    
     public func addSong(_ song: Song)
     {
-        let mutableSongs: NSMutableArray = rawSongs!.mutableCopy() as! NSMutableArray
-        mutableSongs.add(song)
-        rawSongs = mutableSongs
+        var existingSongs = songs!
+        existingSongs.appendUniquely(song)
+        songs = existingSongs
     }
     
     public func removeSong(_ song: Song)
     {
-        let mutableSongs: NSMutableArray = rawSongs!.mutableCopy() as! NSMutableArray
-        mutableSongs.remove(song)
-        rawSongs = mutableSongs
+        var existingSongs = songs!
+        existingSongs.removeUniquely(song)
+        songs = existingSongs
     }
     
     public func copy(with zone: NSZone? = nil) -> Any
     {
         let newPlaylist = Playlist()
         newPlaylist.name = self.name
-        newPlaylist.rawSongs = self.rawSongs
+        newPlaylist.songs = self.songs
         return newPlaylist
     }
     

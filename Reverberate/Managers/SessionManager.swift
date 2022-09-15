@@ -80,10 +80,12 @@ class SessionManager
         newUser.favouriteArtists = []
         newUser.playlists = []
         newUser.favouriteAlbums = []
+        newUser.preferredGenres = []
+        newUser.preferredLanguages = []
         contextSaveAction()
         let defaultPlaylist = Playlist()
         defaultPlaylist.name = "Default Playlist"
-        defaultPlaylist.setSongs( [DataProcessor.shared.getSong(named: "Arabic Kuthu")!])
+        defaultPlaylist.songs = []
         newUser.addToPlaylists(defaultPlaylist)
         UserDefaults.standard.set(newUser.id, forKey: GlobalConstants.currentUserId)
         UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)

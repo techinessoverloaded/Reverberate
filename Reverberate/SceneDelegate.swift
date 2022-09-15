@@ -67,19 +67,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         {
             if let userId = userDefaults.string(forKey: GlobalConstants.currentUserId)
             {
+                GlobalVariables.shared.currentUser = SessionManager.shared.fetchUser(withId: userId)
+                if GlobalVariables.shared.currentUser!.preferredGenres!.isEmpty
+                {
+                    GlobalVariables.shared.currentUser!.preferredGenres = MusicGenre.allCases.filter({ $0.rawValue >= 0 }).map({ $0.rawValue })
+                    GlobalConstants.contextSaveAction()
+                }
+                if GlobalVariables.shared.currentUser!.preferredLanguages!.isEmpty
+                {
+                    GlobalVariables.shared.currentUser!.preferredLanguages = Language.allCases.filter({ $0.rawValue >= 0 }).map({ $0.rawValue })
+                    GlobalConstants.contextSaveAction()
+                }
                 let mainVc = MainViewController()
                 GlobalVariables.shared.mainTabController = mainVc
-                GlobalVariables.shared.currentUser = SessionManager.shared.fetchUser(withId: userId)
                 window!.rootViewController = mainVc
                 print("userId exists")
             }
             else
             {
                 print("userId doesn't exist")
+                let preferredGenres = userDefaults.object(forKey: GlobalConstants.preferredGenres) as! [Int16]
+                let preferredLanguages = userDefaults.object(forKey: GlobalConstants.preferredLanguages) as! [Int16]
+                if preferredGenres.isEmpty
+                {
+                    userDefaults.set(MusicGenre.allCases.filter({ $0.rawValue >= 0 }).map({ $0.rawValue }), forKey: GlobalConstants.preferredGenres)
+                }
+                if preferredLanguages.isEmpty
+                {
+                    userDefaults.set(Language.allCases.filter({ $0.rawValue >= 0 }).map({ $0.rawValue }), forKey: GlobalConstants.preferredLanguages)
+                }
                 let mainVc = MainViewController()
-                window!.rootViewController = mainVc
                 GlobalVariables.shared.mainTabController = mainVc
-                //LoginViewController(style: .insetGrouped)
+                window!.rootViewController = mainVc
             }
         }
         restoreTheme()

@@ -68,7 +68,7 @@ class ArtistViewController: UITableViewController
     private lazy var playlist: Playlist = {
         let artistPlaylist = Playlist()
         artistPlaylist.name = artist.name!
-        artistPlaylist.setSongs(songs)
+        artistPlaylist.songs = songs
         return artistPlaylist
     }()
     

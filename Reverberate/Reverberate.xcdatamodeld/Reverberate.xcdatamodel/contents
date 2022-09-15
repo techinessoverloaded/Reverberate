@@ -2,14 +2,14 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="User" representedClassName=".User" syncable="YES">
         <attribute name="email" optional="YES" attributeType="String"/>
-        <attribute name="favouriteAlbums" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".NSArray"/>
-        <attribute name="favouriteArtists" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".NSArray"/>
-        <attribute name="favouriteSongs" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".NSArray"/>
+        <attribute name="favouriteAlbums" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Album]"/>
+        <attribute name="favouriteArtists" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Artist]"/>
+        <attribute name="favouriteSongs" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Song]"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="password" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
-        <attribute name="playlists" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".NSArray"/>
+        <attribute name="playlists" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Playlist]"/>
         <attribute name="preferredGenres" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int16]"/>
         <attribute name="preferredLanguages" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int16]"/>
         <attribute name="profilePicture" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>

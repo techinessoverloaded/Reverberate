@@ -7,5 +7,5 @@
 
 protocol PlaylistSelectionDelegate: AnyObject
 {
-    func onPlaylistSelection(selectedPlaylist: inout Playlist)
+    func onPlaylistSelection(selectedPlaylist: Playlist)
 }

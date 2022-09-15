@@ -597,53 +597,49 @@ extension PlayerViewController
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-        cell.selectionStyle = .none
-        let section = indexPath.section
         let item = indexPath.item
-        if section == 0
+        if item == 0
         {
-            if item == 0
-            {
-                cell.addSubViewToContentView(playlistTitleView, useAutoLayout: true, useClearBackground: true)
-                cell.accessoryType = .none
-            }
-            else if item == 1
-            {
-                cell.addSubViewToContentView(playlistDetailView, useAutoLayout: true, useClearBackground: true)
-                cell.accessoryType = .none
-            }
-            else if item == 2
-            {
-                cell.addSubViewToContentView(posterView, useAutoLayout: true, useClearBackground: true)
-                cell.accessoryType = .none
-            }
-            else if item == 3
-            {
-                cell.addSubViewToContentView(songTitleView, useAutoLayout: true, useClearBackground: true)
-                cell.accessoryType = .none
-            }
-            else if item == 4
-            {
-                cell.addSubViewToContentView(songArtistsView, useAutoLayout: true, useClearBackground: true)
-                cell.backgroundColor = .separator
-                cell.accessoryType = .disclosureIndicator
-            }
-            else if item == 5
-            {
-                cell.addSubViewToContentView(songSlider, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
-                cell.accessoryType = .none
-            }
-            else if item == 6
-            {
-                cell.addSubViewToContentView(durationView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
-                cell.accessoryType = .none
-            }
-            else
-            {
-                cell.addSubViewToContentView(controlsView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
-                cell.accessoryType = .none
-            }
+            cell.addSubViewToContentView(playlistTitleView, useAutoLayout: true, useClearBackground: true)
+            cell.accessoryType = .none
         }
+        else if item == 1
+        {
+            cell.addSubViewToContentView(playlistDetailView, useAutoLayout: true, useClearBackground: true)
+            cell.accessoryType = .none
+        }
+        else if item == 2
+        {
+            cell.addSubViewToContentView(posterView, useAutoLayout: true, useClearBackground: true)
+            cell.accessoryType = .none
+        }
+        else if item == 3
+        {
+            cell.addSubViewToContentView(songTitleView, useAutoLayout: true, useClearBackground: true)
+            cell.accessoryType = .none
+        }
+        else if item == 4
+        {
+            cell.addSubViewToContentView(songArtistsView, useAutoLayout: true, useClearBackground: true)
+            cell.backgroundColor = .separator
+            cell.accessoryType = .disclosureIndicator
+        }
+        else if item == 5
+        {
+            cell.addSubViewToContentView(songSlider, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
+            cell.accessoryType = .none
+        }
+        else if item == 6
+        {
+            cell.addSubViewToContentView(durationView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
+            cell.accessoryType = .none
+        }
+        else
+        {
+            cell.addSubViewToContentView(controlsView, useAutoLayout: true, useMultiplierForWidth: 0.95, useClearBackground: true)
+            cell.accessoryType = .none
+        }
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -903,7 +899,7 @@ extension PlayerViewController: SongArtistsViewDelegate
 }
 extension PlayerViewController: PlaylistSelectionDelegate
 {
-    func onPlaylistSelection(selectedPlaylist: inout Playlist)
+    func onPlaylistSelection(selectedPlaylist: Playlist)
     {
         guard let songToBeAdded = GlobalVariables.shared.currentSong else { return }
         if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })
@@ -915,6 +911,7 @@ extension PlayerViewController: PlaylistSelectionDelegate
         else
         {
             GlobalVariables.shared.currentUser!.add(song: songToBeAdded, toPlaylistNamed: selectedPlaylist.name!)
+            NotificationCenter.default.post(name: .songAddedToPlaylistNotification, object: nil, userInfo: ["playlistName" : selectedPlaylist.name!])
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

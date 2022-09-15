@@ -34,6 +34,6 @@ class CustomDataTransformer: ValueTransformer
         {
             fatalError("value is of type: \(type(of: value))")
         }
-        return try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, NSMutableArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Playlist.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
+        return try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Playlist.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
     }
 }

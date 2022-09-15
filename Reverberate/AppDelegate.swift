@@ -21,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
             print("Time Taken: \(interval / 1000000000) seconds")
         })
         ValueTransformer.setValueTransformer(CustomDataTransformer(), forName: .customTransformer)
-        let stackViewAppearance = UIStackView.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
-        stackViewAppearance.spacing = 10
+//        let stackViewAppearance = UIStackView.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
+//        stackViewAppearance.spacing = 10
         return true
     }
     

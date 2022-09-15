@@ -11,9 +11,29 @@ class PlaylistSelectionViewController: UITableViewController
 {
     private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
     
-    private lazy var backgroundView: UIVisualEffectView = {
-        let bView = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
-        return bView
+    private lazy var backgroundView: UIView = isTranslucent ? UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial)) : UIView()
+    
+    private lazy var noPlaylistsMessage: NSAttributedString = {
+        let largeTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 19, weight: .bold),
+            NSAttributedString.Key.foregroundColor : UIColor.label
+        ]
+        let smallerTextAttributes: [NSAttributedString.Key : Any] =
+        [
+            NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .body),
+            NSAttributedString.Key.foregroundColor : UIColor.secondaryLabel
+        ]
+        var mutableAttrString = NSMutableAttributedString(string: "No Playlists were found\n\n", attributes: largeTextAttributes)
+        mutableAttrString.append(NSMutableAttributedString(string: "Try adding some Playlists.", attributes: smallerTextAttributes))
+        return mutableAttrString
+    }()
+    
+    private lazy var emptyMessageLabel: UILabel = {
+        let emLabel = UILabel(useAutoLayout: true)
+        emLabel.textAlignment = .center
+        emLabel.numberOfLines = 4
+        return emLabel
     }()
     
     private var selectedPlaylist: Playlist? = nil
@@ -43,8 +63,21 @@ class PlaylistSelectionViewController: UITableViewController
         {
             tableView.backgroundColor = .clear
             view.backgroundColor = .clear
-            tableView.backgroundView = backgroundView
+            (backgroundView as! UIVisualEffectView).contentView.addSubview(emptyMessageLabel)
         }
+        else
+        {
+            tableView.backgroundColor = .systemGroupedBackground
+            backgroundView.addSubview(emptyMessageLabel)
+        }
+        NSLayoutConstraint.activate([
+            emptyMessageLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            emptyMessageLabel.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+            emptyMessageLabel.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.8)
+        ])
+        emptyMessageLabel.attributedText = noPlaylistsMessage
+        emptyMessageLabel.isHidden = !allPlaylists.isEmpty
+        tableView.backgroundView = backgroundView
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -152,11 +185,12 @@ extension PlaylistSelectionViewController
             {
                 let newPlaylist = Playlist()
                 newPlaylist.name = nameField.text!
-                newPlaylist.setSongs([])
+                newPlaylist.songs = []
                 GlobalVariables.shared.currentUser!.addToPlaylists(newPlaylist)
                 print(GlobalVariables.shared.currentUser!.playlists!)
                 DispatchQueue.main.async { [unowned self] in
                     self.fetchPlaylists()
+                    emptyMessageLabel.isHidden = !allPlaylists.isEmpty
                 }
             }
         }))
@@ -167,7 +201,7 @@ extension PlaylistSelectionViewController
     @objc func onDoneButtonTap()
     {
         self.dismiss(animated: true, completion: { [unowned self] in
-            delegate?.onPlaylistSelection(selectedPlaylist: &selectedPlaylist!)
+            delegate?.onPlaylistSelection(selectedPlaylist: selectedPlaylist!)
         })
     }
 }

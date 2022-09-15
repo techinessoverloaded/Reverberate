@@ -21,7 +21,7 @@ struct AlbumSegregator
             {
                 let newAlbum = Album()
                 newAlbum.coverArt = song.coverArt
-                newAlbum.setSongs([])
+                newAlbum.songs = []
                 newAlbum.addSong(song)
                 newAlbum.name = song.albumName!
                 newAlbum.releaseDate = DateFormatter.getDateFromString(dateString: GlobalConstants.albumReleaseDates[newAlbum.name!]!)

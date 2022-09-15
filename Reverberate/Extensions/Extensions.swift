@@ -411,6 +411,8 @@ extension NSNotification.Name
     static let upcomingSongClickedNotification = NSNotification.Name("upcomingSongClickedNotification")
     static let previousSongClickedNotification = NSNotification.Name("previousSongClickedNotification")
     static let recentlyPlayedListChangedNotification = NSNotification.Name("recentlyPlayedListChangedNotification")
+    static let songRemovedFromPlaylistNotification = NSNotification.Name("songRemovedFromPlaylistNotification")
+    static let songAddedToPlaylistNotification = NSNotification.Name("songAddedToPlaylistNotification")
 }
 
 

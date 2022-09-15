@@ -26,6 +26,7 @@ class SignupViewController: UITableViewController
         nField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         nField.placeholder = "Name"
         nField.clearButtonMode = .whileEditing
+        nField.clearsOnBeginEditing = false
         nField.keyboardType = .namePhonePad
         nField.returnKeyType = .next
         nField.autocapitalizationType = .words
@@ -44,6 +45,7 @@ class SignupViewController: UITableViewController
         pField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         pField.placeholder = "Phone Number"
         pField.clearButtonMode = .whileEditing
+        pField.clearsOnBeginEditing = false
         pField.keyboardType = .phonePad
         pField.returnKeyType = .next
         pField.autocapitalizationType = .none
@@ -61,6 +63,7 @@ class SignupViewController: UITableViewController
         eField.layer.borderColor = UIColor(named: GlobalConstants.techinessColor)!.withAlphaComponent(0.7).cgColor
         eField.placeholder = "Email Address"
         eField.clearButtonMode = .whileEditing
+        eField.clearsOnBeginEditing = false
         eField.keyboardType = .emailAddress
         eField.returnKeyType = .next
         eField.autocapitalizationType = .none
@@ -79,6 +82,7 @@ class SignupViewController: UITableViewController
         passField.placeholder = "Password"
         passField.isSecureTextEntry = true
         passField.clearButtonMode = .whileEditing
+        passField.clearsOnBeginEditing = false
         passField.keyboardType = .default
         passField.textContentType = .oneTimeCode
         passField.returnKeyType = .next
@@ -97,6 +101,7 @@ class SignupViewController: UITableViewController
         pass2Field.placeholder = "Confirm Password"
         pass2Field.isSecureTextEntry = true
         pass2Field.clearButtonMode = .whileEditing
+        pass2Field.clearsOnBeginEditing = false
         pass2Field.keyboardType = .default
         pass2Field.textContentType = .oneTimeCode
         pass2Field.returnKeyType = .done
@@ -182,16 +187,19 @@ class SignupViewController: UITableViewController
     
     private var languageSelectionController: LanguageSelectionCollectionViewController!
     
-    weak var delegate: SignupDelegate?
+    private var headerView: UIView!
     
-    override func loadView()
-    {
-        super.loadView()
-    }
+    private lazy var defaultOffset: CGFloat = tableView.contentOffset.y
+    
+    private var tableHeaderHeight: CGFloat = 70
+    
+    weak var delegate: SignupDelegate?
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        title = "Create a New Account"
+        navigationItem.title = nil
         view.backgroundColor = .systemBackground
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.allowsSelection = false
@@ -213,6 +221,13 @@ class SignupViewController: UITableViewController
         emailErrorLabel.isHidden = true
         passwordErrorLabel.isHidden = true
         confirmPasswordErrorLabel.isHidden = true
+        headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.contentSize.width, height: tableHeaderHeight))
+        headerView.addSubview(titleView)
+        NSLayoutConstraint.activate([
+            titleView.topAnchor.constraint(equalTo: headerView.topAnchor),
+            titleView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor)
+        ])
+        tableView.tableHeaderView = headerView
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -449,20 +464,16 @@ extension SignupViewController
 {
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        8
+        return 7
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        1
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
     {
-//        if section == 4
-//        {
-//            return 34
-//        }
         return 34
     }
     
@@ -470,15 +481,15 @@ extension SignupViewController
     {
         switch section
         {
-        case 1:
+        case 0:
             return nameErrorLabel
-        case 2:
+        case 1:
             return phoneErrorLabel
-        case 3:
+        case 2:
             return emailErrorLabel
-        case 4:
+        case 3:
             return passwordErrorLabel
-        case 5:
+        case 4:
             return confirmPasswordErrorLabel
         default:
             return nil
@@ -488,35 +499,36 @@ extension SignupViewController
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-        switch indexPath.section
+        let section = indexPath.section
+        if section == 0
         {
-        case 0:
-            cell.addSubViewToContentView(titleView)
-            return cell
-        case 1:
             cell.addSubViewToContentView(nameField)
-            return cell
-        case 2:
-            cell.addSubViewToContentView(phoneField)
-            return cell
-        case 3:
-            cell.addSubViewToContentView(emailField)
-            return cell
-        case 4:
-            cell.addSubViewToContentView(passwordField)
-            return cell
-        case 5:
-            cell.addSubViewToContentView(confirmPasswordField)
-            return cell
-        case 6:
-            cell.addSubViewToContentView(signupButton)
-            return cell
-        case 7:
-            cell.addSubViewToContentView(accountExistsButton)
-            return cell
-        default:
-            return UITableViewCell()
         }
+        else if section == 1
+        {
+            cell.addSubViewToContentView(phoneField)
+        }
+        else if section == 2
+        {
+            cell.addSubViewToContentView(emailField)
+        }
+        else if section == 3
+        {
+            cell.addSubViewToContentView(passwordField)
+        }
+        else if section == 4
+        {
+            cell.addSubViewToContentView(confirmPasswordField)
+        }
+        else if section == 5
+        {
+            cell.addSubViewToContentView(signupButton)
+        }
+        else
+        {
+            cell.addSubViewToContentView(accountExistsButton)
+        }
+        return cell
     }
 }
 
@@ -608,5 +620,16 @@ extension SignupViewController
             emailField.becomeFirstResponder()
         }
         print("Custom Return Button Tapped")
+    }
+}
+extension SignupViewController
+{
+    override func scrollViewDidScroll(_ scrollView: UIScrollView)
+    {
+        let offset = tableView.contentOffset.y
+        UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCrossDissolve], animations: { [unowned self] in
+            navigationItem.title = offset > defaultOffset ? title : nil
+            titleView.alpha = offset > defaultOffset ? 0 : 1
+        }, completion: nil)
     }
 }

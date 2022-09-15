@@ -53,10 +53,10 @@ class ContextMenuProvider
         }
     }
     
-    private func getRemoveSongFromPlaylistMenuItem(song: Song, requesterId: Int) -> UIAction
+    private func getRemoveSongFromPlaylistMenuItem(song: Song, playlist: Playlist, requesterId: Int) -> UIAction
     {
         return UIAction(title: "Remove Song From Current Playlist", image: addToPlaylistIcon) { [unowned self] _ in
-            onRemoveSongFromPlaylistMenuItemTap(song: song, receiverId: requesterId)
+            onRemoveSongFromPlaylistMenuItemTap(song: song, playlist: playlist, receiverId: requesterId)
         }
     }
     
@@ -179,12 +179,12 @@ class ContextMenuProvider
         ])
     }
     
-    func getPlaylistSongMenu(song: Song, requesterId: Int, requiresTranslucentSelectionScreen: Bool = false) -> UIMenu
+    func getPlaylistSongMenu(song: Song, playlist: Playlist, requesterId: Int, requiresTranslucentSelectionScreen: Bool = false) -> UIMenu
     {
         return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
             getAddOrRemoveSongDeferredMenuItem(song: song, requesterId: requesterId),
             getAddSongToPlaylistFavMenuItem(song: song, requesterId: requesterId, requiresTranslucentSelectionScreen: requiresTranslucentSelectionScreen),
-            getRemoveSongFromPlaylistMenuItem(song: song, requesterId: requesterId),
+            getRemoveSongFromPlaylistMenuItem(song: song, playlist: playlist, requesterId: requesterId),
             getShowAlbumMenuItem(song: song, requesterId: requesterId)
         ])
     }
@@ -238,7 +238,7 @@ class ContextMenuProvider
             var menuElements: [UIAction] = []
             for song in previousSongs
             {
-                let songAction = UIAction(title: song.title!, image: nil, handler: { [unowned self] _ in
+                let songAction = UIAction(title: song.title!, image: UIImage(systemName: "music.note")!, handler: { [unowned self] _ in
                     onPreviousSongClick(song: song, receiverId: requesterId)
                 })
                 menuElements.append(songAction)
@@ -278,7 +278,7 @@ class ContextMenuProvider
             var menuElements: [UIAction] = []
             for song in upcomingSongs
             {
-                let songAction = UIAction(title: song.title!, image: nil, handler: { [unowned self] _ in
+                let songAction = UIAction(title: song.title!, image:  UIImage(systemName: "music.note")!, handler: { [unowned self] _ in
                     onUpcomingSongClick(song: song, receiverId: requesterId)
                 })
                 menuElements.append(songAction)
@@ -323,9 +323,9 @@ extension ContextMenuProvider
     }
     
     
-    @objc private func onRemoveSongFromPlaylistMenuItemTap(song: Song, receiverId: Int)
+    @objc private func onRemoveSongFromPlaylistMenuItemTap(song: Song, playlist: Playlist, receiverId: Int)
     {
-        NotificationCenter.default.post(name: .removeSongFromPlaylistNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song])
+        NotificationCenter.default.post(name: .removeSongFromPlaylistNotification, object: nil, userInfo: ["receiverId" : receiverId,"song" : song, "playlist" : playlist])
     }
     
     @objc private func onAddAlbumToFavouritesMenuItemTap(album: Album, receiverId: Int)

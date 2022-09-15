@@ -125,7 +125,7 @@ class MainViewController: UITabBarController
             section.interGroupSpacing = 15
             section.orthogonalScrollingBehavior = .continuous
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 5, trailing: 20)
-            section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
+            section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(50)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
             return section
         }))
         result.title = "Home"
@@ -150,6 +150,7 @@ class MainViewController: UITabBarController
             NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromPlaylistNotification(_:)), name: .removeSongFromPlaylistNotification, object: nil)
         }
         else
         {
@@ -172,6 +173,7 @@ class MainViewController: UITabBarController
             NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .removeSongFromPlaylistNotification, object: nil)
         }
         else
         {
@@ -557,7 +559,7 @@ extension MainViewController: PlayerDelegate
             if GlobalVariables.shared.currentPlaylist != playlist
             {
                 let shuffledPlaylist = playlist.copy() as! Playlist
-                shuffledPlaylist.setSongs( playlist.songs!.shuffled())
+                shuffledPlaylist.songs = playlist.songs!.shuffled()
                 GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
                 GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
             }
@@ -602,6 +604,39 @@ extension MainViewController: PlayerDelegate
 
 extension MainViewController
 {
+    @objc func onRemoveSongFromPlaylistNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        guard let playlist = notification.userInfo?["playlist"] as? Playlist else
+        {
+            return
+        }
+        if GlobalVariables.shared.currentSong == song
+        {
+            if GlobalVariables.shared.currentPlaylist == playlist
+            {
+                if playlist.songs!.count - 1 > 0
+                {
+                    onNextSongRequest(playlist: playlist, currentSong: song)
+                }
+                else
+                {
+                    GlobalVariables.shared.currentSong = nil
+                    GlobalVariables.shared.currentPlaylist = nil
+                }
+            }
+        }
+        GlobalVariables.shared.currentUser!.remove(song: song, fromPlaylistNamed: playlist.name!)
+        NotificationCenter.default.post(name: .songRemovedFromPlaylistNotification, object: nil, userInfo: ["playlistName": playlist.name!])
+    }
+    
     @objc func onAddSongToPlaylistNotification(_ notification: NSNotification)
     {
         guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
@@ -765,6 +800,10 @@ extension MainViewController
     
     @objc func onSongChange()
     {
+        guard GlobalVariables.shared.currentSong != nil else
+        {
+            return
+        }
         GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url as URL)
         GlobalVariables.shared.avAudioPlayer.delegate = self
         avAudioPlayer = GlobalVariables.shared.avAudioPlayer
@@ -784,8 +823,26 @@ extension MainViewController
     
     @objc func onPlaylistChange()
     {
-        let playlist = GlobalVariables.shared.currentPlaylist!
+        guard let playlist = GlobalVariables.shared.currentPlaylist else
+        {
+            return
+        }
         GlobalVariables.shared.alreadyPlayedSongs = []
+        if let song = GlobalVariables.shared.currentSong
+        {
+            if playlist.songs!.contains(song)
+            {
+                miniPlayerView.setPlaying(shouldPlaySong: true)
+                miniPlayerTimer.isPaused = false
+                setupNowPlayingNotification()
+                if !hasSetupMPCommandCenter
+                {
+                    setupMPCommandCenter()
+                    hasSetupMPCommandCenter = true
+                }
+                return
+            }
+        }
         if GlobalVariables.shared.currentShuffleMode == .on
         {
             var randomSong = playlist.songs!.randomElement()!
@@ -903,7 +960,7 @@ extension MainViewController: PlaylistDelegate
         if shuffleMode == .on
         {
             let shuffledPlaylist = playlist.copy() as! Playlist
-            shuffledPlaylist.setSongs( playlist.songs!.shuffled())
+            shuffledPlaylist.songs = playlist.songs!.shuffled()
             GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
             GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
         }
@@ -955,7 +1012,7 @@ extension MainViewController: UIContextMenuInteractionDelegate
 
 extension MainViewController: PlaylistSelectionDelegate
 {
-    func onPlaylistSelection(selectedPlaylist: inout Playlist)
+    func onPlaylistSelection(selectedPlaylist: Playlist)
     {
         guard let songToBeAdded = songToBeAddedToPlaylist else { return }
         if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })
@@ -966,9 +1023,8 @@ extension MainViewController: PlaylistSelectionDelegate
         }
         else
         {
-            GlobalVariables.shared.currentUser!.add(song: songToBeAdded, toPlaylistNamed: selectedPlaylist.name!, completionHandler: {
-                print(SessionManager.shared.fetchUser(withId: GlobalVariables.shared.currentUser!.id!))
-            })
+            GlobalVariables.shared.currentUser!.add(song: songToBeAdded, toPlaylistNamed: selectedPlaylist.name!)
+            NotificationCenter.default.post(name: .songAddedToPlaylistNotification, object: nil, userInfo: ["playlistName" : selectedPlaylist.name!])
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             selectedViewController!.present(alert, animated: true)

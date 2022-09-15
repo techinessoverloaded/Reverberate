@@ -30,7 +30,7 @@ class CategoricalSongsViewController: UITableViewController
     private lazy var playlist: Playlist = {
         let categoricalPlaylist = Playlist()
         categoricalPlaylist.name = category.description
-        categoricalPlaylist.setSongs(songs)
+        categoricalPlaylist.songs = songs
         return categoricalPlaylist
     }()
     

@@ -36,7 +36,7 @@ public class Album: Playlist
     public override func encode(with coder: NSCoder)
     {
         coder.encode(name, forKey: CoderKeys.nameKey.rawValue)
-        coder.encode(rawSongs, forKey: CoderKeys.songsKey.rawValue)
+        coder.encode(songs, forKey: CoderKeys.songsKey.rawValue)
         coder.encode(coverArt, forKey: CoderKeys.coverArtKey.rawValue)
         coder.encode(releaseDate, forKey: CoderKeys.releaseDateKey.rawValue)
         coder.encode(composers, forKey: CoderKeys.composersKey.rawValue)
@@ -46,7 +46,7 @@ public class Album: Playlist
     {
         self.init()
         self.name = coder.decodeObject(forKey: CoderKeys.nameKey.rawValue) as? String
-        self.rawSongs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? NSMutableArray
+        self.songs = coder.decodeObject(forKey: CoderKeys.songsKey.rawValue) as? [Song]
         self.coverArt = coder.decodeObject(forKey: CoderKeys.coverArtKey.rawValue) as? UIImage
         self.releaseDate = coder.decodeObject(forKey: CoderKeys.releaseDateKey.rawValue) as? Date
         self.composers = coder.decodeObject(forKey: CoderKeys.composersKey.rawValue) as? [Artist]
@@ -89,7 +89,7 @@ public class Album: Playlist
         newAlbum.name = self.name
         newAlbum.coverArt = UIImage(data: self.coverArt!.jpegData(compressionQuality: 1)!)!
         newAlbum.composers = self.composers
-        newAlbum.rawSongs = self.rawSongs
+        newAlbum.songs = self.songs
         newAlbum.releaseDate = self.releaseDate
         return newAlbum
     }

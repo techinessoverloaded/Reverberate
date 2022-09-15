@@ -115,7 +115,7 @@ class LibrarySongViewController: UITableViewController
         {
             let songPlaylist = Playlist()
             songPlaylist.name = title
-            songPlaylist.setSongs( sortedSongs.values.flatMap({ $0 }).sorted())
+            songPlaylist.songs = sortedSongs.values.flatMap({ $0 }).sorted()
             return songPlaylist
         }
     }
@@ -628,7 +628,7 @@ extension LibrarySongViewController
 
 extension LibrarySongViewController: PlaylistSelectionDelegate
 {
-    func onPlaylistSelection(selectedPlaylist: inout Playlist)
+    func onPlaylistSelection(selectedPlaylist: Playlist)
     {
         guard let songToBeAdded = songToBeAddedToPlaylist else { return }
         if selectedPlaylist.songs!.contains(where: { $0.title! == songToBeAdded.title! })
@@ -640,6 +640,7 @@ extension LibrarySongViewController: PlaylistSelectionDelegate
         else
         {
             GlobalVariables.shared.currentUser!.add(song: songToBeAdded, toPlaylistNamed: selectedPlaylist.name!)
+            NotificationCenter.default.post(name: .songAddedToPlaylistNotification, object: nil, userInfo: ["playlistName" : selectedPlaylist.name!])
             let alert = UIAlertController(title: "Song added to Playlist", message: "The chosen song was added to \(selectedPlaylist.name!) Playlist successfully!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .cancel))
             self.present(alert, animated: true)

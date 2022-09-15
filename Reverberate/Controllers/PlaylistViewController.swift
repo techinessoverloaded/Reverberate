@@ -212,6 +212,15 @@ class PlaylistViewController: UITableViewController
         albumFavouriteButton.addTarget(self, action: #selector(onAlbumFavouriteButtonTap(_:)), for: .touchUpInside)
         playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
+        let backgroundView = UIView()
+        backgroundView.addSubview(emptyMessageLabel)
+        NSLayoutConstraint.activate([
+            emptyMessageLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            emptyMessageLabel.topAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 150),
+            emptyMessageLabel.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.8)
+        ])
+        emptyMessageLabel.attributedText = noSongsMessage
+        tableView.backgroundView = backgroundView
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -228,6 +237,11 @@ class PlaylistViewController: UITableViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.addObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
+        }
     }
     
     deinit
@@ -235,6 +249,11 @@ class PlaylistViewController: UITableViewController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
+        if SessionManager.shared.isUserLoggedIn
+        {
+            NotificationCenter.default.removeObserver(self, name: .songRemovedFromPlaylistNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .songAddedToPlaylistNotification, object: nil)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -250,7 +269,7 @@ class PlaylistViewController: UITableViewController
     
     private func getSongMenu(song: Song) -> UIMenu
     {
-        return (playlist is Album) ? ContextMenuProvider.shared.getAlbumSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId) : ContextMenuProvider.shared.getPlaylistSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId)
+        return (playlist is Album) ? ContextMenuProvider.shared.getAlbumSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId) : ContextMenuProvider.shared.getPlaylistSongMenu(song: song, playlist: playlist, requesterId: GlobalVariables.shared.mainTabController.requesterId)
     }
     
     func setPlaylistDetails()
@@ -290,16 +309,7 @@ class PlaylistViewController: UITableViewController
             titleView.text = title
             if playlist.songs!.isEmpty
             {
-                let backgroundView = UIView()
-                backgroundView.addSubview(emptyMessageLabel)
-                NSLayoutConstraint.activate([
-                    emptyMessageLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-                    emptyMessageLabel.topAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 150),
-                    emptyMessageLabel.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 0.8)
-                ])
-                emptyMessageLabel.attributedText = noSongsMessage
                 emptyMessageLabel.isHidden = false
-                tableView.backgroundView = backgroundView
                 playButton.isEnabled = false
                 shuffleButton.isEnabled = false
             }
@@ -435,6 +445,40 @@ extension PlaylistViewController
 
 extension PlaylistViewController
 {
+    @objc func songAddedToPlaylistNotification(_ notification: NSNotification)
+    {
+        guard let playlistName = notification.userInfo?["playlistName"] as? String, playlistName == playlist.name! else
+        {
+            return
+        }
+        tableView.reloadData()
+        emptyMessageLabel.isHidden = !playlist.songs!.isEmpty
+        if !playButton.isEnabled
+        {
+            playButton.isEnabled = true
+        }
+        if !shuffleButton.isEnabled
+        {
+            shuffleButton.isEnabled = true
+        }
+    }
+    
+    @objc func songRemovedFromPlaylistNotification(_ notification: NSNotification)
+    {
+        guard let playlistName = notification.userInfo?["playlistName"] as? String, playlistName == playlist.name! else
+        {
+            return
+        }
+        tableView.reloadData()
+        emptyMessageLabel.attributedText = noSongsMessage
+        emptyMessageLabel.isHidden = !playlist.songs!.isEmpty
+        if playlist.songs!.isEmpty
+        {
+            playButton.isEnabled = false
+            shuffleButton.isEnabled = false
+        }
+    }
+    
     @objc func onSongChange()
     {
         guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
@@ -448,7 +492,10 @@ extension PlaylistViewController
             playButton.configuration!.image = playIcon
             return
         }
-        let currentSong = GlobalVariables.shared.currentSong!
+        guard let currentSong = GlobalVariables.shared.currentSong else
+        {
+            return
+        }
         guard let item = playlist.songs!.firstIndex(of: currentSong) else
         {
             return

@@ -34,81 +34,88 @@ public class User: NSManagedObject
     
     public func addToFavouriteSongs(_ song: Song)
     {
-        let mutableFavSongs: NSMutableArray = favouriteSongs!.mutableCopy() as! NSMutableArray
-        mutableFavSongs.add(song)
-        favouriteSongs = mutableFavSongs
+        var existingFavSongs = favouriteSongs!
+        existingFavSongs.appendUniquely(song)
+        favouriteSongs = existingFavSongs
         GlobalConstants.contextSaveAction()
     }
     
     public func removeFromFavouriteSongs(_ song: Song)
     {
-        let mutableFavSongs: NSMutableArray = favouriteSongs!.mutableCopy() as! NSMutableArray
-        mutableFavSongs.remove(song)
-        favouriteSongs = mutableFavSongs
+        var existingFavSongs = favouriteSongs!
+        existingFavSongs.removeUniquely(song)
+        favouriteSongs = existingFavSongs
         GlobalConstants.contextSaveAction()
     }
     
     public func addToFavouriteAlbums(_ album: Album)
     {
-        let mutableFavAlbums: NSMutableArray = favouriteAlbums!.mutableCopy() as! NSMutableArray
-        mutableFavAlbums.add(album)
-        favouriteAlbums = mutableFavAlbums
+        var existingFavAlbums = favouriteAlbums!
+        existingFavAlbums.appendUniquely(album)
+        favouriteAlbums = existingFavAlbums
         GlobalConstants.contextSaveAction()
     }
     
     public func removeFromFavouriteAlbums(_ album: Album)
     {
-        let mutableFavAlbums: NSMutableArray = favouriteAlbums!.mutableCopy() as! NSMutableArray
-        mutableFavAlbums.remove(album)
-        favouriteAlbums = mutableFavAlbums
+        var existingFavAlbums = favouriteAlbums!
+        existingFavAlbums.removeUniquely(album)
+        favouriteAlbums = existingFavAlbums
         GlobalConstants.contextSaveAction()
     }
     
     public func addToFavouriteArtists(_ artist: Artist)
     {
-        let mutableFavArtists: NSMutableArray = favouriteArtists!.mutableCopy() as! NSMutableArray
-        mutableFavArtists.add(artist)
-        favouriteArtists = mutableFavArtists
+        var existingFavArtists = favouriteArtists!
+        existingFavArtists.appendUniquely(artist)
+        favouriteArtists = existingFavArtists
         GlobalConstants.contextSaveAction()
     }
     
     public func removeFromFavouriteArtists(_ artist: Artist)
     {
-        let mutableFavArtists: NSMutableArray = favouriteArtists!.mutableCopy() as! NSMutableArray
-        mutableFavArtists.remove(artist)
-        favouriteArtists = mutableFavArtists
+        var existingFavArtists = favouriteArtists!
+        existingFavArtists.removeUniquely(artist)
+        favouriteArtists = existingFavArtists
         GlobalConstants.contextSaveAction()
     }
     
     public func addToPlaylists(_ playlist: Playlist)
     {
-        let mutablePlaylists: NSMutableArray = playlists!.mutableCopy() as! NSMutableArray
-        mutablePlaylists.add(playlist)
-        playlists = mutablePlaylists
+        var existingPlaylists = playlists!
+        existingPlaylists.appendUniquely(playlist)
+        playlists = existingPlaylists
         GlobalConstants.contextSaveAction()
     }
     
     public func removeFromPlaylists(_ playlist: Playlist)
     {
-        let mutablePlaylists: NSMutableArray = playlists!.mutableCopy() as! NSMutableArray
-        mutablePlaylists.remove(playlist)
-        playlists = mutablePlaylists
+        var existingPlaylists = playlists!
+        existingPlaylists.removeUniquely(playlist)
+        playlists = existingPlaylists
         GlobalConstants.contextSaveAction()
     }
     
     public func add(song: Song, toPlaylistNamed playlistName: String, completionHandler: (() -> Void)? = nil)
     {
-        let mutablePlaylists: NSMutableArray = playlists!.mutableCopy() as! NSMutableArray
-        let index = mutablePlaylists.indexOfObject(passingTest: { object, _, _ in
-            let playlist = object as! Playlist
-            return playlist.name! == playlistName
-        })
-        let requiredPlaylist = playlists![index] as! Playlist
+        var existingPlaylists = playlists!
+        let index = existingPlaylists.firstIndex(where: { $0.name! == playlistName })!
+        let requiredPlaylist = playlists![index]
         requiredPlaylist.addSong(song)
-        requiredPlaylist.addSongName(song.title!)
-        mutablePlaylists.replaceObject(at: index, with: requiredPlaylist)
-        playlists = (mutablePlaylists.copy() as! NSArray)
+        existingPlaylists.replaceSubrange(index..<index+1, with: [requiredPlaylist])
+        playlists = existingPlaylists
         GlobalConstants.contextSaveAction()
         completionHandler?()
+    }
+    
+    public func remove(song: Song, fromPlaylistNamed playlistName: String)
+    {
+        var existingPlaylists = playlists!
+        let index = existingPlaylists.firstIndex(where: { $0.name! == playlistName })!
+        let requiredPlaylist = playlists![index]
+        requiredPlaylist.removeSong(song)
+        existingPlaylists.replaceSubrange(index..<index+1, with: [requiredPlaylist])
+        playlists = existingPlaylists
+        GlobalConstants.contextSaveAction()
     }
 }

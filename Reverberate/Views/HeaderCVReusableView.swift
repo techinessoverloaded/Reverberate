@@ -13,7 +13,7 @@ class HeaderCVReusableView: UICollectionReusableView
     
     private lazy var titleLabel: UILabel = {
         let tLabel = UILabel(useAutoLayout: true)
-        tLabel.font = .preferredFont(forTextStyle: .title1, weight: .semibold)
+        tLabel.font = .preferredFont(forTextStyle: .title2, weight: .semibold)
         tLabel.textAlignment = .left
         tLabel.textColor = .label
         return tLabel

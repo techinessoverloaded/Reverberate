@@ -14,6 +14,7 @@ class LoginViewController: UITableViewController
         tView.text = "Login"
         tView.textColor = .label
         tView.textAlignment = .center
+        tView.numberOfLines = 0
         tView.font = .systemFont(ofSize: 34, weight: .bold)
         return tView
     }()
@@ -99,20 +100,19 @@ class LoginViewController: UITableViewController
         return passErrorLabel
     }()
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private var headerView: UIView!
     
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
+    private lazy var defaultOffset: CGFloat = tableView.contentOffset.y
+    
+    private var tableHeaderHeight: CGFloat = 70
     
     weak var delegate: LoginDelegate?
-    
-    override func loadView()
-    {
-        super.loadView()
-    }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        title = "Login"
+        navigationItem.title = nil
         view.backgroundColor = .systemBackground
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.allowsSelection = false
@@ -129,6 +129,13 @@ class LoginViewController: UITableViewController
         noAccountButton.addTarget(self, action: #selector(onNoAccountButtonTap(_:)), for: .touchUpInside)
         emailCumPhoneErrorLabel.isHidden = true
         passwordErrorLabel.isHidden = true
+        headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.contentSize.width, height: tableHeaderHeight))
+        headerView.addSubview(titleView)
+        NSLayoutConstraint.activate([
+            titleView.topAnchor.constraint(equalTo: headerView.topAnchor),
+            titleView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor)
+        ])
+        tableView.tableHeaderView = headerView
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -251,21 +258,21 @@ extension LoginViewController
 {
     override func numberOfSections(in tableView: UITableView) -> Int
     {
-        6
+        return 5
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        1
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
     {
         switch section
         {
-        case 2:
+        case 1:
             return emailCumPhoneErrorLabel
-        case 3:
+        case 2:
             return passwordErrorLabel
         default:
             return nil
@@ -280,29 +287,28 @@ extension LoginViewController
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-        switch indexPath.section
+        let section = indexPath.section
+        if section == 0
         {
-        case 0:
-            cell.addSubViewToContentView(titleView)
-            return cell
-        case 1:
             cell.addSubViewToContentView(emailOrPhoneSelector)
-            return cell
-        case 2:
-            cell.addSubViewToContentView(emailCumPhoneField)
-            return cell
-        case 3:
-            cell.addSubViewToContentView(passwordField)
-            return cell
-        case 4:
-            cell.addSubViewToContentView(loginButton)
-            return cell
-        case 5:
-            cell.addSubViewToContentView(noAccountButton)
-            return cell
-        default:
-            return UITableViewCell()
         }
+        else if section == 1
+        {
+            cell.addSubViewToContentView(emailCumPhoneField)
+        }
+        else if section == 2
+        {
+            cell.addSubViewToContentView(passwordField)
+        }
+        else if section == 3
+        {
+            cell.addSubViewToContentView(loginButton)
+        }
+        else
+        {
+            cell.addSubViewToContentView(noAccountButton)
+        }
+        return cell
     }
 }
 
@@ -403,5 +409,17 @@ extension LoginViewController
             passwordField.becomeFirstResponder()
         }
         print("Custom Return Button Tapped")
+    }
+}
+
+extension LoginViewController
+{
+    override func scrollViewDidScroll(_ scrollView: UIScrollView)
+    {
+        let offset = tableView.contentOffset.y
+        UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCrossDissolve], animations: { [unowned self] in
+            navigationItem.title = offset > defaultOffset ? title : nil
+            titleView.alpha = offset > defaultOffset ? 0 : 1
+        }, completion: nil)
     }
 }
