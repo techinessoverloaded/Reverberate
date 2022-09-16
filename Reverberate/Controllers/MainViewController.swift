@@ -830,10 +830,10 @@ extension MainViewController
     
     @objc func onSongChange()
     {
-//        guard GlobalVariables.shared.currentSong != nil else
-//        {
-//            return
-//        }
+        guard GlobalVariables.shared.currentSong != nil else
+        {
+            return
+        }
         GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url as URL)
         GlobalVariables.shared.avAudioPlayer.delegate = self
         avAudioPlayer = GlobalVariables.shared.avAudioPlayer
@@ -848,17 +848,17 @@ extension MainViewController
             hasSetupMPCommandCenter = true
         }
         let song = GlobalVariables.shared.currentSong!
+        GlobalVariables.shared.alreadyPlayedSongs.appendUniquely(song)
         DataManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
     }
     
     @objc func onPlaylistChange()
     {
-//        guard let playlist = GlobalVariables.shared.currentPlaylist else
-//        {
-//            return
-//        }
-        let playlist = GlobalVariables.shared.currentPlaylist!
-        GlobalVariables.shared.alreadyPlayedSongs = []
+        guard let playlist = GlobalVariables.shared.currentPlaylist else
+        {
+            return
+        }
+        GlobalVariables.shared.alreadyPlayedSongs.removeAll()
         if let song = GlobalVariables.shared.currentSong
         {
             if playlist.songs!.contains(song)
@@ -928,17 +928,19 @@ extension MainViewController: AVAudioPlayerDelegate
             print("Number of already played songs: \(alreadyPlayedSongs.count)")
             if let currentPlaylist = GlobalVariables.shared.currentPlaylist
             {
-                if alreadyPlayedSongs.count != currentPlaylist.songs!.count
+                if alreadyPlayedSongs.count < currentPlaylist.songs!.count
                 {
                     onNextSongRequest(playlist: currentPlaylist, currentSong: GlobalVariables.shared.currentSong!)
                 }
                 else
                 {
+                    onNextSongRequest(playlist: currentPlaylist, currentSong: GlobalVariables.shared.currentSong!)
                     try! AVAudioSession.sharedInstance().setActive(false)
                     miniPlayerView.setPlaying(shouldPlaySong: false)
                     miniPlayerTimer.isPaused = true
                     miniPlayerView.updateSongDurationView(newValue: 0)
                     playerController?.setPlaying(shouldPlaySongFromBeginning: true)
+                    GlobalVariables.shared.alreadyPlayedSongs.removeAll()
                 }
             }
             else

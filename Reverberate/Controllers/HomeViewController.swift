@@ -157,8 +157,9 @@ extension HomeViewController
         }
         else
         {
-            GlobalVariables.shared.currentSong = song
-            GlobalVariables.shared.currentPlaylist = playlists[category]!
+            GlobalVariables.shared.mainTabController.onPlaylistSongChangeRequest(playlist: playlists[category]!, newSong: song)
+//            GlobalVariables.shared.currentSong = song
+//            GlobalVariables.shared.currentPlaylist = playlists[category]!
         }
     }
     
