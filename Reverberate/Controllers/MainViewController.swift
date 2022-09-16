@@ -271,8 +271,21 @@ class MainViewController: UITabBarController
     
     func setupNowPlayingNotification()
     {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        guard let currentSong = GlobalVariables.shared.currentSong else
+        {
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = [:]
+            let commandCenter = MPRemoteCommandCenter.shared()
+            commandCenter.playCommand.isEnabled = false
+            commandCenter.pauseCommand.isEnabled = false
+            commandCenter.skipForwardCommand.isEnabled = false
+            commandCenter.skipBackwardCommand.isEnabled = false
+            commandCenter.changePlaybackPositionCommand.isEnabled = false
+            commandCenter.nextTrackCommand.isEnabled = false
+            commandCenter.previousTrackCommand.isEnabled = false
+            return
+        }
         var nowPlayingInfo = [String: Any]()
-        let currentSong = GlobalVariables.shared.currentSong!
         nowPlayingInfo[MPMediaItemPropertyTitle] = currentSong.title!
         nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: currentSong.coverArt!.size, requestHandler: { _ in
             return currentSong.coverArt!
@@ -283,7 +296,6 @@ class MainViewController: UITabBarController
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = avAudioPlayer.duration
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = avAudioPlayer.rate
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-        let commandCenter = MPRemoteCommandCenter.shared()
         let playlist = GlobalVariables.shared.currentPlaylist
         if playlist != nil
         {
@@ -648,12 +660,13 @@ extension MainViewController
         {
             return
         }
-        if GlobalVariables.shared.currentSong == song
+        if GlobalVariables.shared.currentPlaylist == playlist
         {
-            if GlobalVariables.shared.currentPlaylist == playlist
+            if GlobalVariables.shared.currentSong == song
             {
                 if playlist.songs!.count - 1 > 0
                 {
+                    print("remaining song count: \(playlist.songs!.count)")
                     onNextSongRequest(playlist: playlist, currentSong: song)
                     GlobalVariables.shared.currentPlaylist!.songs!.removeUniquely(song)
                     if GlobalVariables.shared.currentShuffleMode == .on
@@ -663,23 +676,17 @@ extension MainViewController
                 }
                 else
                 {
+                    print("no more remaining songs")
                     GlobalVariables.shared.currentPlaylist = nil
+                    GlobalVariables.shared.currentSong = nil
                     if GlobalVariables.shared.currentLoopMode == .playlist
                     {
-                        GlobalVariables.shared.currentLoopMode = .song
+                        GlobalVariables.shared.currentLoopMode = .off
                     }
                     if GlobalVariables.shared.currentShuffleMode == .on
                     {
                         GlobalVariables.shared.currentShuffleMode = .off
                     }
-                }
-                miniPlayerView.setPlaying(shouldPlaySong: true)
-                miniPlayerTimer.isPaused = false
-                setupNowPlayingNotification()
-                if !hasSetupMPCommandCenter
-                {
-                    setupMPCommandCenter()
-                    hasSetupMPCommandCenter = true
                 }
                 DataManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
             }
@@ -854,6 +861,16 @@ extension MainViewController
     {
         guard GlobalVariables.shared.currentSong != nil else
         {
+            GlobalVariables.shared.avAudioPlayer.stop()
+            GlobalVariables.shared.avAudioPlayer = nil
+            try! AVAudioSession.sharedInstance().setActive(false)
+            miniPlayerView.setDetails()
+            setupNowPlayingNotification()
+            if !hasSetupMPCommandCenter
+            {
+                setupMPCommandCenter()
+                hasSetupMPCommandCenter = true
+            }
             return
         }
         GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url as URL)

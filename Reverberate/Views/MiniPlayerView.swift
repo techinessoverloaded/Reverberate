@@ -190,6 +190,7 @@ class MiniPlayerView: UIView
             posterView.image = UIImage(named: "glassmorphic_bg")!
             playOrPauseButton.isEnabled = false
             playOrPauseButton.setImage(playIcon, for: .normal)
+            songDurationView.setProgress(0.0, animated: true)
             return
         }
         posterView.image = song.coverArt

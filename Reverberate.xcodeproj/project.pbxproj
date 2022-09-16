@@ -85,7 +85,6 @@
 		DA668C9528770794001EE1C9 /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C9428770794001EE1C9 /* LibraryViewController.swift */; };
 		DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA668C96287707C4001EE1C9 /* ProfileViewController.swift */; };
 		DA67E0642898E57A00593251 /* PlaylistDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67E0632898E57A00593251 /* PlaylistDelegate.swift */; };
-		DA67E06628994D3A00593251 /* ArtistDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67E06528994D3A00593251 /* ArtistDelegate.swift */; };
 		DA67F4392889182F00062985 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F4382889182F00062985 /* Category.swift */; };
 		DA67F43F28892FFE00062985 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F43E28892FFE00062985 /* PlayerViewController.swift */; };
 		DA67F44528894EA400062985 /* MiniPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67F44428894EA400062985 /* MiniPlayerView.swift */; };
@@ -193,7 +192,6 @@
 		DA668C9428770794001EE1C9 /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
 		DA668C96287707C4001EE1C9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		DA67E0632898E57A00593251 /* PlaylistDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDelegate.swift; sourceTree = "<group>"; };
-		DA67E06528994D3A00593251 /* ArtistDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistDelegate.swift; sourceTree = "<group>"; };
 		DA67F4382889182F00062985 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		DA67F43E28892FFE00062985 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		DA67F44428894EA400062985 /* MiniPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerView.swift; sourceTree = "<group>"; };
@@ -471,7 +469,6 @@
 				DA67F4482889797400062985 /* PlayerDelegate.swift */,
 				DAFC0AE12893D81200EECE4B /* SearchResultDelegate.swift */,
 				DA67E0632898E57A00593251 /* PlaylistDelegate.swift */,
-				DA67E06528994D3A00593251 /* ArtistDelegate.swift */,
 				DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */,
 				DA46499928BE417700F92C08 /* SongArtistsViewDelegate.swift */,
 				DAA0F17428CB16080077C98B /* PlaylistSelectionDelegate.swift */,
@@ -819,7 +816,6 @@
 				DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */,
 				DAC6D8BD28D2EB8400584904 /* CategoricalSong.swift in Sources */,
 				DA5CE96D28880D1D0066AB2E /* ArtistType.swift in Sources */,
-				DA67E06628994D3A00593251 /* ArtistDelegate.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
 				DA65D3BD2886C6F200173F56 /* LibrarySongViewController.swift in Sources */,
 				DA5C90BA28C8C9FD00BE0DF1 /* LibraryArtistViewController.swift in Sources */,
@@ -977,10 +973,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R4F89R73A4;
+				DEVELOPMENT_TEAM = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -993,9 +989,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1007,10 +1003,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R4F89R73A4;
+				DEVELOPMENT_TEAM = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1023,9 +1019,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -172,11 +172,3 @@ extension SearchViewController: SearchResultDelegate
         self.navigationController?.pushViewController(albumVC, animated: true)
     }
 }
-
-extension SearchViewController: ArtistDelegate
-{
-    func onFavouriteButtonTap(artist: Artist, shouldMakeAsFavourite: Bool)
-    {
-        
-    }
-}
