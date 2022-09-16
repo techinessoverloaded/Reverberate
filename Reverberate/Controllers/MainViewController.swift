@@ -655,16 +655,26 @@ extension MainViewController
                 if playlist.songs!.count - 1 > 0
                 {
                     onNextSongRequest(playlist: playlist, currentSong: song)
+                    GlobalVariables.shared.currentPlaylist!.songs!.removeUniquely(song)
                 }
                 else
                 {
-                    GlobalVariables.shared.currentSong = nil
                     GlobalVariables.shared.currentPlaylist = nil
                 }
+                miniPlayerView.setPlaying(shouldPlaySong: true)
+                miniPlayerTimer.isPaused = false
+                setupNowPlayingNotification()
+                if !hasSetupMPCommandCenter
+                {
+                    setupMPCommandCenter()
+                    hasSetupMPCommandCenter = true
+                }
+                DataManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
             }
         }
-        GlobalVariables.shared.currentUser!.remove(song: song, fromPlaylistNamed: playlist.name!)
-        NotificationCenter.default.post(name: .songRemovedFromPlaylistNotification, object: nil, userInfo: ["playlistName": playlist.name!])
+        GlobalVariables.shared.currentUser!.remove(song: song, fromPlaylistNamed: playlist.name!, completionHandler: {
+            NotificationCenter.default.post(name: .songRemovedFromPlaylistNotification, object: nil, userInfo: ["playlistName": playlist.name!])
+        })
     }
     
     @objc func onAddSongToPlaylistNotification(_ notification: NSNotification)
@@ -848,7 +858,10 @@ extension MainViewController
             hasSetupMPCommandCenter = true
         }
         let song = GlobalVariables.shared.currentSong!
-        GlobalVariables.shared.alreadyPlayedSongs.appendUniquely(song)
+        if GlobalVariables.shared.currentPlaylist != nil
+        {
+            GlobalVariables.shared.alreadyPlayedSongs.appendUniquely(song)
+        }
         DataManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
     }
     

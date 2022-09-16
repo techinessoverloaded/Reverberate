@@ -269,7 +269,7 @@ public class User: NSManagedObject
         completionHandler?()
     }
     
-    public func remove(song: Song, fromPlaylistNamed playlistName: String)
+    public func remove(song: Song, fromPlaylistNamed playlistName: String, completionHandler: (() -> Void)? = nil)
     {
         var existingPlaylists = playlists!
         let index = existingPlaylists.firstIndex(where: { $0.name! == playlistName })!
@@ -289,5 +289,6 @@ public class User: NSManagedObject
         }
         playlistsData = encodedData
         GlobalConstants.contextSaveAction()
+        completionHandler?()
     }
 }

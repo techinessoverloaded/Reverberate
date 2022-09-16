@@ -458,6 +458,10 @@ extension PlaylistViewController
         {
             return
         }
+        if !(playlist is Album)
+        {
+            playlist = GlobalVariables.shared.currentUser!.playlists!.first(where: { $0.name! == playlist.name! })!
+        }
         tableView.reloadData()
         emptyMessageLabel.isHidden = !playlist.songs!.isEmpty
         if !playButton.isEnabled
@@ -476,11 +480,17 @@ extension PlaylistViewController
         {
             return
         }
+        if !(playlist is Album)
+        {
+            playlist = GlobalVariables.shared.currentUser!.playlists!.first(where: { $0.name! == playlist.name! })!
+        }
         tableView.reloadData()
         emptyMessageLabel.attributedText = noSongsMessage
         emptyMessageLabel.isHidden = !playlist.songs!.isEmpty
         if playlist.songs!.isEmpty
         {
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             playButton.isEnabled = false
             shuffleButton.isEnabled = false
         }
@@ -558,12 +568,6 @@ extension PlaylistViewController
         playButton.configuration!.title = "Pause"
     }
     
-    func onSongAddToPlaylistMenuItemTap(menuItem: UIAction, tag: Int)
-    {
-        print("\(playlist.songs![tag].title!)'s Menu Item was clicked")
-    }
-    
-    
     @objc func onAlbumFavouriteButtonTap(_ sender: UIButton)
     {
         if sender.image(for: .normal)!.pngData() == heartIcon.pngData()
@@ -613,12 +617,5 @@ extension PlaylistViewController
     @objc func onPosterDoubleTap(_ sender: UITapGestureRecognizer)
     {
         albumFavouriteButton.sendActions(for: .touchUpInside)
-    }
-}
-
-extension PlaylistViewController : UISearchControllerDelegate {
-    func willPresentSearchController(_ searchController: UISearchController)
-    {
-        
     }
 }

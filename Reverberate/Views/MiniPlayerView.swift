@@ -204,8 +204,9 @@ class MiniPlayerView: UIView
     {
         if let playlist = GlobalVariables.shared.currentPlaylist
         {
-            nextButton.isEnabled = true
-            previousButton.isEnabled = true
+            let playlistHasMoreSongs = playlist.songs!.count > 1
+            nextButton.isEnabled = playlistHasMoreSongs
+            previousButton.isEnabled = playlistHasMoreSongs
             nextButton.menu = ContextMenuProvider.shared.getUpcomingSongsMenu(playlist: playlist, requesterId: GlobalVariables.shared.mainTabController.requesterId)
             previousButton.menu = ContextMenuProvider.shared.getPreviousSongsMenu(playlist: playlist, requesterId: GlobalVariables.shared.mainTabController.requesterId)
         }

@@ -55,7 +55,7 @@ class ContextMenuProvider
     
     private func getRemoveSongFromPlaylistMenuItem(song: Song, playlist: Playlist, requesterId: Int) -> UIAction
     {
-        return UIAction(title: "Remove Song From Current Playlist", image: addToPlaylistIcon, attributes: .disabled) { [unowned self] _ in
+        return UIAction(title: "Remove Song From Current Playlist", image: addToPlaylistIcon) { [unowned self] _ in
             onRemoveSongFromPlaylistMenuItemTap(song: song, playlist: playlist, receiverId: requesterId)
         }
     }

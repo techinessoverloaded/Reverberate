@@ -59,7 +59,7 @@ class LibraryPlaylistViewController: UITableViewController
         return sController
     }()
     
-    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
+    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists!
     
     private lazy var sortedPlaylists: [Alphabet : [Playlist]] = sortPlaylists()
     
@@ -102,6 +102,7 @@ class LibraryPlaylistViewController: UITableViewController
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
         }
     }
     
@@ -284,6 +285,11 @@ extension LibraryPlaylistViewController: UISearchControllerDelegate
 extension LibraryPlaylistViewController
 {
     @objc func songAddedToPlaylistNotification(_ notification: NSNotification)
+    {
+        refetchPlaylists()
+    }
+    
+    @objc func songRemovedFromPlaylistNotification(_ notification: NSNotification)
     {
         refetchPlaylists()
     }

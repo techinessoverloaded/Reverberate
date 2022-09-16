@@ -490,9 +490,10 @@ class PlayerViewController: UITableViewController
         addToPlaylistsButton.isHidden = !(SessionManager.shared.isUserLoggedIn)
         if playlist != nil
         {
-            previousButton.isEnabled = true
-            nextButton.isEnabled = true
-            shuffleButton.isEnabled = true
+            let playlistHasMoreSongs = playlist!.songs!.count > 1
+            previousButton.isEnabled = playlistHasMoreSongs
+            nextButton.isEnabled = playlistHasMoreSongs
+            shuffleButton.isEnabled = playlistHasMoreSongs
             previousButton.menu = ContextMenuProvider.shared.getPreviousSongsMenu(playlist: playlist!, requesterId: requesterId)
             nextButton.menu = ContextMenuProvider.shared.getUpcomingSongsMenu(playlist: playlist!, requesterId: requesterId)
         }
@@ -811,10 +812,20 @@ extension PlayerViewController
         }
         else
         {
-            print("Loop Playlist")
-            delegate?.onLoopButtonTap(loopMode: .playlist)
-            sender.setImage(repeatIcon, for: .normal)
-            sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            if playlist != nil
+            {
+                print("Loop Playlist")
+                delegate?.onLoopButtonTap(loopMode: .playlist)
+                sender.setImage(repeatIcon, for: .normal)
+                sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            }
+            else
+            {
+                print("No Loop")
+                delegate?.onLoopButtonTap(loopMode: .off)
+                sender.setImage(repeatIcon, for: .normal)
+                sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+            }
         }
     }
     
