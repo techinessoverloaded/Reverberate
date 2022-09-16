@@ -656,10 +656,22 @@ extension MainViewController
                 {
                     onNextSongRequest(playlist: playlist, currentSong: song)
                     GlobalVariables.shared.currentPlaylist!.songs!.removeUniquely(song)
+                    if GlobalVariables.shared.currentShuffleMode == .on
+                    {
+                        GlobalVariables.shared.currentShuffleMode = .off
+                    }
                 }
                 else
                 {
                     GlobalVariables.shared.currentPlaylist = nil
+                    if GlobalVariables.shared.currentLoopMode == .playlist
+                    {
+                        GlobalVariables.shared.currentLoopMode = .song
+                    }
+                    if GlobalVariables.shared.currentShuffleMode == .on
+                    {
+                        GlobalVariables.shared.currentShuffleMode = .off
+                    }
                 }
                 miniPlayerView.setPlaying(shouldPlaySong: true)
                 miniPlayerTimer.isPaused = false
