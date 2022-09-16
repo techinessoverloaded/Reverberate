@@ -18,10 +18,6 @@ class SessionManager
     // Prevent Instantiation
     private init() {}
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    private let contextSaveAction = (UIApplication.shared.delegate as! AppDelegate).saveContext
-    
     var isUserLoggedIn: Bool
     {
         get
@@ -36,7 +32,7 @@ class SessionManager
         var allUsers: [User]!
         do
         {
-            allUsers = try context.fetch(User.fetchRequest())
+            allUsers = try GlobalConstants.context.fetch(User.fetchRequest())
             print(allUsers ?? "nil")
         }
         catch
@@ -54,7 +50,7 @@ class SessionManager
         var allUsers: [User]!
         do
         {
-            allUsers = try context.fetch(User.fetchRequest())
+            allUsers = try GlobalConstants.context.fetch(User.fetchRequest())
             print(allUsers ?? "nil")
         }
         catch
@@ -69,7 +65,7 @@ class SessionManager
     
     func createNewUserWith(name: String, phone: String, email: String, password: String) -> User
     {
-        let newUser = User(context: context)
+        let newUser = User(context: GlobalConstants.context)
         newUser.id = UUID().uuidString
         newUser.profilePicture = UIImage(systemName: "person.crop.circle.fill")!.withTintColor(.systemGray).jpegData(compressionQuality: 1)
         newUser.name = name
@@ -78,11 +74,11 @@ class SessionManager
         newUser.password = password
         newUser.favouriteSongs = []
         newUser.favouriteArtists = []
-        newUser.playlists = []
         newUser.favouriteAlbums = []
         newUser.preferredGenres = []
         newUser.preferredLanguages = []
-        contextSaveAction()
+        newUser.playlistsData = try! JSONEncoder().encode(Dictionary<String, [String]>())
+        GlobalConstants.contextSaveAction()
         let defaultPlaylist = Playlist()
         defaultPlaylist.name = "Default Playlist"
         defaultPlaylist.songs = []
@@ -98,7 +94,7 @@ class SessionManager
         var allUsers: [User]!
         do
         {
-            allUsers = try context.fetch(User.fetchRequest())
+            allUsers = try GlobalConstants.context.fetch(User.fetchRequest())
             print(allUsers ?? "No users")
         }
         catch
@@ -121,7 +117,7 @@ class SessionManager
         var allUsers: [User]!
         do
         {
-            allUsers = try context.fetch(User.fetchRequest())
+            allUsers = try GlobalConstants.context.fetch(User.fetchRequest())
             print(allUsers ?? "No users")
         }
         catch

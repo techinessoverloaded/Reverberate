@@ -12,6 +12,35 @@ import CoreData
 
 public class User: NSManagedObject
 {
+    public var playlists: [Playlist]?
+    {
+        get
+        {
+            guard let data = playlistsData else
+            {
+                return nil
+            }
+            guard let decodedPlaylistData = try? JSONDecoder().decode(Dictionary<String, [String]>.self, from: data) else
+            {
+                return nil
+            }
+            var result: [Playlist] = []
+            for key in decodedPlaylistData.keys
+            {
+                let playlist = Playlist()
+                playlist.name = key
+                playlist.songs = []
+                for songName in decodedPlaylistData[key]!
+                {
+                    let song = DataProcessor.shared.getSong(named: songName)!
+                    playlist.addSong(song)
+                }
+                result.append(playlist)
+            }
+            return result
+        }
+    }
+    
     public func isFavouriteSong(_ song: Song) -> Bool
     {
         return favouriteSongs!.contains(song)
@@ -84,7 +113,18 @@ public class User: NSManagedObject
     {
         var existingPlaylists = playlists!
         existingPlaylists.appendUniquely(playlist)
-        playlists = existingPlaylists
+        var dictionary = Dictionary<String, [String]>()
+        for playlist in existingPlaylists
+        {
+            let songNames = playlist.songs!.map({ $0.title! })
+            dictionary[playlist.name!] = songNames
+        }
+        let encodedData = try? JSONEncoder().encode(dictionary)
+        guard let encodedData = encodedData else
+        {
+            return
+        }
+        playlistsData = encodedData
         GlobalConstants.contextSaveAction()
     }
     
@@ -92,7 +132,18 @@ public class User: NSManagedObject
     {
         var existingPlaylists = playlists!
         existingPlaylists.removeUniquely(playlist)
-        playlists = existingPlaylists
+        var dictionary = Dictionary<String, [String]>()
+        for playlist in existingPlaylists
+        {
+            let songNames = playlist.songs!.map({ $0.title! })
+            dictionary[playlist.name!] = songNames
+        }
+        let encodedData = try? JSONEncoder().encode(dictionary)
+        guard let encodedData = encodedData else
+        {
+            return
+        }
+        playlistsData = encodedData
         GlobalConstants.contextSaveAction()
     }
     
@@ -103,7 +154,18 @@ public class User: NSManagedObject
         let requiredPlaylist = playlists![index]
         requiredPlaylist.addSong(song)
         existingPlaylists.replaceSubrange(index..<index+1, with: [requiredPlaylist])
-        playlists = existingPlaylists
+        var dictionary = Dictionary<String, [String]>()
+        for playlist in existingPlaylists
+        {
+            let songNames = playlist.songs!.map({ $0.title! })
+            dictionary[playlist.name!] = songNames
+        }
+        let encodedData = try? JSONEncoder().encode(dictionary)
+        guard let encodedData = encodedData else
+        {
+            return
+        }
+        playlistsData = encodedData
         GlobalConstants.contextSaveAction()
         completionHandler?()
     }
@@ -115,7 +177,18 @@ public class User: NSManagedObject
         let requiredPlaylist = playlists![index]
         requiredPlaylist.removeSong(song)
         existingPlaylists.replaceSubrange(index..<index+1, with: [requiredPlaylist])
-        playlists = existingPlaylists
+        var dictionary = Dictionary<String, [String]>()
+        for playlist in existingPlaylists
+        {
+            let songNames = playlist.songs!.map({ $0.title! })
+            dictionary[playlist.name!] = songNames
+        }
+        let encodedData = try? JSONEncoder().encode(dictionary)
+        guard let encodedData = encodedData else
+        {
+            return
+        }
+        playlistsData = encodedData
         GlobalConstants.contextSaveAction()
     }
 }

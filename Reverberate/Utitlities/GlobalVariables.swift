@@ -48,5 +48,7 @@ class GlobalVariables
     
     var currentUser: User? = nil
     
+    var userPlaylists: [Playlist]? = nil
+    
     var mainTabController: MainViewController!
 }

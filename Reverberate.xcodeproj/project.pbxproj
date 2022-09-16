@@ -40,6 +40,7 @@
 		DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A34C2874157C00E36382 /* OnboardingViewController.swift */; };
 		DA2F0C1228A3AB22003F35F1 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */; };
 		DA2F0C1528A3B0BB003F35F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */; };
+		DA42C87928D4498D00EADF26 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA42C87828D4498D00EADF26 /* User+CoreDataProperties.swift */; };
 		DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569D287402C400804CB8 /* AppDelegate.swift */; };
 		DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569F287402C400804CB8 /* SceneDelegate.swift */; };
 		DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA4556A6287402C400804CB8 /* Reverberate.xcdatamodeld */; };
@@ -104,7 +105,6 @@
 		DAA0F17528CB16080077C98B /* PlaylistSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0F17428CB16080077C98B /* PlaylistSelectionDelegate.swift */; };
 		DABA1435289791D700DAAF13 /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA1434289791D700DAAF13 /* PlaylistViewController.swift */; };
 		DAC6D8BD28D2EB8400584904 /* CategoricalSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC6D8BC28D2EB8400584904 /* CategoricalSong.swift */; };
-		DAC6D8BF28D34C5600584904 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC6D8BE28D34C5600584904 /* User+CoreDataProperties.swift */; };
 		DACBA429289CF85A00DDEBDE /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACBA428289CF85A00DDEBDE /* Song.swift */; };
 		DACF29DA28B50A3000141BCB /* MusicLoopMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF29D928B50A3000141BCB /* MusicLoopMode.swift */; };
 		DACF29DC28B50AB300141BCB /* MusicShuffleMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */; };
@@ -147,6 +147,7 @@
 		DA28A34C2874157C00E36382 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DA42C87828D4498D00EADF26 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA45569A287402C400804CB8 /* Reverberate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverberate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA45569D287402C400804CB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA45569F287402C400804CB8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -213,7 +214,6 @@
 		DAA0F17428CB16080077C98B /* PlaylistSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSelectionDelegate.swift; sourceTree = "<group>"; };
 		DABA1434289791D700DAAF13 /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		DAC6D8BC28D2EB8400584904 /* CategoricalSong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoricalSong.swift; sourceTree = "<group>"; };
-		DAC6D8BE28D34C5600584904 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DACBA428289CF85A00DDEBDE /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		DACF29D928B50A3000141BCB /* MusicLoopMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicLoopMode.swift; sourceTree = "<group>"; };
 		DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicShuffleMode.swift; sourceTree = "<group>"; };
@@ -401,7 +401,7 @@
 		DA4556CA28740AE300804CB8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				DAC6D8BE28D34C5600584904 /* User+CoreDataProperties.swift */,
+				DA42C87828D4498D00EADF26 /* User+CoreDataProperties.swift */,
 				DA16C18628C9EC900083AB52 /* User+CoreDataClass.swift */,
 				DA5CE99E288815EB0066AB2E /* Playlist.swift */,
 				DA5CE9A0288815FB0066AB2E /* Album.swift */,
@@ -779,7 +779,7 @@
 				DA58B55B2878104900BDAE4B /* CustomVisualEffectView.swift in Sources */,
 				DA6C8388288046F600339937 /* InitialViewController.swift in Sources */,
 				DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */,
-				DAC6D8BF28D34C5600584904 /* User+CoreDataProperties.swift in Sources */,
+				DA42C87928D4498D00EADF26 /* User+CoreDataProperties.swift in Sources */,
 				DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */,
 				DA67E0642898E57A00593251 /* PlaylistDelegate.swift in Sources */,
 				DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */,

@@ -9,7 +9,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="password" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
-        <attribute name="playlists" optional="YES" attributeType="Transformable" valueTransformerName="CustomDataTransformer" customClassName=".[Playlist]"/>
+        <attribute name="playlistsData" optional="YES" attributeType="Binary" valueTransformerName="CustomDataTransformer" customClassName=".[Playlist]"/>
         <attribute name="preferredGenres" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int16]"/>
         <attribute name="preferredLanguages" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int16]"/>
         <attribute name="profilePicture" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
