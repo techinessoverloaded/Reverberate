@@ -148,14 +148,21 @@ extension HomeViewController
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        collectionView.deselectItem(at: indexPath, animated: true)
         let section = indexPath.section
         let item = indexPath.item
         let category = keys[section]
         let categoricalSongs = songs[category]
-        if GlobalVariables.shared.currentSong != categoricalSongs[item]
+        let song = categoricalSongs[item]
+        if GlobalVariables.shared.currentPlaylist == playlists[category]
         {
-            GlobalVariables.shared.currentSong = categoricalSongs[item]
+            if GlobalVariables.shared.currentSong != song
+            {
+                GlobalVariables.shared.currentSong = song
+            }
+        }
+        else
+        {
+            GlobalVariables.shared.currentSong = song
             GlobalVariables.shared.currentPlaylist = playlists[category]!
         }
     }

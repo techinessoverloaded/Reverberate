@@ -72,9 +72,9 @@ class SessionManager
         newUser.phone = phone
         newUser.email = email
         newUser.password = password
-        newUser.favouriteSongs = []
-        newUser.favouriteArtists = []
-        newUser.favouriteAlbums = []
+        newUser.favouriteSongsData = try! JSONSerialization.data(withJSONObject: Array<String>(), options: .sortedKeys)
+        newUser.favouriteArtistsData = try! JSONSerialization.data(withJSONObject: Array<String>(), options: .sortedKeys)
+        newUser.favouriteAlbumsData = try! JSONSerialization.data(withJSONObject: Array<String>(), options: .sortedKeys)
         newUser.preferredGenres = []
         newUser.preferredLanguages = []
         newUser.playlistsData = try! JSONEncoder().encode(Dictionary<String, [String]>())

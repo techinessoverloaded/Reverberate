@@ -267,7 +267,14 @@ class CategoricalSongsViewController: UITableViewController
         if section == 0
         {
             let song = songs[item]
-            if GlobalVariables.shared.currentSong != song
+            if GlobalVariables.shared.currentPlaylist == playlist
+            {
+                if GlobalVariables.shared.currentSong != song
+                {
+                    delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                }
+            }
+            else
             {
                 delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
             }

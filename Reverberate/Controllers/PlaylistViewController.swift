@@ -400,7 +400,14 @@ class PlaylistViewController: UITableViewController
     {
         let item = indexPath.item
         let song = playlist.songs![item]
-        if GlobalVariables.shared.currentSong != song
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            if GlobalVariables.shared.currentSong != song
+            {
+                delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+            }
+        }
+        else
         {
             delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
         }

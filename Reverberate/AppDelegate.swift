@@ -20,9 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
             let interval = TimeInterval(endTime.uptimeNanoseconds - startTime.uptimeNanoseconds)
             print("Time Taken: \(interval / 1000000000) seconds")
         })
-        ValueTransformer.setValueTransformer(CustomDataTransformer(), forName: .customTransformer)
-//        let stackViewAppearance = UIStackView.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
-//        stackViewAppearance.spacing = 10
         return true
     }
     
@@ -39,7 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
             print("Setting category to AVAudioSessionCategoryPlayback failed")
         }
         application.beginReceivingRemoteControlEvents()
-        if let directoryLocation = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).last {             print("Documents Directory: \(directoryLocation)Application Support")         }
         return true
     }
 

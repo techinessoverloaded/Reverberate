@@ -17,9 +17,9 @@ extension User {
     }
 
     @NSManaged public var email: String?
-    @NSManaged public var favouriteAlbums: [Album]?
-    @NSManaged public var favouriteArtists: [Artist]?
-    @NSManaged public var favouriteSongs: [Song]?
+    @NSManaged public var favouriteAlbumsData: Data?
+    @NSManaged public var favouriteArtistsData: Data?
+    @NSManaged public var favouriteSongsData: Data?
     @NSManaged public var id: String?
     @NSManaged public var name: String?
     @NSManaged public var password: String?

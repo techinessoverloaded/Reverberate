@@ -65,7 +65,7 @@ public class Album: Playlist
     
     public var language: String
     {
-        return (songs! as! [Song]).first!.language.description 
+        return songs!.first!.language.description 
     }
     
     public static func == (lhs: Album, rhs: Album) -> Bool
@@ -75,7 +75,7 @@ public class Album: Playlist
     
     public override func isEqual(_ object: Any?) -> Bool
     {
-        return self.name! == (object as! Album).name!
+        return self.name! == (object as! Playlist).name!
     }
     
     public static func < (lhs: Album, rhs: Album) -> Bool

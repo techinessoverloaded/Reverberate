@@ -13,7 +13,6 @@
 		DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */; };
 		DA134FFF28C8FE2300ADEA51 /* ContextMenuProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */; };
 		DA16C18828C9EC900083AB52 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA16C18628C9EC900083AB52 /* User+CoreDataClass.swift */; };
-		DA16C18B28C9EDF10083AB52 /* CustomDataTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA16C18A28C9EDF10083AB52 /* CustomDataTransformer.swift */; };
 		DA1DA6A028A40C3F00721F5C /* kalaavathi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */; };
 		DA1DA6A228A40C7900721F5C /* mamamahesha.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */; };
 		DA252E6128A543C500791267 /* vaadathambi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6028A543C500791267 /* vaadathambi.mp3 */; };
@@ -40,7 +39,7 @@
 		DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A34C2874157C00E36382 /* OnboardingViewController.swift */; };
 		DA2F0C1228A3AB22003F35F1 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */; };
 		DA2F0C1528A3B0BB003F35F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */; };
-		DA42C87928D4498D00EADF26 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA42C87828D4498D00EADF26 /* User+CoreDataProperties.swift */; };
+		DA42C87B28D4538800EADF26 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA42C87A28D4538800EADF26 /* User+CoreDataProperties.swift */; };
 		DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569D287402C400804CB8 /* AppDelegate.swift */; };
 		DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569F287402C400804CB8 /* SceneDelegate.swift */; };
 		DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA4556A6287402C400804CB8 /* Reverberate.xcdatamodeld */; };
@@ -120,7 +119,6 @@
 		DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSegregator.swift; sourceTree = "<group>"; };
 		DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuProvider.swift; sourceTree = "<group>"; };
 		DA16C18628C9EC900083AB52 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DA16C18A28C9EDF10083AB52 /* CustomDataTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDataTransformer.swift; sourceTree = "<group>"; };
 		DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kalaavathi.mp3; sourceTree = "<group>"; };
 		DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mamamahesha.mp3; sourceTree = "<group>"; };
 		DA252E6028A543C500791267 /* vaadathambi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = vaadathambi.mp3; sourceTree = "<group>"; };
@@ -147,7 +145,7 @@
 		DA28A34C2874157C00E36382 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		DA42C87828D4498D00EADF26 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DA42C87A28D4538800EADF26 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA45569A287402C400804CB8 /* Reverberate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverberate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA45569D287402C400804CB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA45569F287402C400804CB8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -360,9 +358,9 @@
 				DA668C9028770745001EE1C9 /* HomeViewController.swift */,
 				DA668C922877076B001EE1C9 /* SearchViewController.swift */,
 				DA668C9428770794001EE1C9 /* LibraryViewController.swift */,
+				DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */,
 				DA668C96287707C4001EE1C9 /* ProfileViewController.swift */,
 				DA58B5562877ED9800BDAE4B /* LanguageSelectionCollectionViewController.swift */,
-				DA2810B8287BDDBB006EEF60 /* EditProfileViewController.swift */,
 				DA6C8387288046F600339937 /* InitialViewController.swift */,
 				DA65D3B22886674300173F56 /* SearchResultsViewController.swift */,
 				DA65D3B628866FA700173F56 /* CategoricalSongsViewController.swift */,
@@ -401,7 +399,7 @@
 		DA4556CA28740AE300804CB8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				DA42C87828D4498D00EADF26 /* User+CoreDataProperties.swift */,
+				DA42C87A28D4538800EADF26 /* User+CoreDataProperties.swift */,
 				DA16C18628C9EC900083AB52 /* User+CoreDataClass.swift */,
 				DA5CE99E288815EB0066AB2E /* Playlist.swift */,
 				DA5CE9A0288815FB0066AB2E /* Album.swift */,
@@ -430,7 +428,6 @@
 				DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */,
 				DA5C90B328C86C1A00BE0DF1 /* Alphabet.swift */,
 				DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */,
-				DA16C18A28C9EDF10083AB52 /* CustomDataTransformer.swift */,
 			);
 			path = Utitlities;
 			sourceTree = "<group>";
@@ -779,7 +776,7 @@
 				DA58B55B2878104900BDAE4B /* CustomVisualEffectView.swift in Sources */,
 				DA6C8388288046F600339937 /* InitialViewController.swift in Sources */,
 				DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */,
-				DA42C87928D4498D00EADF26 /* User+CoreDataProperties.swift in Sources */,
+				DA42C87B28D4538800EADF26 /* User+CoreDataProperties.swift in Sources */,
 				DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */,
 				DA67E0642898E57A00593251 /* PlaylistDelegate.swift in Sources */,
 				DA58B5532877ED0A00BDAE4B /* GenreSelectionDelegate.swift in Sources */,
@@ -800,7 +797,6 @@
 				DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */,
 				DA668C8D2876DE5E001EE1C9 /* LanguageSelectionDelegate.swift in Sources */,
 				DA668C97287707C4001EE1C9 /* ProfileViewController.swift in Sources */,
-				DA16C18B28C9EDF10083AB52 /* CustomDataTransformer.swift in Sources */,
 				DA6C8382287FF4DA00339937 /* SigninTableViewCell.swift in Sources */,
 				DA63B0B9289E7B7A0068775C /* Artist.swift in Sources */,
 				DA7B1BB728A3E26A009CDBC6 /* SessionManager.swift in Sources */,
