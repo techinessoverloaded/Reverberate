@@ -106,12 +106,6 @@ class LibraryArtistViewController: UICollectionViewController
         emptyMessageLabel.attributedText = noResultsMessage
         collectionView.backgroundView = backgroundView
         emptyMessageLabel.attributedText = noResultsMessage
-        // Do any additional setup after loading the view.
-    }
-
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {

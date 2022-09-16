@@ -115,16 +115,6 @@ class SearchResultsViewController: UICollectionViewController
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool)
-    {
-        super.viewDidDisappear(animated)
-    }
-    
     private func createSongMenu(song: Song) -> UIMenu
     {
         return ContextMenuProvider.shared.getSongMenu(song: song, requesterId: GlobalVariables.shared.mainTabController.requesterId, requiresTranslucentSelectionScreen: true)

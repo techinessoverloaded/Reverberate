@@ -105,24 +105,18 @@ class LibraryAlbumViewController: UICollectionViewController
         ])
         emptyMessageLabel.attributedText = noResultsMessage
         collectionView.backgroundView = backgroundView
-        // Do any additional setup after loading the view.
-    }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { [unowned self] _ in
-            self.collectionViewLayout.invalidateLayout()
-        })
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
         }
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { [unowned self] _ in
+            self.collectionViewLayout.invalidateLayout()
+        })
     }
     
     deinit

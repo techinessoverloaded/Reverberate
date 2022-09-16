@@ -80,14 +80,9 @@ class PlaylistSelectionViewController: UITableViewController
         tableView.backgroundView = backgroundView
     }
     
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-    }
-    
     private func fetchPlaylists()
     {
-        allPlaylists = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
+        allPlaylists = GlobalVariables.shared.currentUser!.playlists! 
         tableView.reloadData()
     }
 

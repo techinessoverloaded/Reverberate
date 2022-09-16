@@ -47,11 +47,6 @@ class LibraryViewController: UITableViewController
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 70, right: 0)
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification(_:)), name: .userLoggedInNotification, object: nil)
     }
     

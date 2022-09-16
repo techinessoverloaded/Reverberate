@@ -98,11 +98,6 @@ class LibraryPlaylistViewController: UITableViewController
         emptyMessageLabel.attributedText = noPlaylistsMessage
         emptyMessageLabel.isHidden = !allPlaylists.isEmpty
         tableView.backgroundView = backgroundView
-    }
-
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)

@@ -34,11 +34,6 @@ class HomeViewController: UICollectionViewController
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear
         collectionView.bounces = true
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(performReload), name: .userLoggedInNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(performReload), name: .languageGenreChangeNotification, object: nil)
