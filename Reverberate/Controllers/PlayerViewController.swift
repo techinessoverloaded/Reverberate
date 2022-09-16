@@ -9,7 +9,7 @@ import UIKit
 
 class PlayerViewController: UITableViewController
 {
-    private let requesterId: Int = 10
+    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
     
     private lazy var playIcon: UIImage = {
         return UIImage(systemName: "play.fill")!
@@ -332,6 +332,9 @@ class PlayerViewController: UITableViewController
         updateTime()
         caDisplayLinkTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
         caDisplayLinkTimer.add(to: .main, forMode: .common)
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange(_:)), name: .currentSongSetNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
     }
     
     func setPlaying(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -357,21 +360,17 @@ class PlayerViewController: UITableViewController
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
         navigationController?.view.removeGestureRecognizer(panGestureRecognizer)
         caDisplayLinkTimer.invalidate()
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .previousSongClickedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .upcomingSongClickedNotification, object: nil)
-        super.viewDidDisappear(animated)
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: .currentSongSetNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
         self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
     }
     
@@ -408,8 +407,6 @@ class PlayerViewController: UITableViewController
             songSlider.minimumValue = 0.0
             songSlider.maximumValue = Float(GlobalVariables.shared.avAudioPlayer.duration)
             maximumDurationLabel.text = "\(minutes):\(seconds)"
-            previousButton.menu = ContextMenuProvider.shared.getPreviousSongsMenu(playlist: currentPlaylist, requesterId: requesterId)
-            nextButton.menu = ContextMenuProvider.shared.getUpcomingSongsMenu(playlist: currentPlaylist, requesterId: requesterId)
         }
         else
         {
@@ -425,11 +422,6 @@ class PlayerViewController: UITableViewController
             let seconds = String(format: "%02d", Int(songDuration) % 60)
             let minutes = String(format: "%02d", Int(songDuration) / 60)
             maximumDurationLabel.text = "\(minutes):\(seconds)"
-            previousButton.isEnabled = false
-            nextButton.isEnabled = false
-            shuffleButton.isEnabled = false
-            previousButton.menu = nil
-            nextButton.menu = nil
         }
         updateLoopMode()
         updateShuffleMode()
@@ -501,12 +493,16 @@ class PlayerViewController: UITableViewController
             previousButton.isEnabled = true
             nextButton.isEnabled = true
             shuffleButton.isEnabled = true
+            previousButton.menu = ContextMenuProvider.shared.getPreviousSongsMenu(playlist: playlist!, requesterId: requesterId)
+            nextButton.menu = ContextMenuProvider.shared.getUpcomingSongsMenu(playlist: playlist!, requesterId: requesterId)
         }
         else
         {
-            previousButton.isEnabled = true
-            nextButton.isEnabled = true
-            shuffleButton.isEnabled = true
+            previousButton.isEnabled = false
+            nextButton.isEnabled = false
+            shuffleButton.isEnabled = false
+            previousButton.menu = nil
+            nextButton.menu = nil
         }
     }
 }

@@ -9,7 +9,7 @@ import UIKit
 
 class LibraryPlaylistViewController: UITableViewController
 {
-    private let requesterId: Int = 7
+    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
     
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =

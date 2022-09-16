@@ -202,15 +202,19 @@ class MiniPlayerView: UIView
     
     func updatePlaylistButtons()
     {
-        if GlobalVariables.shared.currentPlaylist != nil
+        if let playlist = GlobalVariables.shared.currentPlaylist
         {
             nextButton.isEnabled = true
             previousButton.isEnabled = true
+            nextButton.menu = ContextMenuProvider.shared.getUpcomingSongsMenu(playlist: playlist, requesterId: GlobalVariables.shared.mainTabController.requesterId)
+            previousButton.menu = ContextMenuProvider.shared.getPreviousSongsMenu(playlist: playlist, requesterId: GlobalVariables.shared.mainTabController.requesterId)
         }
         else
         {
             nextButton.isEnabled = false
             previousButton.isEnabled = false
+            nextButton.menu = nil
+            previousButton.menu = nil
         }
     }
     

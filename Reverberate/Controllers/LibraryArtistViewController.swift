@@ -9,7 +9,8 @@ import UIKit
 
 class LibraryArtistViewController: UICollectionViewController
 {
-    private let requesterId: Int = 2
+    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
+    
     
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =

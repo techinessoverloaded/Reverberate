@@ -155,7 +155,6 @@ extension HomeViewController
         let categoricalSongs = songs[category]
         if GlobalVariables.shared.currentSong != categoricalSongs[item]
         {
-            print(categoricalSongs[item])
             GlobalVariables.shared.currentSong = categoricalSongs[item]
             GlobalVariables.shared.currentPlaylist = playlists[category]!
         }

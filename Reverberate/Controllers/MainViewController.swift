@@ -141,6 +141,8 @@ class MainViewController: UITabBarController
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.addObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
@@ -164,6 +166,8 @@ class MainViewController: UITabBarController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .previousSongClickedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .upcomingSongClickedNotification, object: nil)
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
@@ -604,6 +608,32 @@ extension MainViewController: PlayerDelegate
 
 extension MainViewController
 {
+    @objc func onPreviousSongClickNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        onSongChangeRequest(playlist: GlobalVariables.shared.currentPlaylist!, newSong: song)
+    }
+    
+    @objc func onUpcomingSongClickNotification(_ notification: NSNotification)
+    {
+        guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else
+        {
+            return
+        }
+        guard let song = notification.userInfo?["song"] as? Song else
+        {
+            return
+        }
+        onSongChangeRequest(playlist: GlobalVariables.shared.currentPlaylist!, newSong: song)
+    }
+    
     @objc func onRemoveSongFromPlaylistNotification(_ notification: NSNotification)
     {
         guard let receiverId = notification.userInfo?["receiverId"] as? Int, receiverId == requesterId else

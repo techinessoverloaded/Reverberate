@@ -70,9 +70,18 @@ class SearchResultsViewController: UICollectionViewController
     
     weak var delegate: SearchResultDelegate?
     
+    weak var playlistDelegate: PlaylistDelegate?
+    
     weak var searchBarRef: UISearchBar?
     
     private var songToBeAddedToPlaylist: Song? = nil
+    
+    private var playlist: Playlist = {
+        let allSongsPlaylist = Playlist()
+        allSongsPlaylist.songs = DataManager.shared.availableSongs.sorted()
+        allSongsPlaylist.name = "All Songs"
+        return allSongsPlaylist
+    }()
     
     override func loadView()
     {
@@ -98,6 +107,12 @@ class SearchResultsViewController: UICollectionViewController
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "cell")
+        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+    }
+    
+    deinit
+    {
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -170,6 +185,16 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
             config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
             cell.contentConfiguration = config
             cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
+            cell.configurationUpdateHandler = { cell, state in
+                guard var updatedConfig = cell.contentConfiguration?.updated(for: state) as? UIListContentConfiguration else
+                {
+                    return
+                }
+                updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
+                   return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
+                }
+                cell.contentConfiguration = updatedConfig
+            }
             var menuButtonConfig = UIButton.Configuration.plain()
             menuButtonConfig.baseForegroundColor = .systemGray
             menuButtonConfig.image = UIImage(systemName: "ellipsis")!
@@ -181,6 +206,13 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
             cell.accessories = [UICellAccessory.customView(configuration: .init(customView: menuButton, placement: .trailing(displayed: .always, at: { accessories in
                 return 0
             })))]
+            if GlobalVariables.shared.currentPlaylist == playlist
+            {
+                if GlobalVariables.shared.currentSong == song
+                {
+                    collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                }
+            }
             return cell
         }
         else if searchMode == 1
@@ -202,11 +234,26 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         let item = indexPath.item
-        if searchMode == 1
+        if searchMode == 0
+        {
+            let song = filteredSongs[item]
+            if GlobalVariables.shared.currentPlaylist == playlist
+            {
+                if GlobalVariables.shared.currentSong != song
+                {
+                    playlistDelegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                }
+            }
+            else
+            {
+                playlistDelegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+            }
+        }
+        else if searchMode == 1
         {
             delegate?.onAlbumSelection(selectedAlbum: filteredAlbums[item])
         }
-        else if searchMode == 2
+        else
         {
             delegate?.onArtistSelection(selectedArtist: filteredArtists[item])
         }
@@ -411,5 +458,39 @@ extension SearchResultsViewController: UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
     {
         self.searchMode = selectedScope
+    }
+}
+
+extension SearchResultsViewController
+{
+    @objc func onSongChange()
+    {
+        guard searchMode == 0 else
+        {
+            return
+        }
+        guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
+        {
+            return
+        }
+        guard currentPlaylist == playlist else
+        {
+            collectionView.selectItem(at: nil, animated: true, scrollPosition: .centeredVertically)
+            return
+        }
+        let currentSong = GlobalVariables.shared.currentSong!
+        guard let indexPath = collectionView.indexPathsForVisibleItems.first(where: { filteredSongs[$0.item] == currentSong }) else
+        {
+            return
+        }
+        guard let selectedIndexPaths = collectionView.indexPathsForSelectedItems, !selectedIndexPaths.isEmpty else
+        {
+            collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+            return
+        }
+        if !selectedIndexPaths.contains(indexPath)
+        {
+            collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+        }
     }
 }

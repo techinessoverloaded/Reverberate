@@ -22,6 +22,7 @@ class SearchViewController: UICollectionViewController
     private lazy var searchController: UISearchController = {
         let searchResultsVC = SearchResultsViewController(collectionViewLayout: UICollectionViewFlowLayout())
         searchResultsVC.delegate = self
+        searchResultsVC.playlistDelegate = GlobalVariables.shared.mainTabController
         let sController = UISearchController(searchResultsController: searchResultsVC)
         sController.searchResultsUpdater = searchResultsVC
         searchResultsVC.searchBarRef = sController.searchBar
