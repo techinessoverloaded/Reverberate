@@ -685,9 +685,7 @@ extension ProfileViewController: SignupDelegate
         user.preferredLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
         user.preferredGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
         GlobalConstants.contextSaveAction()
-        //GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
-        configureAccordingToSession()
-        tableView.reloadData()
+        GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
         NotificationCenter.default.post(name: .userLoggedInNotification, object: nil)
         signupController.dismiss(animated: true)
     }
