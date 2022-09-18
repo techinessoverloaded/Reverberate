@@ -9,8 +9,7 @@ import UIKit
 
 class LibrarySongViewController: UITableViewController
 {
-    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
-    
+    private let requesterId: Int = 2
     
     private lazy var noResultsMessage: NSAttributedString = {
         let largeTextAttributes: [NSAttributedString.Key : Any] =

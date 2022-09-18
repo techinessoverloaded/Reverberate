@@ -9,7 +9,7 @@ import UIKit
 
 class PlayerViewController: UITableViewController
 {
-    private let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
+    private let requesterId: Int = 3
     
     private lazy var playIcon: UIImage = {
         return UIImage(systemName: "play.fill")!
@@ -411,7 +411,10 @@ class PlayerViewController: UITableViewController
         else
         {
             playlistDetailView.text = nil
-            let song = GlobalVariables.shared.currentSong!
+            guard let song = GlobalVariables.shared.currentSong else
+            {
+                return
+            }
             playlistTitleView.text = song.albumName!
             posterView.image = song.coverArt
             songTitleView.text = song.title!
@@ -478,6 +481,10 @@ class PlayerViewController: UITableViewController
     
     func updateTime()
     {
+        guard GlobalVariables.shared.avAudioPlayer != nil else
+        {
+            return
+        }
         let currentTime = Float(GlobalVariables.shared.avAudioPlayer.currentTime)
         songSlider.setValue(currentTime, animated: true)
         let seconds = String(format: "%02d", Int(currentTime) % 60)

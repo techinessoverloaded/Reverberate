@@ -11,7 +11,7 @@ import MediaPlayer
 
 class MainViewController: UITabBarController
 {
-    let requesterId: Int = Int(NSDate().timeIntervalSince1970 * 1000)
+    let requesterId: Int = 0
     
     private lazy var homeVC = createHomeVc()
 
@@ -34,8 +34,6 @@ class MainViewController: UITabBarController
     }()
     
     private var playerController: PlayerViewController!
-    
-    private var avAudioPlayer: AVAudioPlayer! = GlobalVariables.shared.avAudioPlayer
     
     private var miniPlayerTimer: CADisplayLink!
     
@@ -84,22 +82,31 @@ class MainViewController: UITabBarController
         if index == 0
         {
             homeVC = newViewController as! HomeViewController
-            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: homeVC)])
+            var existingViewControllers = viewControllers!
+            existingViewControllers.replaceSubrange(index...index, with: [UINavigationController(rootViewController: homeVC)])
+            setViewControllers(existingViewControllers, animated: true)
         }
         else if index == 1
         {
             searchVC = newViewController as! SearchViewController
-            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: searchVC)])
+            var existingViewControllers = viewControllers!
+            existingViewControllers.replaceSubrange(index...index, with: [UINavigationController(rootViewController: searchVC)])
+            setViewControllers(existingViewControllers, animated: true)
         }
         else if index == 2
         {
             libraryVC = newViewController as! LibraryViewController
-            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: libraryVC)])
+            var existingViewControllers = viewControllers!
+            existingViewControllers.replaceSubrange(index...index, with: [UINavigationController(rootViewController: libraryVC)])
+            setViewControllers(existingViewControllers, animated: true)
         }
         else
         {
             profileVC = newViewController as! ProfileViewController
-            self.viewControllers!.replaceSubrange(index...index, with: [UINavigationController(rootViewController: profileVC)])
+            var existingViewControllers = viewControllers!
+            existingViewControllers.remove(at: 3)
+            existingViewControllers.insert(UINavigationController(rootViewController: profileVC), at: 3)
+            setViewControllers(existingViewControllers, animated: true)
         }
         let item = self.tabBar.items![index]
         item.image = UIImage(systemName: self.imageNames[index])
@@ -197,7 +204,7 @@ class MainViewController: UITabBarController
         navController.navigationBar.isTranslucent = true
         UIView.animate(withDuration: 0.1, delay: 0, options: [.transitionCrossDissolve], animations: { [unowned self] in
             self.miniPlayerView.alpha = 0
-            self.present(navController, animated: true)
+            topMostViewController.present(navController, animated: true)
         }, completion: nil)
     }
     
@@ -206,11 +213,11 @@ class MainViewController: UITabBarController
         let commandCenter = MPRemoteCommandCenter.shared()
         commandCenter.playCommand.addTarget
         { [unowned self] event in
-            avAudioPlayer.play()
+            GlobalVariables.shared.avAudioPlayer.play()
             try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             if playerController != nil
             {
-                playerController!.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: false)
+                playerController!.setPlaying(shouldPlaySongFromBeginning: GlobalVariables.shared.avAudioPlayer.currentTime == 0, isSongPaused: false)
             }
             else
             {
@@ -222,11 +229,11 @@ class MainViewController: UITabBarController
         
         commandCenter.pauseCommand.addTarget
         { [unowned self] event in
-            avAudioPlayer.pause()
+            GlobalVariables.shared.avAudioPlayer.pause()
             try! AVAudioSession.sharedInstance().setActive(false)
             if playerController != nil
             {
-                playerController?.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: true)
+                playerController?.setPlaying(shouldPlaySongFromBeginning: GlobalVariables.shared.avAudioPlayer.currentTime == 0, isSongPaused: true)
             }
             else
             {
@@ -238,22 +245,22 @@ class MainViewController: UITabBarController
         
         commandCenter.skipForwardCommand.addTarget {
             [unowned self] event in
-            avAudioPlayer.currentTime += 10
-            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = avAudioPlayer.currentTime
+            GlobalVariables.shared.avAudioPlayer.currentTime += 10
+            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = GlobalVariables.shared.avAudioPlayer.currentTime
             return .success
         }
         
         commandCenter.skipBackwardCommand.addTarget {
             [unowned self] event in
-            avAudioPlayer.currentTime -= 10
-            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = avAudioPlayer.currentTime
+            GlobalVariables.shared.avAudioPlayer.currentTime -= 10
+            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = GlobalVariables.shared.avAudioPlayer.currentTime
             return .success
         }
         
         commandCenter.changePlaybackPositionCommand.addTarget {
             [unowned self] event in
             let changeEvent = event as! MPChangePlaybackPositionCommandEvent
-            avAudioPlayer.currentTime = changeEvent.positionTime
+            GlobalVariables.shared.avAudioPlayer.currentTime = changeEvent.positionTime
             return .success
         }
         
@@ -293,9 +300,9 @@ class MainViewController: UITabBarController
         })
         nowPlayingInfo[MPMediaItemPropertyArtist] = currentSong.getArtistNamesAsString(artistType: nil)
         nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = currentSong.albumName!
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = avAudioPlayer.currentTime
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = avAudioPlayer.duration
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = avAudioPlayer.rate
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = GlobalVariables.shared.avAudioPlayer.currentTime
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = GlobalVariables.shared.avAudioPlayer.duration
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = GlobalVariables.shared.avAudioPlayer.rate
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         let playlist = GlobalVariables.shared.currentPlaylist
         if playlist != nil
@@ -325,7 +332,7 @@ extension MainViewController: MiniPlayerDelegate
 {
     func onMiniPlayerPlayButtonTap()
     {
-        avAudioPlayer.play()
+        GlobalVariables.shared.avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
@@ -334,7 +341,7 @@ extension MainViewController: MiniPlayerDelegate
     
     func onMiniPlayerPauseButtonTap()
     {
-        avAudioPlayer.pause()
+        GlobalVariables.shared.avAudioPlayer.pause()
         try! AVAudioSession.sharedInstance().setActive(false)
         miniPlayerTimer.isPaused = true
         setupNowPlayingNotification()
@@ -343,7 +350,7 @@ extension MainViewController: MiniPlayerDelegate
     
     func onPlayerExpansionRequest()
     {
-        showPlayerController(shouldPlaySongFromBeginning: false, isSongPaused: !avAudioPlayer.isPlaying)
+        showPlayerController(shouldPlaySongFromBeginning: false, isSongPaused: !GlobalVariables.shared.avAudioPlayer.isPlaying)
     }
 }
 
@@ -420,17 +427,17 @@ extension MainViewController: PlayerDelegate
         switch loopMode
         {
         case .off:
-            avAudioPlayer.numberOfLoops = 0
+            GlobalVariables.shared.avAudioPlayer.numberOfLoops = 0
         case .song:
-            avAudioPlayer.numberOfLoops = -1
+            GlobalVariables.shared.avAudioPlayer.numberOfLoops = -1
         case .playlist:
-            avAudioPlayer.numberOfLoops = 0
+            GlobalVariables.shared.avAudioPlayer.numberOfLoops = 0
         }
     }
     
     func onPlayButtonTap()
     {
-        avAudioPlayer.play()
+        GlobalVariables.shared.avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
         setupNowPlayingNotification()
@@ -439,7 +446,7 @@ extension MainViewController: PlayerDelegate
     
     func onPauseButtonTap()
     {
-        avAudioPlayer.pause()
+        GlobalVariables.shared.avAudioPlayer.pause()
         try! AVAudioSession.sharedInstance().setActive(false)
         miniPlayerView.setPlaying(shouldPlaySong: false)
         setupNowPlayingNotification()
@@ -448,13 +455,13 @@ extension MainViewController: PlayerDelegate
     
     func onRewindButtonTap()
     {
-        avAudioPlayer.currentTime -= 10
+        GlobalVariables.shared.avAudioPlayer.currentTime -= 10
         setupNowPlayingNotification()
     }
     
     func onForwardButtonTap()
     {
-        avAudioPlayer.currentTime += 10
+        GlobalVariables.shared.avAudioPlayer.currentTime += 10
         setupNowPlayingNotification()
     }
     
@@ -578,23 +585,27 @@ extension MainViewController: PlayerDelegate
                 let shuffledPlaylist = playlist.copy() as! Playlist
                 shuffledPlaylist.songs = playlist.songs!.shuffled()
                 GlobalVariables.shared.currentShuffledPlaylist = shuffledPlaylist
+                GlobalVariables.shared.automaticallyDeducePlaylistSong = false
                 GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
             }
             GlobalVariables.shared.currentSong = newSong
+            GlobalVariables.shared.automaticallyDeducePlaylistSong = true
         }
         else
         {
             if GlobalVariables.shared.currentPlaylist != playlist
             {
+                GlobalVariables.shared.automaticallyDeducePlaylistSong = false
                 GlobalVariables.shared.currentPlaylist = playlist
             }
             GlobalVariables.shared.currentSong = newSong
+            GlobalVariables.shared.automaticallyDeducePlaylistSong = true
         }
     }
     
     func onSongSeekRequest(songPosition value: Double)
     {
-        avAudioPlayer.currentTime = value
+        GlobalVariables.shared.avAudioPlayer.currentTime = value
         setupNowPlayingNotification()
         if miniPlayerTimer.isPaused
         {
@@ -608,7 +619,7 @@ extension MainViewController: PlayerDelegate
                 self.playerController.dismiss(animated: false)
                 self.miniPlayerView.alpha = 1
         }, completion: nil)
-        if avAudioPlayer.isPlaying
+        if GlobalVariables.shared.avAudioPlayer.isPlaying
         {
             miniPlayerTimer.isPaused = false
         }
@@ -721,7 +732,7 @@ extension MainViewController
             sheet.prefersGrabberVisible = true
             sheet.detents = [.medium(), .large()]
         }
-        self.present(playlistVcNavigationVc, animated: true)
+        topMostViewController.present(playlistVcNavigationVc, animated: true)
     }
     
     @objc func onAddSongToFavouritesNotification(_ notification: NSNotification)
@@ -805,7 +816,7 @@ extension MainViewController
     
     @objc func onTimerFire()
     {
-        guard let avAudioPlayer = avAudioPlayer else
+        guard let avAudioPlayer = GlobalVariables.shared.avAudioPlayer else
         {
             return
         }
@@ -824,11 +835,11 @@ extension MainViewController
         switch type
         {
             case .began:
-            avAudioPlayer.pause()
+            GlobalVariables.shared.avAudioPlayer.pause()
             print("Interruption Began")
             if playerController != nil
             {
-                playerController?.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: true)
+                playerController?.setPlaying(shouldPlaySongFromBeginning: GlobalVariables.shared.avAudioPlayer.currentTime == 0, isSongPaused: true)
             }
             else
             {
@@ -842,11 +853,11 @@ extension MainViewController
             if options.contains(.shouldResume)
             {
                 print("An interruption ended. Resume playback.")
-                print(avAudioPlayer.prepareToPlay())
-                avAudioPlayer.play()
+                print(GlobalVariables.shared.avAudioPlayer.prepareToPlay())
+                GlobalVariables.shared.avAudioPlayer.play()
                 if playerController != nil
                 {
-                    playerController!.setPlaying(shouldPlaySongFromBeginning: avAudioPlayer.currentTime == 0, isSongPaused: false)
+                    playerController!.setPlaying(shouldPlaySongFromBeginning: GlobalVariables.shared.avAudioPlayer.currentTime == 0, isSongPaused: false)
                 }
                 else
                 {
@@ -866,10 +877,15 @@ extension MainViewController
     {
         guard GlobalVariables.shared.currentSong != nil else
         {
+            guard GlobalVariables.shared.avAudioPlayer != nil else
+            {
+                return
+            }
             GlobalVariables.shared.avAudioPlayer.stop()
             GlobalVariables.shared.avAudioPlayer = nil
-            avAudioPlayer = nil
             try! AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            var audiosession = AVAudioSession.sharedInstance()
+            print("Address of AVAudioSession: \(address(of: &audiosession))\n")
             miniPlayerView.setDetails()
             setupNowPlayingNotification()
             if !hasSetupMPCommandCenter
@@ -881,9 +897,11 @@ extension MainViewController
         }
         GlobalVariables.shared.avAudioPlayer = try! AVAudioPlayer(contentsOf: GlobalVariables.shared.currentSong!.url as URL)
         GlobalVariables.shared.avAudioPlayer.delegate = self
-        avAudioPlayer = GlobalVariables.shared.avAudioPlayer
-        avAudioPlayer.play()
+        GlobalVariables.shared.avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+        var audiosession = AVAudioSession.sharedInstance()
+        print("Address of AVAudioSession: \(address(of: &audiosession))")
+        print("Address of Global AVAudioPlayer: \(address(of: &GlobalVariables.shared.avAudioPlayer))")
         miniPlayerView.setPlaying(shouldPlaySong: true)
         miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
@@ -903,6 +921,10 @@ extension MainViewController
     @objc func onPlaylistChange()
     {
         guard let playlist = GlobalVariables.shared.currentPlaylist else
+        {
+            return
+        }
+        guard GlobalVariables.shared.automaticallyDeducePlaylistSong else
         {
             return
         }

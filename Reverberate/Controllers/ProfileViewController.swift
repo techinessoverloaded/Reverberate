@@ -92,7 +92,10 @@ class ProfileViewController: UITableViewController
     
     private var signupController: SignupViewController!
     
-    private var user: User!
+    private var user: User
+    {
+        return GlobalVariables.shared.currentUser!
+    }
     
     override func viewDidLoad()
     {
@@ -117,6 +120,7 @@ class ProfileViewController: UITableViewController
             navigationItem.rightBarButtonItem = editProfileButton
             logoutButton.addTarget(self, action: #selector(onLogoutButtonTap(_:)), for: .touchUpInside)
             themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
+            NotificationCenter.default.addObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
         }
         else
         {
@@ -134,47 +138,38 @@ class ProfileViewController: UITableViewController
         super.viewDidLayoutSubviews()
         if SessionManager.shared.isUserLoggedIn
         {
-            setUserDetails()
             profilePictureView.layer.cornerRadius = profilePictureView.bounds.height / 2
         }
     }
     
-    override func viewWillAppear(_ animated: Bool)
-    {
-        super.viewWillAppear(animated)
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
-        }
-    }
-    
-    
-    override func viewWillDisappear(_ animated: Bool)
+    deinit
     {
         if SessionManager.shared.isUserLoggedIn
         {
             NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
         }
-        super.viewWillDisappear(animated)
-    }
-    
-    func getUserReference()
-    {
-        user = GlobalVariables.shared.currentUser!
     }
     
     func setUserDetails()
     {
-        getUserReference()
         nameLabel.text = user.name
-        let emailCell = tableView.cellForRow(at: IndexPath(item: 0, section: 2))!
-        var emailConfig = emailCell.contentConfiguration as! UIListContentConfiguration
-        emailConfig.secondaryText = user.email
-        emailCell.contentConfiguration = emailConfig
-        let phoneCell = tableView.cellForRow(at: IndexPath(item: 1, section: 2))!
-        var phoneConfig = phoneCell.contentConfiguration as! UIListContentConfiguration
-        phoneConfig.secondaryText = user.phone
-        phoneCell.contentConfiguration = phoneConfig
+        let indexPathOfVisibleRows = tableView.indexPathsForVisibleRows!
+        let emailIndexPath = IndexPath(item: 0, section: 2)
+        let phoneIndexPath = IndexPath(item: 1, section: 2)
+        if indexPathOfVisibleRows.contains(emailIndexPath)
+        {
+            let emailCell = tableView.cellForRow(at: emailIndexPath)!
+            var emailConfig = emailCell.contentConfiguration as! UIListContentConfiguration
+            emailConfig.secondaryText = user.email
+            emailCell.contentConfiguration = emailConfig
+        }
+        if indexPathOfVisibleRows.contains(phoneIndexPath)
+        {
+            let phoneCell = tableView.cellForRow(at: phoneIndexPath)!
+            var phoneConfig = phoneCell.contentConfiguration as! UIListContentConfiguration
+            phoneConfig.secondaryText = user.phone
+            phoneCell.contentConfiguration = phoneConfig
+        }
         let userProfilePicture = UIImage(data: user.profilePicture!)
         profilePictureView.image = userProfilePicture
     }
@@ -341,6 +336,7 @@ extension ProfileViewController
                 cell.selectionStyle = .none
                 //Hide Separator
                 cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
+                profilePictureView.image = UIImage(data: user.profilePicture!)!
                 cell.addSubViewToContentView(profilePictureView, useAutoLayout: true)
                 return cell
             }
@@ -350,6 +346,7 @@ extension ProfileViewController
                 cell.selectionStyle = .none
                 //Hide Separator
                 cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
+                nameLabel.text = user.name!
                 cell.addSubViewToContentView(nameLabel, useAutoLayout: true)
                 return cell
             }
@@ -361,10 +358,10 @@ extension ProfileViewController
                 //Show separator
                 cell.separatorInset = .zero
                 var config = UIListContentConfiguration.valueCell()//cell.defaultContentConfiguration()
-                switch item
+                if item == 0
                 {
-                case 0:
                     config.text = "Email Address"
+                    config.secondaryText = user.email!
                     config.textProperties.color = .systemGray
                     config.textProperties.adjustsFontForContentSizeCategory = true
                     config.secondaryTextProperties.color = .label
@@ -373,8 +370,11 @@ extension ProfileViewController
                     cell.contentConfiguration = config
                     //cell.configureCell(title: "Email Address", infoView: emailLabel)
                     return cell
-                case 1:
+                }
+                else
+                {
                     config.text = "Phone Number"
+                    config.secondaryText = user.phone!
                     config.textProperties.color = .systemGray
                     config.textProperties.adjustsFontForContentSizeCategory = true
                     config.secondaryTextProperties.color = .label
@@ -382,8 +382,6 @@ extension ProfileViewController
                     config.prefersSideBySideTextAndSecondaryText = true
                     cell.contentConfiguration = config
                     //cell.configureCell(title: "Phone Number", infoView: phoneLabel)
-                    return cell
-                default:
                     return cell
                 }
             }
@@ -604,7 +602,6 @@ extension ProfileViewController
     @objc func onContextSaveAction(notification: NSNotification)
     {
         setUserDetails()
-        print("Updated User Details: \(String(describing: user))")
     }
 }
 
@@ -646,10 +643,10 @@ extension ProfileViewController: LoginDelegate
 {
     func onSuccessfulLogin()
     {
-        let mainVC = ((UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController)
         let newProfileVC = ProfileViewController(style: .insetGrouped)
         newProfileVC.title = "Your Profile"
-        mainVC.replaceViewController(index: 3, newViewController: newProfileVC)
+        GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
+        NotificationCenter.default.post(name: .userLoggedInNotification, object: nil)
         loginController.dismiss(animated: true)
     }
     
@@ -685,11 +682,12 @@ extension ProfileViewController: SignupDelegate
     {
         let newProfileVC = ProfileViewController(style: .insetGrouped)
             newProfileVC.title = "Your Profile"
-        getUserReference()
         user.preferredLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
         user.preferredGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
         GlobalConstants.contextSaveAction()
-        GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
+        //GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
+        configureAccordingToSession()
+        tableView.reloadData()
         NotificationCenter.default.post(name: .userLoggedInNotification, object: nil)
         signupController.dismiss(animated: true)
     }

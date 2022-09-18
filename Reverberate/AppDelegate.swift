@@ -27,10 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         // Override point for customization after application launch.
         print("didfinishlaunching")
-        let audioSession = AVAudioSession.sharedInstance()
         do
         {
-            try audioSession.setCategory(.playback, mode: .moviePlayback, policy: .longFormAudio)
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback, policy: .longFormAudio)
         }
         catch
         {

@@ -50,5 +50,10 @@ class GlobalVariables
     
     var userPlaylists: [Playlist]? = nil
     
-    var mainTabController: MainViewController!
+    var automaticallyDeducePlaylistSong: Bool = true
+    
+    var mainTabController: MainViewController
+    {
+        return (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController as! MainViewController
+    }
 }

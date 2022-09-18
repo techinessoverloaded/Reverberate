@@ -61,7 +61,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         if userDefaults.bool(forKey: GlobalConstants.isFirstTime)
         {
             window!.rootViewController = InitialViewController(style: .insetGrouped)
-            //window?.rootViewController = OnboardingViewController()
+            window!.makeKeyAndVisible()
         }
         else
         {
@@ -79,8 +79,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
                     GlobalConstants.contextSaveAction()
                 }
                 let mainVc = MainViewController()
-                GlobalVariables.shared.mainTabController = mainVc
                 window!.rootViewController = mainVc
+                window!.makeKeyAndVisible()
                 print("userId exists")
             }
             else
@@ -97,8 +97,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
                     userDefaults.set(Language.allCases.filter({ $0.rawValue >= 0 }).map({ $0.rawValue }), forKey: GlobalConstants.preferredLanguages)
                 }
                 let mainVc = MainViewController()
-                GlobalVariables.shared.mainTabController = mainVc
                 window!.rootViewController = mainVc
+                window!.makeKeyAndVisible()
             }
         }
         restoreTheme()
@@ -106,19 +106,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
     
     func changeRootViewController(_ newVC: UIViewController, animationOption: Int = 0)
     {
-        guard let unwrappedWindow = window else
+        guard window != nil else
         {
             print("Error in changing rootViewController")
             return
         }
-        unwrappedWindow.rootViewController = newVC
-        if newVC is MainViewController
-        {
-            GlobalVariables.shared.mainTabController = (newVC as! MainViewController)
-        }
+        window!.rootViewController = newVC
+        window!.makeKeyAndVisible()
         if animationOption == 0
         {
-            UIView.transition(with: unwrappedWindow,
+            UIView.transition(with: window!,
                               duration: 0.5,
                               options:[.transitionFlipFromRight],
                               animations: nil,
@@ -126,7 +123,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         }
         else
         {
-            UIView.transition(with: unwrappedWindow,
+            UIView.transition(with: window!,
                               duration: 0.01,
                               options:[.transitionCrossDissolve],
                               animations: nil,

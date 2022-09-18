@@ -92,7 +92,7 @@ class HomeViewController: UICollectionViewController
         result.forEach {
             let playlist = Playlist()
             playlist.name = $0.category.description
-            playlist.songs = $0.songs
+            playlist.songs = DataProcessor.shared.getSongsOf(category: $0.category)
             playlists[$0.category] = playlist
         }
         return result
@@ -152,7 +152,7 @@ extension HomeViewController
         {
             if GlobalVariables.shared.currentSong != song
             {
-                GlobalVariables.shared.currentSong = song
+                GlobalVariables.shared.mainTabController.onPlaylistSongChangeRequest(playlist: playlists[category]!, newSong: song)
             }
         }
         else
@@ -192,7 +192,7 @@ extension HomeViewController
         if didDisplayRecentlyPlayedSongs
         {
             songs[.recentlyPlayed] = DataProcessor.shared.getSongsOf(category: .recentlyPlayed, andLimitNumberOfResultsTo: 10)
-            playlists[.recentlyPlayed]!.songs = songs[.recentlyPlayed]
+            playlists[.recentlyPlayed]!.songs = DataProcessor.shared.getSongsOf(category: .recentlyPlayed)
             collectionView.reloadSections(IndexSet(integer: 0))
         }
         else

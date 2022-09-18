@@ -146,6 +146,19 @@ extension UIViewController
     {
         return Int(bitPattern: pointer)
     }
+    
+    var topMostViewController: UIViewController
+    {
+        get
+        {
+            var topViewController = (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).window!.rootViewController!
+            while (topViewController.presentedViewController != nil)
+            {
+                topViewController = topViewController.presentedViewController!
+            }
+            return topViewController
+        }
+    }
 }
 
 extension UIImageView
