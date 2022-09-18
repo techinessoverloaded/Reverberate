@@ -148,11 +148,8 @@ class SessionManager
     {
         UserDefaults.standard.set(nil, forKey: GlobalConstants.currentUserId)
         UserDefaults.standard.set(true, forKey: GlobalConstants.isFirstTime)
-        try! AVAudioSession.sharedInstance().setActive(false)
-        if GlobalVariables.shared.avAudioPlayer != nil
-        {
-            GlobalVariables.shared.avAudioPlayer.stop()
-        }
+        GlobalVariables.shared.currentPlaylist = nil
+        GlobalVariables.shared.currentSong = nil
         DataManager.shared.clearRecentlyPlayedItems()
         NotificationCenter.default.post(name: .userLoggedOutNotification, object: nil)
     }

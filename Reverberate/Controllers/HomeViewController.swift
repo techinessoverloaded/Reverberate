@@ -158,8 +158,6 @@ extension HomeViewController
         else
         {
             GlobalVariables.shared.mainTabController.onPlaylistSongChangeRequest(playlist: playlists[category]!, newSong: song)
-//            GlobalVariables.shared.currentSong = song
-//            GlobalVariables.shared.currentPlaylist = playlists[category]!
         }
     }
     
@@ -194,6 +192,7 @@ extension HomeViewController
         if didDisplayRecentlyPlayedSongs
         {
             songs[.recentlyPlayed] = DataProcessor.shared.getSongsOf(category: .recentlyPlayed, andLimitNumberOfResultsTo: 10)
+            playlists[.recentlyPlayed]!.songs = songs[.recentlyPlayed]
             collectionView.reloadSections(IndexSet(integer: 0))
         }
         else

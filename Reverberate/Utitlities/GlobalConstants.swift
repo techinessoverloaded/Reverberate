@@ -37,7 +37,8 @@ class GlobalConstants
         "Sarkaru Vaari Paata" : "13/06/2022",
         "Mimi" : "16/07/2021",
         "Ayyappanum Koshiyum" : "10/02/2020",
-        "Valimai" : "01/01/2022"
+        "Valimai" : "01/01/2022",
+        "Etharkkum Thunindhavan (Kannada)" : "31/01/2022"
     ]
     
     //Asset song names
@@ -81,11 +82,11 @@ class GlobalConstants
             .folk: []
         ],
         .kannada: [
-            .classical: [],
+            .classical: ["nallaehrudayavu.mp3"],
             .melody: [],
             .western: [],
-            .rock: [],
-            .folk: []
+            .rock: ["silkujubba.mp3"],
+            .folk: ["erueru.mp3"]
         ],
     ]
     

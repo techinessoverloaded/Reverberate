@@ -143,7 +143,7 @@ class ArtistViewController: UITableViewController
             artistPhotoView.widthAnchor.constraint(equalTo: artistPhotoView.heightAnchor),
             artistNameView.topAnchor.constraint(equalTo: artistPhotoView.bottomAnchor, constant: 10),
             artistNameView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
-            artistNameView.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.6),
+            artistNameView.widthAnchor.constraint(equalTo: artistPhotoView.widthAnchor, multiplier: 0.72),
             artistRoleView.topAnchor.constraint(equalTo: artistNameView.bottomAnchor, constant: 2),
             artistRoleView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
             artistRoleView.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.67),
@@ -154,7 +154,9 @@ class ArtistViewController: UITableViewController
             shuffleButton.topAnchor.constraint(equalTo: artistRoleView.bottomAnchor, constant: 10),
             shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
             artistFavouriteButton.centerYAnchor.constraint(equalTo: artistNameView.centerYAnchor),
-            artistFavouriteButton.trailingAnchor.constraint(equalTo: artistNameView.trailingAnchor, constant: 10)
+            artistFavouriteButton.trailingAnchor.constraint(equalTo: artistPhotoView.trailingAnchor),
+            artistFavouriteButton.widthAnchor.constraint(equalTo: artistPhotoView.widthAnchor, multiplier: 0.15),
+            artistFavouriteButton.heightAnchor.constraint(equalTo: artistFavouriteButton.widthAnchor, multiplier: 0.9)
         ])
         headerView.backgroundColor = .clear
         tableView.tableHeaderView = headerView

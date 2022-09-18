@@ -233,6 +233,30 @@ class LibrarySongViewController: UITableViewController
         return headerView
     }
     
+    private func resetPlayAndShuffleButtons()
+    {
+        if viewOnlyFavSongs
+        {
+            if allSongs.isEmpty
+            {
+                playButton.configuration!.title = "Play"
+                playButton.configuration!.image = playIcon
+                playButton.isEnabled = false
+                shuffleButton.isEnabled = false
+            }
+            else
+            {
+                playButton.isEnabled = true
+                shuffleButton.isEnabled = true
+            }
+        }
+        else
+        {
+            playButton.isEnabled = true
+            shuffleButton.isEnabled = true
+        }
+    }
+    
     private func setupFilterMenu()
     {
         let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
@@ -251,6 +275,7 @@ class LibrarySongViewController: UITableViewController
                         viewOnlyFavSongs = false
                         emptyMessageLabel.isHidden = true
                         tableView.reloadData()
+                        resetPlayAndShuffleButtons()
                     })
                     let favouriteSongsMenuItem = UIAction(title: "Favourite Songs", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
                         if viewOnlyFavSongs
@@ -272,6 +297,7 @@ class LibrarySongViewController: UITableViewController
                             emptyMessageLabel.isHidden = true
                         }
                         tableView.reloadData()
+                        resetPlayAndShuffleButtons()
                     })
                     if viewOnlyFavSongs
                     {
@@ -608,6 +634,7 @@ extension LibrarySongViewController
             {
                 tableView.reloadData()
             }
+            resetPlayAndShuffleButtons()
         }
     }
     

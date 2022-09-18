@@ -188,7 +188,7 @@ class PlaylistViewController: UITableViewController
             posterView.widthAnchor.constraint(equalTo: posterView.heightAnchor),
             titleView.topAnchor.constraint(equalTo: posterView.bottomAnchor, constant: 10),
             titleView.centerXAnchor.constraint(equalTo: posterView.centerXAnchor),
-            titleView.widthAnchor.constraint(equalTo: posterView.widthAnchor, multiplier: 0.9),
+            titleView.widthAnchor.constraint(equalTo: posterView.widthAnchor, multiplier: 0.85),
             artistView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 2),
             artistView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
             artistView.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.6),
@@ -202,7 +202,9 @@ class PlaylistViewController: UITableViewController
             shuffleButton.topAnchor.constraint(equalTo: detailsView.bottomAnchor, constant: 10),
             shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
             albumFavouriteButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor),
-            albumFavouriteButton.trailingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 0)
+            albumFavouriteButton.trailingAnchor.constraint(equalTo: posterView.trailingAnchor),
+            albumFavouriteButton.widthAnchor.constraint(equalTo: posterView.widthAnchor, multiplier: 0.1),
+            albumFavouriteButton.heightAnchor.constraint(equalTo: albumFavouriteButton.widthAnchor, multiplier: 0.9)
         ])
         headerView.backgroundColor = .clear
         tableView.tableHeaderView = headerView

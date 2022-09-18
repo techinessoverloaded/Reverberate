@@ -36,7 +36,6 @@
 		DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */; };
 		DA28A349287414E900E36382 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A348287414E900E36382 /* SignupViewController.swift */; };
 		DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A34A287414F700E36382 /* LoginViewController.swift */; };
-		DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A34C2874157C00E36382 /* OnboardingViewController.swift */; };
 		DA2F0C1228A3AB22003F35F1 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */; };
 		DA2F0C1528A3B0BB003F35F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */; };
 		DA42C87B28D4538800EADF26 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA42C87A28D4538800EADF26 /* User+CoreDataProperties.swift */; };
@@ -102,6 +101,9 @@
 		DAA0F17328CB0FEA0077C98B /* PlaylistSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0F17228CB0FEA0077C98B /* PlaylistSelectionViewController.swift */; };
 		DAA0F17528CB16080077C98B /* PlaylistSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0F17428CB16080077C98B /* PlaylistSelectionDelegate.swift */; };
 		DABA1435289791D700DAAF13 /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA1434289791D700DAAF13 /* PlaylistViewController.swift */; };
+		DABAF8EF28D73A3C0039DC47 /* erueru.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DABAF8EE28D73A3C0039DC47 /* erueru.mp3 */; };
+		DABAF8F128D73A4F0039DC47 /* silkujubba.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DABAF8F028D73A4F0039DC47 /* silkujubba.mp3 */; };
+		DABAF8F328D73A5F0039DC47 /* nallaehrudayavu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DABAF8F228D73A5F0039DC47 /* nallaehrudayavu.mp3 */; };
 		DAC6D8BD28D2EB8400584904 /* CategoricalSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC6D8BC28D2EB8400584904 /* CategoricalSong.swift */; };
 		DACBA429289CF85A00DDEBDE /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACBA428289CF85A00DDEBDE /* Song.swift */; };
 		DACF29DA28B50A3000141BCB /* MusicLoopMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF29D928B50A3000141BCB /* MusicLoopMode.swift */; };
@@ -141,7 +143,6 @@
 		DA2810BC287C2588006EEF60 /* LabeledInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledInfoTableViewCell.swift; sourceTree = "<group>"; };
 		DA28A348287414E900E36382 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		DA28A34A287414F700E36382 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		DA28A34C2874157C00E36382 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DA42C87A28D4538800EADF26 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -209,6 +210,9 @@
 		DAA0F17228CB0FEA0077C98B /* PlaylistSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSelectionViewController.swift; sourceTree = "<group>"; };
 		DAA0F17428CB16080077C98B /* PlaylistSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSelectionDelegate.swift; sourceTree = "<group>"; };
 		DABA1434289791D700DAAF13 /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
+		DABAF8EE28D73A3C0039DC47 /* erueru.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = erueru.mp3; sourceTree = "<group>"; };
+		DABAF8F028D73A4F0039DC47 /* silkujubba.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silkujubba.mp3; sourceTree = "<group>"; };
+		DABAF8F228D73A5F0039DC47 /* nallaehrudayavu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = nallaehrudayavu.mp3; sourceTree = "<group>"; };
 		DAC6D8BC28D2EB8400584904 /* CategoricalSong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoricalSong.swift; sourceTree = "<group>"; };
 		DACBA428289CF85A00DDEBDE /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		DACF29D928B50A3000141BCB /* MusicLoopMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicLoopMode.swift; sourceTree = "<group>"; };
@@ -352,7 +356,6 @@
 				DA28A348287414E900E36382 /* SignupViewController.swift */,
 				DA58B5542877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift */,
 				DA28A34A287414F700E36382 /* LoginViewController.swift */,
-				DA28A34C2874157C00E36382 /* OnboardingViewController.swift */,
 				DA668C9028770745001EE1C9 /* HomeViewController.swift */,
 				DA668C922877076B001EE1C9 /* SearchViewController.swift */,
 				DA668C9428770794001EE1C9 /* LibraryViewController.swift */,
@@ -615,6 +618,7 @@
 		DA7F24762881963D00E4786F /* Classical */ = {
 			isa = PBXGroup;
 			children = (
+				DABAF8F228D73A5F0039DC47 /* nallaehrudayavu.mp3 */,
 			);
 			path = Classical;
 			sourceTree = "<group>";
@@ -622,6 +626,7 @@
 		DA7F24772881964600E4786F /* Rock */ = {
 			isa = PBXGroup;
 			children = (
+				DABAF8F028D73A4F0039DC47 /* silkujubba.mp3 */,
 			);
 			path = Rock;
 			sourceTree = "<group>";
@@ -636,6 +641,7 @@
 		DA7F24792881965500E4786F /* Folk */ = {
 			isa = PBXGroup;
 			children = (
+				DABAF8EE28D73A3C0039DC47 /* erueru.mp3 */,
 			);
 			path = Folk;
 			sourceTree = "<group>";
@@ -747,11 +753,14 @@
 				DA252E6628A5456200791267 /* penny.mp3 in Resources */,
 				DA252E7F28A557D100791267 /* rihaayide.mp3 in Resources */,
 				DA252E8128A5587800791267 /* kalakkatha.mp3 in Resources */,
+				DABAF8F328D73A5F0039DC47 /* nallaehrudayavu.mp3 in Resources */,
 				DA252E8528A559B800791267 /* thaalampoyi.mp3 in Resources */,
+				DABAF8EF28D73A3C0039DC47 /* erueru.mp3 in Resources */,
 				DA252E8728A55A9500791267 /* naangaveramaari.mp3 in Resources */,
 				DA757432288D9A5A00A4CF80 /* beastmode.mp3 in Resources */,
 				DA562A922891507E0017EEF2 /* beastmodetelugu.mp3 in Resources */,
 				DA252E7828A5517300791267 /* hututu.mp3 in Resources */,
+				DABAF8F128D73A4F0039DC47 /* silkujubba.mp3 in Resources */,
 				DA252E7B28A551EB00791267 /* chotisichiraiya.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -825,7 +834,6 @@
 				DA67F43F28892FFE00062985 /* PlayerViewController.swift in Sources */,
 				DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */,
 				DA65D3B528866D5000173F56 /* GlobalVariables.swift in Sources */,
-				DA28A34D2874157C00E36382 /* OnboardingViewController.swift in Sources */,
 				DA12E696288E559100D502EC /* SongArtistsViewController.swift in Sources */,
 				DA134FFF28C8FE2300ADEA51 /* ContextMenuProvider.swift in Sources */,
 				DA4556A8287402C400804CB8 /* Reverberate.xcdatamodeld in Sources */,
@@ -973,10 +981,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RZFG3568AJ;
+				DEVELOPMENT_TEAM = R4F89R73A4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -989,9 +997,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1003,10 +1011,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RZFG3568AJ;
+				DEVELOPMENT_TEAM = R4F89R73A4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1019,9 +1027,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -74,7 +74,7 @@ class MainViewController: UITabBarController
         ])
         miniPlayerView.delegate = self
         miniPlayerView.addInteraction(songContextMenuInteraction)
-        miniPlayerTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
+        miniPlayerTimer = CADisplayLink(target: self, selector: #selector(onTimerFire))
         miniPlayerTimer.add(to: .main, forMode: .common)
         miniPlayerTimer.isPaused = true
     }
@@ -183,6 +183,7 @@ class MainViewController: UITabBarController
         {
             NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
         }
+        miniPlayerTimer.invalidate()
     }
     
     func showPlayerController(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -802,8 +803,12 @@ extension MainViewController
         GlobalVariables.shared.currentUser!.removeFromFavouriteArtists(artist)
     }
     
-    @objc func onTimerFire(_ sender: Timer)
+    @objc func onTimerFire()
     {
+        guard let avAudioPlayer = avAudioPlayer else
+        {
+            return
+        }
         let currentTime = Float(avAudioPlayer.currentTime)
         miniPlayerView.updateSongDurationView(newValue: currentTime)
     }
@@ -863,7 +868,8 @@ extension MainViewController
         {
             GlobalVariables.shared.avAudioPlayer.stop()
             GlobalVariables.shared.avAudioPlayer = nil
-            try! AVAudioSession.sharedInstance().setActive(false)
+            avAudioPlayer = nil
+            try! AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
             miniPlayerView.setDetails()
             setupNowPlayingNotification()
             if !hasSetupMPCommandCenter
@@ -1022,10 +1028,7 @@ extension MainViewController: PlaylistDelegate
     
     func onPlaylistPlayRequest(playlist: Playlist)
     {
-        if GlobalVariables.shared.currentPlaylist != playlist
-        {
-            GlobalVariables.shared.currentPlaylist = playlist
-        }
+        onSongChangeRequest(playlist: playlist, newSong: playlist.songs!.first!)
         onPlayButtonTap()
     }
     
