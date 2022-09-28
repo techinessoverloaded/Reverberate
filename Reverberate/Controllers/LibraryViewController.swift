@@ -47,12 +47,24 @@ class LibraryViewController: UITableViewController
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 70, right: 0)
-        NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification(_:)), name: .userLoggedInNotification, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onUserLoginNotification(_:)), name: .userLoggedInNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
+        super.viewDidDisappear(animated)
     }
     
     deinit
     {
-        NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     // MARK: - Table view data source and delegate

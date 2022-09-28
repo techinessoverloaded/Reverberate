@@ -110,7 +110,6 @@ class PlaylistSelectionViewController: UITableViewController
         return allPlaylists.count
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
@@ -146,6 +145,11 @@ class PlaylistSelectionViewController: UITableViewController
         let cell = tableView.cellForRow(at: indexPath)!
         cell.accessoryType = .none
         doneButton.isEnabled = selectedPlaylist != nil
+    }
+    
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
     }
 }
 

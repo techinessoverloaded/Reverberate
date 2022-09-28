@@ -16,6 +16,7 @@ class TitleCardCVCell: UICollectionViewCell
         tLabel.font = .preferredFont(forTextStyle: .title2, weight: .semibold)
         tLabel.textAlignment = .center
         tLabel.textColor = .white
+        tLabel.numberOfLines = 0
         return tLabel
     }()
     
@@ -25,7 +26,8 @@ class TitleCardCVCell: UICollectionViewCell
         contentView.addSubview(titleLabel)
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            titleLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, constant: -20)
         ])
     }
     

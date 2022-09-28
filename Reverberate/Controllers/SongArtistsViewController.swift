@@ -7,21 +7,13 @@
 
 import UIKit
 
-class SongArtistsViewController: UITableViewController
+class SongArtistsViewController: UICollectionViewController
 {
+    private let requesterId: Int = 6
+    
     private lazy var backgroundView: UIVisualEffectView = {
         let bView = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
         return bView
-    }()
-    
-    private lazy var collectionView: UICollectionView = {
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.scrollDirection = .horizontal
-        let cView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: {
-            sectionIndex , _ -> NSCollectionLayoutSection? in
-            self.createSectionLayout(section: sectionIndex)
-        }))
-        return cView
     }()
     
     private lazy var artists: [ArtistType : [Artist]] = {
@@ -48,139 +40,61 @@ class SongArtistsViewController: UITableViewController
             NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .largeTitle, weight: .bold)
         ]
         view.backgroundColor = .clear
-        tableView.backgroundColor = .clear
-        tableView.backgroundView = backgroundView
-        tableView.sectionHeaderTopPadding = 0
-        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        collectionView.backgroundColor = .clear
+        collectionView.backgroundView = backgroundView
         collectionView.backgroundColor = .clear
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.isScrollEnabled = false
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
     }
     
-    private func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
+    override func viewDidDisappear(_ animated: Bool)
     {
-        //Item
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-        
-        //Group
-        let groupSize: NSCollectionLayoutSize!
-        let group: NSCollectionLayoutGroup!
-        if isInPortraitMode
-        {
-            if isIpad
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.2), heightDimension: .absolute(290))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-            else
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.2), heightDimension: .absolute(200))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-        }
-        else
-        {
-            if isIpad
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(330))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-            else
-            {
-                groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.3), heightDimension: .absolute(270))
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
-            }
-        }
-        
-        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
-        
-        //Section
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0)
-        section.interGroupSpacing = 10
-        section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(40)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
-        return section
+        LifecycleLogger.viewDidDisappearLog(self)
+        NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
+        super.viewDidDisappear(animated)
     }
     
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int
+    deinit
     {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-        cell.addSubViewToContentView(collectionView)
-        return cell
+        LifecycleLogger.deinitLog(self)
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    private func createArtistMenu(artist: Artist) -> UIMenu
     {
-        if indexPath.section == 0
-        {
-            var cellHeight: CGFloat = 0
-            if isInPortraitMode
-            {
-                if isIpad
-                {
-                    cellHeight = 290
-                }
-                else
-                {
-                    cellHeight = 200
-                }
-            }
-            else
-            {
-                if isIpad
-                {
-                    cellHeight = 330
-                }
-                else
-                {
-                    cellHeight = 270
-                }
-            }
-            let headerHeight: CGFloat = 40
-            let margin: CGFloat = 40
-            return CGFloat(artists.count) * (cellHeight + headerHeight + margin)
-        }
-        else
-        {
-            return .zero
-        }
+        return ContextMenuProvider.shared.getArtistMenu(artist: artist, requesterId: requesterId)
     }
-}
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
+    {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { [unowned self] _ in
+            collectionViewLayout.invalidateLayout()
+        })
+    }
 
-extension SongArtistsViewController: UICollectionViewDataSource, UICollectionViewDelegate
-{
-    func numberOfSections(in collectionView: UICollectionView) -> Int
+    override func numberOfSections(in collectionView: UICollectionView) -> Int
     {
         return 3
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         let sectionAsInt16 = Int16(section)
         return artists[ArtistType(rawValue: sectionAsInt16)!]!.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         if kind == UICollectionView.elementKindSectionHeader
         {
@@ -195,7 +109,7 @@ extension SongArtistsViewController: UICollectionViewDataSource, UICollectionVie
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ArtistCVCell.identifier, for: indexPath) as! ArtistCVCell
         let section = Int16(indexPath.section)
@@ -207,13 +121,63 @@ extension SongArtistsViewController: UICollectionViewDataSource, UICollectionVie
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         let section = Int16(indexPath.section)
         let item = indexPath.item
         let artist = artists[ArtistType(rawValue: section)!]![item]
         self.dismiss(animated: true)
         delegate?.onArtistDetailViewRequest(artist: artist)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
+    {
+        let section = Int16(indexPath.section)
+        let item = indexPath.item
+        let artist = artists[ArtistType(rawValue: section)!]![item]
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return createArtistMenu(artist: artist)
+        })
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return nil
+        }
+        let cell = collectionView.cellForItem(at: indexPath)!
+        let previewParameters = UIPreviewParameters()
+        previewParameters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return nil
+        }
+        let cell = collectionView.cellForItem(at: indexPath)!
+        let previewParameters = UIPreviewParameters()
+        previewParameters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
+        animator.preferredCommitStyle = .pop
+        let section = Int16(indexPath.section)
+        let item = indexPath.item
+        let artist = artists[ArtistType(rawValue: section)!]![item]
+        animator.addAnimations { [unowned self] in
+            self.dismiss(animated: false)
+            delegate?.onArtistDetailViewRequest(artist: artist)
+        }
     }
 }
 
@@ -222,5 +186,30 @@ extension SongArtistsViewController
     @objc func onCloseButtonTap(_ sender: UIBarButtonItem)
     {
         self.dismiss(animated: true)
+    }
+    
+    @objc func onAddArtistToFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let artist = notification.userInfo?["artist"] as? Artist else
+        {
+            return
+        }
+        GlobalVariables.shared.mainTabController.onAddArtistToFavouritesNotification(NSNotification(name: .addArtistToFavouritesNotification, object: nil, userInfo: ["receiverId" : GlobalVariables.shared.mainTabController.requesterId, "artist" : artist]))
+    }
+    
+    @objc func onRemoveArtistFromFavouritesNotification(_ notification: NSNotification)
+    {
+        guard let artist = notification.userInfo?["artist"] as? Artist else
+        {
+            return
+        }
+        GlobalVariables.shared.mainTabController.onRemoveArtistFromFavouritesNotification(NSNotification(name:.removeArtistFromFavouritesNotification, object: nil, userInfo: ["receiverId" : GlobalVariables.shared.mainTabController.requesterId, "artist" : artist]))
+    }
+    
+    @objc func onLoginRequestNotification(_ notification: NSNotification)
+    {
+        self.dismiss(animated: true, completion: { [unowned self] in
+            delegate?.onLoginRequest()
+        })
     }
 }

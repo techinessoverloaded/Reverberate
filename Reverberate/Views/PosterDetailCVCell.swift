@@ -65,6 +65,11 @@ class PosterDetailCVCell: UICollectionViewCell
         fatalError("Not Initialized")
     }
     
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
+    }
+    
     func configureCell(poster: UIImage = UIImage(named: "glassmorphic_bg")!, title: String, subtitle: String?)
     {
         posterView.image = poster

@@ -98,21 +98,17 @@ class LibraryPlaylistViewController: UITableViewController
         emptyMessageLabel.attributedText = noPlaylistsMessage
         emptyMessageLabel.isHidden = !allPlaylists.isEmpty
         tableView.backgroundView = backgroundView
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
     }
     
     deinit
     {
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.removeObserver(self, name: .removePlaylistNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .songAddedToPlaylistNotification, object: nil)
-        }
+        LifecycleLogger.deinitLog(self)
+        NotificationCenter.default.removeObserver(self, name: .removePlaylistNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .songAddedToPlaylistNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .songRemovedFromPlaylistNotification, object: nil)
     }
     
     private func refetchPlaylists()
@@ -225,26 +221,44 @@ class LibraryPlaylistViewController: UITableViewController
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let section = indexPath.section
+        let item = indexPath.item
+        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
+        let playlistVC = PlaylistViewController(style: .grouped)
+        playlistVC.playlist = playlist
+        playlistVC.delegate = GlobalVariables.shared.mainTabController
+        self.navigationController?.pushViewController(playlistVC, animated: true)
+    }
+    
     override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration?
     {
         let section = indexPath.section
         let item = indexPath.item
         let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(playlist: playlist)
         })
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    override func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
     {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
         let section = indexPath.section
         let item = indexPath.item
         let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
-        tableView.deselectRow(at: indexPath, animated: true)
         let playlistVC = PlaylistViewController(style: .grouped)
         playlistVC.playlist = playlist
         playlistVC.delegate = GlobalVariables.shared.mainTabController
-        self.navigationController?.pushViewController(playlistVC, animated: true)
+        animator.preferredCommitStyle = .pop
+        animator.addAnimations { [unowned self] in
+            navigationController?.pushViewController(playlistVC, animated: false)
+        }
     }
 }
 

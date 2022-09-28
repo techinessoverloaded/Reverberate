@@ -107,12 +107,25 @@ class SearchResultsViewController: UICollectionViewController
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "cell")
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        LifecycleLogger.viewDidDisappearLog(self)
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        super.viewDidDisappear(animated)
     }
     
     deinit
     {
-        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     private func createSongMenu(song: Song) -> UIMenu
@@ -221,6 +234,22 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         }
     }
     
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
+    {
+        if searchMode == 0
+        {
+            let item = indexPath.item
+            let song = filteredSongs[item]
+            if GlobalVariables.shared.currentPlaylist == playlist
+            {
+                if GlobalVariables.shared.currentSong == song
+                {
+                    collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                }
+            }
+        }
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         let item = indexPath.item
@@ -311,7 +340,10 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
     
     override func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
-        let indexPath = configuration.identifier as! IndexPath
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return nil
+        }
         let cell = collectionView.cellForItem(at: indexPath)!
         let previewParameters = UIPreviewParameters()
         previewParameters.backgroundColor = .clear
@@ -320,11 +352,49 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
     
     override func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
-        let indexPath = configuration.identifier as! IndexPath
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return nil
+        }
         let cell = collectionView.cellForItem(at: indexPath)!
-        let previewParamters = UIPreviewParameters()
-        previewParamters.backgroundColor = .clear
-        return UITargetedPreview(view: cell.contentView, parameters: previewParamters)
+        let previewParameters = UIPreviewParameters()
+        previewParameters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
+        animator.preferredCommitStyle = searchMode == 0 ? .dismiss : .pop
+        let item = indexPath.item
+        animator.addAnimations { [unowned self] in
+            if searchMode == 0
+            {
+                let song = filteredSongs[item]
+                if GlobalVariables.shared.currentPlaylist == playlist
+                {
+                    if GlobalVariables.shared.currentSong != song
+                    {
+                        playlistDelegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                    }
+                }
+                else
+                {
+                    playlistDelegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                }
+            }
+            else if searchMode == 1
+            {
+                delegate?.onAlbumSelection(selectedAlbum: filteredAlbums[item])
+            }
+            else
+            {
+                delegate?.onArtistSelection(selectedArtist: filteredArtists[item])
+            }
+        }
     }
 }
 
@@ -461,6 +531,7 @@ extension SearchResultsViewController
         }
         guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
         {
+            collectionView.selectItem(at: nil, animated: true, scrollPosition: .centeredVertically)
             return
         }
         guard currentPlaylist == playlist else

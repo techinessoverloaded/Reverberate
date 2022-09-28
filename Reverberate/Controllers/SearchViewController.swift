@@ -69,7 +69,24 @@ class SearchViewController: UICollectionViewController
     {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.tintColor = .systemBlue
-        print("Search will appear")
+        LifecycleLogger.viewWillAppearLog(self)
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        super.viewDidDisappear(animated)
+        LifecycleLogger.viewDidDisappearLog(self)
+    }
+    
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
     }
 }
 
@@ -92,8 +109,6 @@ extension SearchViewController
         {
             return UICollectionReusableView()
         }
-        //let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier, for: indexPath) as! HeaderCVReusableView
-        //headerView.configure(title: "Browse All", shouldShowSeeAllButton: false, tagForSeeAllButton: nil, headerFontColorOpacity: 1)
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header", for: indexPath)
         headerView.addSubview(browseLabel)
         NSLayoutConstraint.activate([

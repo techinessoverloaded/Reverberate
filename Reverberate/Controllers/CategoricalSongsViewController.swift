@@ -96,17 +96,28 @@ class CategoricalSongsViewController: UITableViewController
                 onPlayNotificationReceipt()
             }
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
-        if category == .recentlyPlayed
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
-        }
     }
 
-    deinit
+    override func viewDidAppear(_ animated: Bool)
     {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        if category == .recentlyPlayed
+        {
+            if GlobalVariables.shared.recentlyPlayedSongNames.count != songs.count
+            {
+                onRecentlyPlayedListChange()
+            }
+            NotificationCenter.default.setObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        LifecycleLogger.viewDidDisappearLog(self)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
@@ -114,11 +125,12 @@ class CategoricalSongsViewController: UITableViewController
         {
             NotificationCenter.default.removeObserver(self, name: .recentlyPlayedListChangedNotification, object: nil)
         }
+        super.viewDidDisappear(animated)
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
-        super.viewDidDisappear(animated)
+        LifecycleLogger.deinitLog(self)
     }
     
     private func getSongMenu(song: Song) -> UIMenu
@@ -200,6 +212,21 @@ class CategoricalSongsViewController: UITableViewController
             cell.accessoryView = menuButton
             cell.backgroundColor = .clear
             cell.selectionStyle = .none
+//            if GlobalVariables.shared.currentPlaylist == playlist
+//            {
+//                if GlobalVariables.shared.currentSong == song
+//                {
+//                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+//                    if GlobalVariables.shared.avAudioPlayer!.isPlaying
+//                    {
+//                        onPlayNotificationReceipt()
+//                    }
+//                    else
+//                    {
+//                        onPausedNotificationReceipt()
+//                    }
+//                }
+//            }
         }
         else
         {
@@ -273,7 +300,7 @@ class CategoricalSongsViewController: UITableViewController
             {
                 delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
             }
-            onPlayNotificationReceipt()
+            //onPlayNotificationReceipt()
         }
         else
         {
@@ -292,16 +319,54 @@ class CategoricalSongsViewController: UITableViewController
         if section == 0
         {
             let song = songs[item]
-            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
                 return getSongMenu(song: song)
             })
         }
         else
         {
             let album = albums[item]
-            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
                 return getAlbumMenu(album: album)
             })
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
+        let section = indexPath.section
+        let item = indexPath.item
+        animator.preferredCommitStyle = section == 0 ? .dismiss : .pop
+        if section == 0
+        {
+            let song = songs[item]
+            animator.addAnimations { [unowned self] in
+                if GlobalVariables.shared.currentPlaylist == playlist
+                {
+                    if GlobalVariables.shared.currentSong != song
+                    {
+                        delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                    }
+                }
+                else
+                {
+                    delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                }
+                onPlayNotificationReceipt()
+            }
+        }
+        else
+        {
+            let albumVC = PlaylistViewController(style: .grouped)
+            albumVC.playlist = albums[item]
+            albumVC.delegate = GlobalVariables.shared.mainTabController
+            animator.addAnimations { [unowned self] in
+                navigationController?.pushViewController(albumVC, animated: false)
+            }
         }
     }
 }
@@ -312,7 +377,9 @@ extension CategoricalSongsViewController
     {
         songs = DataProcessor.shared.getSongsOf(category: .recentlyPlayed)
         albums = DataProcessor.shared.getAlbumsOf(category: .recentlyPlayed)
-        tableView.reloadSections(IndexSet(integersIn: 0...1), with: .automatic)
+        tableView.reloadData()
+        
+        onSongChange()
     }
     
     @objc func onPlayNotificationReceipt()
@@ -337,6 +404,9 @@ extension CategoricalSongsViewController
     {
         guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
         {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         guard currentPlaylist == playlist else
@@ -355,6 +425,14 @@ extension CategoricalSongsViewController
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            if GlobalVariables.shared.avAudioPlayer.isPlaying
+            {
+                onPlayNotificationReceipt()
+            }
+            else
+            {
+                onPausedNotificationReceipt()
+            }
             return
         }
     }

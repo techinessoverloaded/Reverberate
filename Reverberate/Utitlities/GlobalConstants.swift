@@ -22,6 +22,7 @@ class GlobalConstants
     static let preferredGenres = "PrEfErReD_gEnReS"
     static let recentlyPlayedSongNames = "rEcEnTlYpLaYeDsOnGnAmEs"
     static let recentlyPlayedAlbumNames = "rEcEnTlYpLaYeDAlbumnAmEs"
+    static let previouslySelectedTabIndex = "pReViOuSlYsElEcTeDtAbInDeX"
     //Asset color names
     static let techinessColor = "techinessColor"
     static let darkGreenColor = "darkGreenColor"

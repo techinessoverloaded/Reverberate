@@ -83,5 +83,4 @@ public class Playlist: NSObject, NSSecureCoding, Identifiable, Comparable, NSCop
         newPlaylist.songs = self.songs
         return newPlaylist
     }
-    
 }

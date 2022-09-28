@@ -149,10 +149,10 @@ class ArtistViewController: UITableViewController
             artistRoleView.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.67),
             playButton.trailingAnchor.constraint(equalTo: headerView.centerXAnchor, constant: -10),
             playButton.topAnchor.constraint(equalTo: artistRoleView.bottomAnchor, constant: 10),
-            playButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
+            playButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.42),
             shuffleButton.leadingAnchor.constraint(equalTo: headerView.centerXAnchor, constant: 10),
             shuffleButton.topAnchor.constraint(equalTo: artistRoleView.bottomAnchor, constant: 10),
-            shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.4),
+            shuffleButton.widthAnchor.constraint(equalTo: headerView.widthAnchor, multiplier: 0.42),
             artistFavouriteButton.centerYAnchor.constraint(equalTo: artistNameView.centerYAnchor),
             artistFavouriteButton.trailingAnchor.constraint(equalTo: artistPhotoView.trailingAnchor),
             artistFavouriteButton.widthAnchor.constraint(equalTo: artistPhotoView.widthAnchor, multiplier: 0.15),
@@ -400,16 +400,55 @@ class ArtistViewController: UITableViewController
         if section == 0
         {
             let song = songs[item]
-            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
                 return getSongMenu(song: song)
             })
         }
         else
         {
             let album = albums[item]
-            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
                 return getAlbumMenu(album: album)
             })
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
+        let section = indexPath.section
+        let item = indexPath.item
+        animator.preferredCommitStyle = section == 0 ? .dismiss : .pop
+        if section == 0
+        {
+            let song = songs[item]
+            animator.addAnimations { [unowned self] in
+                if GlobalVariables.shared.currentPlaylist == playlist
+                {
+                    if GlobalVariables.shared.currentSong != song
+                    {
+                        delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                    }
+                }
+                else
+                {
+                    delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                }
+                onPlayNotificationReceipt()
+            }
+        }
+        else
+        {
+            let album = albums[item]
+            let albumVc = PlaylistViewController(style: .grouped)
+            albumVc.playlist = album
+            albumVc.delegate = GlobalVariables.shared.mainTabController
+            animator.addAnimations { [unowned self] in
+                navigationController?.pushViewController(albumVc, animated: false)
+            }
         }
     }
 }
@@ -463,6 +502,9 @@ extension ArtistViewController
     {
         guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
         {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         guard currentPlaylist == playlist else
@@ -481,6 +523,14 @@ extension ArtistViewController
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            if GlobalVariables.shared.avAudioPlayer!.isPlaying
+            {
+                onPlayNotificationReceipt()
+            }
+            else
+            {
+                onPausedNotificationReceipt()
+            }
             return
         }
     }

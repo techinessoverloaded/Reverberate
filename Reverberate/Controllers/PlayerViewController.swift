@@ -42,7 +42,7 @@ class PlayerViewController: UITableViewController
         }
         else
         {
-            return UIButton.Configuration.Size.medium
+            return UIButton.Configuration.Size.small
         }
     }()
     
@@ -332,9 +332,6 @@ class PlayerViewController: UITableViewController
         updateTime()
         caDisplayLinkTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
         caDisplayLinkTimer.add(to: .main, forMode: .common)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange(_:)), name: .currentSongSetNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
     }
     
     func setPlaying(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -360,17 +357,28 @@ class PlayerViewController: UITableViewController
         }
     }
     
-    deinit
+    override func viewDidDisappear(_ animated: Bool)
     {
+        LifecycleLogger.viewDidDisappearLog(self)
         navigationController?.view.removeGestureRecognizer(panGestureRecognizer)
         caDisplayLinkTimer.invalidate()
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .previousSongClickedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .upcomingSongClickedNotification, object: nil)
+        super.viewDidDisappear(animated)
+    }
+    
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange(_:)), name: .currentSongSetNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
         self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
     }
     
@@ -512,6 +520,38 @@ class PlayerViewController: UITableViewController
             previousButton.menu = nil
             nextButton.menu = nil
         }
+    }
+    
+    private func createSectionLayout(section sectionIndex: Int) -> NSCollectionLayoutSection
+    {
+        let width: CGFloat = 420
+        let height: CGFloat = 190
+        //Item
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(width), heightDimension: .absolute(height)))
+        
+        //Group
+        let groupSize: NSCollectionLayoutSize!
+        let group: NSCollectionLayoutGroup!
+        groupSize = NSCollectionLayoutSize(widthDimension: .absolute(width), heightDimension: .absolute(height))
+        group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
+        
+        //Section
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10
+        section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(30)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
+        return section
+    }
+    
+    private func createSongArtistsVc() -> UINavigationController
+    {
+        let songArtistsVc = SongArtistsViewController(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, _ -> NSCollectionLayoutSection? in
+            self.createSectionLayout(section: sectionIndex)
+        }))
+        songArtistsVc.delegate = self
+        return UINavigationController(rootViewController: songArtistsVc)
     }
 }
 
@@ -661,9 +701,7 @@ extension PlayerViewController
             }
             else if item == 4
             {
-                let songArtistsController = SongArtistsViewController(style: .insetGrouped)
-                songArtistsController.delegate = self
-                let navController = UINavigationController(rootViewController: songArtistsController)
+                let navController = createSongArtistsVc()
                 navController.modalPresentationStyle = .pageSheet
                 if let sheet = navController.sheetPresentationController
                 {
@@ -689,6 +727,7 @@ extension PlayerViewController
             return
         }
         delegate?.onSongChangeRequest(playlist: GlobalVariables.shared.currentPlaylist!, newSong: song)
+        setPlaying(shouldPlaySongFromBeginning: false, isSongPaused: false)
     }
     
     @objc func onUpcomingSongClickNotification(_ notification: NSNotification)
@@ -702,6 +741,7 @@ extension PlayerViewController
             return
         }
         delegate?.onSongChangeRequest(playlist: GlobalVariables.shared.currentPlaylist!, newSong: song)
+        setPlaying(shouldPlaySongFromBeginning: false, isSongPaused: false)
     }
     
     @objc func onTimerFire(_ timer: CADisplayLink)
@@ -854,7 +894,6 @@ extension PlayerViewController
     
     @objc func onPlayerSwipeAction(_ sender: UIView)
     {
-        print("Player swipe action")
         delegate?.onPlayerShrinkRequest()
     }
     
@@ -909,6 +948,12 @@ extension PlayerViewController: SongArtistsViewDelegate
     {
         delegate?.onPlayerShrinkRequest()
         delegate?.onArtistDetailViewRequest(artist: artist)
+    }
+    
+    func onLoginRequest()
+    {
+        delegate?.onPlayerShrinkRequest()
+        GlobalVariables.shared.mainTabController.showLoginController(afterDelay: false)
     }
 }
 extension PlayerViewController: PlaylistSelectionDelegate

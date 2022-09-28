@@ -105,11 +105,8 @@ class LibraryAlbumViewController: UICollectionViewController
         emptyMessageLabel.attributedText = noResultsMessage
         collectionView.backgroundView = backgroundView
         NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -120,12 +117,10 @@ class LibraryAlbumViewController: UICollectionViewController
     
     deinit
     {
+        LifecycleLogger.deinitLog(self)
         NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.removeObserver(self, name: .addAlbumToFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
-        }
+        NotificationCenter.default.removeObserver(self, name: .addAlbumToFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
     }
     
     private func sortAlbums() -> [Alphabet: [Album]]
@@ -270,8 +265,8 @@ class LibraryAlbumViewController: UICollectionViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let albumVC = PlaylistViewController(style: .grouped)
         let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
+        let albumVC = PlaylistViewController(style: .grouped)
         albumVC.playlist = album
         albumVC.delegate = GlobalVariables.shared.mainTabController
         self.navigationController?.pushViewController(albumVC, animated: true)
@@ -282,9 +277,27 @@ class LibraryAlbumViewController: UICollectionViewController
         let section = indexPath.section
         let item = indexPath.item
         let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(album: album)
         })
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
+        animator.preferredCommitStyle = .pop
+        let section = indexPath.section
+        let item = indexPath.item
+        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
+        let albumVC = PlaylistViewController(style: .grouped)
+        albumVC.playlist = album
+        albumVC.delegate = GlobalVariables.shared.mainTabController
+        animator.addAnimations { [unowned self] in
+            navigationController?.pushViewController(albumVC, animated: false)
+        }
     }
 }
 

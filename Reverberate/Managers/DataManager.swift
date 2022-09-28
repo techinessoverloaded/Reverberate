@@ -158,8 +158,6 @@ class DataManager
     
     func persistRecentlyPlayedItems(songName: String, albumName: String)
     {
-        var songsChanged = false
-        var albumsChanged = false
         var existingSongNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedSongNames) as! [String]
         var existingAlbumNames = UserDefaults.standard.object(forKey: GlobalConstants.recentlyPlayedAlbumNames) as! [String]
         if !existingSongNames.contains(songName)
@@ -167,19 +165,30 @@ class DataManager
             GlobalVariables.shared.recentlyPlayedSongNames.appendUniquely(songName)
             existingSongNames.append(songName)
             UserDefaults.standard.set(existingSongNames, forKey: GlobalConstants.recentlyPlayedSongNames)
-            songsChanged = true
+        }
+        else
+        {
+            GlobalVariables.shared.recentlyPlayedSongNames.removeUniquely(songName)
+            existingSongNames.removeUniquely(songName)
+            GlobalVariables.shared.recentlyPlayedSongNames.append(songName)
+            existingSongNames.append(songName)
+            UserDefaults.standard.set(existingSongNames, forKey: GlobalConstants.recentlyPlayedSongNames)
         }
         if !existingAlbumNames.contains(albumName)
         {
             GlobalVariables.shared.recentlyPlayedAlbumNames.appendUniquely(albumName)
             existingAlbumNames.append(albumName)
             UserDefaults.standard.set(existingAlbumNames, forKey: GlobalConstants.recentlyPlayedAlbumNames)
-            albumsChanged = true
         }
-        if songsChanged || albumsChanged
+        else
         {
-            NotificationCenter.default.post(name: .recentlyPlayedListChangedNotification, object: nil)
+            GlobalVariables.shared.recentlyPlayedAlbumNames.removeUniquely(albumName)
+            existingAlbumNames.removeUniquely(albumName)
+            GlobalVariables.shared.recentlyPlayedAlbumNames.append(albumName)
+            existingAlbumNames.append(albumName)
+            UserDefaults.standard.set(existingAlbumNames, forKey: GlobalConstants.recentlyPlayedAlbumNames)
         }
+        NotificationCenter.default.post(name: .recentlyPlayedListChangedNotification, object: nil)
     }
     
     func retrieveRecentlyPlayedItems()

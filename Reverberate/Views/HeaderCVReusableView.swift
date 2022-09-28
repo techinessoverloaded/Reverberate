@@ -33,10 +33,11 @@ class HeaderCVReusableView: UICollectionReusableView
         addSubview(seeAllButton)
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            seeAllButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            seeAllButton.topAnchor.constraint(equalTo: titleLabel.topAnchor)
+            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            seeAllButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            seeAllButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
         ])
+        clipsToBounds = true
     }
     
     required init(coder: NSCoder)

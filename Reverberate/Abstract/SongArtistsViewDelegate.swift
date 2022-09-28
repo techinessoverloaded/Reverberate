@@ -8,4 +8,5 @@
 protocol SongArtistsViewDelegate: AnyObject
 {
     func onArtistDetailViewRequest(artist: Artist)
+    func onLoginRequest()
 }

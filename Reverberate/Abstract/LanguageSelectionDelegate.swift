@@ -9,4 +9,6 @@ protocol LanguageSelectionDelegate: AnyObject
 {
     /// This method is called after the user has selected the Languages.
     func onLanguageSelection(selectedLanguages: [Int16])
+    
+    func onLanguageSelectionDismissRequest()
 }

@@ -177,27 +177,22 @@ class LibrarySongViewController: UITableViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
     }
     
     deinit
     {
+        LifecycleLogger.deinitLog(self)
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
-        }
+        NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -405,6 +400,21 @@ class LibrarySongViewController: UITableViewController
         cell.selectionStyle = .none
         cell.accessoryView = menuButton
         cell.backgroundColor = .clear
+        if GlobalVariables.shared.currentPlaylist == playlist
+        {
+            if GlobalVariables.shared.currentSong == song
+            {
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                {
+                    onPlayNotificationReceipt()
+                }
+                else
+                {
+                    onPausedNotificationReceipt()
+                }
+            }
+        }
         return cell
     }
     
@@ -454,9 +464,35 @@ class LibrarySongViewController: UITableViewController
         let section = indexPath.section
         let item = indexPath.item
         let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(song: song)
         })
+    }
+    
+    override func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
+        animator.preferredCommitStyle = .dismiss
+        let section = indexPath.section
+        let item = indexPath.item
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        animator.addAnimations { [unowned self] in
+            if GlobalVariables.shared.currentPlaylist == playlist
+            {
+                if GlobalVariables.shared.currentSong != song
+                {
+                    delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+                }
+            }
+            else
+            {
+                delegate?.onPlaylistSongChangeRequest(playlist: playlist, newSong: song)
+            }
+            onPlayNotificationReceipt()
+        }
     }
 }
 
@@ -521,6 +557,9 @@ extension LibrarySongViewController
     {
         guard let currentPlaylist = GlobalVariables.shared.currentPlaylist else
         {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         guard currentPlaylist == playlist else
@@ -542,6 +581,14 @@ extension LibrarySongViewController
         guard let selectedIndexPath = tableView.indexPathForSelectedRow, selectedIndexPath == indexPath else
         {
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            if GlobalVariables.shared.avAudioPlayer!.isPlaying
+            {
+                onPlayNotificationReceipt()
+            }
+            else
+            {
+                onPausedNotificationReceipt()
+            }
             return
         }
     }

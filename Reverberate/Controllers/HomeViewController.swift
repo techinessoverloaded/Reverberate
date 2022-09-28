@@ -28,22 +28,33 @@ class HomeViewController: UICollectionViewController
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        collectionView.contentInsetAdjustmentBehavior = .always
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear
-        collectionView.bounces = true
-        NotificationCenter.default.addObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(performReload), name: .userLoggedInNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(performReload), name: .languageGenreChangeNotification, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(performReload), name: .userLoggedInNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(performReload), name: .languageGenreChangeNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        LifecycleLogger.viewDidDisappearLog(self)
+        NotificationCenter.default.removeObserver(self, name: .recentlyPlayedListChangedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .languageGenreChangeNotification, object: nil)
+        super.viewDidDisappear(animated)
     }
     
     deinit
     {
-        NotificationCenter.default.removeObserver(self, name: .recentlyPlayedListChangedNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .languageGenreChangeNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     private func createMenu(song: Song) -> UIMenu
@@ -168,9 +179,36 @@ extension HomeViewController
         let category = keys[section]
         let categoricalSongs = songs[category]
         let song = categoricalSongs[item]
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { [unowned self] _ in
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(song: song)
         })
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        guard let indexPath = configuration.identifier as? IndexPath else
+        {
+            return
+        }
+        let section = indexPath.section
+        let item = indexPath.item
+        let category = keys[section]
+        let categoricalSongs = songs[category]
+        let song = categoricalSongs[item]
+        animator.preferredCommitStyle = .dismiss
+        animator.addCompletion { [unowned self] in
+            if GlobalVariables.shared.currentPlaylist == playlists[category]
+            {
+                if GlobalVariables.shared.currentSong != song
+                {
+                    GlobalVariables.shared.mainTabController.onPlaylistSongChangeRequest(playlist: playlists[category]!, newSong: song)
+                }
+            }
+            else
+            {
+                GlobalVariables.shared.mainTabController.onPlaylistSongChangeRequest(playlist: playlists[category]!, newSong: song)
+            }
+        }
     }
 }
 

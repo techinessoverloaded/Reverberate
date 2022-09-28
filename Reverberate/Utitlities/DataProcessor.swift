@@ -70,7 +70,7 @@ class DataProcessor
     func getPlaylistsThatSatisfy(theQuery query: String) -> [Playlist]?
     {
         var result: [Playlist] = []
-        let playlists = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
+        let playlists = GlobalVariables.shared.currentUser!.playlists! 
         for playlist in playlists
         {
             if playlist.name!.lowercased().contains(query) || playlist.songs!.contains(where: {
@@ -150,7 +150,7 @@ class DataProcessor
         case .folk:
             result.append(contentsOf: DataManager.shared.availableSongs.filter({ $0.genre == .folk }))
         case .recentlyPlayed:
-            GlobalVariables.shared.recentlyPlayedSongNames.forEach{
+            GlobalVariables.shared.recentlyPlayedSongNames.reversed().forEach{
                 result.append(getSong(named: $0)!)
             }
         case .none:
@@ -193,7 +193,7 @@ class DataProcessor
         case .folk:
             result.append(contentsOf: DataManager.shared.availableAlbums.filter{ $0.songs!.contains(where: { $0.genre == .folk }) })
         case .recentlyPlayed:
-            GlobalVariables.shared.recentlyPlayedAlbumNames.forEach{
+            GlobalVariables.shared.recentlyPlayedAlbumNames.reversed().forEach{
                 result.append(getAlbum(named: $0)!)
             }
         case .none:

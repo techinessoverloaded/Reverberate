@@ -120,7 +120,6 @@ class ProfileViewController: UITableViewController
             navigationItem.rightBarButtonItem = editProfileButton
             logoutButton.addTarget(self, action: #selector(onLogoutButtonTap(_:)), for: .touchUpInside)
             themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
-            NotificationCenter.default.addObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
         }
         else
         {
@@ -142,12 +141,23 @@ class ProfileViewController: UITableViewController
         }
     }
     
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        LifecycleLogger.viewDidDisappearLog(self)
+        NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
+        super.viewDidDisappear(animated)
+    }
+    
     deinit
     {
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
-        }
+        LifecycleLogger.deinitLog(self)
     }
     
     func setUserDetails()
@@ -607,6 +617,15 @@ extension ProfileViewController
 
 extension ProfileViewController: LanguageSelectionDelegate
 {
+    func onLanguageSelectionDismissRequest()
+    {
+        if languageSelectionVC != nil
+        {
+            languageSelectionVC.dismiss(animated: true)
+            languageSelectionVC = nil
+        }
+    }
+    
     func onLanguageSelection(selectedLanguages: [Int16])
     {
         if SessionManager.shared.isUserLoggedIn
@@ -618,12 +637,22 @@ extension ProfileViewController: LanguageSelectionDelegate
         {
             UserDefaults.standard.set(selectedLanguages, forKey: GlobalConstants.preferredLanguages)
         }
+        onLanguageSelectionDismissRequest()
         NotificationCenter.default.post(name: .languageGenreChangeNotification, object: nil)
     }
 }
 
 extension ProfileViewController: GenreSelectionDelegate
 {
+    func onGenreSelectionDismissRequest()
+    {
+        if genreSelectionVC != nil
+        {
+            genreSelectionVC.dismiss(animated: true)
+            genreSelectionVC = nil
+        }
+    }
+    
     func onGenreSelection(selectedGenres: [Int16])
     {
         if SessionManager.shared.isUserLoggedIn
@@ -635,6 +664,7 @@ extension ProfileViewController: GenreSelectionDelegate
         {
             UserDefaults.standard.set(selectedGenres, forKey: GlobalConstants.preferredGenres)
         }
+        onGenreSelectionDismissRequest()
         NotificationCenter.default.post(name: .languageGenreChangeNotification, object: nil)
     }
 }

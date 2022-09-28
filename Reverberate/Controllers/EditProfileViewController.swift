@@ -132,6 +132,11 @@ class EditProfileViewController: UITableViewController
         profilePictureView.layer.cornerCurve = .circular
     }
     
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
+    }
+    
     func setupInitialData()
     {
         nameField.text = userRef.name

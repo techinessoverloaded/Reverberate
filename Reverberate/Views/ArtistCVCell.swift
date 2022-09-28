@@ -54,6 +54,7 @@ class ArtistCVCell: UICollectionViewCell
             artistNameView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             artistNameView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
         ])
+        contentView.clipsToBounds = true
     }
     
     required init(coder: NSCoder)

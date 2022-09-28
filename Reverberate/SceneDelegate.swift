@@ -46,6 +46,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
             userDefaults.set([], forKey: GlobalConstants.preferredGenres)
         }
         
+        if userDefaults.value(forKey: GlobalConstants.previouslySelectedTabIndex) == nil
+        {
+            userDefaults.set(0, forKey: GlobalConstants.previouslySelectedTabIndex)
+        }
+        
         if userDefaults.value(forKey: GlobalConstants.recentlyPlayedSongNames) == nil
         {
             userDefaults.set([], forKey: GlobalConstants.recentlyPlayedSongNames)

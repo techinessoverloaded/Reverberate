@@ -401,6 +401,15 @@ extension UILabel
     }
 }
 
+extension NotificationCenter
+{
+    func setObserver(_ observer: Any, selector: Selector, name: NSNotification.Name?, object: Any?)
+    {
+        removeObserver(observer, name: name, object: object)
+        addObserver(observer, selector: selector, name: name, object: object)
+    }
+}
+
 extension NSNotification.Name
 {
     static let currentSongSetNotification = NSNotification.Name("cUrReNtSoNgSeTnOtIfIcAtIoN")

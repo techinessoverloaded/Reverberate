@@ -307,16 +307,22 @@ extension InitialViewController
     
     @objc func onSignupCancel(_ sender: UIBarButtonItem)
     {
-        signupController.dismiss(animated: true)
-        signupController = nil
+        if signupController != nil
+        {
+            signupController.dismiss(animated: true)
+            signupController = nil
+        }
         user = nil
         inSignupMode = false
     }
     
     @objc func onLoginCancel(_ sender: UIBarButtonItem)
     {
-        loginController.dismiss(animated: true)
-        loginController = nil
+        if loginController != nil
+        {
+            loginController.dismiss(animated: true)
+            loginController = nil
+        }
     }
 }
 
@@ -393,47 +399,59 @@ extension InitialViewController: LoginDelegate
 
 extension InitialViewController: LanguageSelectionDelegate
 {
+    func onLanguageSelectionDismissRequest()
+    {
+        if languageSelectionVC != nil
+        {
+            languageSelectionVC.dismiss(animated: true)
+            languageSelectionVC = nil
+        }
+    }
+    
     func onLanguageSelection(selectedLanguages: [Int16])
     {
         if inSignupMode
         {
             user.preferredLanguages = selectedLanguages
             contextSaveAction()
-            languageSelectionVC.dismiss(animated: true) {
-                [unowned self] in
-                self.showGenreSelectionViewController()
-            }
+            onLanguageSelectionDismissRequest()
+            showGenreSelectionViewController()
         }
         else if inGuestMode
         {
             UserDefaults.standard.set(selectedLanguages, forKey: GlobalConstants.preferredLanguages)
-            languageSelectionVC.dismiss(animated: true) {
-                [unowned self] in
-                self.showGenreSelectionViewController(shouldShowCancelButton: true)
-            }
+            onLanguageSelectionDismissRequest()
+            showGenreSelectionViewController(shouldShowCancelButton: true)
         }
     }
 }
 
 extension InitialViewController: GenreSelectionDelegate
 {
+    func onGenreSelectionDismissRequest()
+    {
+        if genreSelectionVC != nil
+        {
+            genreSelectionVC.dismiss(animated: true)
+            genreSelectionVC = nil
+        }
+    }
+    
     func onGenreSelection(selectedGenres: [Int16])
     {
         if inSignupMode
         {
             user.preferredGenres = selectedGenres
             contextSaveAction()
-            genreSelectionVC.dismiss(animated: true) {
-                (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(MainViewController())
-            }
+            onGenreSelectionDismissRequest()
+            (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(MainViewController())
         }
         else if inGuestMode
         {
             UserDefaults.standard.set(selectedGenres, forKey: GlobalConstants.preferredGenres)
             UserDefaults.standard.set(false, forKey: GlobalConstants.isFirstTime)
-            genreSelectionVC.dismiss(animated: true) {
-                (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(MainViewController())
-            }
+            onGenreSelectionDismissRequest()
+            (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeRootViewController(MainViewController())
         }
     }
 }

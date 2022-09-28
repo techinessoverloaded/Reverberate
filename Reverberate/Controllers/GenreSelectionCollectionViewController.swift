@@ -100,6 +100,17 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         }
     }
     
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        delegate?.onGenreSelectionDismissRequest()
+        super.viewDidDisappear(animated)
+    }
+    
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
+    }
+    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int
@@ -199,17 +210,16 @@ extension GenreSelectionCollectionViewController
     
     @objc func onCancelButtonTap(_ sender: UIBarButtonItem)
     {
-        self.dismiss(animated: true)
+        delegate?.onGenreSelectionDismissRequest()
     }
     
     @objc func onPreviousButtonTap(_ sender: UIBarButtonItem)
     {
-        self.dismiss(animated: true)
+        delegate?.onGenreSelectionDismissRequest()
     }
     
     @objc func onDoneButtonTap(_ sender: UIBarButtonItem)
     {
-        self.dismiss(animated: true)
         self.delegate?.onGenreSelection(selectedGenres: selectedGenres)
     }
     

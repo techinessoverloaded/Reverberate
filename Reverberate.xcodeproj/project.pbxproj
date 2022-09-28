@@ -49,6 +49,7 @@
 		DA4556D228740CD200804CB8 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4556D128740CD200804CB8 /* GlobalConstants.swift */; };
 		DA46499A28BE417700F92C08 /* SongArtistsViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA46499928BE417700F92C08 /* SongArtistsViewDelegate.swift */; };
 		DA4AC3ED28B35E9800F0B611 /* PlaylistControlsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */; };
+		DA509A1428E442F6005A629F /* LifecycleLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA509A1328E442F6005A629F /* LifecycleLogger.swift */; };
 		DA562A902891507E0017EEF2 /* halamathitelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */; };
 		DA562A912891507E0017EEF2 /* jollyogymkhanatelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */; };
 		DA562A922891507E0017EEF2 /* beastmodetelugu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */; };
@@ -158,6 +159,7 @@
 		DA4556D128740CD200804CB8 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		DA46499928BE417700F92C08 /* SongArtistsViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongArtistsViewDelegate.swift; sourceTree = "<group>"; };
 		DA4AC3EC28B35E9800F0B611 /* PlaylistControlsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistControlsDelegate.swift; sourceTree = "<group>"; };
+		DA509A1328E442F6005A629F /* LifecycleLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleLogger.swift; sourceTree = "<group>"; };
 		DA562A8C2891507E0017EEF2 /* halamathitelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = halamathitelugu.mp3; sourceTree = "<group>"; };
 		DA562A8D2891507E0017EEF2 /* jollyogymkhanatelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jollyogymkhanatelugu.mp3; sourceTree = "<group>"; };
 		DA562A8E2891507E0017EEF2 /* beastmodetelugu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beastmodetelugu.mp3; sourceTree = "<group>"; };
@@ -429,6 +431,7 @@
 				DACF29DB28B50AB300141BCB /* MusicShuffleMode.swift */,
 				DA5C90B328C86C1A00BE0DF1 /* Alphabet.swift */,
 				DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */,
+				DA509A1328E442F6005A629F /* LifecycleLogger.swift */,
 			);
 			path = Utitlities;
 			sourceTree = "<group>";
@@ -782,6 +785,7 @@
 				DA58B55B2878104900BDAE4B /* CustomVisualEffectView.swift in Sources */,
 				DA6C8388288046F600339937 /* InitialViewController.swift in Sources */,
 				DA668C8F2876E038001EE1C9 /* SelectionCardCVCell.swift in Sources */,
+				DA509A1428E442F6005A629F /* LifecycleLogger.swift in Sources */,
 				DA42C87B28D4538800EADF26 /* User+CoreDataProperties.swift in Sources */,
 				DA668C9128770745001EE1C9 /* HomeViewController.swift in Sources */,
 				DA67E0642898E57A00593251 /* PlaylistDelegate.swift in Sources */,
@@ -981,10 +985,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R4F89R73A4;
+				DEVELOPMENT_TEAM = RZFG3568AJ;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -997,9 +1002,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1011,10 +1017,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R4F89R73A4;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1027,9 +1034,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vtouch.demo.Reverberate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.techiness.Reverberate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Demo App";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -48,6 +48,7 @@ class MainViewController: UITabBarController
         searchVC.title = "Search"
         libraryVC.title = "Library"
         profileVC.title = "Your Profile"
+        self.delegate = self
         setViewControllers([
             UINavigationController(rootViewController: homeVC),
             UINavigationController(rootViewController: searchVC),
@@ -130,7 +131,7 @@ class MainViewController: UITabBarController
             //Section
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = 15
-            section.orthogonalScrollingBehavior = .continuous
+            section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 5, trailing: 20)
             section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(50)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
             return section
@@ -142,55 +143,61 @@ class MainViewController: UITabBarController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
-        print(paths[0])
-        NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
-        NotificationCenter.default.addObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromPlaylistNotification(_:)), name: .removeSongFromPlaylistNotification, object: nil)
-        }
-        else
-        {
-            NotificationCenter.default.addObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
-        }
     }
     
-    deinit
+    override func viewWillAppear(_ animated: Bool)
     {
+        super.viewWillAppear(animated)
+        LifecycleLogger.viewWillAppearLog(self)
+        selectedIndex = UserDefaults.standard.integer(forKey: GlobalConstants.previouslySelectedTabIndex)
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        LifecycleLogger.viewDidAppearLog(self)
+        NotificationCenter.default.setObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(handleAudioSessionInterruptionChange(notification:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.setObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveSongFromPlaylistNotification(_:)), name: .removeSongFromPlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        LifecycleLogger.viewDidDisappearLog(self)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentPlaylistSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .previousSongClickedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .upcomingSongClickedNotification, object: nil)
-        if SessionManager.shared.isUserLoggedIn
-        {
-            NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .removeSongFromPlaylistNotification, object: nil)
-        }
-        else
-        {
-            NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
-        }
+        NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeSongFromPlaylistNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
         miniPlayerTimer.invalidate()
+        super.viewDidDisappear(animated)
+    }
+    
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
     }
     
     func showPlayerController(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -219,10 +226,8 @@ class MainViewController: UITabBarController
             {
                 playerController!.setPlaying(shouldPlaySongFromBeginning: GlobalVariables.shared.avAudioPlayer.currentTime == 0, isSongPaused: false)
             }
-            else
-            {
-                miniPlayerView.setPlaying(shouldPlaySong: true)
-            }
+            miniPlayerView.setPlaying(shouldPlaySong: true)
+            miniPlayerTimer.isPaused = false
             NotificationCenter.default.post(name: NSNotification.Name.playerPlayNotification, object: nil)
             return .success
         }
@@ -235,30 +240,28 @@ class MainViewController: UITabBarController
             {
                 playerController?.setPlaying(shouldPlaySongFromBeginning: GlobalVariables.shared.avAudioPlayer.currentTime == 0, isSongPaused: true)
             }
-            else
-            {
-                miniPlayerView.setPlaying(shouldPlaySong: false)
-            }
+            miniPlayerView.setPlaying(shouldPlaySong: false)
+            miniPlayerTimer.isPaused = true
             NotificationCenter.default.post(name: NSNotification.Name.playerPausedNotification, object: nil)
             return .success
         }
         
         commandCenter.skipForwardCommand.addTarget {
-            [unowned self] event in
+            event in
             GlobalVariables.shared.avAudioPlayer.currentTime += 10
             MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = GlobalVariables.shared.avAudioPlayer.currentTime
             return .success
         }
         
         commandCenter.skipBackwardCommand.addTarget {
-            [unowned self] event in
+            event in
             GlobalVariables.shared.avAudioPlayer.currentTime -= 10
             MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = GlobalVariables.shared.avAudioPlayer.currentTime
             return .success
         }
         
         commandCenter.changePlaybackPositionCommand.addTarget {
-            [unowned self] event in
+            event in
             let changeEvent = event as! MPChangePlaybackPositionCommandEvent
             GlobalVariables.shared.avAudioPlayer.currentTime = changeEvent.positionTime
             return .success
@@ -321,10 +324,20 @@ class MainViewController: UITabBarController
         }
     }
     
-    func showLoginController()
+    func showLoginController(afterDelay: Bool = true)
     {
-        selectedIndex = 3
-        profileVC.showLoginViewController()
+        if afterDelay
+        {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2, execute: { [unowned self] in
+                selectedIndex = 3
+                profileVC.showLoginViewController()
+            })
+        }
+        else
+        {
+            selectedIndex = 3
+            profileVC.showLoginViewController()
+        }
     }
 }
 
@@ -440,6 +453,7 @@ extension MainViewController: PlayerDelegate
         GlobalVariables.shared.avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         miniPlayerView.setPlaying(shouldPlaySong: true)
+        miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
         NotificationCenter.default.post(name: NSNotification.Name.playerPlayNotification, object: nil)
     }
@@ -449,6 +463,7 @@ extension MainViewController: PlayerDelegate
         GlobalVariables.shared.avAudioPlayer.pause()
         try! AVAudioSession.sharedInstance().setActive(false)
         miniPlayerView.setPlaying(shouldPlaySong: false)
+        miniPlayerTimer.isPaused = true
         setupNowPlayingNotification()
         NotificationCenter.default.post(name: NSNotification.Name.playerPausedNotification, object: nil)
     }
@@ -514,33 +529,35 @@ extension MainViewController: PlayerDelegate
     func onNextSongRequest(playlist: Playlist, currentSong: Song)
     {
         let currentShuffleMode = GlobalVariables.shared.currentShuffleMode
+        var song: Song!
         if currentShuffleMode == .on
         {
             let shuffledPlaylist = GlobalVariables.shared.currentShuffledPlaylist!
             if !isNextSongAvailable(playlist: shuffledPlaylist, currentSong: currentSong)
             {
-                GlobalVariables.shared.currentSong = shuffledPlaylist.songs!.first!
+                song = shuffledPlaylist.songs!.first!
             }
             else
             {
                 let songs = shuffledPlaylist.songs!
                 let index = songs.firstIndex(of: currentSong)!
-                GlobalVariables.shared.currentSong = songs[index + 1]
+                song = songs[index + 1]
             }
         }
         else
         {
             if !isNextSongAvailable(playlist: playlist, currentSong: currentSong)
             {
-                GlobalVariables.shared.currentSong = playlist.songs!.first!
+                song = playlist.songs!.first!
             }
             else
             {
                 let songs = playlist.songs!
                 let index = songs.firstIndex(of: currentSong)!
-                GlobalVariables.shared.currentSong = songs[index + 1]
+                song = songs[index + 1]
             }
         }
+        GlobalVariables.shared.currentSong = song
     }
     
     func onPreviousSongRequest(playlist: Playlist, currentSong: Song)
@@ -588,6 +605,7 @@ extension MainViewController: PlayerDelegate
                 GlobalVariables.shared.automaticallyDeducePlaylistSong = false
                 GlobalVariables.shared.currentPlaylist = GlobalVariables.shared.currentShuffledPlaylist
             }
+            GlobalVariables.shared.alreadyPlayedSongs.removeAll()
             GlobalVariables.shared.currentSong = newSong
             GlobalVariables.shared.automaticallyDeducePlaylistSong = true
         }
@@ -598,6 +616,7 @@ extension MainViewController: PlayerDelegate
                 GlobalVariables.shared.automaticallyDeducePlaylistSong = false
                 GlobalVariables.shared.currentPlaylist = playlist
             }
+            GlobalVariables.shared.alreadyPlayedSongs.removeAll()
             GlobalVariables.shared.currentSong = newSong
             GlobalVariables.shared.automaticallyDeducePlaylistSong = true
         }
@@ -617,6 +636,7 @@ extension MainViewController: PlayerDelegate
     {
         UIView.animate(withDuration: 0.2, delay: 0, options: [.transitionCurlDown], animations: { [unowned self] in
                 self.playerController.dismiss(animated: false)
+                self.playerController = nil
                 self.miniPlayerView.alpha = 1
         }, completion: nil)
         if GlobalVariables.shared.avAudioPlayer.isPlaying
@@ -884,8 +904,6 @@ extension MainViewController
             GlobalVariables.shared.avAudioPlayer.stop()
             GlobalVariables.shared.avAudioPlayer = nil
             try! AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-            var audiosession = AVAudioSession.sharedInstance()
-            print("Address of AVAudioSession: \(address(of: &audiosession))\n")
             miniPlayerView.setDetails()
             setupNowPlayingNotification()
             if !hasSetupMPCommandCenter
@@ -899,9 +917,6 @@ extension MainViewController
         GlobalVariables.shared.avAudioPlayer.delegate = self
         GlobalVariables.shared.avAudioPlayer.play()
         try! AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-        var audiosession = AVAudioSession.sharedInstance()
-        print("Address of AVAudioSession: \(address(of: &audiosession))")
-        print("Address of Global AVAudioPlayer: \(address(of: &GlobalVariables.shared.avAudioPlayer))")
         miniPlayerView.setPlaying(shouldPlaySong: true)
         miniPlayerTimer.isPaused = false
         setupNowPlayingNotification()
@@ -911,10 +926,7 @@ extension MainViewController
             hasSetupMPCommandCenter = true
         }
         let song = GlobalVariables.shared.currentSong!
-        if GlobalVariables.shared.currentPlaylist != nil
-        {
-            GlobalVariables.shared.alreadyPlayedSongs.appendUniquely(song)
-        }
+        GlobalVariables.shared.alreadyPlayedSongs.appendUniquely(song)
         DataManager.shared.persistRecentlyPlayedItems(songName: song.title!, albumName: song.albumName!)
     }
     
@@ -1004,18 +1016,31 @@ extension MainViewController: AVAudioPlayerDelegate
                 }
                 else
                 {
+                    GlobalVariables.shared.alreadyPlayedSongs.removeAll()
                     onNextSongRequest(playlist: currentPlaylist, currentSong: GlobalVariables.shared.currentSong!)
-                    try! AVAudioSession.sharedInstance().setActive(false)
+                    if GlobalVariables.shared.avAudioPlayer != nil
+                    {
+                        if GlobalVariables.shared.avAudioPlayer.isPlaying
+                        {
+                            GlobalVariables.shared.avAudioPlayer.pause()
+                        }
+                    }
                     miniPlayerView.setPlaying(shouldPlaySong: false)
                     miniPlayerTimer.isPaused = true
                     miniPlayerView.updateSongDurationView(newValue: 0)
                     playerController?.setPlaying(shouldPlaySongFromBeginning: true)
-                    GlobalVariables.shared.alreadyPlayedSongs.removeAll()
                 }
             }
             else
             {
-                try! AVAudioSession.sharedInstance().setActive(false)
+                GlobalVariables.shared.alreadyPlayedSongs.removeAll()
+                if GlobalVariables.shared.avAudioPlayer != nil
+                {
+                    if GlobalVariables.shared.avAudioPlayer.isPlaying
+                    {
+                        GlobalVariables.shared.avAudioPlayer.pause()
+                    }
+                }
                 miniPlayerView.setPlaying(shouldPlaySong: false)
                 miniPlayerTimer.isPaused = true
                 miniPlayerView.updateSongDurationView(newValue: 0)
@@ -1050,7 +1075,10 @@ extension MainViewController: PlaylistDelegate
     
     func onPlaylistPlayRequest(playlist: Playlist)
     {
-        onSongChangeRequest(playlist: playlist, newSong: playlist.songs!.first!)
+        if GlobalVariables.shared.currentPlaylist != playlist
+        {
+            onSongChangeRequest(playlist: playlist, newSong: playlist.songs!.first!)
+        }
         onPlayButtonTap()
     }
     
@@ -1108,6 +1136,14 @@ extension MainViewController: UIContextMenuInteractionDelegate
         parameters.backgroundColor = .systemFill
         return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(translationX: miniPlayerView.center.x, y: miniPlayerView.center.y)))
     }
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
+    {
+        animator.preferredCommitStyle = .dismiss
+        animator.addAnimations { [unowned self] in
+            onPlayerExpansionRequest()
+        }
+    }
 }
 
 extension MainViewController: PlaylistSelectionDelegate
@@ -1130,5 +1166,12 @@ extension MainViewController: PlaylistSelectionDelegate
             selectedViewController!.present(alert, animated: true)
         }
         songToBeAddedToPlaylist = nil
+    }
+}
+extension MainViewController: UITabBarControllerDelegate
+{
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController)
+    {
+        UserDefaults.standard.set(selectedIndex, forKey: GlobalConstants.previouslySelectedTabIndex)
     }
 }

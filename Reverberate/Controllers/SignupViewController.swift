@@ -250,6 +250,22 @@ class SignupViewController: UITableViewController
             contentBlurView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
     }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        guard let cancelButton = navigationItem.leftBarButtonItem else
+        {
+            print("no cancel button")
+            return
+        }
+        let _ = cancelButton.target?.perform(cancelButton.action!, with: nil)
+        super.viewDidDisappear(animated)
+    }
+    
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
+    }
 }
 
 extension SignupViewController: UITextFieldDelegate

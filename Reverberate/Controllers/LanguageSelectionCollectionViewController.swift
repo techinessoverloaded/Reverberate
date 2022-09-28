@@ -107,6 +107,17 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         }
     }
     
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        delegate?.onLanguageSelectionDismissRequest()
+        super.viewDidDisappear(animated)
+    }
+    
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
+    }
+    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int
@@ -212,17 +223,16 @@ extension LanguageSelectionCollectionViewController
     
     @objc func onCancelButtonTap(_ sender: UIBarButtonItem)
     {
-        self.dismiss(animated: true)
+        delegate?.onLanguageSelectionDismissRequest()
     }
     
     @objc func onPreviousButtonTap(_ sender: UIBarButtonItem)
     {
-        self.dismiss(animated: true)
+        delegate?.onLanguageSelectionDismissRequest()
     }
     
     @objc func onDoneButtonTap(_ sender: UIBarButtonItem)
     {
-        self.dismiss(animated: true)
         self.delegate?.onLanguageSelection(selectedLanguages: selectedLanguages)
     }
     
