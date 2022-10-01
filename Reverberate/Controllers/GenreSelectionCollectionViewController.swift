@@ -27,7 +27,29 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     
     var rightBarButtonCustomTitle: String?
     
-    var selectAllBarButton: UIBarButtonItem!
+    private var selectAllBarButton: UIBarButtonItem!
+    
+    private var unselectAllBarButton: UIBarButtonItem!
+    
+    private var selectionTrackerBarItem: UIBarButtonItem!
+    
+    private var selectionTrackerLabel: UILabel = {
+        let stLabel = UILabel(frame: .zero)
+        stLabel.font = .preferredFont(forTextStyle: .body, weight: .semibold)
+        stLabel.textColor = .label
+        stLabel.adjustsFontSizeToFitWidth = false
+        stLabel.enableAutoLayout()
+        stLabel.textAlignment = .center
+        return stLabel
+    }()
+    
+    private var flexibleSpace: UIBarButtonItem
+    {
+        get
+        {
+            return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        }
+    }
     
     var rightBarButton: UIBarButtonItem!
     
@@ -48,7 +70,27 @@ class GenreSelectionCollectionViewController: UICollectionViewController
     
     private func resetBarButtons()
     {
-        selectAllBarButton.title = selectedGenres.isEmpty ? "Select All" : (selectedGenres.count < availableGenres.flatMap({ $0 }).count ? "Select All" : "Unselect All")
+        if selectedGenres.isEmpty
+        {
+            selectionTrackerLabel.text = "Select Genres"
+            selectAllBarButton.isEnabled = true
+            unselectAllBarButton.isEnabled = false
+        }
+        else
+        {
+            let count = selectedGenres.count
+            selectionTrackerLabel.text = count == 1 ? "1 Genre Selected" : "\(count) Genres Selected"
+            if count < availableGenres.flatMap({ $0 }).count
+            {
+                selectAllBarButton.isEnabled = true
+                unselectAllBarButton.isEnabled = true
+            }
+            else
+            {
+                unselectAllBarButton.isEnabled = true
+                selectAllBarButton.isEnabled = false
+            }
+        }
         rightBarButton.isEnabled = !selectedGenres.isEmpty
         if areCellsPreselected
         {
@@ -61,10 +103,15 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 23, weight: .bold)]
-        navigationController?.isToolbarHidden = false
-        setToolbarItems([UIBarButtonItem(title: "Select All", style: .plain, target: nil, action: nil), UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-                         UIBarButtonItem(title: "Unselect All", style: .plain, target: nil, action: nil)], animated: true)
         selectAllBarButton = UIBarButtonItem(title: "Select All", style: .plain, target: self, action: #selector(onSelectAllButtonTap(_:)))
+        unselectAllBarButton = UIBarButtonItem(title: "Unselect All", style: .plain, target: self, action: #selector(onUnselectAllButtonTap(_:)))
+        selectionTrackerBarItem = UIBarButtonItem(customView: selectionTrackerLabel)
+        navigationController?.isToolbarHidden = false
+        setToolbarItems([unselectAllBarButton,
+                         flexibleSpace,
+                         selectionTrackerBarItem,
+                         flexibleSpace,
+                         selectAllBarButton], animated: true)
         if leftBarButtonType != nil
         {
             if leftBarButtonType == .cancel
@@ -88,7 +135,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
             if rightBarButtonType == .done
             {
                 rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onDoneButtonTap(_:)))
-                navigationItem.rightBarButtonItems = [rightBarButton, selectAllBarButton]
+                navigationItem.rightBarButtonItem = rightBarButton
             }
             navigationItem.rightBarButtonItem!.isEnabled = false
         }
@@ -97,7 +144,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
             if rightBarButtonCustomTitle == "Next"
             {
                 rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(onNextButtonTap(_:)))
-                navigationItem.rightBarButtonItems = [rightBarButton, selectAllBarButton]
+                navigationItem.rightBarButtonItem = rightBarButton
             }
             navigationItem.rightBarButtonItem!.isEnabled = false
         }
@@ -175,40 +222,38 @@ extension GenreSelectionCollectionViewController: UICollectionViewDelegateFlowLa
 
 extension GenreSelectionCollectionViewController
 {
+    @objc func onUnselectAllButtonTap(_ sender: UIBarButtonItem)
+    {
+        for x in 0..<availableGenres.count
+        {
+            for y in 0..<availableGenres[x].count
+            {
+                let indexPath = IndexPath(item: y, section: x)
+                collectionView.deselectItem(at: indexPath, animated: true)
+                selectedGenres.removeAll()
+            }
+        }
+        print(selectedGenres)
+        resetBarButtons()
+    }
+    
     @objc func onSelectAllButtonTap(_ sender: UIBarButtonItem)
     {
-        if sender.title! == "Select All"
+        for x in 0..<availableGenres.count
         {
-            for x in 0..<availableGenres.count
+            for y in 0..<availableGenres[x].count
             {
-                for y in 0..<availableGenres[x].count
+                let indexPath = IndexPath(item: y, section: x)
+                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                let genre = availableGenres[x][y]
+                if !selectedGenres.contains(genre)
                 {
-                    let indexPath = IndexPath(item: y, section: x)
-                    collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
-                    let genre = availableGenres[x][y]
-                    if !selectedGenres.contains(genre)
-                    {
-                        selectedGenres.append(genre)
-                        print(selectedGenres)
-                    }
+                    selectedGenres.append(genre)
                 }
             }
-            resetBarButtons()
         }
-        else
-        {
-            for x in 0..<availableGenres.count
-            {
-                for y in 0..<availableGenres[x].count
-                {
-                    let indexPath = IndexPath(item: y, section: x)
-                    collectionView.deselectItem(at: indexPath, animated: true)
-                    selectedGenres.removeAll()
-                    print(selectedGenres)
-                }
-            }
-            resetBarButtons()
-        }
+        print(selectedGenres)
+        resetBarButtons()
     }
     
     @objc func onCancelButtonTap(_ sender: UIBarButtonItem)
