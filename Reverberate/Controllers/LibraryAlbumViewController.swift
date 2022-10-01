@@ -68,7 +68,7 @@ class LibraryAlbumViewController: UICollectionViewController
     
     private lazy var sortedAlbums: [Alphabet : [Album]] = sortAlbums()
     
-    private var filteredAlbums: [Alphabet : [Album]] = [:]
+    private var filteredAlbums: [Alphabet : [AlbumSearchResult]] = [:]
     
     private var isSearchBarEmpty: Bool
     {
@@ -256,8 +256,30 @@ class LibraryAlbumViewController: UICollectionViewController
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterDetailCVCell.identifier, for: indexPath) as! PosterDetailCVCell
         let section = indexPath.section
         let item = indexPath.item
-        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
-        cell.configureCell(poster: album.coverArt!, title: album.name!, subtitle: album.songs![0].getArtistNamesAsString(artistType: .musicDirector))
+        var album: Album!
+        if isFiltering
+        {
+            let albumResult = filteredAlbums[Alphabet(rawValue: section)!]![item]
+            album = albumResult.album
+            var attributedName: NSAttributedString = NSAttributedString(string: album.name!)
+            var attributedComposersName: NSAttributedString = NSAttributedString(string: album.composerNames)
+            if let nameRange = albumResult.nameRange
+            {
+                attributedName = album.name!.getHighlightedAttributedString(forRange: nameRange, withPointSize: cell.titleView.font.pointSize)
+            }
+            if let composersRange = albumResult.composersRange
+            {
+                attributedComposersName = album.composerNames.getHighlightedAttributedString(forRange: composersRange, withPointSize: cell.subtitleView.font.pointSize)
+            }
+            cell.configureCell(poster: album.coverArt!, attributedTitle: attributedName, attributedSubtitle: attributedComposersName)
+        }
+        else
+        {
+            let album = sortedAlbums[Alphabet(rawValue: section)!]![item]
+            let attributedName: NSAttributedString = NSAttributedString(string: album.name!)
+            let attributedComposersName: NSAttributedString = NSAttributedString(string: album.composerNames)
+            cell.configureCell(poster: album.coverArt!, attributedTitle: attributedName, attributedSubtitle: attributedComposersName)
+        }
         return cell
     }
     
@@ -265,7 +287,7 @@ class LibraryAlbumViewController: UICollectionViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
+        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item].album : sortedAlbums[Alphabet(rawValue: section)!]![item]
         let albumVC = PlaylistViewController(style: .grouped)
         albumVC.playlist = album
         albumVC.delegate = GlobalVariables.shared.mainTabController
@@ -276,7 +298,7 @@ class LibraryAlbumViewController: UICollectionViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
+        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item].album : sortedAlbums[Alphabet(rawValue: section)!]![item]
         return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(album: album)
         })
@@ -291,7 +313,7 @@ class LibraryAlbumViewController: UICollectionViewController
         animator.preferredCommitStyle = .pop
         let section = indexPath.section
         let item = indexPath.item
-        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item] : sortedAlbums[Alphabet(rawValue: section)!]![item]
+        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item].album : sortedAlbums[Alphabet(rawValue: section)!]![item]
         let albumVC = PlaylistViewController(style: .grouped)
         albumVC.playlist = album
         albumVC.delegate = GlobalVariables.shared.mainTabController
@@ -339,7 +361,10 @@ extension LibraryAlbumViewController: UISearchResultsUpdating
     func updateSearchResults(for searchController: UISearchController)
     {
         guard let query = searchController.searchBar.text, !query.isEmpty else
-        { return }
+        {
+            collectionView.reloadData()
+            return
+        }
         filteredAlbums = DataProcessor.shared.getSortedAlbumsThatSatisfy(theQuery: query, albumSource: viewOnlyFavAlbums ? allAlbums : nil)
         emptyMessageLabel.attributedText = viewOnlyFavAlbums ? (allAlbums.isEmpty ? noFavouritesMessage : noResultsMessage) : noResultsMessage
         emptyMessageLabel.isHidden = !filteredAlbums.isEmpty

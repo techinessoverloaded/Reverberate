@@ -28,7 +28,7 @@ class ArtistCVCell: UICollectionViewCell
         return apView
     }()
     
-    private lazy var artistNameView: UILabel = {
+    lazy var artistNameView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
         stView.textColor = .label
         stView.font = .preferredFont(forTextStyle: .title3, weight: .regular)
@@ -62,7 +62,7 @@ class ArtistCVCell: UICollectionViewCell
         fatalError("Not Initialized")
     }
     
-    func configureCell(artistPicture: UIImage? = nil, artistName: String)
+    func configureCell(artistPicture: UIImage? = nil, attributedArtistName: NSAttributedString? = nil)
     {
         if let artistPicture = artistPicture
         {
@@ -72,7 +72,7 @@ class ArtistCVCell: UICollectionViewCell
         {
             artistPictureView.image = defaultArtistPicture
         }
-        artistNameView.text = artistName
+        artistNameView.attributedText = attributedArtistName
     }
     
     override func layoutSubviews()

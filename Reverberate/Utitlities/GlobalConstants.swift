@@ -26,7 +26,7 @@ class GlobalConstants
     //Asset color names
     static let techinessColor = "techinessColor"
     static let darkGreenColor = "darkGreenColor"
-    
+    static let textHighlightColor = "textHighlightColor"
     //NSNotification Names
     static let currentSongSetNotification: NSNotification.Name = NSNotification.Name("cUrReNt_SoNg_SeT_nOtIfIcAtIoN")
      

@@ -61,6 +61,9 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 23, weight: .bold)]
+        navigationController?.isToolbarHidden = false
+        setToolbarItems([UIBarButtonItem(title: "Select All", style: .plain, target: nil, action: nil), UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                         UIBarButtonItem(title: "Unselect All", style: .plain, target: nil, action: nil)], animated: true)
         selectAllBarButton = UIBarButtonItem(title: "Select All", style: .plain, target: self, action: #selector(onSelectAllButtonTap(_:)))
         if leftBarButtonType != nil
         {

@@ -115,9 +115,9 @@ class SongArtistsViewController: UICollectionViewController
         let section = Int16(indexPath.section)
         let item = indexPath.item
         let artist = artists[ArtistType(rawValue: section)!]![item]
-        let artistName = artist.name!
-        let artistPhoto = artist.photo
-        cell.configureCell(artistPicture: artistPhoto, artistName: artistName)
+        let artistName = NSAttributedString(string: artist.name!)
+        let artistPhoto = artist.photo!
+        cell.configureCell(artistPicture: artistPhoto, attributedArtistName: artistName)
         return cell
     }
     

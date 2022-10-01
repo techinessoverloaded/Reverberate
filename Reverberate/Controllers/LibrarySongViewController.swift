@@ -105,7 +105,7 @@ class LibrarySongViewController: UITableViewController
     
     private lazy var backgroundView: UIView = UIView()
     
-    private var filteredSongs: [Alphabet : [Song]] = [:]
+    private var filteredSongs: [Alphabet : [SongSearchResult]] = [:]
     
     private var songToBeAddedToPlaylist: Song? = nil
     
@@ -365,12 +365,36 @@ class LibrarySongViewController: UITableViewController
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let section = indexPath.section
         let item = indexPath.item
-        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        var song: Song!
         var config = cell.defaultContentConfiguration()
-        config.text = song.title!
-        config.secondaryText = song.getArtistNamesAsString(artistType: nil)
+        if isFiltering
+        {
+            let songResult = filteredSongs[Alphabet(rawValue: section)!]![item]
+            song = songResult.song
+            var attributedTitle: NSAttributedString = NSAttributedString(string: song.title!)
+            var attributedArtistNames: NSAttributedString = NSAttributedString(string: song.getArtistNamesAsString(artistType: nil))
+            if let titleRange = songResult.titleRange
+            {
+                attributedTitle = song.title!.getHighlightedAttributedString(forRange: titleRange, withPointSize: config.textProperties.font.pointSize)
+            }
+            if let artistsRange = songResult.artistsRange
+            {
+                attributedArtistNames = song.getArtistNamesAsString(artistType: nil).getHighlightedAttributedString(forRange: artistsRange, withPointSize: config.secondaryTextProperties.font.pointSize)
+            }
+            config.attributedText = attributedTitle
+            config.secondaryAttributedText = attributedArtistNames
+            config.image = song.coverArt!
+        }
+        else
+        {
+            song = sortedSongs[Alphabet(rawValue: section)!]![item]
+            let attributedTitle: NSAttributedString = NSAttributedString(string: song.title!)
+            let attributedArtistNames: NSAttributedString = NSAttributedString(string: song.getArtistNamesAsString(artistType: nil))
+            config.attributedText = attributedTitle
+            config.secondaryAttributedText = attributedArtistNames
+            config.image = song.coverArt!
+        }
         config.imageProperties.cornerRadius = 10
-        config.image = song.coverArt
         config.textProperties.adjustsFontForContentSizeCategory = true
         config.textProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
@@ -422,7 +446,7 @@ class LibrarySongViewController: UITableViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item].song : sortedSongs[Alphabet(rawValue: section)!]![item]
         if GlobalVariables.shared.currentPlaylist == playlist
         {
             if GlobalVariables.shared.currentSong == song
@@ -444,7 +468,7 @@ class LibrarySongViewController: UITableViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item].song : sortedSongs[Alphabet(rawValue: section)!]![item]
         if GlobalVariables.shared.currentPlaylist == playlist
         {
             if GlobalVariables.shared.currentSong != song
@@ -463,7 +487,7 @@ class LibrarySongViewController: UITableViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item].song : sortedSongs[Alphabet(rawValue: section)!]![item]
         return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(song: song)
         })
@@ -478,7 +502,7 @@ class LibrarySongViewController: UITableViewController
         animator.preferredCommitStyle = .dismiss
         let section = indexPath.section
         let item = indexPath.item
-        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item] : sortedSongs[Alphabet(rawValue: section)!]![item]
+        let song = isFiltering ? filteredSongs[Alphabet(rawValue: section)!]![item].song : sortedSongs[Alphabet(rawValue: section)!]![item]
         animator.addAnimations { [unowned self] in
             if GlobalVariables.shared.currentPlaylist == playlist
             {
@@ -501,7 +525,10 @@ extension LibrarySongViewController: UISearchResultsUpdating
     func updateSearchResults(for searchController: UISearchController)
     {
         guard let query = searchController.searchBar.text, !query.isEmpty else
-        { return }
+        {
+            tableView.reloadData()
+            return
+        }
         filteredSongs = DataProcessor.shared.getSortedSongsThatSatisfy(theQuery: query, songSource: viewOnlyFavSongs ? allSongs : nil)
         emptyMessageLabel.attributedText = viewOnlyFavSongs ? (allSongs.isEmpty ? noFavouritesMessage : noResultsMessage) : noResultsMessage
         emptyMessageLabel.isHidden = !filteredSongs.isEmpty

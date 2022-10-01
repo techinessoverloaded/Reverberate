@@ -38,6 +38,10 @@
 		DA28A34B287414F700E36382 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28A34A287414F700E36382 /* LoginViewController.swift */; };
 		DA2F0C1228A3AB22003F35F1 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */; };
 		DA2F0C1528A3B0BB003F35F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */; };
+		DA3AE13528E721FE0014C697 /* SongSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3AE13428E721FE0014C697 /* SongSearchResult.swift */; };
+		DA3AE13728E722140014C697 /* ArtistSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3AE13628E722140014C697 /* ArtistSearchResult.swift */; };
+		DA3AE13928E722260014C697 /* AlbumSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3AE13828E722260014C697 /* AlbumSearchResult.swift */; };
+		DA3AE13B28E7223B0014C697 /* PlaylistSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3AE13A28E7223B0014C697 /* PlaylistSearchResult.swift */; };
 		DA42C87B28D4538800EADF26 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA42C87A28D4538800EADF26 /* User+CoreDataProperties.swift */; };
 		DA45569E287402C400804CB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569D287402C400804CB8 /* AppDelegate.swift */; };
 		DA4556A0287402C400804CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA45569F287402C400804CB8 /* SceneDelegate.swift */; };
@@ -146,6 +150,10 @@
 		DA28A34A287414F700E36382 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DA2F0C1128A3AB22003F35F1 /* MarqueeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		DA2F0C1428A3B0BB003F35F1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DA3AE13428E721FE0014C697 /* SongSearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongSearchResult.swift; sourceTree = "<group>"; };
+		DA3AE13628E722140014C697 /* ArtistSearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistSearchResult.swift; sourceTree = "<group>"; };
+		DA3AE13828E722260014C697 /* AlbumSearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSearchResult.swift; sourceTree = "<group>"; };
+		DA3AE13A28E7223B0014C697 /* PlaylistSearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSearchResult.swift; sourceTree = "<group>"; };
 		DA42C87A28D4538800EADF26 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DA45569A287402C400804CB8 /* Reverberate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverberate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA45569D287402C400804CB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -408,6 +416,10 @@
 				DA5CE9A0288815FB0066AB2E /* Album.swift */,
 				DACBA428289CF85A00DDEBDE /* Song.swift */,
 				DA63B0B8289E7B7A0068775C /* Artist.swift */,
+				DA3AE13428E721FE0014C697 /* SongSearchResult.swift */,
+				DA3AE13628E722140014C697 /* ArtistSearchResult.swift */,
+				DA3AE13828E722260014C697 /* AlbumSearchResult.swift */,
+				DA3AE13A28E7223B0014C697 /* PlaylistSearchResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -778,6 +790,7 @@
 				DA5C90B428C86C1A00BE0DF1 /* Alphabet.swift in Sources */,
 				DA4556D028740B2000804CB8 /* Extensions.swift in Sources */,
 				DA2F0C1228A3AB22003F35F1 /* MarqueeLabel.swift in Sources */,
+				DA3AE13728E722140014C697 /* ArtistSearchResult.swift in Sources */,
 				DA65D3B32886674300173F56 /* SearchResultsViewController.swift in Sources */,
 				DA67F4392889182F00062985 /* Category.swift in Sources */,
 				DA58B5552877ED5D00BDAE4B /* GenreSelectionCollectionViewController.swift in Sources */,
@@ -798,6 +811,7 @@
 				DA65D3B92886868B00173F56 /* TitleCardCVCell.swift in Sources */,
 				DABA1435289791D700DAAF13 /* PlaylistViewController.swift in Sources */,
 				DACF29DA28B50A3000141BCB /* MusicLoopMode.swift in Sources */,
+				DA3AE13528E721FE0014C697 /* SongSearchResult.swift in Sources */,
 				DA12E698288E5AB300D502EC /* ArtistCVCell.swift in Sources */,
 				DA7F246E288188E600E4786F /* SongMetaDataExtractor.swift in Sources */,
 				DA5C90B828C8ADD300BE0DF1 /* LibraryAlbumViewController.swift in Sources */,
@@ -811,6 +825,7 @@
 				DA63B0B9289E7B7A0068775C /* Artist.swift in Sources */,
 				DA7B1BB728A3E26A009CDBC6 /* SessionManager.swift in Sources */,
 				DA2810BD287C2588006EEF60 /* LabeledInfoTableViewCell.swift in Sources */,
+				DA3AE13928E722260014C697 /* AlbumSearchResult.swift in Sources */,
 				DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */,
 				DAA0F17328CB0FEA0077C98B /* PlaylistSelectionViewController.swift in Sources */,
 				DA4AC3ED28B35E9800F0B611 /* PlaylistControlsDelegate.swift in Sources */,
@@ -830,6 +845,7 @@
 				DAC6D8BD28D2EB8400584904 /* CategoricalSong.swift in Sources */,
 				DA5CE96D28880D1D0066AB2E /* ArtistType.swift in Sources */,
 				DA4556C828740A7000804CB8 /* MainViewController.swift in Sources */,
+				DA3AE13B28E7223B0014C697 /* PlaylistSearchResult.swift in Sources */,
 				DA65D3BD2886C6F200173F56 /* LibrarySongViewController.swift in Sources */,
 				DA5C90BA28C8C9FD00BE0DF1 /* LibraryArtistViewController.swift in Sources */,
 				DA562A942891668A0017EEF2 /* DataProcessor.swift in Sources */,
@@ -898,6 +914,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sathish Rajagopalan (8NTHH93E28)";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -958,6 +976,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sathish Rajagopalan (8NTHH93E28)";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -989,7 +1009,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RZFG3568AJ;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1020,8 +1039,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RZFG3568AJ;
+				DEVELOPMENT_TEAM = RZFG3568AJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverberate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

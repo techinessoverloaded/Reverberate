@@ -132,7 +132,7 @@ class MainViewController: UITabBarController
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = 15
             section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 5, trailing: 20)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 5, trailing: 5)
             section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(50)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
             return section
         }))

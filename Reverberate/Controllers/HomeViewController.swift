@@ -147,8 +147,9 @@ extension HomeViewController
         let category = keys[section]
         let categoricalSongs = songs[category]
         let song = categoricalSongs[item]
-        let artistNames = song.getArtistNamesAsString(artistType: nil)
-        cell.configureCell(poster: song.coverArt!, title: song.title!, subtitle: artistNames)
+        let songTitle = NSAttributedString(string: song.title!)
+        let artistNames = NSAttributedString(string: song.getArtistNamesAsString(artistType: nil))
+        cell.configureCell(poster: song.coverArt!, attributedTitle: songTitle, attributedSubtitle: artistNames)
         return cell
     }
     

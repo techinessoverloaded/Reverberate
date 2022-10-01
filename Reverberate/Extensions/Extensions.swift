@@ -183,6 +183,14 @@ extension UIImageView
 
 extension String
 {
+    func getHighlightedAttributedString(forRange range: NSRange, withPointSize pointSize: CGFloat) -> NSAttributedString
+    {
+        let attributedString = NSMutableAttributedString(string: self)
+        attributedString.addAttribute(NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: pointSize, weight: .bold), range: range)
+        attributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor(named: GlobalConstants.textHighlightColor)! , range: range)
+        return attributedString
+    }
+    
     mutating func trim()
     {
         self = self.trimmingCharacters(in: .whitespaces)
@@ -323,80 +331,20 @@ extension UIFont
 
 extension UILabel
 {
-    private struct PropertyHolder
-    {
-        static var timer: Timer?
-        static var originalText: String!
-    }
-    
     convenience init(useAutoLayout: Bool, adjustsFontAccordingToCategory: Bool = true)
     {
         self.init(useAutoLayout: useAutoLayout)
         self.adjustsFontForContentSizeCategory = adjustsFontAccordingToCategory
     }
     
-    var isTruncated: Bool
+    var currentTextStyle: UIFont.TextStyle
     {
-        if self.translatesAutoresizingMaskIntoConstraints == false
+        get
         {
-            self.layoutIfNeeded()
-        }
-        
-        if let labelText = text
-        {
-            let labelTextSize = (labelText as NSString).boundingRect(with: CGSize(width: frame.size.width, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [.font : font!], context: nil).size
-            return labelTextSize.height > bounds.size.height
-        }
-        else if let labelAttributedText = attributedText
-        {
-            let labelAttributedTextSize = (labelAttributedText as NSAttributedString).boundingRect(with: CGSize(width: frame.size.width, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil).size
-            return labelAttributedTextSize.height > bounds.size.height
-        }
-        else
-        {
-            return false
-        }
-    }
-    
-    func enableMarqueeIfNeeded()
-    {
-        if isTruncated
-        {
-            PropertyHolder.originalText = self.text!
-            PropertyHolder.timer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
-                DispatchQueue.main.async { [unowned self] in
-                    var alternator = 0
-                    if alternator.isMultiple(of: 2)
-                    {
-                        if let text = self.text, !text.isEmpty {
-                            let index = text.index(after: text.startIndex)
-                            self.text = String(self.text![index...])
-                        }
-                    }
-                    else
-                    {
-                        if let text = self.text, !text.isEmpty {
-                            let index = text.index(before: text.endIndex)
-                            self.text = String(self.text![..<index])
-                        }
-                    }
-                    if self.text!.isEmpty
-                    {
-                        self.text = PropertyHolder.originalText
-                    }
-                    alternator += 1
-                }
-            }
-        }
-    }
-    
-    func disableMarquee()
-    {
-        if PropertyHolder.timer != nil
-        {
-            PropertyHolder.timer!.invalidate()
-            self.text = PropertyHolder.originalText
-            self.lineBreakMode = .byTruncatingTail
+            print(self.font.fontDescriptor.object(forKey: .face))
+            let result = self.font.fontDescriptor.object(forKey: .textStyle) as! UIFont.TextStyle
+            print(result)
+            return result
         }
     }
 }

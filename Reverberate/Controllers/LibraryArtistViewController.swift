@@ -66,7 +66,7 @@ class LibraryArtistViewController: UICollectionViewController
     
     private lazy var sortedArtists: [Alphabet : [Artist]] = sortArtists()
     
-    private var filteredArtists: [Alphabet : [Artist]] = [:]
+    private var filteredArtists: [Alphabet : [ArtistSearchResult]] = [:]
     
     private var viewOnlyFavArtists: Bool = false
     
@@ -252,8 +252,24 @@ class LibraryArtistViewController: UICollectionViewController
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ArtistCVCell.identifier, for: indexPath) as! ArtistCVCell
         let section = indexPath.section
         let item = indexPath.item
-        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item] : sortedArtists[Alphabet(rawValue: section)!]![item]
-        cell.configureCell(artistPicture: artist.photo!, artistName: artist.name!)
+        var artist: Artist!
+        if isFiltering
+        {
+            let artistResult = filteredArtists[Alphabet(rawValue: section)!]![item]
+            artist = artistResult.artist
+            var attributedArtistName: NSAttributedString = NSAttributedString(string: artist.name!)
+            if let nameRange = artistResult.nameRange
+            {
+                attributedArtistName = artist.name!.getHighlightedAttributedString(forRange: nameRange, withPointSize: cell.artistNameView.font.pointSize)
+            }
+            cell.configureCell(artistPicture: artist.photo!, attributedArtistName: attributedArtistName)
+        }
+        else
+        {
+            artist = sortedArtists[Alphabet(rawValue: section)!]![item]
+            let attributedArtistName: NSAttributedString = NSAttributedString(string: artist.name!)
+            cell.configureCell(artistPicture: artist.photo!, attributedArtistName: attributedArtistName)
+        }
         return cell
     }
     
@@ -261,7 +277,7 @@ class LibraryArtistViewController: UICollectionViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item] : sortedArtists[Alphabet(rawValue: section)!]![item]
+        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item].artist : sortedArtists[Alphabet(rawValue: section)!]![item]
         let artistVC = ArtistViewController(style: .grouped)
         artistVC.artist = artist
         artistVC.delegate = GlobalVariables.shared.mainTabController
@@ -272,7 +288,7 @@ class LibraryArtistViewController: UICollectionViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item] : sortedArtists[Alphabet(rawValue: section)!]![item]
+        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item].artist : sortedArtists[Alphabet(rawValue: section)!]![item]
         return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(artist: artist)
         })
@@ -287,7 +303,7 @@ class LibraryArtistViewController: UICollectionViewController
         animator.preferredCommitStyle = .pop
         let section = indexPath.section
         let item = indexPath.item
-        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item] : sortedArtists[Alphabet(rawValue: section)!]![item]
+        let artist = isFiltering ? filteredArtists[Alphabet(rawValue: section)!]![item].artist : sortedArtists[Alphabet(rawValue: section)!]![item]
         let artistVC = ArtistViewController(style: .grouped)
         artistVC.artist = artist
         artistVC.delegate = GlobalVariables.shared.mainTabController
@@ -335,7 +351,10 @@ extension LibraryArtistViewController: UISearchResultsUpdating
     func updateSearchResults(for searchController: UISearchController)
     {
         guard let query = searchController.searchBar.text, !query.isEmpty else
-        { return }
+        {
+            collectionView.reloadData()
+            return
+        }
         filteredArtists = DataProcessor.shared.getSortedArtistsThatSatisfy(theQuery: query, artistSource: viewOnlyFavArtists ? allArtists : nil)
         emptyMessageLabel.attributedText = viewOnlyFavArtists ? (allArtists.isEmpty ? noFavouritesMessage : noResultsMessage) : noResultsMessage
         emptyMessageLabel.isHidden = !filteredArtists.isEmpty

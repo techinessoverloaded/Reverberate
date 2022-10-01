@@ -65,7 +65,7 @@ class LibraryPlaylistViewController: UITableViewController
     
     private lazy var backgroundView: UIView = UIView()
     
-    private var filteredPlaylists: [Alphabet : [Playlist]] = [:]
+    private var filteredPlaylists: [Alphabet : [PlaylistSearchResult]] = [:]
     
     private var isSearchBarEmpty: Bool
     {
@@ -196,9 +196,24 @@ class LibraryPlaylistViewController: UITableViewController
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let section = indexPath.section
         let item = indexPath.item
-        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
+        var playlist: Playlist!
         var config = cell.defaultContentConfiguration()
-        config.text = playlist.name!
+        if isFiltering
+        {
+            let playlistResult = filteredPlaylists[Alphabet(rawValue: section)!]![item]
+            playlist = playlistResult.playlist
+            var attributedName: NSAttributedString = NSAttributedString(string: playlist.name!)
+            if let nameRange = playlistResult.nameRange
+            {
+                attributedName = playlist.name!.getHighlightedAttributedString(forRange: nameRange, withPointSize: config.textProperties.font.pointSize)
+            }
+            config.attributedText = attributedName
+        }
+        else
+        {
+            playlist = sortedPlaylists[Alphabet(rawValue: section)!]![item]
+            config.text = playlist.name!
+        }
         config.secondaryText = "\(playlist.songs?.count ?? 0) Songs"
         config.textProperties.adjustsFontForContentSizeCategory = true
         config.textProperties.allowsDefaultTighteningForTruncation = true
@@ -226,7 +241,7 @@ class LibraryPlaylistViewController: UITableViewController
         tableView.deselectRow(at: indexPath, animated: true)
         let section = indexPath.section
         let item = indexPath.item
-        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
+        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item].playlist : sortedPlaylists[Alphabet(rawValue: section)!]![item]
         let playlistVC = PlaylistViewController(style: .grouped)
         playlistVC.playlist = playlist
         playlistVC.delegate = GlobalVariables.shared.mainTabController
@@ -237,7 +252,7 @@ class LibraryPlaylistViewController: UITableViewController
     {
         let section = indexPath.section
         let item = indexPath.item
-        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
+        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item].playlist : sortedPlaylists[Alphabet(rawValue: section)!]![item]
         return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
             return createMenu(playlist: playlist)
         })
@@ -251,7 +266,7 @@ class LibraryPlaylistViewController: UITableViewController
         }
         let section = indexPath.section
         let item = indexPath.item
-        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item] : sortedPlaylists[Alphabet(rawValue: section)!]![item]
+        let playlist = isFiltering ? filteredPlaylists[Alphabet(rawValue: section)!]![item].playlist : sortedPlaylists[Alphabet(rawValue: section)!]![item]
         let playlistVC = PlaylistViewController(style: .grouped)
         playlistVC.playlist = playlist
         playlistVC.delegate = GlobalVariables.shared.mainTabController
@@ -268,7 +283,16 @@ extension LibraryPlaylistViewController: UISearchResultsUpdating
     {
         guard let query = searchController.searchBar.text, !query.isEmpty else
         {
-            filteredPlaylists = sortedPlaylists
+            for key in sortedPlaylists.keys
+            {
+                let playlists = sortedPlaylists[key]!
+                var resultObjects: [PlaylistSearchResult] = []
+                for playlist in playlists
+                {
+                    resultObjects.append(PlaylistSearchResult(playlist: playlist))
+                }
+                filteredPlaylists[key] = resultObjects
+            }
             emptyMessageLabel.attributedText = allPlaylists.isEmpty ? noPlaylistsMessage : noResultsMessage
             emptyMessageLabel.isHidden = !filteredPlaylists.isEmpty
             tableView.reloadData()

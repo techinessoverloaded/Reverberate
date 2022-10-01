@@ -62,11 +62,11 @@ class SearchResultsViewController: UICollectionViewController
     
     private var searchMode: Int = 0
     
-    private lazy var filteredSongs: [Song] = []
+    private lazy var filteredSongs: [SongSearchResult] = []
     
-    private lazy var filteredAlbums: [Album] = []
+    private lazy var filteredAlbums: [AlbumSearchResult] = []
     
-    private lazy var filteredArtists: [Artist] = []
+    private lazy var filteredArtists: [ArtistSearchResult] = []
     
     weak var delegate: SearchResultDelegate?
     
@@ -175,11 +175,24 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! UICollectionViewListCell
             var config = UIListContentConfiguration.subtitleCell()
             let item = indexPath.item
-            let song = filteredSongs[item]
-            config.text = song.title!
-            config.secondaryText = song.getArtistNamesAsString(artistType: nil)
+            let songResult = filteredSongs[item]
+            let song = songResult.song
+            var attributedTitle: NSAttributedString = NSAttributedString(string: song.title!)
+            var attributedArtistNames: NSAttributedString = NSAttributedString(string: song.getArtistNamesAsString(artistType: nil))
+            let titleRange = songResult.titleRange
+            let artistsRange = songResult.artistsRange
+            if let titleRange = titleRange
+            {
+                attributedTitle = song.title!.getHighlightedAttributedString(forRange: titleRange, withPointSize: config.textProperties.font.pointSize)
+            }
+            if let artistsRange = artistsRange
+            {
+                attributedArtistNames = song.getArtistNamesAsString(artistType: nil).getHighlightedAttributedString(forRange: artistsRange, withPointSize: config.secondaryTextProperties.font.pointSize)
+            }
+            config.attributedText = attributedTitle
+            config.secondaryAttributedText = attributedArtistNames
             config.imageProperties.cornerRadius = 10
-            config.image = song.coverArt
+            config.image = song.coverArt!
             config.textProperties.adjustsFontForContentSizeCategory = true
             config.textProperties.allowsDefaultTighteningForTruncation = true
             config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
@@ -221,15 +234,34 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         else if searchMode == 1
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterDetailCVCell.identifier, for: indexPath) as! PosterDetailCVCell
-            let album = filteredAlbums[item]
-            cell.configureCell(poster: album.coverArt!, title: album.name!, subtitle: album.songs![0].getArtistNamesAsString(artistType: .musicDirector))
+            let albumResult = filteredAlbums[item]
+            let album = albumResult.album
+            var attributedName: NSAttributedString = NSAttributedString(string: album.name!)
+            var attributedComposerNames: NSAttributedString = NSAttributedString(string: album.composerNames)
+            let nameRange = albumResult.nameRange
+            let composersRange = albumResult.composersRange
+            if let nameRange = nameRange
+            {
+                attributedName = album.name!.getHighlightedAttributedString(forRange: nameRange, withPointSize: cell.titleView.font.pointSize)
+            }
+            if let composersRange = composersRange
+            {
+                attributedComposerNames = album.composerNames.getHighlightedAttributedString(forRange: composersRange, withPointSize: cell.subtitleView.font.pointSize)
+            }
+            cell.configureCell(poster: album.coverArt!, attributedTitle: attributedName, attributedSubtitle: attributedComposerNames)
             return cell
         }
         else
         {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ArtistCVCell.identifier, for: indexPath) as! ArtistCVCell
-            let artist = filteredArtists[item]
-            cell.configureCell(artistPicture: artist.photo!, artistName: artist.name!)
+            let artistResult = filteredArtists[item]
+            let artist: Artist! = artistResult.artist
+            var attributedName: NSAttributedString = NSAttributedString(string: artist.name!)
+            if let nameRange = artistResult.nameRange
+            {
+                attributedName = artist.name!.getHighlightedAttributedString(forRange: nameRange, withPointSize: cell.artistNameView.font.pointSize)
+            }
+            cell.configureCell(artistPicture: artist.photo!, attributedArtistName: attributedName)
             return cell
         }
     }
@@ -239,7 +271,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         if searchMode == 0
         {
             let item = indexPath.item
-            let song = filteredSongs[item]
+            let song = filteredSongs[item].song
             if GlobalVariables.shared.currentPlaylist == playlist
             {
                 if GlobalVariables.shared.currentSong == song
@@ -255,7 +287,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         let item = indexPath.item
         if searchMode == 0
         {
-            let song = filteredSongs[item]
+            let song = filteredSongs[item].song
             if GlobalVariables.shared.currentPlaylist == playlist
             {
                 if GlobalVariables.shared.currentSong != song
@@ -270,11 +302,11 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         }
         else if searchMode == 1
         {
-            delegate?.onAlbumSelection(selectedAlbum: filteredAlbums[item])
+            delegate?.onAlbumSelection(selectedAlbum: filteredAlbums[item].album)
         }
         else
         {
-            delegate?.onArtistSelection(selectedArtist: filteredArtists[item])
+            delegate?.onArtistSelection(selectedArtist: filteredArtists[item].artist)
         }
     }
     
@@ -314,7 +346,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         let item = indexPath.item
         if searchMode == 0
         {
-            let song = filteredSongs[item]
+            let song = filteredSongs[item].song
             let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
                 return createSongMenu(song: song)
             })
@@ -322,7 +354,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         }
         else if searchMode == 1
         {
-            let album = filteredAlbums[item]
+            let album = filteredAlbums[item].album
             let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
                 return createAlbumMenu(album: album)
             })
@@ -330,7 +362,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         }
         else
         {
-            let artist = filteredArtists[item]
+            let artist: Artist! = filteredArtists[item].artist
             let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
                 return createArtistMenu(artist: artist)
             })
@@ -373,7 +405,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         animator.addAnimations { [unowned self] in
             if searchMode == 0
             {
-                let song = filteredSongs[item]
+                let song = filteredSongs[item].song
                 if GlobalVariables.shared.currentPlaylist == playlist
                 {
                     if GlobalVariables.shared.currentSong != song
@@ -388,11 +420,11 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
             }
             else if searchMode == 1
             {
-                delegate?.onAlbumSelection(selectedAlbum: filteredAlbums[item])
+                delegate?.onAlbumSelection(selectedAlbum: filteredAlbums[item].album)
             }
             else
             {
-                delegate?.onArtistSelection(selectedArtist: filteredArtists[item])
+                delegate?.onArtistSelection(selectedArtist: filteredArtists[item].artist)
             }
         }
     }
@@ -540,7 +572,7 @@ extension SearchResultsViewController
             return
         }
         let currentSong = GlobalVariables.shared.currentSong!
-        guard let indexPath = collectionView.indexPathsForVisibleItems.first(where: { filteredSongs[$0.item] == currentSong }) else
+        guard let indexPath = collectionView.indexPathsForVisibleItems.first(where: { filteredSongs[$0.item].song == currentSong }) else
         {
             return
         }

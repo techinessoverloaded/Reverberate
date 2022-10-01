@@ -10,7 +10,7 @@ import UIKit
 
 public class Album: Playlist
 {
-    private enum CoderKeys: String
+    enum CoderKeys: String
     {
         case nameKey = "nameOfAlbumKey"
         case songsKey = "albumSongsKey"
@@ -58,7 +58,7 @@ public class Album: Playlist
         {
             return ""
         }
-        return composers.map({
+        return composers.sorted().map({
             $0.name!
         }).joined(separator: ", ")
     }

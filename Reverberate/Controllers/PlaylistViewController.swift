@@ -41,7 +41,6 @@ class PlaylistViewController: UITableViewController
         pView.layer.cornerRadius = 10
         pView.layer.cornerCurve = .continuous
         pView.clipsToBounds = true
-        pView.isUserInteractionEnabled = true
         return pView
     }()
     
@@ -280,10 +279,10 @@ class PlaylistViewController: UITableViewController
             titleView.text = title
             artistView.text = "\(album.composerNames) ›"
             detailsView.text = "\(album.language) · \(album.releaseDate!.getFormattedString())"
+            artistTapRecognizer.addTarget(self, action: #selector(onArtistTap(_:)))
+            artistView.addGestureRecognizer(artistTapRecognizer)
             if SessionManager.shared.isUserLoggedIn
             {
-                artistTapRecognizer.addTarget(self, action: #selector(onArtistTap(_:)))
-                artistView.addGestureRecognizer(artistTapRecognizer)
                 posterTapRecognizer.addTarget(self, action: #selector(onPosterDoubleTap(_:)))
                 posterView.addGestureRecognizer(posterTapRecognizer)
                 if GlobalVariables.shared.currentUser!.isFavouriteAlbum(album)

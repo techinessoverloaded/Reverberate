@@ -19,10 +19,10 @@ class PosterDetailCVCell: UICollectionViewCell
         return pView
     }()
     
-    private lazy var titleView: UILabel = {
+    lazy var titleView: UILabel = {
         let tView = UILabel(useAutoLayout: true)
         tView.textColor = .label
-        tView.font = .preferredFont(forTextStyle: .body, weight: .semibold)
+        tView.font = .preferredFont(forTextStyle: .body, weight: .regular)
         tView.textAlignment = .left
         tView.lineBreakMode = .byTruncatingTail
         tView.numberOfLines = 1
@@ -30,9 +30,9 @@ class PosterDetailCVCell: UICollectionViewCell
         return tView
     }()
     
-    private lazy var subtitleView: UILabel = {
+    lazy var subtitleView: UILabel = {
         let stView = UILabel(useAutoLayout: true)
-        stView.textColor = .label
+        stView.textColor = .secondaryLabel
         stView.font = .preferredFont(forTextStyle: .footnote, weight: .regular)
         stView.textAlignment = .left
         stView.lineBreakMode = .byTruncatingTail
@@ -65,16 +65,11 @@ class PosterDetailCVCell: UICollectionViewCell
         fatalError("Not Initialized")
     }
     
-    deinit
-    {
-        LifecycleLogger.deinitLog(self)
-    }
-    
-    func configureCell(poster: UIImage = UIImage(named: "glassmorphic_bg")!, title: String, subtitle: String?)
+    func configureCell(poster: UIImage = UIImage(named: "glassmorphic_bg")!, attributedTitle: NSAttributedString? = nil, attributedSubtitle: NSAttributedString? = nil)
     {
         posterView.image = poster
-        titleView.text = title
-        subtitleView.text = subtitle
+        titleView.attributedText = attributedTitle
+        subtitleView.attributedText = attributedSubtitle
     }
     
     override func layoutSubviews()

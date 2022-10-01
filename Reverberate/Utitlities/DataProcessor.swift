@@ -35,68 +35,166 @@ class DataProcessor
         return DataManager.shared.availableSongs.first(where: { $0.title! == songName })
     }
     
-    func getSongsThatSatisfy(theQuery query: String, songSource: [Song]? = nil) -> [Song]?
+//    func getSongsThatSatisfy2(theQuery query: String, songSource: [Song]? = nil) -> [Song]?
+//    {
+//        var result: [Song] = []
+//        let songs = songSource != nil ? songSource! : DataManager.shared.availableSongs
+//        for song in songs
+//        {
+//            if song.albumName!.lowercased().contains(query) || song.title!.lowercased().contains(query) || song.language.description.lowercased().contains(query) || song.genre.description.lowercased().contains(query) || song.artists!.contains(where: { $0.name!.lowercased().contains(query) })
+//            {
+//                result.appendUniquely(song)
+//            }
+//        }
+//        return result.isEmpty ? nil : result.sorted()
+//    }
+    
+    func getSongsThatSatisfy(theQuery query: String, songSource: [Song]? = nil) -> [SongSearchResult]?
     {
-        var result: [Song] = []
+        var result: [SongSearchResult] = []
         let songs = songSource != nil ? songSource! : DataManager.shared.availableSongs
         for song in songs
         {
-            if song.albumName!.lowercased().contains(query) || song.title!.lowercased().contains(query) || song.language.description.lowercased().contains(query) || song.genre.description.lowercased().contains(query) || song.artists!.contains(where: { $0.name!.lowercased().contains(query) })
+            var resultObj = SongSearchResult(song: song)
+            if song.title!.lowercased().contains(query)
             {
-                result.appendUniquely(song)
+                let range = (song.title! as NSString).range(of: query, options: .caseInsensitive)
+                resultObj.titleRange = range
+            }
+            if song.getArtistNamesAsString(artistType: nil).lowercased().contains(query)
+            {
+                let range = (song.getArtistNamesAsString(artistType: nil) as NSString).range(of: query, options: .caseInsensitive)
+                resultObj.artistsRange = range
+            }
+            if resultObj.titleRange != nil || resultObj.artistsRange != nil
+            {
+                result.append(resultObj)
             }
         }
-        return result.isEmpty ? nil : result.sorted()
+        return result.isEmpty ? nil : result.sorted(by: {
+            $0.song < $1.song
+        })
     }
     
-    func getAlbumsThatSatisfy(theQuery query: String, albumSource: [Album]? = nil) -> [Album]?
+//    func getAlbumsThatSatisfy2(theQuery query: String, albumSource: [Album]? = nil) -> [Album]?
+//    {
+//        var result: [Album] = []
+//        let albums = albumSource != nil ? albumSource! : DataManager.shared.availableAlbums
+//        for album in albums
+//        {
+//            if album.name!.lowercased().contains(query) || album.songs!.contains(where: {
+//                $0.title!.lowercased().contains(query) ||
+//                $0.language.description.lowercased().contains(query) ||
+//                $0.genre.description.lowercased().contains(query) ||
+//                $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
+//            {
+//                result.appendUniquely(album)
+//            }
+//        }
+//        return result.isEmpty ? nil : result.sorted()
+//    }
+    
+    func getAlbumsThatSatisfy(theQuery query: String, albumSource: [Album]? = nil) -> [AlbumSearchResult]?
     {
-        var result: [Album] = []
+        var result: [AlbumSearchResult] = []
         let albums = albumSource != nil ? albumSource! : DataManager.shared.availableAlbums
         for album in albums
         {
-            if album.name!.lowercased().contains(query) || album.songs!.contains(where: {
-                $0.title!.lowercased().contains(query) ||
-                $0.language.description.lowercased().contains(query) ||
-                $0.genre.description.lowercased().contains(query) ||
-                $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
+            var resultObj = AlbumSearchResult(album: album)
+            if album.name!.lowercased().contains(query)
             {
-                result.appendUniquely(album)
+                let range = (album.name! as NSString).range(of: query, options: .caseInsensitive)
+                resultObj.nameRange = range
+            }
+            if album.composerNames.lowercased().contains(query)
+            {
+                let range = (album.composerNames as NSString).range(of: query, options: .caseInsensitive)
+                resultObj.composersRange = range
+            }
+            if resultObj.nameRange != nil || resultObj.composersRange != nil
+            {
+                result.append(resultObj)
             }
         }
-        return result.isEmpty ? nil : result.sorted()
+        return result.isEmpty ? nil : result.sorted(by: {
+            $0.album < $1.album
+        })
     }
     
-    func getPlaylistsThatSatisfy(theQuery query: String) -> [Playlist]?
+//    func getPlaylistsThatSatisfy2(theQuery query: String) -> [Playlist]?
+//    {
+//        var result: [Playlist] = []
+//        let playlists = GlobalVariables.shared.currentUser!.playlists!
+//        for playlist in playlists
+//        {
+//            if playlist.name!.lowercased().contains(query) || playlist.songs!.contains(where: {
+//                $0.title!.lowercased().contains(query) ||
+//                $0.language.description.lowercased().contains(query) ||
+//                $0.genre.description.lowercased().contains(query) ||
+//                $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
+//            {
+//                result.appendUniquely(playlist)
+//            }
+//        }
+//        return result.isEmpty ? nil : result.sorted()
+//    }
+    
+//    func getArtistsThatSatisfy2(theQuery query: String, artistSource: [Artist]? = nil) -> [Artist]?
+//    {
+//        var result: [Artist] = []
+//        let artists = artistSource != nil ? artistSource! : DataManager.shared.availableArtists
+//        for artist in artists
+//        {
+//            if artist.name!.lowercased().contains(query) || artist.artistType!.description.contains(query)
+//            {
+//                result.appendUniquely(artist)
+//            }
+//        }
+//        return result.isEmpty ? nil : result.sorted()
+//    }
+    
+    func getPlaylistsThatSatisfy(theQuery query: String) -> [PlaylistSearchResult]?
     {
-        var result: [Playlist] = []
-        let playlists = GlobalVariables.shared.currentUser!.playlists! 
+        var result: [PlaylistSearchResult] = []
+        let playlists = GlobalVariables.shared.currentUser!.playlists!
         for playlist in playlists
         {
-            if playlist.name!.lowercased().contains(query) || playlist.songs!.contains(where: {
-                $0.title!.lowercased().contains(query) ||
-                $0.language.description.lowercased().contains(query) ||
-                $0.genre.description.lowercased().contains(query) ||
-                $0.artists!.contains(where: { $0.name!.lowercased().contains(query)})})
+            var resultObj = PlaylistSearchResult(playlist: playlist)
+            if playlist.name!.lowercased().contains(query)
             {
-                result.appendUniquely(playlist)
+                let range = (playlist.name! as NSString).range(of: query, options: .caseInsensitive)
+                resultObj.nameRange = range
+            }
+            if resultObj.nameRange != nil
+            {
+                result.append(resultObj)
             }
         }
-        return result.isEmpty ? nil : result.sorted()
+        return result.isEmpty ? nil : result.sorted(by: {
+            $0.playlist < $1.playlist
+        })
     }
     
-    func getArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [Artist]?
+    func getArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [ArtistSearchResult]?
     {
-        var result: [Artist] = []
+        var result: [ArtistSearchResult] = []
         let artists = artistSource != nil ? artistSource! : DataManager.shared.availableArtists
         for artist in artists
         {
-            if artist.name!.lowercased().contains(query) || artist.artistType!.description.contains(query)
+            var resultObj = ArtistSearchResult(artist: artist)
+            if artist.name!.lowercased().contains(query)
             {
-                result.appendUniquely(artist)
+                let range = (artist.name! as NSString).range(of: query, options: .caseInsensitive)
+                resultObj.nameRange = range
+            }
+            if resultObj.nameRange != nil
+            {
+                result.append(resultObj)
             }
         }
-        return result.isEmpty ? nil : result.sorted()
+        return result.isEmpty ? nil : result.sorted(by: {
+            $0.artist < $1.artist
+        })
     }
     
     func getAlbumsInvolving(artist artistName: String) -> [Album]
@@ -202,66 +300,75 @@ class DataProcessor
         return result
     }
     
-    func getSortedSongsThatSatisfy(theQuery query: String, songSource: [Song]? = nil) -> [Alphabet : [Song]]
+    func getSortedSongsThatSatisfy(theQuery query: String, songSource: [Song]? = nil) -> [Alphabet : [SongSearchResult]]
     {
         let unsortedSongs = getSongsThatSatisfy(theQuery: query.lowercased(), songSource: songSource)
         guard let unsortedSongs = unsortedSongs else
         {
             return [:]
         }
-        var result: [Alphabet : [Song]] = [:]
+        var result: [Alphabet : [SongSearchResult]] = [:]
         for alphabet in Alphabet.allCases
         {
             let letter = alphabet.asString
-            result[alphabet] = unsortedSongs.filter({ $0.title!.hasPrefix(letter) }).sorted()
+            result[alphabet] = unsortedSongs.filter({
+                $0.song.title!.hasPrefix(letter) }).sorted(by: {
+                    $0.song < $1.song
+                })
         }
         return result
     }
     
-    func getSortedAlbumsThatSatisfy(theQuery query: String, albumSource: [Album]? = nil) -> [Alphabet : [Album]]
+    func getSortedAlbumsThatSatisfy(theQuery query: String, albumSource: [Album]? = nil) -> [Alphabet : [AlbumSearchResult]]
     {
         let unsortedAlbums = getAlbumsThatSatisfy(theQuery: query.lowercased(), albumSource: albumSource)
         guard let unsortedAlbums = unsortedAlbums else
         {
             return [:]
         }
-        var result: [Alphabet : [Album]] = [:]
+        var result: [Alphabet : [AlbumSearchResult]] = [:]
         for alphabet in Alphabet.allCases
         {
             let letter = alphabet.asString
-            result[alphabet] = unsortedAlbums.filter({ $0.name!.hasPrefix(letter) }).sorted()
+            result[alphabet] = unsortedAlbums.filter({ $0.album.name!.hasPrefix(letter) }).sorted(by: {
+                $0.album < $1.album
+            })
         }
         return result
     }
     
-    func getSortedPlaylistsThatSatisfy(theQuery query: String) -> [Alphabet : [Playlist]]
+    func getSortedPlaylistsThatSatisfy(theQuery query: String) -> [Alphabet : [PlaylistSearchResult]]
     {
         let unsortedPlaylists = getPlaylistsThatSatisfy(theQuery: query.lowercased())
         guard let unsortedPlaylists = unsortedPlaylists else
         {
             return [:]
         }
-        var result: [Alphabet : [Playlist]] = [:]
+        var result: [Alphabet : [PlaylistSearchResult]] = [:]
         for alphabet in Alphabet.allCases
         {
             let letter = alphabet.asString
-            result[alphabet] = unsortedPlaylists.filter({ $0.name!.hasPrefix(letter) }).sorted()
+            result[alphabet] = unsortedPlaylists.filter({ $0.playlist.name!.hasPrefix(letter) }).sorted(by: {
+                $0.playlist < $1.playlist
+            })
         }
         return result
     }
     
-    func getSortedArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [Alphabet : [Artist]]
+    func getSortedArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [Alphabet : [ArtistSearchResult]]
     {
         let unsortedArtists = getArtistsThatSatisfy(theQuery: query.lowercased(), artistSource: artistSource)
         guard let unsortedArtists = unsortedArtists else
         {
             return [:]
         }
-        var result: [Alphabet : [Artist]] = [:]
+        var result: [Alphabet : [ArtistSearchResult]] = [:]
         for alphabet in Alphabet.allCases
         {
             let letter = alphabet.asString
-            result[alphabet] = unsortedArtists.filter({ $0.name!.hasPrefix(letter) }).sorted()
+            result[alphabet] = unsortedArtists.filter({ $0.artist.name!.hasPrefix(letter) }).sorted(by: {
+                $0.artist < $1.artist
+            })
         }
         return result
     }

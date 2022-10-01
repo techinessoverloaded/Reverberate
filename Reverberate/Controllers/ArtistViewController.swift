@@ -93,7 +93,6 @@ class ArtistViewController: UITableViewController
         pView.image = UIImage(systemName: "person.crop.circle.fill")!
         pView.layer.cornerCurve = .circular
         pView.clipsToBounds = true
-        pView.isUserInteractionEnabled = true
         return pView
     }()
     
@@ -200,7 +199,10 @@ class ArtistViewController: UITableViewController
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-        artistPhotoView.layer.cornerRadius = artistPhotoView.bounds.height * 0.5
+        if artistPhotoView.layer.cornerRadius == 0
+        {
+            artistPhotoView.layer.cornerRadius = artistPhotoView.bounds.height * 0.5
+        }
     }
     
     private func setDetails()

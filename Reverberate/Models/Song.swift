@@ -88,34 +88,34 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding, NSCopying
     }
     
     func getArtists(ofType artistType: ArtistType) -> [Artist]
-        {
-            var result: [Artist] = []
-            artists!.filter {
-                $0.artistType!.contains(artistType)
-            }.forEach {
-                result.append($0)
-            }
-            return result.sorted()
+    {
+        var result: [Artist] = []
+        artists!.filter {
+            $0.artistType!.contains(artistType)
+        }.forEach {
+            result.append($0)
         }
+        return result.sorted()
+    }
         
-        func getArtistNamesAsString(artistType: ArtistType?) -> String
+    func getArtistNamesAsString(artistType: ArtistType?) -> String
+    {
+        guard let artistType = artistType else
         {
-            guard let artistType = artistType else
-            {
-                var artistNameArray = artists!.map {
-                    $0.name!
-                }
-                artistNameArray = Array(Set(artistNameArray))
-                return artistNameArray.joined(separator: ", ")
-            }
-
-            let artistNameArray = artists!.filter {
-                $0.artistType!.contains(artistType)
-            }.map {
+            var artistNameArray = artists!.map {
                 $0.name!
             }
+            artistNameArray = Array(Set(artistNameArray))
             return artistNameArray.sorted().joined(separator: ", ")
         }
+        
+        let artistNameArray = artists!.filter {
+            $0.artistType!.contains(artistType)
+        }.map {
+            $0.name!
+        }
+        return artistNameArray.sorted().joined(separator: ", ")
+    }
     
     public func copy(with zone: NSZone? = nil) -> Any
     {
