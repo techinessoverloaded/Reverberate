@@ -98,17 +98,17 @@ class LibraryPlaylistViewController: UITableViewController
         emptyMessageLabel.attributedText = noPlaylistsMessage
         emptyMessageLabel.isHidden = !allPlaylists.isEmpty
         tableView.backgroundView = backgroundView
-        NotificationCenter.default.addObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemovePlaylistNotification(_:)), name: .removePlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
     }
     
     deinit
     {
-        LifecycleLogger.deinitLog(self)
         NotificationCenter.default.removeObserver(self, name: .removePlaylistNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .songAddedToPlaylistNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .songRemovedFromPlaylistNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     private func refetchPlaylists()

@@ -104,9 +104,9 @@ class LibraryAlbumViewController: UICollectionViewController
         ])
         emptyMessageLabel.attributedText = noResultsMessage
         collectionView.backgroundView = backgroundView
-        NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddAlbumToFavouritesNotification(_:)), name: .addAlbumToFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveAlbumFromFavouritesNotification(_:)), name: .removeAlbumFromFavouritesNotification, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -117,10 +117,10 @@ class LibraryAlbumViewController: UICollectionViewController
     
     deinit
     {
-        LifecycleLogger.deinitLog(self)
         NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .addAlbumToFavouritesNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .removeAlbumFromFavouritesNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     private func sortAlbums() -> [Alphabet: [Album]]
@@ -134,60 +134,54 @@ class LibraryAlbumViewController: UICollectionViewController
         return result
     }
     
+    private func getAllAlbumsMenuItem(_ state: UIMenuElement.State) -> UIAction
+    {
+        return UIAction(title: "All Albums", image: UIImage(systemName: "square.stack")!, state: state, handler: { [unowned self] _ in
+            if !viewOnlyFavAlbums
+            {
+                return
+            }
+            title = "All Albums"
+            searchController.searchBar.placeholder = "Find in Albums"
+            allAlbums = DataManager.shared.availableAlbums
+            sortedAlbums = sortAlbums()
+            viewOnlyFavAlbums = false
+            emptyMessageLabel.isHidden = true
+            collectionView.reloadData()
+        })
+    }
+    
+    private func getFavAlbumsMenuItem(_ state: UIMenuElement.State) -> UIAction
+    {
+        return UIAction(title: "Favourite Albums", image: UIImage(systemName: "heart")!, state: state, handler: { [unowned self] _ in
+            if viewOnlyFavAlbums
+            {
+                return
+            }
+            title = "Favourite Albums"
+            searchController.searchBar.placeholder = "Find in Favourite Albums"
+            allAlbums = allAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouriteAlbum($0) })
+            sortedAlbums = sortAlbums()
+            viewOnlyFavAlbums = true
+            if allAlbums.isEmpty
+            {
+                emptyMessageLabel.attributedText = noFavouritesMessage
+                emptyMessageLabel.isHidden = false
+            }
+            else
+            {
+                emptyMessageLabel.isHidden = true
+            }
+            collectionView.reloadData()
+        })
+    }
+    
     private func setupFilterMenu()
     {
         let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
         menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .singleSelection, children: [
-            UIDeferredMenuElement.uncached({ completion in
-                DispatchQueue.main.async { [unowned self] in
-                    let allAlbumsMenuItem = UIAction(title: "All Albums", image: UIImage(systemName: "square.stack")!, handler: { [unowned self] _ in
-                        if !viewOnlyFavAlbums
-                        {
-                            return
-                        }
-                        title = "All Albums"
-                        searchController.searchBar.placeholder = "Find in Albums"
-                        allAlbums = DataManager.shared.availableAlbums
-                        sortedAlbums = sortAlbums()
-                        viewOnlyFavAlbums = false
-                        emptyMessageLabel.isHidden = true
-                        collectionView.reloadData()
-                    })
-                    let favouriteAlbumsMenuItem = UIAction(title: "Favourite Albums", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
-                        if viewOnlyFavAlbums
-                        {
-                            return
-                        }
-                        title = "Favourite Albums"
-                        searchController.searchBar.placeholder = "Find in Favourite Albums"
-                        allAlbums = allAlbums.filter({ GlobalVariables.shared.currentUser!.isFavouriteAlbum($0) })
-                        sortedAlbums = sortAlbums()
-                        viewOnlyFavAlbums = true
-                        if allAlbums.isEmpty
-                        {
-                            emptyMessageLabel.attributedText = noFavouritesMessage
-                            emptyMessageLabel.isHidden = false
-                        }
-                        else
-                        {
-                            emptyMessageLabel.isHidden = true
-                        }
-                        collectionView.reloadData()
-                    })
-                    if viewOnlyFavAlbums
-                    {
-                        favouriteAlbumsMenuItem.state = .on
-                        allAlbumsMenuItem.state = .off
-                        completion([allAlbumsMenuItem, favouriteAlbumsMenuItem])
-                    }
-                    else
-                    {
-                        favouriteAlbumsMenuItem.state = .off
-                        allAlbumsMenuItem.state = .on
-                        completion([allAlbumsMenuItem,favouriteAlbumsMenuItem])
-                    }
-                }
-            })
+            getAllAlbumsMenuItem(.on),
+            getFavAlbumsMenuItem(.off)
         ])
         navigationItem.rightBarButtonItem = menuBarItem
     }

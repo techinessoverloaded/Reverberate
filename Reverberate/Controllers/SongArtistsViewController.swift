@@ -45,28 +45,28 @@ class SongArtistsViewController: UICollectionViewController
         collectionView.backgroundColor = .clear
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
         LifecycleLogger.viewDidAppearLog(self)
-        NotificationCenter.default.setObserver(self, selector: #selector(onAddArtistToFavouritesNotification(_:)), name: .addArtistToFavouritesNotification, object: nil)
-        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveArtistFromFavouritesNotification(_:)), name: .removeArtistFromFavouritesNotification, object: nil)
-        NotificationCenter.default.setObserver(self, selector: #selector(onLoginRequestNotification(_:)), name: .loginRequestNotification, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool)
     {
         LifecycleLogger.viewDidDisappearLog(self)
-        NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
         super.viewDidDisappear(animated)
     }
     
     deinit
     {
+        NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .loginRequestNotification, object: nil)
         LifecycleLogger.deinitLog(self)
     }
     

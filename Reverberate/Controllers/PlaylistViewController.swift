@@ -222,11 +222,11 @@ class PlaylistViewController: UITableViewController
         ])
         emptyMessageLabel.attributedText = noSongsMessage
         tableView.backgroundView = backgroundView
-        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(songRemovedFromPlaylistNotification(_:)), name: .songRemovedFromPlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(songAddedToPlaylistNotification(_:)), name: .songAddedToPlaylistNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -249,6 +249,7 @@ class PlaylistViewController: UITableViewController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .songRemovedFromPlaylistNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .songAddedToPlaylistNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -358,9 +359,7 @@ class PlaylistViewController: UITableViewController
             {
                 return
             }
-            updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
-               return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
-            }
+            updatedConfig.textProperties.color =  state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : .label
             cell.contentConfiguration = updatedConfig
         }
         var menuButtonConfig = UIButton.Configuration.plain()
@@ -542,6 +541,9 @@ extension PlaylistViewController
         }
         guard let currentSong = GlobalVariables.shared.currentSong else
         {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         guard let item = playlist.songs!.firstIndex(of: currentSong) else

@@ -104,6 +104,7 @@ class ProfileViewController: UITableViewController
         view.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = 44
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
+        NotificationCenter.default.setObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
     }
     
     func configureAccordingToSession()
@@ -141,22 +142,9 @@ class ProfileViewController: UITableViewController
         }
     }
     
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        LifecycleLogger.viewDidAppearLog(self)
-        NotificationCenter.default.setObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool)
-    {
-        LifecycleLogger.viewDidDisappearLog(self)
-        NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
-        super.viewDidDisappear(animated)
-    }
-    
     deinit
     {
+        NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
         LifecycleLogger.deinitLog(self)
     }
     
@@ -676,7 +664,6 @@ extension ProfileViewController: LoginDelegate
         let newProfileVC = ProfileViewController(style: .insetGrouped)
         newProfileVC.title = "Your Profile"
         GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
-        NotificationCenter.default.post(name: .userLoggedInNotification, object: nil)
         loginController.dismiss(animated: true)
     }
     

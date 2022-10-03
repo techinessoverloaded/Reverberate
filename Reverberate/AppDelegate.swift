@@ -57,6 +57,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         
     }
     
+    func applicationWillTerminate(_ application: UIApplication)
+    {
+        application.endReceivingRemoteControlEvents()
+        do
+        {
+            if GlobalVariables.shared.avAudioPlayer != nil
+            {
+                GlobalVariables.shared.avAudioPlayer.stop()
+            }
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            print("Deactivated AVAudioSession successfully")
+        }
+        catch
+        {
+            print("Deactivating AVAudioSession Failed")
+        }
+    }
+    
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {

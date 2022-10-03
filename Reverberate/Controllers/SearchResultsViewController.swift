@@ -107,24 +107,12 @@ class SearchResultsViewController: UICollectionViewController
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(ArtistCVCell.self, forCellWithReuseIdentifier: ArtistCVCell.identifier)
         collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "cell")
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        LifecycleLogger.viewDidAppearLog(self)
         NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool)
-    {
-        LifecycleLogger.viewDidDisappearLog(self)
-        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
-        super.viewDidDisappear(animated)
     }
     
     deinit
     {
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
         LifecycleLogger.deinitLog(self)
     }
     
@@ -206,9 +194,7 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
                 {
                     return
                 }
-                updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
-                   return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
-                }
+                updatedConfig.textProperties.color = state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : .label
                 cell.contentConfiguration = updatedConfig
             }
             var menuButtonConfig = UIButton.Configuration.plain()
@@ -574,6 +560,7 @@ extension SearchResultsViewController
         let currentSong = GlobalVariables.shared.currentSong!
         guard let indexPath = collectionView.indexPathsForVisibleItems.first(where: { filteredSongs[$0.item].song == currentSong }) else
         {
+            collectionView.selectItem(at: nil, animated: true, scrollPosition: .centeredVertically)
             return
         }
         guard let selectedIndexPaths = collectionView.indexPathsForSelectedItems, !selectedIndexPaths.isEmpty else

@@ -121,6 +121,11 @@ class InitialViewController: UITableViewController
         }
     }
     
+    deinit
+    {
+        LifecycleLogger.deinitLog(self)
+    }
+    
     func showLoginViewController()
     {
         loginController = LoginViewController(style: .insetGrouped)

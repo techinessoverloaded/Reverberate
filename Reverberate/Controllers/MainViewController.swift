@@ -41,43 +41,6 @@ class MainViewController: UITabBarController
     
     private var songToBeAddedToPlaylist: Song? = nil
     
-    override func loadView()
-    {
-        super.loadView()
-        tabBar.isTranslucent = true
-        searchVC.title = "Search"
-        libraryVC.title = "Library"
-        profileVC.title = "Your Profile"
-        self.delegate = self
-        setViewControllers([
-            UINavigationController(rootViewController: homeVC),
-            UINavigationController(rootViewController: searchVC),
-            UINavigationController(rootViewController: libraryVC),
-            UINavigationController(rootViewController: profileVC)
-        ], animated: false)
-        guard let items = tabBar.items else
-        {
-            return
-        }
-        for x in 0..<items.count
-        {
-            items[x].image = UIImage(systemName: imageNames[x])
-            items[x].selectedImage = UIImage(systemName: selectedImageNames[x])
-        }
-        view.addSubview(miniPlayerView)
-        NSLayoutConstraint.activate([
-            miniPlayerView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            miniPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
-            miniPlayerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            miniPlayerView.heightAnchor.constraint(equalToConstant: 70)
-        ])
-        miniPlayerView.delegate = self
-        miniPlayerView.addInteraction(songContextMenuInteraction)
-        miniPlayerTimer = CADisplayLink(target: self, selector: #selector(onTimerFire))
-        miniPlayerTimer.add(to: .main, forMode: .common)
-        miniPlayerTimer.isPaused = true
-    }
-    
     func replaceViewController(index: Int, newViewController: UIViewController)
     {
         if index == 0
@@ -143,6 +106,38 @@ class MainViewController: UITabBarController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        tabBar.isTranslucent = true
+        searchVC.title = "Search"
+        libraryVC.title = "Library"
+        profileVC.title = "Your Profile"
+        self.delegate = self
+        setViewControllers([
+            UINavigationController(rootViewController: homeVC),
+            UINavigationController(rootViewController: searchVC),
+            UINavigationController(rootViewController: libraryVC),
+            UINavigationController(rootViewController: profileVC)
+        ], animated: false)
+        guard let items = tabBar.items else
+        {
+            return
+        }
+        for x in 0..<items.count
+        {
+            items[x].image = UIImage(systemName: imageNames[x])
+            items[x].selectedImage = UIImage(systemName: selectedImageNames[x])
+        }
+        view.addSubview(miniPlayerView)
+        NSLayoutConstraint.activate([
+            miniPlayerView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            miniPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
+            miniPlayerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            miniPlayerView.heightAnchor.constraint(equalToConstant: 70)
+        ])
+        miniPlayerView.delegate = self
+        miniPlayerView.addInteraction(songContextMenuInteraction)
+        miniPlayerTimer = CADisplayLink(target: self, selector: #selector(onTimerFire))
+        miniPlayerTimer.add(to: .main, forMode: .common)
+        miniPlayerTimer.isPaused = true
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -150,12 +145,6 @@ class MainViewController: UITabBarController
         super.viewWillAppear(animated)
         LifecycleLogger.viewWillAppearLog(self)
         selectedIndex = UserDefaults.standard.integer(forKey: GlobalConstants.previouslySelectedTabIndex)
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        LifecycleLogger.viewDidAppearLog(self)
         NotificationCenter.default.setObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
         NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         NotificationCenter.default.setObserver(self, selector: #selector(onPlaylistChange), name: NSNotification.Name.currentPlaylistSetNotification, object: nil)

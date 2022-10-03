@@ -172,19 +172,18 @@ class LibrarySongViewController: UITableViewController
                 onPlayNotificationReceipt()
             }
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onShowAlbumNotification(_:)), name: .showAlbumTapNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onUserLoginNotification), name: .userLoggedInNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddSongToFavouritesNotification(_:)), name: .addSongToFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onRemoveSongFromFavouritesNotification(_:)), name: .removeSongFromFavouritesNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onAddSongToPlaylistNotification(_:)), name: .addSongToPlaylistNotification, object: nil)
     }
     
     deinit
     {
-        LifecycleLogger.deinitLog(self)
         NotificationCenter.default.removeObserver(self, name: .showAlbumTapNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
@@ -193,6 +192,7 @@ class LibrarySongViewController: UITableViewController
         NotificationCenter.default.removeObserver(self, name: .addSongToFavouritesNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .removeSongFromFavouritesNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .addSongToPlaylistNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -251,62 +251,56 @@ class LibrarySongViewController: UITableViewController
         }
     }
     
+    private func getAllSongsMenuItem(_ state: UIMenuElement.State) -> UIAction
+    {
+        return UIAction(title: "All Songs", image: UIImage(systemName: "music.note")!, state: state, handler: { [unowned self] _ in
+            if !viewOnlyFavSongs
+            {
+                return
+            }
+            title = "All Songs"
+            searchController.searchBar.placeholder = "Find in Songs"
+            allSongs = DataManager.shared.availableSongs
+            sortedSongs = sortSongs()
+            viewOnlyFavSongs = false
+            emptyMessageLabel.isHidden = true
+            tableView.reloadData()
+            resetPlayAndShuffleButtons()
+        })
+    }
+    
+    private func getFavSongsMenuItem(_ state: UIMenuElement.State) -> UIAction
+    {
+        return UIAction(title: "Favourite Songs", image: UIImage(systemName: "heart")!, state: state, handler: { [unowned self] _ in
+            if viewOnlyFavSongs
+            {
+                return
+            }
+            title = "Favourite Songs"
+            searchController.searchBar.placeholder = "Find in Favourite Songs"
+            allSongs = self.allSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
+            sortedSongs = self.sortSongs()
+            viewOnlyFavSongs = true
+            if allSongs.isEmpty
+            {
+                emptyMessageLabel.attributedText = noFavouritesMessage
+                emptyMessageLabel.isHidden = false
+            }
+            else
+            {
+                emptyMessageLabel.isHidden = true
+            }
+            tableView.reloadData()
+            resetPlayAndShuffleButtons()
+        })
+    }
+    
     private func setupFilterMenu()
     {
         let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
         menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .singleSelection, children: [
-            UIDeferredMenuElement.uncached({ completion in
-                DispatchQueue.main.async { [unowned self] in
-                    let allSongsMenuItem = UIAction(title: "All Songs", image: UIImage(systemName: "music.note")!, handler: { [unowned self] _ in
-                        if !viewOnlyFavSongs
-                        {
-                            return
-                        }
-                        title = "All Songs"
-                        searchController.searchBar.placeholder = "Find in Songs"
-                        allSongs = DataManager.shared.availableSongs
-                        sortedSongs = sortSongs()
-                        viewOnlyFavSongs = false
-                        emptyMessageLabel.isHidden = true
-                        tableView.reloadData()
-                        resetPlayAndShuffleButtons()
-                    })
-                    let favouriteSongsMenuItem = UIAction(title: "Favourite Songs", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
-                        if viewOnlyFavSongs
-                        {
-                            return
-                        }
-                        title = "Favourite Songs"
-                        searchController.searchBar.placeholder = "Find in Favourite Songs"
-                        allSongs = allSongs.filter({ GlobalVariables.shared.currentUser!.isFavouriteSong($0) })
-                        sortedSongs = sortSongs()
-                        viewOnlyFavSongs = true
-                        if allSongs.isEmpty
-                        {
-                            emptyMessageLabel.attributedText = noFavouritesMessage
-                            emptyMessageLabel.isHidden = false
-                        }
-                        else
-                        {
-                            emptyMessageLabel.isHidden = true
-                        }
-                        tableView.reloadData()
-                        resetPlayAndShuffleButtons()
-                    })
-                    if viewOnlyFavSongs
-                    {
-                        favouriteSongsMenuItem.state = .on
-                        allSongsMenuItem.state = .off
-                        completion([allSongsMenuItem,favouriteSongsMenuItem])
-                    }
-                    else
-                    {
-                        favouriteSongsMenuItem.state = .off
-                        allSongsMenuItem.state = .on
-                        completion([allSongsMenuItem,favouriteSongsMenuItem])
-                    }
-                }
-            })
+            getAllSongsMenuItem(.on),
+            getFavSongsMenuItem(.off)
         ])
         navigationItem.rightBarButtonItem = menuBarItem
     }
@@ -406,9 +400,7 @@ class LibrarySongViewController: UITableViewController
             {
                 return
             }
-            updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
-               return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
-            }
+            updatedConfig.textProperties.color =  state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : .label
             cell.contentConfiguration = updatedConfig
         }
         cell.contentConfiguration = config
@@ -601,6 +593,9 @@ extension LibrarySongViewController
         let section = alphabet.rawValue
         guard let item = sortedSongs[alphabet]!.firstIndex(of: currentSong) else
         {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         print("current song found")

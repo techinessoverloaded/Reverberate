@@ -35,7 +35,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     private var selectionTrackerLabel: UILabel = {
         let stLabel = UILabel(frame: .zero)
-        stLabel.font = .preferredFont(forTextStyle: .body, weight: .semibold)
+        stLabel.font = .preferredFont(forTextStyle: .subheadline, weight: .semibold)
         stLabel.textColor = .label
         stLabel.adjustsFontSizeToFitWidth = false
         stLabel.enableAutoLayout()
@@ -60,6 +60,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         setupNavBar()
         collectionView.register(SelectionCardCVCell.self, forCellWithReuseIdentifier: SelectionCardCVCell.identifier)
         collectionView.allowsMultipleSelection = true
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         clearsSelectionOnViewWillAppear = false
         if preSelectedLanguages != nil
         {
@@ -219,17 +220,13 @@ extension LanguageSelectionCollectionViewController: UICollectionViewDelegateFlo
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        //let noOfItemsPerSection: CGFloat = 2
-        //let interItemSpacing: CGFloat = 5
-        //let cellWidth = (collectionView.frame.width -
-//                             (noOfItemsPerSection - 1) * interItemSpacing) / noOfItemsPerSection
-        let cellWidth = (view.frame.width / 2.5) - 1
+        let cellWidth = (collectionView.bounds.width / 2.3)//(view.frame.width / 2.5) - 1
         return .init(width: cellWidth, height: cellWidth / 1.2)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
-        return .init(top: 10, left: 20, bottom: 10, right: 20)
+        return .init(top: 10, left: 0, bottom: 10, right: 0)
     }
 }
 

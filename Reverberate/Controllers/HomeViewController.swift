@@ -32,28 +32,16 @@ class HomeViewController: UICollectionViewController
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)
         collectionView.register(HeaderCVReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCVReusableView.identifier)
         collectionView.backgroundColor = .clear
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        LifecycleLogger.viewDidAppearLog(self)
         NotificationCenter.default.setObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
         NotificationCenter.default.setObserver(self, selector: #selector(performReload), name: .userLoggedInNotification, object: nil)
         NotificationCenter.default.setObserver(self, selector: #selector(performReload), name: .languageGenreChangeNotification, object: nil)
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
-        LifecycleLogger.viewDidDisappearLog(self)
         NotificationCenter.default.removeObserver(self, name: .recentlyPlayedListChangedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .languageGenreChangeNotification, object: nil)
-        super.viewDidDisappear(animated)
-    }
-    
-    deinit
-    {
         LifecycleLogger.deinitLog(self)
     }
     

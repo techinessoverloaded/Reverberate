@@ -72,18 +72,6 @@ class SearchViewController: UICollectionViewController
         LifecycleLogger.viewWillAppearLog(self)
     }
     
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        LifecycleLogger.viewDidAppearLog(self)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool)
-    {
-        super.viewDidDisappear(animated)
-        LifecycleLogger.viewDidDisappearLog(self)
-    }
-    
     deinit
     {
         LifecycleLogger.deinitLog(self)

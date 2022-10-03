@@ -96,28 +96,17 @@ class CategoricalSongsViewController: UITableViewController
                 onPlayNotificationReceipt()
             }
         }
-    }
-
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        LifecycleLogger.viewDidAppearLog(self)
         NotificationCenter.default.setObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.setObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
         if category == .recentlyPlayed
         {
-            if GlobalVariables.shared.recentlyPlayedSongNames.count != songs.count
-            {
-                onRecentlyPlayedListChange()
-            }
             NotificationCenter.default.setObserver(self, selector: #selector(onRecentlyPlayedListChange), name: .recentlyPlayedListChangedNotification, object: nil)
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool)
+    deinit
     {
-        LifecycleLogger.viewDidDisappearLog(self)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
@@ -125,11 +114,6 @@ class CategoricalSongsViewController: UITableViewController
         {
             NotificationCenter.default.removeObserver(self, name: .recentlyPlayedListChangedNotification, object: nil)
         }
-        super.viewDidDisappear(animated)
-    }
-    
-    deinit
-    {
         LifecycleLogger.deinitLog(self)
     }
     
@@ -195,9 +179,7 @@ class CategoricalSongsViewController: UITableViewController
                 {
                     return
                 }
-                updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
-                   return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
-                }
+                updatedConfig.textProperties.color =  state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : .label
                 cell.contentConfiguration = updatedConfig
             }
             var menuButtonConfig = UIButton.Configuration.plain()
@@ -378,7 +360,6 @@ extension CategoricalSongsViewController
         songs = DataProcessor.shared.getSongsOf(category: .recentlyPlayed)
         albums = DataProcessor.shared.getAlbumsOf(category: .recentlyPlayed)
         tableView.reloadData()
-        
         onSongChange()
     }
     
@@ -419,6 +400,9 @@ extension CategoricalSongsViewController
         let currentSong = GlobalVariables.shared.currentSong!
         guard let item = playlist.songs!.firstIndex(of: currentSong) else
         {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         let indexPath = IndexPath(item: item, section: 0)

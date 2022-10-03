@@ -332,6 +332,9 @@ class PlayerViewController: UITableViewController
         updateTime()
         caDisplayLinkTimer = CADisplayLink(target: self, selector: #selector(onTimerFire(_:)))
         caDisplayLinkTimer.add(to: .main, forMode: .common)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange(_:)), name: .currentSongSetNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
     }
     
     func setPlaying(shouldPlaySongFromBeginning: Bool, isSongPaused: Bool? = nil)
@@ -362,23 +365,20 @@ class PlayerViewController: UITableViewController
         LifecycleLogger.viewDidDisappearLog(self)
         navigationController?.view.removeGestureRecognizer(panGestureRecognizer)
         caDisplayLinkTimer.invalidate()
-        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .previousSongClickedNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .upcomingSongClickedNotification, object: nil)
         super.viewDidDisappear(animated)
     }
     
     deinit
     {
+        NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .previousSongClickedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .upcomingSongClickedNotification, object: nil)
         LifecycleLogger.deinitLog(self)
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
         LifecycleLogger.viewDidAppearLog(self)
-        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange(_:)), name: .currentSongSetNotification, object: nil)
-        NotificationCenter.default.setObserver(self, selector: #selector(onPreviousSongClickNotification(_:)), name: .previousSongClickedNotification, object: nil)
-        NotificationCenter.default.setObserver(self, selector: #selector(onUpcomingSongClickNotification(_:)), name: .upcomingSongClickedNotification, object: nil)
         self.tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .bottom, animated: true)
     }
     

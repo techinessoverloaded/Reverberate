@@ -108,7 +108,7 @@ class ArtistViewController: UITableViewController
     private lazy var artistRoleView: UILabel = {
         let aView = UILabel(useAutoLayout: true)
         aView.font = .preferredFont(forTextStyle: .body, weight: .regular)
-        aView.textColor = UIColor(named: GlobalConstants.techinessColor)!
+        aView.textColor = .secondaryLabel
         aView.textAlignment = .center
         aView.isUserInteractionEnabled = true
         aView.adjustsFontSizeToFitWidth = true
@@ -173,9 +173,9 @@ class ArtistViewController: UITableViewController
                 onPlayNotificationReceipt()
             }
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPlayNotificationReceipt), name: NSNotification.Name.playerPlayNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onPausedNotificationReceipt), name: NSNotification.Name.playerPausedNotification, object: nil)
+        NotificationCenter.default.setObserver(self, selector: #selector(onSongChange), name: NSNotification.Name.currentSongSetNotification, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -189,6 +189,7 @@ class ArtistViewController: UITableViewController
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPlayNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.playerPausedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .currentSongSetNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -289,9 +290,7 @@ class ArtistViewController: UITableViewController
                 {
                     return
                 }
-                updatedConfig.textProperties.colorTransformer = UIConfigurationColorTransformer { _ in
-                   return state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : updatedConfig.textProperties.color
-                }
+                updatedConfig.textProperties.color =  state.isSelected || state.isHighlighted ? UIColor(named: GlobalConstants.techinessColor)! : .label
                 cell.contentConfiguration = updatedConfig
             }
             var menuButtonConfig = UIButton.Configuration.plain()
@@ -519,6 +518,9 @@ extension ArtistViewController
         let currentSong = GlobalVariables.shared.currentSong!
         guard let item = playlist.songs!.firstIndex(of: currentSong) else
         {
+            tableView.selectRow(at: nil, animated: true, scrollPosition: .none)
+            playButton.configuration!.title = "Play"
+            playButton.configuration!.image = playIcon
             return
         }
         let indexPath = IndexPath(item: item, section: 0)

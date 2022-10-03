@@ -29,20 +29,12 @@ class SelectionCardCVCell: UICollectionViewCell
     
     private let checkView: UIImageView = {
         let cView = UIImageView(useAutoLayout: true)
-        let imageConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 26))
+        let imageConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 24))
         cView.image = UIImage(systemName: "checkmark.circle.fill", withConfiguration: imageConfig)?.withRenderingMode(.alwaysTemplate)
         cView.tintColor = .systemGreen
-        //cView.backgroundColor = .white
         cView.alpha = 0
         return cView
     }()
-    
-//    private let overlayView: UIView = {
-//        let oView = UIView(useAutoLayout: true)
-//        oView.backgroundColor = .systemGreen
-//        oView.alpha = 0
-//        return oView
-//    }()
     
     override init(frame: CGRect)
     {
@@ -56,8 +48,8 @@ class SelectionCardCVCell: UICollectionViewCell
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             centerTextLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             centerTextLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            checkView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -18),
-            checkView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 18)
+            checkView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -15),
+            checkView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 15)
         ])
     }
     

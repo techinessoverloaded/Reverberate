@@ -60,6 +60,7 @@ class GenreSelectionCollectionViewController: UICollectionViewController
         setupNavBar()
         collectionView.register(SelectionCardCVCell.self, forCellWithReuseIdentifier: SelectionCardCVCell.identifier)
         collectionView.allowsMultipleSelection = true
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         clearsSelectionOnViewWillAppear = false
         if areCellsPreselected
         {
@@ -210,13 +211,13 @@ extension GenreSelectionCollectionViewController: UICollectionViewDelegateFlowLa
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        let cellWidth = (view.frame.width / 2.5) - 1
+        let cellWidth = (collectionView.bounds.width / 2.3)//(view.frame.width / 2.5) - 1
         return .init(width: cellWidth, height: cellWidth / 1.2)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
-        return .init(top: 10, left: 15, bottom: 10, right: 15)
+        return .init(top: 10, left: 0, bottom: 10, right: 0)
     }
 }
 

@@ -112,10 +112,10 @@ class LibraryArtistViewController: UICollectionViewController
     
     deinit
     {
-        LifecycleLogger.deinitLog(self)
         NotificationCenter.default.removeObserver(self, name: .userLoggedInNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .addArtistToFavouritesNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: .removeArtistFromFavouritesNotification, object: nil)
+        LifecycleLogger.deinitLog(self)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -135,60 +135,54 @@ class LibraryArtistViewController: UICollectionViewController
         return result
     }
     
+    private func getAllArtistsMenuItem(_ state: UIMenuElement.State) -> UIAction
+    {
+        return UIAction(title: "All Artists", image: UIImage(systemName: "music.mic")!, state: state, handler: { [unowned self] _ in
+            if !viewOnlyFavArtists
+            {
+                return
+            }
+            title = "All Artists"
+            searchController.searchBar.placeholder = "Find in Artists"
+            allArtists = DataManager.shared.availableArtists
+            sortedArtists = sortArtists()
+            viewOnlyFavArtists = false
+            emptyMessageLabel.isHidden = true
+            collectionView.reloadData()
+        })
+    }
+    
+    private func getFavArtistsMenuItem(_ state: UIMenuElement.State) -> UIAction
+    {
+        return UIAction(title: "Favourite Artists", image: UIImage(systemName: "heart")!, state: state, handler: { [unowned self] _ in
+            if viewOnlyFavArtists
+            {
+                return
+            }
+            title = "Favourite Artists"
+            searchController.searchBar.placeholder = "Find in Favourite Artists"
+            allArtists = allArtists.filter({ GlobalVariables.shared.currentUser!.isFavouriteArtist($0) })
+            sortedArtists = sortArtists()
+            viewOnlyFavArtists = true
+            if allArtists.isEmpty
+            {
+                emptyMessageLabel.attributedText = noFavouritesMessage
+                emptyMessageLabel.isHidden = false
+            }
+            else
+            {
+                emptyMessageLabel.isHidden = true
+            }
+            collectionView.reloadData()
+        })
+    }
+    
     private func setupFilterMenu()
     {
         let menuBarItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease")!, style: .plain, target: nil, action: nil)
         menuBarItem.menu = UIMenu(title: "", image: nil, identifier: nil, options: .singleSelection, children: [
-            UIDeferredMenuElement.uncached({ completion in
-                DispatchQueue.main.async { [unowned self] in
-                    let allArtistsMenuItem = UIAction(title: "All Artists", image: UIImage(systemName: "music.mic")!, handler: { [unowned self] _ in
-                        if !viewOnlyFavArtists
-                        {
-                            return
-                        }
-                        title = "All Artists"
-                        searchController.searchBar.placeholder = "Find in Artists"
-                        allArtists = DataManager.shared.availableArtists
-                        sortedArtists = sortArtists()
-                        viewOnlyFavArtists = false
-                        emptyMessageLabel.isHidden = true
-                        collectionView.reloadData()
-                    })
-                    let favouriteArtistsMenuItem = UIAction(title: "Favourite Artists", image: UIImage(systemName: "heart")!, handler: { [unowned self] _ in
-                        if viewOnlyFavArtists
-                        {
-                            return
-                        }
-                        title = "Favourite Artists"
-                        searchController.searchBar.placeholder = "Find in Favourite Artists"
-                        allArtists = allArtists.filter({ GlobalVariables.shared.currentUser!.isFavouriteArtist($0) })
-                        sortedArtists = sortArtists()
-                        viewOnlyFavArtists = true
-                        if allArtists.isEmpty
-                        {
-                            emptyMessageLabel.attributedText = noFavouritesMessage
-                            emptyMessageLabel.isHidden = false
-                        }
-                        else
-                        {
-                            emptyMessageLabel.isHidden = true
-                        }
-                        collectionView.reloadData()
-                    })
-                    if viewOnlyFavArtists
-                    {
-                        favouriteArtistsMenuItem.state = .on
-                        allArtistsMenuItem.state = .off
-                        completion([allArtistsMenuItem, favouriteArtistsMenuItem])
-                    }
-                    else
-                    {
-                        favouriteArtistsMenuItem.state = .off
-                        allArtistsMenuItem.state = .on
-                        completion([allArtistsMenuItem,favouriteArtistsMenuItem])
-                    }
-                }
-            })
+            getAllArtistsMenuItem(.on),
+            getFavArtistsMenuItem(.off)
         ])
         navigationItem.rightBarButtonItem = menuBarItem
     }
