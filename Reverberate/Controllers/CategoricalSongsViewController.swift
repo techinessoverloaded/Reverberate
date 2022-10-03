@@ -70,6 +70,7 @@ class CategoricalSongsViewController: UITableViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.title = category.description
@@ -194,21 +195,21 @@ class CategoricalSongsViewController: UITableViewController
             cell.accessoryView = menuButton
             cell.backgroundColor = .clear
             cell.selectionStyle = .none
-//            if GlobalVariables.shared.currentPlaylist == playlist
-//            {
-//                if GlobalVariables.shared.currentSong == song
-//                {
-//                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-//                    if GlobalVariables.shared.avAudioPlayer!.isPlaying
-//                    {
-//                        onPlayNotificationReceipt()
-//                    }
-//                    else
-//                    {
-//                        onPausedNotificationReceipt()
-//                    }
-//                }
-//            }
+            if GlobalVariables.shared.currentPlaylist == playlist
+            {
+                if GlobalVariables.shared.currentSong == song
+                {
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    if GlobalVariables.shared.avAudioPlayer!.isPlaying
+                    {
+                        onPlayNotificationReceipt()
+                    }
+                    else
+                    {
+                        onPausedNotificationReceipt()
+                    }
+                }
+            }
         }
         else
         {

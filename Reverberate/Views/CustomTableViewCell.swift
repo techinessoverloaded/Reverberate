@@ -43,7 +43,10 @@ class CustomTableViewCell: UITableViewCell
         super.layoutSubviews()
         if !useAutoLayout
         {
-            subView.frame = contentView.bounds
+            if subView != nil
+            {
+                subView.frame = contentView.bounds
+            }
         }
         else
         {

@@ -176,13 +176,6 @@ class SignupViewController: UITableViewController
         return cpErrorLabel
     }()
     
-    private let contentBlurView: CustomVisualEffectView =
-    {
-        let cbView = CustomVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial), intensity: 0.5)
-        cbView.enableAutoLayout()
-        return cbView
-    }()
-    
     private var newUser: User?
     
     private var languageSelectionController: LanguageSelectionCollectionViewController!
@@ -240,15 +233,6 @@ class SignupViewController: UITableViewController
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-    }
-    
-    func activateContentBlurViewConstraints()
-    {
-        self.view.insertSubview(contentBlurView, aboveSubview: tableView)
-        NSLayoutConstraint.activate([
-            contentBlurView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            contentBlurView.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
     }
     
     override func viewDidDisappear(_ animated: Bool)

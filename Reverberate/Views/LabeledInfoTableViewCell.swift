@@ -34,7 +34,7 @@ class LabeledInfoTableViewCell: UITableViewCell
         layer.borderColor = UIColor.systemRed.cgColor
         layer.borderWidth = 0
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 17),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.32)
         ])

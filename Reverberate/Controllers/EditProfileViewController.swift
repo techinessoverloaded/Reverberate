@@ -13,6 +13,8 @@ class EditProfileViewController: UITableViewController
 {
     weak var userRef: User!
     
+    weak var delegate: ProfileEditionDelegate?
+    
     private let profilePictureView: UIImageView = {
         let pView = UIImageView(useAutoLayout: true)
         pView.layer.borderWidth = 4
@@ -230,7 +232,6 @@ extension EditProfileViewController: UITextFieldDelegate
             var name = textField.text ?? ""
             name.trim()
             let cell = tableView.cellForRow(at: IndexPath(item: 0, section: 1)) as! LabeledInfoTableViewCell
-            print(cell)
             if name.isEmpty
             {
                 cell.setError(isErrorPresent: true, message: "Name Required")
@@ -243,7 +244,7 @@ extension EditProfileViewController: UITextFieldDelegate
             {
                 cell.setError(isErrorPresent: false)
             }
-            nameHasChanged = textField.text != userRef.name
+            nameHasChanged = name != userRef.name
             nameHasError = cell.hasError
         }
         else if textField === phoneField
@@ -263,7 +264,7 @@ extension EditProfileViewController: UITextFieldDelegate
             {
                 cell.setError(isErrorPresent: false)
             }
-            phoneHasChanged = textField.text != userRef.phone
+            phoneHasChanged = phone != userRef.phone
             phoneHasErrror = cell.hasError
         }
         else
@@ -283,7 +284,7 @@ extension EditProfileViewController: UITextFieldDelegate
             {
                 cell.setError(isErrorPresent: false)
             }
-            emailHasChanged = textField.text != userRef.email
+            emailHasChanged = email != userRef.email
             emailHasError = cell.hasError
         }
         toggleDoneButtonEnabled()
@@ -351,7 +352,9 @@ extension EditProfileViewController
             userRef.profilePicture = profilePictureView.image?.jpegData(compressionQuality: 1)
         }
         GlobalConstants.contextSaveAction()
-        self.dismiss(animated: true)
+        self.dismiss(animated: true) { [unowned self] in
+            delegate?.onProfileChange()
+        }
     }
 }
 

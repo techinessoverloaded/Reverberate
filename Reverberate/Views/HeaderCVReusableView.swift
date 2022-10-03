@@ -34,7 +34,7 @@ class HeaderCVReusableView: UICollectionReusableView
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            seeAllButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            seeAllButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
             seeAllButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
         ])
         clipsToBounds = true

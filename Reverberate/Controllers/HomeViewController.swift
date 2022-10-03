@@ -26,7 +26,7 @@ class HomeViewController: UICollectionViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .systemBackground
         self.navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
         collectionView.register(PosterDetailCVCell.self, forCellWithReuseIdentifier: PosterDetailCVCell.identifier)

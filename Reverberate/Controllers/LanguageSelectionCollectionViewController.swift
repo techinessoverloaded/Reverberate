@@ -31,17 +31,17 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     
     private var unselectAllBarButton: UIBarButtonItem!
     
-    private var selectionTrackerBarItem: UIBarButtonItem!
-    
-    private var selectionTrackerLabel: UILabel = {
-        let stLabel = UILabel(frame: .zero)
-        stLabel.font = .preferredFont(forTextStyle: .subheadline, weight: .semibold)
-        stLabel.textColor = .label
-        stLabel.adjustsFontSizeToFitWidth = false
-        stLabel.enableAutoLayout()
-        stLabel.textAlignment = .center
-        return stLabel
-    }()
+//    private var selectionTrackerBarItem: UIBarButtonItem!
+//
+//    private var selectionTrackerLabel: UILabel = {
+//        let stLabel = UILabel(frame: .zero)
+//        stLabel.font = .preferredFont(forTextStyle: .subheadline, weight: .semibold)
+//        stLabel.textColor = .label
+//        stLabel.adjustsFontSizeToFitWidth = false
+//        stLabel.enableAutoLayout()
+//        stLabel.textAlignment = .center
+//        return stLabel
+//    }()
     
     private var flexibleSpace: UIBarButtonItem
     {
@@ -80,14 +80,14 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     {
         if selectedLanguages.isEmpty
         {
-            selectionTrackerLabel.text = "Select Languages"
+            //selectionTrackerLabel.text = "Select Languages"
             selectAllBarButton.isEnabled = true
             unselectAllBarButton.isEnabled = false
         }
         else
         {
             let count = selectedLanguages.count
-            selectionTrackerLabel.text = count == 1 ? "1 Language Selected" : "\(count) Languages Selected"
+            //selectionTrackerLabel.text = count == 1 ? "1 Language Selected" : "\(count) Languages Selected"
             if count < availableLanguages.flatMap({ $0 }).count
             {
                 selectAllBarButton.isEnabled = true
@@ -113,11 +113,9 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 23, weight: .bold)]
         selectAllBarButton = UIBarButtonItem(title: "Select All", style: .plain, target: self, action: #selector(onSelectAllButtonTap(_:)))
         unselectAllBarButton = UIBarButtonItem(title: "Unselect All", style: .plain, target: self, action: #selector(onUnselectAllButtonTap(_:)))
-        selectionTrackerBarItem = UIBarButtonItem(customView: selectionTrackerLabel)
+        //selectionTrackerBarItem = UIBarButtonItem(customView: selectionTrackerLabel)
         navigationController?.isToolbarHidden = false
         setToolbarItems([unselectAllBarButton,
-                         flexibleSpace,
-                         selectionTrackerBarItem,
                          flexibleSpace,
                          selectAllBarButton], animated: true)
         if leftBarButtonType != nil

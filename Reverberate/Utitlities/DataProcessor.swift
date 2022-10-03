@@ -53,17 +53,18 @@ class DataProcessor
     {
         var result: [SongSearchResult] = []
         let songs = songSource != nil ? songSource! : DataManager.shared.availableSongs
+        let keyword = query.lowercased()
         for song in songs
         {
             var resultObj = SongSearchResult(song: song)
-            if song.title!.lowercased().contains(query)
+            if song.title!.lowercased().contains(keyword)
             {
-                let range = (song.title! as NSString).range(of: query, options: .caseInsensitive)
+                let range = (song.title! as NSString).range(of: keyword, options: .caseInsensitive)
                 resultObj.titleRange = range
             }
-            if song.getArtistNamesAsString(artistType: nil).lowercased().contains(query)
+            if song.getArtistNamesAsString(artistType: nil).lowercased().contains(keyword)
             {
-                let range = (song.getArtistNamesAsString(artistType: nil) as NSString).range(of: query, options: .caseInsensitive)
+                let range = (song.getArtistNamesAsString(artistType: nil) as NSString).range(of: keyword, options: .caseInsensitive)
                 resultObj.artistsRange = range
             }
             if resultObj.titleRange != nil || resultObj.artistsRange != nil
@@ -98,17 +99,18 @@ class DataProcessor
     {
         var result: [AlbumSearchResult] = []
         let albums = albumSource != nil ? albumSource! : DataManager.shared.availableAlbums
+        let keyword = query.lowercased()
         for album in albums
         {
             var resultObj = AlbumSearchResult(album: album)
-            if album.name!.lowercased().contains(query)
+            if album.name!.lowercased().contains(keyword)
             {
-                let range = (album.name! as NSString).range(of: query, options: .caseInsensitive)
+                let range = (album.name! as NSString).range(of: keyword, options: .caseInsensitive)
                 resultObj.nameRange = range
             }
-            if album.composerNames.lowercased().contains(query)
+            if album.composerNames.lowercased().contains(keyword)
             {
-                let range = (album.composerNames as NSString).range(of: query, options: .caseInsensitive)
+                let range = (album.composerNames as NSString).range(of: keyword, options: .caseInsensitive)
                 resultObj.composersRange = range
             }
             if resultObj.nameRange != nil || resultObj.composersRange != nil
@@ -157,12 +159,13 @@ class DataProcessor
     {
         var result: [PlaylistSearchResult] = []
         let playlists = GlobalVariables.shared.currentUser!.playlists!
+        let keyword = query.lowercased()
         for playlist in playlists
         {
             var resultObj = PlaylistSearchResult(playlist: playlist)
-            if playlist.name!.lowercased().contains(query)
+            if playlist.name!.lowercased().contains(keyword)
             {
-                let range = (playlist.name! as NSString).range(of: query, options: .caseInsensitive)
+                let range = (playlist.name! as NSString).range(of: keyword, options: .caseInsensitive)
                 resultObj.nameRange = range
             }
             if resultObj.nameRange != nil
@@ -179,12 +182,13 @@ class DataProcessor
     {
         var result: [ArtistSearchResult] = []
         let artists = artistSource != nil ? artistSource! : DataManager.shared.availableArtists
+        let keyword = query.lowercased()
         for artist in artists
         {
             var resultObj = ArtistSearchResult(artist: artist)
-            if artist.name!.lowercased().contains(query)
+            if artist.name!.lowercased().contains(keyword)
             {
-                let range = (artist.name! as NSString).range(of: query, options: .caseInsensitive)
+                let range = (artist.name! as NSString).range(of: keyword, options: .caseInsensitive)
                 resultObj.nameRange = range
             }
             if resultObj.nameRange != nil
@@ -302,7 +306,7 @@ class DataProcessor
     
     func getSortedSongsThatSatisfy(theQuery query: String, songSource: [Song]? = nil) -> [Alphabet : [SongSearchResult]]
     {
-        let unsortedSongs = getSongsThatSatisfy(theQuery: query.lowercased(), songSource: songSource)
+        let unsortedSongs = getSongsThatSatisfy(theQuery: query, songSource: songSource)
         guard let unsortedSongs = unsortedSongs else
         {
             return [:]
@@ -321,7 +325,7 @@ class DataProcessor
     
     func getSortedAlbumsThatSatisfy(theQuery query: String, albumSource: [Album]? = nil) -> [Alphabet : [AlbumSearchResult]]
     {
-        let unsortedAlbums = getAlbumsThatSatisfy(theQuery: query.lowercased(), albumSource: albumSource)
+        let unsortedAlbums = getAlbumsThatSatisfy(theQuery: query, albumSource: albumSource)
         guard let unsortedAlbums = unsortedAlbums else
         {
             return [:]
@@ -339,7 +343,7 @@ class DataProcessor
     
     func getSortedPlaylistsThatSatisfy(theQuery query: String) -> [Alphabet : [PlaylistSearchResult]]
     {
-        let unsortedPlaylists = getPlaylistsThatSatisfy(theQuery: query.lowercased())
+        let unsortedPlaylists = getPlaylistsThatSatisfy(theQuery: query)
         guard let unsortedPlaylists = unsortedPlaylists else
         {
             return [:]
@@ -347,7 +351,7 @@ class DataProcessor
         var result: [Alphabet : [PlaylistSearchResult]] = [:]
         for alphabet in Alphabet.allCases
         {
-            let letter = alphabet.asString
+            let letter = alphabet.asString.lowercased()
             result[alphabet] = unsortedPlaylists.filter({ $0.playlist.name!.hasPrefix(letter) }).sorted(by: {
                 $0.playlist < $1.playlist
             })
@@ -357,7 +361,7 @@ class DataProcessor
     
     func getSortedArtistsThatSatisfy(theQuery query: String, artistSource: [Artist]? = nil) -> [Alphabet : [ArtistSearchResult]]
     {
-        let unsortedArtists = getArtistsThatSatisfy(theQuery: query.lowercased(), artistSource: artistSource)
+        let unsortedArtists = getArtistsThatSatisfy(theQuery: query, artistSource: artistSource)
         guard let unsortedArtists = unsortedArtists else
         {
             return [:]

@@ -44,7 +44,7 @@ class ProfileViewController: UITableViewController
         return pLabel
     }()
     
-    private let userInfoTitleLabel: UILabel = {
+    private lazy var userInfoTitleLabel: UILabel = {
         let uiLabel = UILabel()
         uiLabel.textAlignment = .left
         uiLabel.font = .preferredFont(forTextStyle: .footnote)
@@ -53,7 +53,7 @@ class ProfileViewController: UITableViewController
         return uiLabel
     }()
     
-    private let userPrefTitleLabel: UILabel = {
+    private lazy var userPrefTitleLabel: UILabel = {
         let upLabel = UILabel()
         upLabel.textAlignment = .left
         upLabel.font = .preferredFont(forTextStyle: .footnote)
@@ -75,14 +75,7 @@ class ProfileViewController: UITableViewController
         return lButton
     }()
     
-    private let themeChooser: UISegmentedControl = {
-        let tChooser = UISegmentedControl(items: ["System", "Light", "Dark"])
-        tChooser.selectedSegmentIndex = UserDefaults.standard.integer(forKey: GlobalConstants.themePreference)
-        tChooser.selectedSegmentTintColor = .init(named: GlobalConstants.techinessColor)
-        let titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
-        tChooser.setTitleTextAttributes(titleTextAttributes, for: .selected)
-        return tChooser
-    }()
+    private lazy var themeChooser: UISegmentedControl = getThemeChooser()
     
     private var languageSelectionVC: LanguageSelectionCollectionViewController!
     
@@ -94,7 +87,10 @@ class ProfileViewController: UITableViewController
     
     private var user: User
     {
-        return GlobalVariables.shared.currentUser!
+        get
+        {
+            return GlobalVariables.shared.currentUser!
+        }
     }
     
     override func viewDidLoad()
@@ -104,32 +100,50 @@ class ProfileViewController: UITableViewController
         view.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = 44
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
-        NotificationCenter.default.setObserver(self, selector: #selector(onContextSaveAction(notification:)), name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        tableView.register(LabeledInfoTableViewCell.self, forCellReuseIdentifier: LabeledInfoTableViewCell.identifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.allowsSelection = true
+        //themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
     }
     
-    func configureAccordingToSession()
+    override func viewDidAppear(_ animated: Bool)
+    {
+        LifecycleLogger.viewDidAppearLog(self)
+    }
+    
+    private func getThemeChooser() -> UISegmentedControl
+    {
+        let tChooser = UISegmentedControl(items: ["System", "Light", "Dark"])
+        tChooser.selectedSegmentIndex = UserDefaults.standard.integer(forKey: GlobalConstants.themePreference)
+        tChooser.selectedSegmentTintColor = .init(named: GlobalConstants.techinessColor)
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        tChooser.setTitleTextAttributes(titleTextAttributes, for: .selected)
+        tChooser.enableAutoLayout()
+        tChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
+        return tChooser
+    }
+    
+    private func configureAccordingToSession()
     {
         if SessionManager.shared.isUserLoggedIn
         {
             navigationController?.navigationBar.prefersLargeTitles = false
             navigationItem.largeTitleDisplayMode = .never
-            tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
-            tableView.register(LabeledInfoTableViewCell.self, forCellReuseIdentifier: LabeledInfoTableViewCell.identifier)
-            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-            tableView.allowsSelection = true
             editProfileButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(onEditButtonTap(_:)))
             navigationItem.rightBarButtonItem = editProfileButton
             logoutButton.addTarget(self, action: #selector(onLogoutButtonTap(_:)), for: .touchUpInside)
-            themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
         }
         else
         {
             navigationController?.navigationBar.prefersLargeTitles = true
             navigationItem.largeTitleDisplayMode = .always
+            editProfileButton = nil
             navigationItem.rightBarButtonItem = nil
-            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-            tableView.allowsSelection = true
-            themeChooser.addTarget(self, action: #selector(onThemeSelection(_:)), for: .valueChanged)
+            if logoutButton.allTargets.contains(self)
+            {
+                logoutButton.removeTarget(self, action: #selector(onLogoutButtonTap(_:)), for: .touchUpInside)
+            }
         }
     }
     
@@ -138,38 +152,16 @@ class ProfileViewController: UITableViewController
         super.viewDidLayoutSubviews()
         if SessionManager.shared.isUserLoggedIn
         {
-            profilePictureView.layer.cornerRadius = profilePictureView.bounds.height / 2
+            if profilePictureView.layer.cornerRadius == 0
+            {
+                profilePictureView.layer.cornerRadius = profilePictureView.bounds.height / 2
+            }
         }
     }
     
     deinit
     {
-        NotificationCenter.default.removeObserver(self, name: NSManagedObjectContext.didSaveObjectsNotification, object: GlobalConstants.context)
         LifecycleLogger.deinitLog(self)
-    }
-    
-    func setUserDetails()
-    {
-        nameLabel.text = user.name
-        let indexPathOfVisibleRows = tableView.indexPathsForVisibleRows!
-        let emailIndexPath = IndexPath(item: 0, section: 2)
-        let phoneIndexPath = IndexPath(item: 1, section: 2)
-        if indexPathOfVisibleRows.contains(emailIndexPath)
-        {
-            let emailCell = tableView.cellForRow(at: emailIndexPath)!
-            var emailConfig = emailCell.contentConfiguration as! UIListContentConfiguration
-            emailConfig.secondaryText = user.email
-            emailCell.contentConfiguration = emailConfig
-        }
-        if indexPathOfVisibleRows.contains(phoneIndexPath)
-        {
-            let phoneCell = tableView.cellForRow(at: phoneIndexPath)!
-            var phoneConfig = phoneCell.contentConfiguration as! UIListContentConfiguration
-            phoneConfig.secondaryText = user.phone
-            phoneCell.contentConfiguration = phoneConfig
-        }
-        let userProfilePicture = UIImage(data: user.profilePicture!)
-        profilePictureView.image = userProfilePicture
     }
     
     func showLoginViewController()
@@ -318,7 +310,14 @@ extension ProfileViewController
         }
         else
         {
-            return 50
+            if section == 0 || section == 1
+            {
+                return 50
+            }
+            else
+            {
+                return CGFloat.zero
+            }
         }
     }
     
@@ -334,8 +333,9 @@ extension ProfileViewController
                 cell.selectionStyle = .none
                 //Hide Separator
                 cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
-                profilePictureView.image = UIImage(data: user.profilePicture!)!
+                cell.accessoryType = .none
                 cell.addSubViewToContentView(profilePictureView, useAutoLayout: true)
+                profilePictureView.image = UIImage(data: user.profilePicture!)!
                 return cell
             }
             else if section == 1
@@ -344,8 +344,9 @@ extension ProfileViewController
                 cell.selectionStyle = .none
                 //Hide Separator
                 cell.separatorInset = .init(top: 0, left: cell.contentView.bounds.width, bottom: 0, right: 0)
-                nameLabel.text = user.name!
                 cell.addSubViewToContentView(nameLabel, useAutoLayout: true)
+                cell.accessoryType = .none
+                nameLabel.text = user.name!
                 return cell
             }
             else if section == 2
@@ -355,17 +356,18 @@ extension ProfileViewController
                 cell.selectionStyle = .none
                 //Show separator
                 cell.separatorInset = .zero
-                var config = UIListContentConfiguration.valueCell()//cell.defaultContentConfiguration()
+                var config = UIListContentConfiguration.valueCell()
+                config.textProperties.color = .systemGray
+                config.textProperties.adjustsFontForContentSizeCategory = true
+                config.secondaryTextProperties.color = .label
+                config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+                config.prefersSideBySideTextAndSecondaryText = true
                 if item == 0
                 {
                     config.text = "Email Address"
                     config.secondaryText = user.email!
-                    config.textProperties.color = .systemGray
-                    config.textProperties.adjustsFontForContentSizeCategory = true
-                    config.secondaryTextProperties.color = .label
-                    config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
-                    config.prefersSideBySideTextAndSecondaryText = true
                     cell.contentConfiguration = config
+                    cell.accessoryType = .none
                     //cell.configureCell(title: "Email Address", infoView: emailLabel)
                     return cell
                 }
@@ -373,43 +375,46 @@ extension ProfileViewController
                 {
                     config.text = "Phone Number"
                     config.secondaryText = user.phone!
-                    config.textProperties.color = .systemGray
-                    config.textProperties.adjustsFontForContentSizeCategory = true
-                    config.secondaryTextProperties.color = .label
-                    config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
-                    config.prefersSideBySideTextAndSecondaryText = true
                     cell.contentConfiguration = config
+                    cell.accessoryType = .none
                     //cell.configureCell(title: "Phone Number", infoView: phoneLabel)
                     return cell
                 }
             }
             else if section == 3
             {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-                //Show separator
-                cell.separatorInset = .zero
-                var config = cell.defaultContentConfiguration()
                 if item == 0
                 {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+                    //Show separator
+                    cell.separatorInset = .zero
+                    var config = cell.defaultContentConfiguration()
                     config.text = "Languages"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
+                    cell.contentConfiguration = config
+                    return cell
                 }
                 else if item == 1
                 {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+                    //Show separator
+                    cell.separatorInset = .zero
+                    var config = cell.defaultContentConfiguration()
                     config.text = "Music Genres"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
+                    cell.contentConfiguration = config
+                    return cell
                 }
                 else
                 {
-                    config.text = "Theme"
+                    let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
+                    cell.separatorInset = .zero
+                    cell.configureCell(title: "Theme", infoView: themeChooser, arrangeInfoViewToRightEnd: true, useBrightLabelColor: true)
                     cell.selectionStyle = .none
-                    cell.accessoryType = .none
-                    cell.accessoryView = themeChooser
+                    return cell
                 }
-                cell.contentConfiguration = config
-                return cell
             }
             else
             {
@@ -443,31 +448,38 @@ extension ProfileViewController
             }
             else
             {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-                //Show separator
-                cell.separatorInset = .zero
-                var config = cell.defaultContentConfiguration()
                 if item == 0
                 {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+                    //Show separator
+                    cell.separatorInset = .zero
+                    var config = cell.defaultContentConfiguration()
                     config.text = "Languages"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
+                    cell.contentConfiguration = config
+                    return cell
                 }
                 else if item == 1
                 {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+                    //Show separator
+                    cell.separatorInset = .zero
+                    var config = cell.defaultContentConfiguration()
                     config.text = "Music Genres"
                     cell.selectionStyle = .default
                     cell.accessoryType = .disclosureIndicator
+                    cell.contentConfiguration = config
+                    return cell
                 }
                 else
                 {
-                    config.text = "Theme"
+                    let cell = tableView.dequeueReusableCell(withIdentifier: LabeledInfoTableViewCell.identifier, for: indexPath) as! LabeledInfoTableViewCell
+                    cell.separatorInset = .zero
+                    cell.configureCell(title: "Theme", infoView: themeChooser, arrangeInfoViewToRightEnd: true, useBrightLabelColor: true)
                     cell.selectionStyle = .none
-                    cell.accessoryType = .none
-                    cell.accessoryView = themeChooser
+                    return cell
                 }
-                cell.contentConfiguration = config
-                return cell
             }
         }
     }
@@ -573,6 +585,7 @@ extension ProfileViewController
         print("Edit Profile Tapped")
         let editProfileController = EditProfileViewController(style: .insetGrouped)
         editProfileController.userRef = user
+        editProfileController.delegate = self
         let modalNavController = UINavigationController(rootViewController: editProfileController)
         modalNavController.modalPresentationStyle = .pageSheet
         modalNavController.isModalInPresentation = false
@@ -595,11 +608,6 @@ extension ProfileViewController
     @objc func onThemeSelection(_ sender: UISegmentedControl)
     {
         (UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate).changeTheme(themeOption: sender.selectedSegmentIndex)
-    }
-    
-    @objc func onContextSaveAction(notification: NSNotification)
-    {
-        setUserDetails()
     }
 }
 
@@ -661,9 +669,8 @@ extension ProfileViewController: LoginDelegate
 {
     func onSuccessfulLogin()
     {
-        let newProfileVC = ProfileViewController(style: .insetGrouped)
-        newProfileVC.title = "Your Profile"
-        GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
+        configureAccordingToSession()
+        tableView.reloadData()
         loginController.dismiss(animated: true)
     }
     
@@ -697,12 +704,11 @@ extension ProfileViewController: SignupDelegate
 {
     func onSuccessfulSignup()
     {
-        let newProfileVC = ProfileViewController(style: .insetGrouped)
-            newProfileVC.title = "Your Profile"
         user.preferredLanguages = (UserDefaults.standard.object(forKey: GlobalConstants.preferredLanguages) as! [Int16])
         user.preferredGenres = (UserDefaults.standard.object(forKey: GlobalConstants.preferredGenres) as! [Int16])
         GlobalConstants.contextSaveAction()
-        GlobalVariables.shared.mainTabController.replaceViewController(index: 3, newViewController: newProfileVC)
+        configureAccordingToSession()
+        tableView.reloadData()
         NotificationCenter.default.post(name: .userLoggedInNotification, object: nil)
         signupController.dismiss(animated: true)
     }
@@ -729,5 +735,13 @@ extension ProfileViewController: SignupDelegate
             self.showLoginViewController()
         }
         signupController = nil
+    }
+}
+
+extension ProfileViewController: ProfileEditionDelegate
+{
+    func onProfileChange()
+    {
+        tableView.reloadData()
     }
 }

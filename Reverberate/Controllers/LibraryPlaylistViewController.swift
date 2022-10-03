@@ -81,6 +81,7 @@ class LibraryPlaylistViewController: UITableViewController
     {
         super.viewDidLoad()
         title = "Your Playlists"
+        view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
@@ -119,13 +120,49 @@ class LibraryPlaylistViewController: UITableViewController
         emptyMessageLabel.isHidden = isFiltering ? !filteredPlaylists.isEmpty : !allPlaylists.isEmpty
     }
     
+    private func resetEmptyMessageLabel()
+    {
+        if isFiltering
+        {
+            if filteredPlaylists.isEmpty
+            {
+                emptyMessageLabel.attributedText = noResultsMessage
+                emptyMessageLabel.isHidden = false
+            }
+            else
+            {
+                if allPlaylists.isEmpty
+                {
+                    emptyMessageLabel.attributedText = noPlaylistsMessage
+                    emptyMessageLabel.isHidden = false
+                }
+                else
+                {
+                    emptyMessageLabel.isHidden = true
+                }
+            }
+        }
+        else
+        {
+            if allPlaylists.isEmpty
+            {
+                emptyMessageLabel.attributedText = noPlaylistsMessage
+                emptyMessageLabel.isHidden = false
+            }
+            else
+            {
+                emptyMessageLabel.isHidden = true
+            }
+        }
+    }
+    
     private func sortPlaylists() -> [Alphabet: [Playlist]]
     {
         var result: [Alphabet : [Playlist]] = [ : ]
         for alphabet in Alphabet.allCases
         {
-            let startingLetter = alphabet.asString
-            result[alphabet] = allPlaylists.filter({ $0.name!.lowercased().hasPrefix(startingLetter.lowercased())}).sorted()
+            let startingLetter = alphabet.asString.lowercased()
+            result[alphabet] = allPlaylists.filter({ $0.name!.lowercased().hasPrefix(startingLetter)}).sorted()
         }
         return result
     }
@@ -293,14 +330,12 @@ extension LibraryPlaylistViewController: UISearchResultsUpdating
                 }
                 filteredPlaylists[key] = resultObjects
             }
-            emptyMessageLabel.attributedText = allPlaylists.isEmpty ? noPlaylistsMessage : noResultsMessage
-            emptyMessageLabel.isHidden = !filteredPlaylists.isEmpty
+            resetEmptyMessageLabel()
             tableView.reloadData()
             return
         }
         filteredPlaylists = DataProcessor.shared.getSortedPlaylistsThatSatisfy(theQuery: query)
-        emptyMessageLabel.attributedText = allPlaylists.isEmpty ? noPlaylistsMessage : noResultsMessage
-        emptyMessageLabel.isHidden = !filteredPlaylists.isEmpty
+        resetEmptyMessageLabel()
         tableView.reloadData()
     }
 }
@@ -309,8 +344,7 @@ extension LibraryPlaylistViewController: UISearchControllerDelegate
 {
     func willDismissSearchController(_ searchController: UISearchController)
     {
-        emptyMessageLabel.attributedText = noPlaylistsMessage
-        emptyMessageLabel.isHidden = !allPlaylists.isEmpty
+        resetEmptyMessageLabel()
     }
     
     func didDismissSearchController(_ searchController: UISearchController)
@@ -380,13 +414,13 @@ extension LibraryPlaylistViewController
         GlobalVariables.shared.currentUser!.removeFromPlaylists(playlist)
         if isFiltering
         {
+            refetchPlaylists()
             updateSearchResults(for: searchController)
         }
         else
         {
             refetchPlaylists()
-            emptyMessageLabel.attributedText = noPlaylistsMessage
-            emptyMessageLabel.isHidden = !allPlaylists.isEmpty
+            resetEmptyMessageLabel()
         }
     }
 }

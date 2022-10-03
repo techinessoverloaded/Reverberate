@@ -1119,10 +1119,17 @@ extension MainViewController: UIContextMenuInteractionDelegate
         config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
         config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
         let contentView = config.makeContentView()
-        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 70)
         contentView.layer.cornerRadius = 10
+        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 80)
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
+        blurView.layer.cornerRadius = 10
+        blurView.frame = contentView.bounds
+        blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.addSubview(blurView)
+        contentView.sendSubviewToBack(blurView)
+        contentView.backgroundColor = .clear
         let parameters = UIPreviewParameters()
-        parameters.backgroundColor = .systemFill
+        parameters.backgroundColor = .clear
         return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(translationX: miniPlayerView.center.x, y: miniPlayerView.center.y)))
     }
     

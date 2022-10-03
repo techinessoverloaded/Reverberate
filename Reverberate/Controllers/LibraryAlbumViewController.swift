@@ -84,6 +84,7 @@ class LibraryAlbumViewController: UICollectionViewController
     {
         super.viewDidLoad()
         title = "All Albums"
+        view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController

@@ -168,7 +168,7 @@ class PlaylistViewController: UITableViewController
     {
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .never
-        tableView.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .systemBackground
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
@@ -334,7 +334,7 @@ class PlaylistViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        return 90
+        return 80
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell

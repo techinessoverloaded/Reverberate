@@ -126,7 +126,7 @@ class ArtistViewController: UITableViewController
     {
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .never
-        tableView.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .systemBackground
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
         headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableHeaderHeight, height: tableHeaderHeight))
         headerView.addSubview(artistPhotoView)
@@ -245,7 +245,7 @@ class ArtistViewController: UITableViewController
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        return 90
+        return 80
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat

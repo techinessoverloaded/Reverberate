@@ -40,7 +40,7 @@ class SearchViewController: UICollectionViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .systemBackground
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 70, right: 20)
         collectionView.register(TitleCardCVCell.self, forCellWithReuseIdentifier: TitleCardCVCell.identifier)
         collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
