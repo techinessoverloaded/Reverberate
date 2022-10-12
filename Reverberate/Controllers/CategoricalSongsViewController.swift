@@ -66,7 +66,7 @@ class CategoricalSongsViewController: UITableViewController
         sButton.enableAutoLayout()
         return sButton
     }()
-
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -74,6 +74,7 @@ class CategoricalSongsViewController: UITableViewController
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.title = category.description
+        //setupSortMenu()
         playButton.addTarget(self, action: #selector(onPlayButtonTap(_:)), for: .touchUpInside)
         shuffleButton.addTarget(self, action: #selector(onShuffleButtonTap(_:)), for: .touchUpInside)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -127,6 +128,41 @@ class CategoricalSongsViewController: UITableViewController
     {
         return ContextMenuProvider.shared.getAlbumMenu(album: album, requesterId: GlobalVariables.shared.mainTabController.requesterId)
     }
+    
+//    private func setupSortMenu()
+//    {
+//        let songSortCriteriaMenu: [UIAction] = {
+//            var result: [UIAction] = []
+//            for criteria in AlbumSongSortCriteria.allCases
+//            {
+//                if criteria == .title
+//                {
+//                    result.append(UIAction(title: criteria.rawValue, image: nil, state: .on, handler: { [unowned self] _ in
+//                        self.songSortCriteria = criteria
+//                    }))
+//                }
+//                else
+//                {
+//                    result.append(UIAction(title: criteria.rawValue, image: nil, handler: { [unowned self] _ in
+//                        self.songSortCriteria = criteria
+//                    }))
+//                }
+//            }
+//            return result
+//        }()
+//        let songSortMenu = UIMenu(title: "Sort Songs By", image: nil, identifier: nil, options: .singleSelection, children: songSortCriteriaMenu)
+//        let sortMenu = UIMenu(title: "Sort", image: UIImage(systemName: "arrow.up.arrow.down")!, identifier: nil, options: .displayInline, children: [
+//            songSortMenu
+//        ])
+//        let sortBarButton = UIBarButtonItem(title: "Sort", image: nil, primaryAction: nil, menu: nil)
+//        sortBarButton.menu = sortMenu
+//        navigationItem.rightBarButtonItem = sortBarButton
+//    }
+    
+    //private func onSongSortMenuOptionTap(option: AlbumSongSortCriteria)
+//    {
+//
+//    }
     
     // MARK: - Table view data source
 

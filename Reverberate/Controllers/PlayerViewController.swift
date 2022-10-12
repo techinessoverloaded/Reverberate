@@ -23,8 +23,20 @@ class PlayerViewController: UITableViewController
         return UIImage(systemName: "repeat")!
     }()
     
+    private lazy var repeatFilledIcon: UIImage = {
+        return UIImage(systemName: "repeat.circle.fill")!
+    }()
+    
     private lazy var repeatOneIcon: UIImage = {
-        return UIImage(systemName: "repeat.1")!
+        return UIImage(systemName: "repeat.1.circle.fill")!
+    }()
+    
+    private lazy var shuffleIcon: UIImage = {
+        return UIImage(systemName: "shuffle")!
+    }()
+    
+    private lazy var shuffleFilledIcon: UIImage = {
+        return UIImage(systemName: "shuffle.circle.fill")!
     }()
     
     private lazy var heartIcon: UIImage = {
@@ -209,7 +221,7 @@ class PlayerViewController: UITableViewController
     
     private lazy var shuffleButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "shuffle")!
+        config.image = shuffleIcon
         config.baseForegroundColor = .label.withAlphaComponent(0.8)
         config.buttonSize = buttonSize
         let sButton = UIButton(configuration: config)
@@ -464,9 +476,9 @@ class PlayerViewController: UITableViewController
         switch shuffleMode
         {
         case .off:
-            shuffleButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+            shuffleButton.configuration!.image = shuffleIcon
         case .on:
-            shuffleButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            shuffleButton.configuration!.image = shuffleFilledIcon
         }
     }
     
@@ -477,13 +489,13 @@ class PlayerViewController: UITableViewController
         {
         case .off:
             loopButton.setImage(repeatIcon, for: .normal)
-            loopButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+            //loopButton.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
         case .song:
             loopButton.setImage(repeatOneIcon, for: .normal)
-            loopButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            //loopButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
         case .playlist:
-            loopButton.setImage(repeatIcon, for: .normal)
-            loopButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            loopButton.setImage(repeatFilledIcon, for: .normal)
+            //loopButton.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
         }
     }
     
@@ -824,17 +836,19 @@ extension PlayerViewController
     
     @objc func onShuffleButtonTap(_ sender: UIButton)
     {
-        if sender.configuration?.baseForegroundColor == .label.withAlphaComponent(0.8)
+        if sender.configuration!.image?.jpegData(compressionQuality: 1)! == shuffleIcon.jpegData(compressionQuality: 1)!
         {
             print("Shuffle")
+            sender.configuration!.image = shuffleFilledIcon
             delegate?.onShuffleRequest(playlist: GlobalVariables.shared.currentPlaylist!, shuffleMode: .on)
-            sender.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+            //sender.configuration?.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
         }
         else
         {
             print("No Shuffle")
+            sender.configuration!.image = shuffleIcon
             delegate?.onShuffleRequest(playlist: GlobalVariables.shared.currentPlaylist!, shuffleMode: .off)
-            sender.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
+            //sender.configuration?.baseForegroundColor = .label.withAlphaComponent(0.8)
         }
         setDetails()
     }
@@ -843,36 +857,40 @@ extension PlayerViewController
     {
         if sender.image(for: .normal)!.jpegData(compressionQuality: 1)! == repeatIcon.jpegData(compressionQuality: 1)!
         {
-            if sender.configuration!.baseForegroundColor == .label.withAlphaComponent(0.8)
+            print("Loop Song")
+            delegate?.onLoopButtonTap(loopMode: .song)
+            sender.setImage(repeatOneIcon, for: .normal)
+            //sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+//            else
+//            {
+//                print("No Loop")
+//                delegate?.onLoopButtonTap(loopMode: .off)
+//                sender.setImage(repeatIcon, for: .normal)
+//                //sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+//            }
+        }
+        else if sender.image(for: .normal)!.jpegData(compressionQuality: 1)! == repeatOneIcon.jpegData(compressionQuality: 1)!
+        {
+            if playlist != nil && playlist!.songs!.count > 1
             {
-                print("Loop Song")
-                delegate?.onLoopButtonTap(loopMode: .song)
-                sender.setImage(repeatOneIcon, for: .normal)
-                sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
+                print("Loop Playlist")
+                delegate?.onLoopButtonTap(loopMode: .playlist)
+                sender.setImage(repeatFilledIcon, for: .normal)
+                //sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
             }
             else
             {
                 print("No Loop")
                 delegate?.onLoopButtonTap(loopMode: .off)
-                sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
+                sender.setImage(repeatIcon, for: .normal)
+                //sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
             }
         }
         else
         {
-            if playlist != nil
-            {
-                print("Loop Playlist")
-                delegate?.onLoopButtonTap(loopMode: .playlist)
-                sender.setImage(repeatIcon, for: .normal)
-                sender.configuration!.baseForegroundColor = UIColor(named: GlobalConstants.darkGreenColor)!
-            }
-            else
-            {
-                print("No Loop")
-                delegate?.onLoopButtonTap(loopMode: .off)
-                sender.setImage(repeatIcon, for: .normal)
-                sender.configuration!.baseForegroundColor = .label.withAlphaComponent(0.8)
-            }
+            print("No Loop")
+            delegate?.onLoopButtonTap(loopMode: .off)
+            sender.setImage(repeatIcon, for: .normal)
         }
     }
     
