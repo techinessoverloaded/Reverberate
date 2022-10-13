@@ -450,6 +450,28 @@ class PlayerViewController: UITableViewController
         updateShuffleMode()
         updatePlaylistButtons()
         updateFavouriteButton()
+        updatePlayPauseButton()
+    }
+    
+    func updatePlayPauseButton()
+    {
+        if let player =  GlobalVariables.shared.avAudioPlayer
+        {
+            if player.isPlaying
+            {
+                if playOrPauseButton.image(for: .normal)?.jpegData(compressionQuality: 1)! == playIcon.jpegData(compressionQuality: 1)!
+                {
+                    playOrPauseButton.setImage(pauseIcon, for: .normal)
+                }
+            }
+            else
+            {
+                if playOrPauseButton.image(for: .normal)?.jpegData(compressionQuality: 1)! == pauseIcon.jpegData(compressionQuality: 1)!
+                {
+                    playOrPauseButton.setImage(playIcon, for: .normal)
+                }
+            }
+        }
     }
     
     func updateFavouriteButton()
@@ -832,6 +854,7 @@ extension PlayerViewController
     {
         print("Next")
         delegate?.onNextSongRequest(playlist: playlist!, currentSong: GlobalVariables.shared.currentSong!)
+        
     }
     
     @objc func onShuffleButtonTap(_ sender: UIButton)

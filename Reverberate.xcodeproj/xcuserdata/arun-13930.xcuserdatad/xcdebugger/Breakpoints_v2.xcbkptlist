@@ -316,8 +316,8 @@
             filePath = "Reverberate/Controllers/PlayerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "524"
-            endingLineNumber = "524"
+            startingLineNumber = "546"
+            endingLineNumber = "546"
             landmarkName = "updatePlaylistButtons()"
             landmarkType = "7">
          </BreakpointContent>
@@ -332,8 +332,8 @@
             filePath = "Reverberate/Controllers/PlayerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "525"
-            endingLineNumber = "525"
+            startingLineNumber = "547"
+            endingLineNumber = "547"
             landmarkName = "updatePlaylistButtons()"
             landmarkType = "7">
          </BreakpointContent>
