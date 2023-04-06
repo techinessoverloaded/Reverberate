@@ -222,7 +222,7 @@ class DataProcessor
         case .newReleases:
             DataManager.shared.availableSongs.forEach
             {
-                if getAlbum(named: $0.albumName!)!.releaseDate!.get(.year) == Calendar.currentYear
+                if getAlbum(named: $0.albumName!)!.releaseDate!.get(.year) >= 2022
                 {
                     result.append($0)
                 }

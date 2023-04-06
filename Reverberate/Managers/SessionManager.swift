@@ -102,14 +102,9 @@ class SessionManager
             print("Error in retrieving saved Users !")
             return nil
         }
-        let filteredUsers = allUsers.filter {
+        return allUsers.first(where: {
             $0.email == email && $0.password == password
-        }
-        if filteredUsers.isEmpty
-        {
-            return nil
-        }
-        return filteredUsers[0]
+        })
     }
     
     func validateUser(phone: String, password: String) -> User?

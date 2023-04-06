@@ -30,7 +30,12 @@ class SearchViewController: UICollectionViewController
         sController.hidesNavigationBarDuringPresentation = true
         sController.searchBar.placeholder = "Songs, Albums, Artists"
         sController.searchBar.scopeButtonTitles = ["Songs", "Albums", "Artists"]
-        sController.automaticallyShowsScopeBar = true
+        if #available(iOS 16.0, *) {
+            sController.scopeBarActivation = .onSearchActivation
+        }
+        else {
+            sController.automaticallyShowsScopeBar = true
+        }
         sController.searchBar.delegate = searchResultsVC
         return sController
     }()

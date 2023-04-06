@@ -30,7 +30,7 @@ public class Album: Playlist
 
     public override var description: String
     {
-        "Album(name = \(name!), songs = \(songs!), coverArt = \(coverArt ?? nil), releaseDate = \(releaseDate ?? nil))"
+        "Album(name = \(name!), songs = \(songs!), coverArt = \(String(describing: coverArt ?? nil)), releaseDate = \(String(describing: releaseDate ?? nil)))"
     }
 
     public override func encode(with coder: NSCoder)

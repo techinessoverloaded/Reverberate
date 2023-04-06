@@ -674,7 +674,7 @@ extension PlayerViewController
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
+        let cell = CustomTableViewCell(style: .default, reuseIdentifier: CustomTableViewCell.identifier)
         let item = indexPath.item
         if item == 0
         {

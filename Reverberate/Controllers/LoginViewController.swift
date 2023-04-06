@@ -145,17 +145,6 @@ class LoginViewController: UITableViewController
         print("Login View Controller")
     }
     
-    override func viewDidDisappear(_ animated: Bool)
-    {
-        guard let cancelButton = navigationItem.leftBarButtonItem else
-        {
-            print("no cancel button")
-            return
-        }
-        let _ = cancelButton.target?.perform(cancelButton.action!, with: nil)
-        super.viewDidDisappear(animated)
-    }
-    
     deinit
     {
         LifecycleLogger.deinitLog(self)
@@ -388,14 +377,14 @@ extension LoginViewController
             var user: User?
             if emailOrPhoneSelector.selectedSegmentIndex == 0
             {
-                let email = emailCumPhoneField.text!.trimmedCopy()
-                let password = passwordField.text!.trimmedCopy()
+                let email = emailCumPhoneField.text!.trimmedCopy
+                let password = passwordField.text!.trimmedCopy
                 user = SessionManager.shared.validateUser(email: email, password: password)
             }
             else
             {
-                let phone = emailCumPhoneField.text!.trimmedCopy()
-                let password = passwordField.text!.trimmedCopy()
+                let phone = emailCumPhoneField.text!.trimmedCopy
+                let password = passwordField.text!.trimmedCopy
                 user = SessionManager.shared.validateUser(phone: phone, password: password)
             }
             if user != nil

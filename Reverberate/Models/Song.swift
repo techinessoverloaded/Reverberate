@@ -34,12 +34,12 @@ public class Song: NSObject, Identifiable, Comparable, NSSecureCoding, NSCopying
     
     public var url: URL
     {
-        return Bundle.main.url(forResource: fileName!.getNameWithoutExtension(), withExtension: fileName!.getExtension())!
+        return Bundle.main.url(forResource: fileName!.nameWithoutExtension, withExtension: fileName!.extension)!
     }
     
     public override var description: String
     {
-        "Song(title = \(title!), artists = \(String(describing: artists)), duration = \(duration), fileName = \(fileName), url = \(url), albumName = \(albumName!), language = \(String(describing: language)), genre = \(genre), coverArt = \(coverArt)"
+        "Song(title = \(title!), artists = \(String(describing: artists)), duration = \(duration), fileName = \(String(describing: fileName)), url = \(url), albumName = \(albumName!), language = \(String(describing: language)), genre = \(genre), coverArt = \(String(describing: coverArt))"
     }
     
     public func encode(with coder: NSCoder)

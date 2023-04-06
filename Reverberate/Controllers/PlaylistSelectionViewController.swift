@@ -9,7 +9,7 @@ import UIKit
 
 class PlaylistSelectionViewController: UITableViewController
 {
-    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists! as! [Playlist]
+    private lazy var allPlaylists: [Playlist] = GlobalVariables.shared.currentUser!.playlists! 
     
     private lazy var backgroundView: UIView = isTranslucent ? UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial)) : UIView()
     

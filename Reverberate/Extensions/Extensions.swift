@@ -142,11 +142,6 @@ extension UIViewController
         }
     }
     
-    func address(of pointer: UnsafeRawPointer) -> Int
-    {
-        return Int(bitPattern: pointer)
-    }
-    
     var topMostViewController: UIViewController
     {
         get
@@ -193,33 +188,29 @@ extension String
     
     mutating func trim()
     {
-        self = self.trimmingCharacters(in: .whitespaces)
+        self = self.trimmedCopy
     }
     
-    func trimmedCopy() -> Self
+    var trimmedCopy: Self
     {
         return self.trimmingCharacters(in: .whitespaces)
     }
     
-    func getNameWithoutExtension() -> Self?
-    {
-        guard self.contains(".") else
-        {
-            return nil
-        }
-        return String(self[..<self.firstIndex(of: ".")!])
+    var nsString: NSString {
+        return self as NSString
     }
     
-    func getExtension() -> Self?
+    var nameWithoutExtension: Self
     {
-        guard self.contains(".") else
-        {
-            return nil
-        }
-        return String(self[self.firstIndex(of: ".")!...])
+        return nsString.deletingPathExtension
     }
     
-    func getAlphaNumericLowercasedString() -> Self
+    var `extension`: Self
+    {
+        return nsString.pathExtension
+    }
+    
+    var alphaNumericLowercasedString: Self
     {
         return self.components(separatedBy: CharacterSet.alphanumerics.inverted).joined().lowercased()
     }
@@ -262,26 +253,6 @@ extension NSMutableAttributedString
     }
 }
 
-extension URL
-{
-    static func localURLForXCAsset(name: String) -> URL?
-    {
-        let fileManager = FileManager.default
-        guard let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else {return nil}
-        let url = cacheDirectory.appendingPathComponent("songs/\(name).mp3")
-        let path = url.path
-        if !fileManager.fileExists(atPath: path)
-        {
-            guard let data = try? Data(contentsOf: url) else
-            {
-                return nil
-            }
-            fileManager.createFile(atPath: path, contents: data, attributes: nil)
-        }
-        return url
-    }
-}
-
 extension UIColor
 {
     static func randomDarkColor(withAlpha alpha: CGFloat = 1) -> Self
@@ -290,15 +261,6 @@ extension UIColor
         let green = CGFloat(UInt.random(in: 11...145)) / 255
         let blue = CGFloat(UInt.random(in: 11...145)) / 255
         return self.init(red: red, green: green, blue: blue, alpha: alpha)
-    }
-    
-    func image(_ size: CGSize = CGSize(width: 1, height: 1)) -> UIImage
-    {
-        return UIGraphicsImageRenderer(size: size).image
-        { rendererContext in
-            self.setFill()
-            rendererContext.fill(CGRect(origin: .zero, size: size))
-        }
     }
 }
 
@@ -341,10 +303,7 @@ extension UILabel
     {
         get
         {
-            print(self.font.fontDescriptor.object(forKey: .face))
-            let result = self.font.fontDescriptor.object(forKey: .textStyle) as! UIFont.TextStyle
-            print(result)
-            return result
+            return self.font.fontDescriptor.object(forKey: .textStyle) as! UIFont.TextStyle
         }
     }
 }
@@ -435,12 +394,15 @@ extension UITableView
 
 extension Array where Element: Equatable
 {
-    mutating func appendUniquely(_ newElement: Element)
+    @discardableResult
+    mutating func appendUniquely(_ newElement: Element) -> Bool
     {
         if !self.contains(where: { $0 == newElement })
         {
             self.append(newElement)
+            return true
         }
+        return false
     }
     
     mutating func removeUniquely(_ existingElement: Element)
@@ -463,40 +425,4 @@ extension Array where Element == CategoricalSong
             self[index].songs = newValue
         }
     }
-}
-
-extension Numeric where Self: Comparable
-{
-    func constrain(lowerBound: Self, upperBound: Self) -> Self
-    {
-        return self < lowerBound ? lowerBound : (self > upperBound ? upperBound : self)
-    }
-}
-
-extension UITableView
-{
-    func setGradientBackground(topColor: UIColor, bottomColor: UIColor)
-    {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [topColor, bottomColor]
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.frame = self.bounds
-        let bView = UIView(frame: self.bounds)
-        bView.layer.insertSublayer(gradientLayer, at: 0)
-        self.backgroundView = bView
-        print(topColor)
-    }
-}
-
-extension UIScrollView
-{
-    var isBottomBouncing: Bool
-    {
-        return contentOffset.y > max(0.0, contentSize.height - bounds.height + adjustedContentInset.bottom)
-    }
-}
-
-extension NSValueTransformerName
-{
-    static let customTransformer = NSValueTransformerName(rawValue: "CustomDataTransformer")
 }

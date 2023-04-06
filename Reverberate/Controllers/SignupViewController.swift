@@ -230,22 +230,6 @@ class SignupViewController: UITableViewController
         print("Signup View Controller")
     }
     
-    override func viewDidLayoutSubviews()
-    {
-        super.viewDidLayoutSubviews()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool)
-    {
-        guard let cancelButton = navigationItem.leftBarButtonItem else
-        {
-            print("no cancel button")
-            return
-        }
-        let _ = cancelButton.target?.perform(cancelButton.action!, with: nil)
-        super.viewDidDisappear(animated)
-    }
-    
     deinit
     {
         LifecycleLogger.deinitLog(self)
@@ -601,7 +585,7 @@ extension SignupViewController
             }
             else
             {
-                newUser = SessionManager.shared.createNewUserWith(name: nameField.text!.trimmedCopy(), phone: phone, email: email, password: passwordField.text!.trimmedCopy())
+                newUser = SessionManager.shared.createNewUserWith(name: nameField.text!.trimmedCopy, phone: phone, email: email, password: passwordField.text!.trimmedCopy)
                 signupButton.configuration?.showsActivityIndicator = false
                 delegate?.onSuccessfulSignup()
             }

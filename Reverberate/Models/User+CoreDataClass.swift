@@ -129,9 +129,7 @@ public class User: NSManagedObject
         var existingFavSongs = favouriteSongs!
         existingFavSongs.appendUniquely(song)
         let songNames: [String] = existingFavSongs.map({ $0.title! })
-        let encodedData = try?  JSONSerialization.data(withJSONObject: songNames, options: .sortedKeys)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try?  JSONSerialization.data(withJSONObject: songNames, options: .sortedKeys) else {
             return
         }
         favouriteSongsData = encodedData
@@ -143,9 +141,7 @@ public class User: NSManagedObject
         var existingFavSongs = favouriteSongs!
         existingFavSongs.removeUniquely(song)
         let songNames: [String] = existingFavSongs.map({ $0.title! })
-        let encodedData = try?  JSONSerialization.data(withJSONObject: songNames, options: .sortedKeys)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try?  JSONSerialization.data(withJSONObject: songNames, options: .sortedKeys) else {
             return
         }
         favouriteSongsData = encodedData
@@ -157,9 +153,7 @@ public class User: NSManagedObject
         var existingFavAlbums = favouriteAlbums!
         existingFavAlbums.appendUniquely(album)
         let albumNames: [String] = existingFavAlbums.map({ $0.name! })
-        let encodedData = try?  JSONSerialization.data(withJSONObject: albumNames, options: .sortedKeys)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try?  JSONSerialization.data(withJSONObject: albumNames, options: .sortedKeys) else {
             return
         }
         favouriteAlbumsData = encodedData
@@ -171,9 +165,7 @@ public class User: NSManagedObject
         var existingFavAlbums = favouriteAlbums!
         existingFavAlbums.removeUniquely(album)
         let albumNames: [String] = existingFavAlbums.map({ $0.name! })
-        let encodedData = try?  JSONSerialization.data(withJSONObject: albumNames, options: .sortedKeys)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try?  JSONSerialization.data(withJSONObject: albumNames, options: .sortedKeys) else {
             return
         }
         favouriteAlbumsData = encodedData
@@ -185,8 +177,7 @@ public class User: NSManagedObject
         var existingFavArtists = favouriteArtists!
         existingFavArtists.appendUniquely(artist)
         let artistNames: [String] = existingFavArtists.map({ $0.name! })
-        let encodedData = try?  JSONSerialization.data(withJSONObject: artistNames, options: .sortedKeys)
-        guard let encodedData = encodedData else
+        guard let encodedData = try?  JSONSerialization.data(withJSONObject: artistNames, options: .sortedKeys) else
         {
             return
         }
@@ -199,9 +190,7 @@ public class User: NSManagedObject
         var existingFavArtists = favouriteArtists!
         existingFavArtists.removeUniquely(artist)
         let artistNames: [String] = existingFavArtists.map({ $0.name! })
-        let encodedData = try?  JSONSerialization.data(withJSONObject: artistNames, options: .sortedKeys)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try?  JSONSerialization.data(withJSONObject: artistNames, options: .sortedKeys) else {
             return
         }
         favouriteArtistsData = encodedData
@@ -218,9 +207,7 @@ public class User: NSManagedObject
             let songNames = playlist.songs!.map({ $0.title! })
             dictionary[playlist.name!] = songNames
         }
-        let encodedData = try? JSONEncoder().encode(dictionary)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try? JSONEncoder().encode(dictionary) else {
             return
         }
         playlistsData = encodedData
@@ -237,9 +224,7 @@ public class User: NSManagedObject
             let songNames = playlist.songs!.map({ $0.title! })
             dictionary[playlist.name!] = songNames
         }
-        let encodedData = try? JSONEncoder().encode(dictionary)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try? JSONEncoder().encode(dictionary) else {
             return
         }
         playlistsData = encodedData
@@ -259,9 +244,7 @@ public class User: NSManagedObject
             let songNames = playlist.songs!.map({ $0.title! })
             dictionary[playlist.name!] = songNames
         }
-        let encodedData = try? JSONEncoder().encode(dictionary)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try? JSONEncoder().encode(dictionary) else {
             return
         }
         playlistsData = encodedData
@@ -282,9 +265,7 @@ public class User: NSManagedObject
             let songNames = playlist.songs!.map({ $0.title! })
             dictionary[playlist.name!] = songNames
         }
-        let encodedData = try? JSONEncoder().encode(dictionary)
-        guard let encodedData = encodedData else
-        {
+        guard let encodedData = try? JSONEncoder().encode(dictionary) else {
             return
         }
         playlistsData = encodedData
