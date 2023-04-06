@@ -356,10 +356,60 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
         }
     }
     
+    @available(iOS 16.0, *)
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemsAt indexPaths: [IndexPath],
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard indexPaths.count == 1, let indexPath = indexPaths.first else {
+            return nil
+        }
+        let item = indexPath.item
+        if searchMode == 0
+        {
+            let song = filteredSongs[item].song
+            let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
+                return createSongMenu(song: song)
+            })
+            return config
+        }
+        else if searchMode == 1
+        {
+            let album = filteredAlbums[item].album
+            let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
+                return createAlbumMenu(album: album)
+            })
+            return config
+        }
+        else
+        {
+            let artist: Artist! = filteredArtists[item].artist
+            let config = UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil , actionProvider: { [unowned self] _ in
+                return createArtistMenu(artist: artist)
+            })
+            return config
+        }
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
-        guard let indexPath = configuration.identifier as? IndexPath else
-        {
+        guard let indexPath = configuration.identifier as? IndexPath else {
+            return nil
+        }
+        let cell = collectionView.cellForItem(at: indexPath)!
+        let previewParameters = UIPreviewParameters()
+        previewParameters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
+    }
+    
+    @available(iOS 16.0, *)
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfiguration configuration: UIContextMenuConfiguration,
+        highlightPreviewForItemAt indexPath: IndexPath
+    ) -> UITargetedPreview? {
+        guard let indexPath = configuration.identifier as? IndexPath else {
             return nil
         }
         let cell = collectionView.cellForItem(at: indexPath)!
@@ -370,8 +420,22 @@ extension SearchResultsViewController: UICollectionViewDelegateFlowLayout
     
     override func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
-        guard let indexPath = configuration.identifier as? IndexPath else
-        {
+        guard let indexPath = configuration.identifier as? IndexPath else {
+            return nil
+        }
+        let cell = collectionView.cellForItem(at: indexPath)!
+        let previewParameters = UIPreviewParameters()
+        previewParameters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.contentView, parameters: previewParameters)
+    }
+    
+    @available(iOS 16.0, *)
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfiguration configuration: UIContextMenuConfiguration,
+        dismissalPreviewForItemAt indexPath: IndexPath
+    ) -> UITargetedPreview? {
+        guard let indexPath = configuration.identifier as? IndexPath else {
             return nil
         }
         let cell = collectionView.cellForItem(at: indexPath)!

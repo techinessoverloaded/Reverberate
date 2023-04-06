@@ -299,6 +299,23 @@ class LibraryAlbumViewController: UICollectionViewController
         })
     }
     
+    @available(iOS 16.0, *)
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemsAt indexPaths: [IndexPath],
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard indexPaths.count == 1, let indexPath = indexPaths.first else {
+            return nil
+        }
+        let section = indexPath.section
+        let item = indexPath.item
+        let album = isFiltering ? filteredAlbums[Alphabet(rawValue: section)!]![item].album : sortedAlbums[Alphabet(rawValue: section)!]![item]
+        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil, actionProvider: { [unowned self] _ in
+            return createMenu(album: album)
+        })
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating)
     {
         guard let indexPath = configuration.identifier as? IndexPath else

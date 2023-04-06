@@ -1103,8 +1103,42 @@ extension MainViewController: UIContextMenuInteractionDelegate
     
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview?
     {
-        guard let song = GlobalVariables.shared.currentSong else
-        {
+        guard let song = GlobalVariables.shared.currentSong else {
+            return nil
+        }
+        var config = UIListContentConfiguration.cell()
+        config.text = song.title!
+        config.secondaryText = song.getArtistNamesAsString(artistType: nil)
+        config.imageProperties.cornerRadius = 10
+        config.image = song.coverArt
+        config.textProperties.adjustsFontForContentSizeCategory = true
+        config.textProperties.allowsDefaultTighteningForTruncation = true
+        config.secondaryTextProperties.adjustsFontForContentSizeCategory = true
+        config.secondaryTextProperties.color = .secondaryLabel
+        config.secondaryTextProperties.allowsDefaultTighteningForTruncation = true
+        config.secondaryTextProperties.font = .preferredFont(forTextStyle: .footnote)
+        let contentView = config.makeContentView()
+        contentView.layer.cornerRadius = 10
+        contentView.frame = CGRect(x: 0, y: 0, width: 400, height: 80)
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
+        blurView.layer.cornerRadius = 10
+        blurView.frame = contentView.bounds
+        blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.addSubview(blurView)
+        contentView.sendSubviewToBack(blurView)
+        contentView.backgroundColor = .clear
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .clear
+        return UITargetedPreview(view: contentView, parameters: parameters, target: UIPreviewTarget(container: view, center: CGPoint(x: view.center.x, y: view.center.y), transform: CGAffineTransform(translationX: miniPlayerView.center.x, y: miniPlayerView.center.y)))
+    }
+    
+    @available(iOS 16.0, *)
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configuration: UIContextMenuConfiguration,
+        highlightPreviewForItemWithIdentifier identifier: NSCopying
+    ) -> UITargetedPreview? {
+        guard let song = GlobalVariables.shared.currentSong else {
             return nil
         }
         var config = UIListContentConfiguration.cell()
