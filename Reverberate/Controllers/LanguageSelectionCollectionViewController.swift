@@ -147,9 +147,9 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
         }
         else if rightBarButtonCustomTitle != nil
         {
-            rightBarButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(onNextButtonTap(_:)))
             if rightBarButtonCustomTitle == "Next"
             {
+                rightBarButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(onNextButtonTap(_:)))
                 navigationItem.rightBarButtonItem = rightBarButton
             }
             rightBarButton.isEnabled = false

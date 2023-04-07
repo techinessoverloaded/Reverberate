@@ -573,7 +573,7 @@ class PlayerViewController: UITableViewController
         //Section
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
-        section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
+        section.orthogonalScrollingBehavior = .continuous
         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
         section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem.init(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(30)), elementKind: UICollectionView.elementKindSectionHeader, alignment: NSRectAlignment.top)]
         return section
