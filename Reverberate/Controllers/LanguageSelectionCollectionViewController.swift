@@ -52,7 +52,7 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     }
     
     var rightBarButton: UIBarButtonItem!
-    
+    var timer: Timer?
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -67,6 +67,10 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
             selectedLanguages = preSelectedLanguages
         }
         resetBarButtons()
+        registerThemeNotifications()
+        timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            NotificationCenter.default.post(Notification(name: NSNotification.Name("ThemeChanged")))
+        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
@@ -159,7 +163,14 @@ class LanguageSelectionCollectionViewController: UICollectionViewController
     override func viewDidDisappear(_ animated: Bool)
     {
         delegate?.onLanguageSelectionDismissRequest()
+        timer?.invalidate()
+        timer = nil
+        removeThemeNotifications()
         super.viewDidDisappear(animated)
+    }
+    
+    override func appThemeChanged(_ notification: Notification) {
+        print("App Theme Changed from \(self)")
     }
     
     deinit

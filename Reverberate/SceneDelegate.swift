@@ -39,12 +39,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         
         if userDefaults.value(forKey: GlobalConstants.preferredLanguages) == nil
         {
-            userDefaults.set([], forKey: GlobalConstants.preferredLanguages)
+            userDefaults.set([] as [Int16], forKey: GlobalConstants.preferredLanguages)
         }
         
         if userDefaults.value(forKey: GlobalConstants.preferredGenres) == nil
         {
-            userDefaults.set([], forKey: GlobalConstants.preferredGenres)
+            userDefaults.set([] as [Int16], forKey: GlobalConstants.preferredGenres)
         }
         
         if userDefaults.value(forKey: GlobalConstants.previouslySelectedTabIndex) == nil
@@ -54,12 +54,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate
         
         if userDefaults.value(forKey: GlobalConstants.recentlyPlayedSongNames) == nil
         {
-            userDefaults.set([], forKey: GlobalConstants.recentlyPlayedSongNames)
+            userDefaults.set([] as [String], forKey: GlobalConstants.recentlyPlayedSongNames)
         }
         
         if userDefaults.value(forKey: GlobalConstants.recentlyPlayedAlbumNames) == nil
         {
-            userDefaults.set([], forKey: GlobalConstants.recentlyPlayedAlbumNames)
+            userDefaults.set([] as [String], forKey: GlobalConstants.recentlyPlayedAlbumNames)
         }
         
         DataManager.shared.retrieveRecentlyPlayedItems()

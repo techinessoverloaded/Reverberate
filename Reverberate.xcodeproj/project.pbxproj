@@ -13,6 +13,7 @@
 		DA12E69C288E94BF00D502EC /* AlbumSegregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */; };
 		DA134FFF28C8FE2300ADEA51 /* ContextMenuProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */; };
 		DA16C18828C9EC900083AB52 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA16C18628C9EC900083AB52 /* User+CoreDataClass.swift */; };
+		DA1766C929EFE5F60064C77A /* SampleVCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1766C829EFE5F60064C77A /* SampleVCViewController.swift */; };
 		DA1DA6A028A40C3F00721F5C /* kalaavathi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */; };
 		DA1DA6A228A40C7900721F5C /* mamamahesha.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */; };
 		DA252E6128A543C500791267 /* vaadathambi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DA252E6028A543C500791267 /* vaadathambi.mp3 */; };
@@ -125,6 +126,7 @@
 		DA12E69B288E94BF00D502EC /* AlbumSegregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSegregator.swift; sourceTree = "<group>"; };
 		DA134FFE28C8FE2300ADEA51 /* ContextMenuProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuProvider.swift; sourceTree = "<group>"; };
 		DA16C18628C9EC900083AB52 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DA1766C829EFE5F60064C77A /* SampleVCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleVCViewController.swift; sourceTree = "<group>"; };
 		DA1DA69F28A40C3F00721F5C /* kalaavathi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kalaavathi.mp3; sourceTree = "<group>"; };
 		DA1DA6A128A40C7900721F5C /* mamamahesha.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mamamahesha.mp3; sourceTree = "<group>"; };
 		DA252E6028A543C500791267 /* vaadathambi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = vaadathambi.mp3; sourceTree = "<group>"; };
@@ -384,6 +386,7 @@
 				DA5C90B728C8ADD300BE0DF1 /* LibraryAlbumViewController.swift */,
 				DA5C90B928C8C9FD00BE0DF1 /* LibraryArtistViewController.swift */,
 				DAA0F17228CB0FEA0077C98B /* PlaylistSelectionViewController.swift */,
+				DA1766C829EFE5F60064C77A /* SampleVCViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -827,6 +830,7 @@
 				DA3AE13928E722260014C697 /* AlbumSearchResult.swift in Sources */,
 				DAF64917287553020061C29B /* CustomTableViewCell.swift in Sources */,
 				DAA0F17328CB0FEA0077C98B /* PlaylistSelectionViewController.swift in Sources */,
+				DA1766C929EFE5F60064C77A /* SampleVCViewController.swift in Sources */,
 				DA4AC3ED28B35E9800F0B611 /* PlaylistControlsDelegate.swift in Sources */,
 				DA668C7A2876D936001EE1C9 /* Language.swift in Sources */,
 				DAFC0AE22893D81200EECE4B /* SearchResultDelegate.swift in Sources */,
