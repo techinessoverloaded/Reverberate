@@ -86,7 +86,7 @@ class DataManager
         if let cachedSongs = tryRetrieveDataFromCache(typeOfData: Song.self, fileName: songCacheKey)
         {
             print("Songs available in cache")
-            availableSongs = cachedSongs as! [Song]
+            availableSongs = cachedSongs
         }
         else
         {
@@ -96,7 +96,7 @@ class DataManager
         if let cachedAlbums = tryRetrieveDataFromCache(typeOfData: Album.self, fileName: albumCacheKey)
         {
             print("Albums available in cache")
-            availableAlbums = cachedAlbums as! [Album]
+            availableAlbums = cachedAlbums
         }
         else
         {
@@ -106,7 +106,7 @@ class DataManager
         if let cachedArtists = tryRetrieveDataFromCache(typeOfData: Artist.self, fileName: artistCacheKey)
         {
             print("Artists available in cache")
-            availableArtists = cachedArtists as! [Artist]
+            availableArtists = cachedArtists
         }
         else
         {
@@ -139,21 +139,13 @@ class DataManager
         }
     }
     
-    private func tryRetrieveDataFromCache<T>(typeOfData type: T, fileName: String) -> NSArray?
+    private func tryRetrieveDataFromCache<T>(typeOfData type: T.Type, fileName: String) -> Array<T>?
     {
         let dataUrl = getUrlOfDataInCacheDirectory(dataFileName: fileName)
         let data = try? Data(contentsOf: dataUrl)
         guard let data = data else { return nil }
-        let objects = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Playlist.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
-        guard let objects = objects else { return nil }
-        if let rawArray = objects as? NSArray
-        {
-            return rawArray
-        }
-        else
-        {
-            return nil
-        }
+        var objects = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, Song.self, NSURL.self, Artist.self, UIImage.self, Playlist.self, Album.self, NSDate.self, NSString.self, NSNumber.self], from: data)
+        return objects as? Array<T>
     }
     
     func persistRecentlyPlayedItems(songName: String, albumName: String)
@@ -204,7 +196,7 @@ class DataManager
     {
         GlobalVariables.shared.recentlyPlayedSongNames = []
         GlobalVariables.shared.recentlyPlayedAlbumNames = []
-        UserDefaults.standard.set([], forKey: GlobalConstants.recentlyPlayedSongNames)
-        UserDefaults.standard.set([], forKey: GlobalConstants.recentlyPlayedAlbumNames)
+        UserDefaults.standard.set(Array<String>(), forKey: GlobalConstants.recentlyPlayedSongNames)
+        UserDefaults.standard.set(Array<String>(), forKey: GlobalConstants.recentlyPlayedAlbumNames)
     }
 }
